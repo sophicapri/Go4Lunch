@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+        <item
+            android:id="@+id/my_lunch"
+            android:title="YOUR LUNCH"
+            android:icon="@drawable/ic_lunch_white_24dp"/>
+
+        <item
+            android:id="@+id/settings"
+            android:title="SETTINGS"
+            android:icon="@drawable/ic_settings_white_24dp"/>
+
+        <item
+            android:id="@+id/sign_out"
+            android:title="LOGOUT"
+            android:icon="@drawable/ic_power_settings_new_white_24dp"/>
+
+</menu>

@@ -1,0 +1,85 @@
+apply plugin: 'com.android.application'
+apply plugin: 'jacoco-android'
+apply plugin: 'com.google.gms.google-services'
+
+android {
+    compileSdkVersion 29
+    buildToolsVersion "29.0.3"
+
+    defaultConfig {
+        applicationId "com.sophieopenclass.go4lunch"
+        minSdkVersion 19
+        targetSdkVersion 29
+        multiDexEnabled true
+        versionCode 1
+        versionName "1.0"
+        resConfigs("en", "fr")
+        buildConfigField("String", "API_KEY", API_KEY)
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            testCoverageEnabled true
+        }
+    }
+
+    lintOptions {
+        disable 'RestrictedApi'
+    }
+    compileOptions {
+        sourceCompatibility = 1.8
+        targetCompatibility = 1.8
+    }
+
+    viewBinding {
+        enabled = true
+    }
+
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'com.google.android.material:material:1.1.0'
+    implementation 'androidx.recyclerview:recyclerview:1.2.0-alpha02'
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    testImplementation 'junit:junit:4.13'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+
+
+    // Firebase
+    implementation 'com.google.firebase:firebase-analytics:17.3.0'
+    implementation 'com.google.firebase:firebase-core:17.3.0'
+    implementation 'com.google.firebase:firebase-messaging:20.1.5'
+
+    // FirebaseUI
+    implementation 'com.firebaseui:firebase-ui-storage:6.2.1'
+    implementation 'com.firebaseui:firebase-ui-auth:6.2.1'
+    implementation 'com.firebaseui:firebase-ui-firestore:6.2.1'
+
+    // Api Google Play Service : Map
+    implementation 'com.google.android.gms:play-services-maps:17.0.0'
+
+
+    // Add Api Google Play Service : Location
+    implementation 'com.google.android.gms:play-services-location:17.0.0'
+
+    // google places lib for geolocation
+    implementation 'com.google.android.libraries.places:places:2.2.0'
+
+    // FACEBOOK LOGIN SUPPORT
+    implementation 'com.facebook.android:facebook-android-sdk:4.42.0'
+
+    // TWITTER LOGIN SUPPORT
+    //implementation 'com.twitter.sdk.android:twitter-core:3.0'
+
+
+}

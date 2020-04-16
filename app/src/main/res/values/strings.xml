@@ -1,0 +1,17 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="app_name">Go4Lunch</string>
+
+
+    <!-- FACEBOOK PURPOSE -->
+    <string name="facebook_application_id" translatable="false">1072908349752058</string>
+    <string name="facebook_login_protocol_scheme" translatable="false" tools:ignore="UnusedResources">fb1072908349752058</string>
+
+    <string name="error_unknown_error">"Une erreur inconnue s'est produite…"</string>
+    <string name="navigation_drawer_open">drawer open</string>
+    <string name="navigation_drawer_close">drawer close</string>
+    <string name="connection_succeed">Connexion réussie</string>
+    <string name="error_no_internet">Problème de connexion à internet</string>
+    <string name="Cancel">Annuler</string>
+    <string name="gps_network_not_enabled">La localisation n\'est pas activée</string>
+    <string name="open_location_settings">Autoriser le partage de localisation</string>
+</resources>
