@@ -2,6 +2,7 @@ package com.sophieopenclass.go4lunch;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -12,7 +13,6 @@ import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
 import com.sophieopenclass.go4lunch.api.UserHelper;
 import com.sophieopenclass.go4lunch.databinding.ActivityLoginBinding;
-
 import java.util.Arrays;
 
 
@@ -20,7 +20,7 @@ public class LoginPageActivity extends BaseActivity {
     private static final int RC_SIGN_IN = 124;
 
     @Override
-    public View getFragmentLayout() {
+    public View getFragmentLayout(){
         return ActivityLoginBinding.inflate(getLayoutInflater()).getRoot();
     }
 
@@ -29,11 +29,15 @@ public class LoginPageActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
 
         if (isCurrentUserLogged()) {
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
-           finish();
+            startMainActivity();
         } else
             startSignInActivity();
+    }
+
+    private void startMainActivity() {
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+        finish();
     }
 
     public void startSignInActivity() {
@@ -42,18 +46,19 @@ public class LoginPageActivity extends BaseActivity {
                 .setTheme(R.style.LoginTheme)
                 .setAvailableProviders(
                         Arrays.asList(new AuthUI.IdpConfig.GoogleBuilder().build(), //GOOGLE
-                                new AuthUI.IdpConfig.FacebookBuilder().build())) // FACEBOOK
+                               new AuthUI.IdpConfig.FacebookBuilder().build(),
+                        new AuthUI.IdpConfig.EmailBuilder().build())) // FACEBOOK
                 .setIsSmartLockEnabled(false, true)
-                .setLogo(R.drawable.ic_logo_auth)
+                //.setLogo(R.drawable.ic_logo_auth)
                 .build(), RC_SIGN_IN);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-         if (requestCode == RC_SIGN_IN) {
+        if (requestCode == RC_SIGN_IN) {
             if (resultCode == RESULT_OK)
-            handleResponseAfterSignIn(requestCode, resultCode, data);
+                handleResponseAfterSignIn(requestCode, resultCode, data);
         }
     }
 
@@ -62,12 +67,10 @@ public class LoginPageActivity extends BaseActivity {
 
         if (requestCode == RC_SIGN_IN) {
             if (resultCode == RESULT_OK) { // SUCCESS
-                this.createUserInFirestore();
-                Intent intent = new Intent(this, MainActivity.class);
-                startActivity(intent);
-                finish();
-                Toast.makeText(this, getString(R.string.connection_succeed), Toast.LENGTH_SHORT).show();
+                createUserInFirestore();
+                startMainActivity();
             } else { // ERRORS
+                startSignInActivity();
                 if (response != null && response.getError() != null)
                     if (response.getError().getErrorCode() == ErrorCodes.NO_NETWORK) {
                         Toast.makeText(this, getString(R.string.error_no_internet), Toast.LENGTH_SHORT).show();

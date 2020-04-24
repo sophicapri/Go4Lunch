@@ -14,8 +14,10 @@ import androidx.core.view.GravityCompat;
 import androidx.fragment.app.Fragment;
 
 import com.firebase.ui.auth.AuthUI;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.model.RectangularBounds;
 import com.google.android.libraries.places.api.model.TypeFilter;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.Autocomplete;
@@ -29,7 +31,9 @@ import java.util.Arrays;
 public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
     private ActivityMainBinding binding;
     private final int AUTOCOMPLETE_REQUEST_CODE = 123;
-    public static PlacesClient placesClient;
+    public PlacesClient placesClient;
+    private int pageNbr = 0;
+    private Place place;
 
     private Fragment fragmentMapView;
     private Fragment fragmentListView;
@@ -48,7 +52,9 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // check if really necessary :
         setContentView(bindViews().getRoot());
+        //
         configureToolbar();
         configureDrawerLayout();
         configureNavigationView();
@@ -67,13 +73,13 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         setSupportActionBar(binding.myToolbar);
     }
 
+    // TODO: à quoi sert d'instancier placesClient s'il n'est pas utilisé ?
+    private void initPlacesApi() {
+        // Initialize the SDK
+        Places.initialize(getApplicationContext(), BuildConfig.API_KEY);
 
-    @Override
-    public void onBackPressed() {
-        if (getSupportFragmentManager().getBackStackEntryCount() > 1)
-            getSupportFragmentManager().popBackStack();
-        super.onBackPressed();
-        binding.bottomNavView.setSelectedItemId(R.id.map_view);
+        // Create a new Places client instance
+        placesClient = Places.createClient(this);
     }
 
     private void configureDrawerLayout() {
@@ -99,14 +105,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                 showFragment(ACTIVITY_SETTINGS);
                 break;
             case R.id.sign_out:
-                AuthUI.getInstance().signOut(this);
-                try {
-                    Thread.sleep(5000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                startNewActivity(LoginPageActivity.class);
-                finish();
+                signOut();
                 break;
             case R.id.map_view:
                 showFragment(FRAGMENT_MAP_VIEW);
@@ -122,6 +121,30 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         }
         binding.drawerLayout.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void signOut() {
+        AuthUI.getInstance().signOut(this).addOnSuccessListener(aVoid -> {
+            startNewActivity(LoginPageActivity.class);
+            finish();
+        });
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (binding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            binding.drawerLayout.closeDrawer(GravityCompat.START);
+            return;
+        }
+
+        if (pageNbr == 2){
+            showFragment(FRAGMENT_LIST_VIEW);
+            binding.bottomNavView.setSelectedItemId(R.id.list_view);
+        } else if (pageNbr == 1){
+            showFragment(FRAGMENT_MAP_VIEW);
+            binding.bottomNavView.setSelectedItemId(R.id.map_view);
+        } else
+            super.onBackPressed();
     }
 
     private void showFragment(int fragmentIdentifier) {
@@ -146,43 +169,38 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
     private void startNewActivity(Class activity) {
         Intent intent = new Intent(this, activity);
+
+        if (activity.equals(RestaurantDetails.class)){
+            Bundle bundle = new Bundle();
+            //
+        }
+
         startActivity(intent);
     }
 
+    private void showMapViewFragment() {
+        pageNbr = 0;
+        if (this.fragmentMapView == null) this.fragmentMapView = MapViewFragment.newInstance();
+        startTransactionFragment(fragmentMapView);
+    }
+
+    private void showListViewFragment() {
+        pageNbr = 1;
+        if (this.fragmentListView == null) this.fragmentListView = ListViewFragment.newInstance();
+        startTransactionFragment(fragmentListView);
+    }
+
     private void showWorkmatesListFragment() {
+        pageNbr = 2;
         if (this.fragmentWorkmatesList == null)
             this.fragmentWorkmatesList = WorkmatesListFragment.newInstance();
         startTransactionFragment(fragmentWorkmatesList);
     }
 
-    private void showListViewFragment() {
-        if (this.fragmentListView == null) this.fragmentListView = ListViewFragment.newInstance();
-        startTransactionFragment(fragmentListView);
-    }
-
-    private void showMapViewFragment() {
-        if (this.fragmentMapView == null) this.fragmentMapView = MapViewFragment.newInstance();
-        startTransactionFragment(fragmentMapView);
-    }
-
     private void startTransactionFragment(Fragment fragment) {
-        if (!(fragment instanceof MapViewFragment))
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.navigation_frame_layout, fragment).addToBackStack(null).commit();
-        else {
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.frame_layout, fragment).commit();
-        }
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.frame_layout, fragment).commit();
     }
-
-    private void initPlacesApi() {
-        // Initialize the SDK
-        Places.initialize(getApplicationContext(), BuildConfig.API_KEY);
-
-        // Create a new Places client instance
-        placesClient = Places.createClient(this);
-    }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -193,15 +211,22 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.search_bar_menu)
+        if (item.getItemId() == R.id.search_bar_menu &&
+                (fragmentWorkmatesList == null || !fragmentWorkmatesList.isVisible()))
             startAutocompleteActivity();
         return true;
     }
 
     private void startAutocompleteActivity() {
+        LatLng northEast = new LatLng(MapViewFragment.currentLocation.getLatitude() - (0.05),
+                MapViewFragment.currentLocation.getLongitude() - (0.05));
+        LatLng southWest = new LatLng(MapViewFragment.currentLocation.getLatitude() + (0.05),
+        MapViewFragment.currentLocation.getLongitude() + (0.05));;
+
         Intent intent = new Autocomplete.IntentBuilder(
                 AutocompleteActivityMode.OVERLAY, Arrays.asList(Place.Field.ID,
                 Place.Field.NAME)).setTypeFilter(TypeFilter.ESTABLISHMENT)
+                .setLocationBias(RectangularBounds.newInstance(northEast, southWest))
                 .build(this);
         startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE);
     }
@@ -211,7 +236,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
-                Place place = Autocomplete.getPlaceFromIntent(data);
+                place = Autocomplete.getPlaceFromIntent(data);
+                // startRestaurantDetailsActivity();
                 Log.i("TAG", "onActivityResult: " + place.getName() + ", " + place.getId());
             } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
                 // handle error
@@ -222,4 +248,11 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             }
         }
     }
+
+    private void startRestaurantDetailsActivity(){
+    Intent intent = new Intent(this, RestaurantDetails.class);
+
+    }
+
+
 }

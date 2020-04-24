@@ -3,6 +3,7 @@
     package="com.sophieopenclass.go4lunch">
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
     android:allowBackup="true"
@@ -13,7 +14,7 @@
         android:theme="@style/AppTheme"
         android:fullBackupContent="true">
 
-        <meta-data android:name="com.google.android.geo.API_KEY" android:value="API_KEY"/>
+        <meta-data android:name="com.google.android.geo.API_KEY" android:value="@string/API_KEY"/>
 
         <activity android:name="com.sophieopenclass.go4lunch.LoginPageActivity">
             <intent-filter>
@@ -26,6 +27,7 @@
         <activity android:name=".MyLunchActivity" />
         <activity android:name=".SettingsActivity" />
         <activity android:name=".MainActivity" />
+        <activity android:name=".RestaurantDetails" />
     </application>
 
 </manifest>

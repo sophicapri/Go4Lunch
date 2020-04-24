@@ -14,4 +14,7 @@
     <string name="Cancel">Annuler</string>
     <string name="gps_network_not_enabled">La localisation n\'est pas activée</string>
     <string name="open_location_settings">Autoriser le partage de localisation</string>
+    <string name="loading">Chargement…</string>
+    <string name="connecting">Connexion…</string>
+    <string name="signing_out">Déconnexion…</string>
 </resources>

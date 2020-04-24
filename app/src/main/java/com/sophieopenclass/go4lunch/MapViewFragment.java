@@ -20,7 +20,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -30,16 +29,9 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.Task;
-import com.google.android.libraries.places.api.model.Place;
-import com.google.android.libraries.places.api.net.FindCurrentPlaceRequest;
-import com.google.android.libraries.places.api.net.FindCurrentPlaceResponse;
 import com.sophieopenclass.go4lunch.databinding.FragmentMapBinding;
 
-import java.util.Collections;
-import java.util.List;
-
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
-import static com.sophieopenclass.go4lunch.MainActivity.placesClient;
 
 public class MapViewFragment extends Fragment implements OnMapReadyCallback {
 
@@ -48,7 +40,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
     private SupportMapFragment mapFragment;
     private FusedLocationProviderClient fusedLocationProviderClient;
     private LocationManager locationManager;
-    private Location currentLocation;
+    public static Location currentLocation;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 123;
     private static final float DEFAULT_ZOOM = 15f;
     private Context context;
@@ -71,49 +63,11 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
             fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getActivity());
             locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         }
-        //fetchLastLocation();
-
-        getCurrentLocation();
-
-        binding.fab.setOnClickListener(v -> getCurrentLocation());
+        fetchLastLocation();
+        binding.fab.setOnClickListener(v -> fetchLastLocation());
 
         return binding.getRoot();
     }
-
-    private void getCurrentLocation() {
-        askPermission();
-        initMap();
-
-        // Use fields to define the data types to return.
-        List<Place.Field> placeFields = Collections.singletonList(Place.Field.LAT_LNG);
-
-        // Use the builder to create a FindCurrentPlaceRequest.
-        FindCurrentPlaceRequest request = FindCurrentPlaceRequest.newInstance(placeFields);
-
-        // Call findCurrentPlace and handle the response (first check that the user has granted permission).
-        if (ContextCompat.checkSelfPermission(context, ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            Task<FindCurrentPlaceResponse> placeResponse = placesClient.findCurrentPlace(request);
-            placeResponse.addOnCompleteListener(task -> {
-                if (task.isSuccessful()) {
-                    FindCurrentPlaceResponse response = task.getResult();
-                    if (response != null) {
-                        moveCamera(response.getPlaceLikelihoods().get(0).getPlace().getLatLng());
-                    }
-                } else {
-                    Exception exception = task.getException();
-                    if (exception instanceof ApiException) {
-                        ApiException apiException = (ApiException) exception;
-                        Log.e(TAG, "Place not found: " + apiException.getStatusCode());
-                    }
-                }
-            });
-        } else {
-            // A local method to request required permissions;
-            // See https://developer.android.com/training/permissions/requesting
-            askPermission();
-        }
-    }
-
 
     private void fetchLastLocation() {
         askPermission();
@@ -149,7 +103,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                getCurrentLocation();
+                fetchLastLocation();
             } else {
                 Toast.makeText(getActivity(), "Chargement de la carte des restaurants alentours impossible," +
                         "activer le partage de localisation?", Toast.LENGTH_LONG).show();
@@ -159,7 +113,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
     }
 
     private void moveCamera(LatLng latLng) {
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, MapViewFragment.DEFAULT_ZOOM));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, MapViewFragment.DEFAULT_ZOOM));
         mMap.addMarker(new MarkerOptions().position(latLng).title("I'm here"));
     }
 

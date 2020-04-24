@@ -1,21 +1,21 @@
 {
   "project_info": {
-    "project_number": "559049696049",
-    "firebase_url": "https://go4lunch-1e897.firebaseio.com",
-    "project_id": "go4lunch-1e897",
-    "storage_bucket": "go4lunch-1e897.appspot.com"
+    "project_number": "498379279688",
+    "firebase_url": "https://go4lunch-d72fb.firebaseio.com",
+    "project_id": "go4lunch-d72fb",
+    "storage_bucket": "go4lunch-d72fb.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:559049696049:android:a620bd0d22d6cd3c55c610",
+        "mobilesdk_app_id": "1:498379279688:android:0c2c5ece42346547dd777d",
         "android_client_info": {
           "package_name": "com.sophieopenclass.go4lunch"
         }
       },
       "oauth_client": [
         {
-          "client_id": "559049696049-b8s3l7au5alb8ksjerg13q0amtmpf8bm.apps.googleusercontent.com",
+          "client_id": "498379279688-h1neimgfq1npgi5jvnr61c3rsev5qcbf.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.sophieopenclass.go4lunch",
@@ -23,7 +23,7 @@
           }
         },
         {
-          "client_id": "559049696049-22r1e2iffi09ai20f3ituttei4h7roj1.apps.googleusercontent.com",
+          "client_id": "498379279688-vcmn9b5nt8s6ptrfo9hci5t43o2vosp4.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
@@ -36,7 +36,7 @@
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "559049696049-22r1e2iffi09ai20f3ituttei4h7roj1.apps.googleusercontent.com",
+              "client_id": "498379279688-vcmn9b5nt8s6ptrfo9hci5t43o2vosp4.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

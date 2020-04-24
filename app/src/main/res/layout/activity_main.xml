@@ -32,11 +32,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/my_toolbar" />
 
-        <FrameLayout
-            android:id="@+id/navigation_frame_layout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottom_nav_view"
             android:layout_width="match_parent"

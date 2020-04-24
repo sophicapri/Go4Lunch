@@ -10,7 +10,7 @@ public class User {
 
     public User() { }
 
-    public User(String uid, String username, String urlPicture) {
+    public User(String uid, String username, @Nullable String urlPicture) {
         this.uid = uid;
         this.username = username;
         this.urlPicture = urlPicture;
@@ -25,5 +25,5 @@ public class User {
     // --- SETTERS ---
     public void setUsername(String username) { this.username = username; }
     public void setUid(String uid) { this.uid = uid; }
-    public void setUrlPicture(String urlPicture) { this.urlPicture = urlPicture; }
+    public void setUrlPicture(@Nullable String urlPicture) { this.urlPicture = urlPicture; }
 }
