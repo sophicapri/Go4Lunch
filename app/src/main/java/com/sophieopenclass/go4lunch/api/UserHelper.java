@@ -7,6 +7,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.sophieopenclass.go4lunch.models.User;
 
+//TODO : delete this class
 public class UserHelper {
     private static final String COLLECTION_NAME = "users";
 

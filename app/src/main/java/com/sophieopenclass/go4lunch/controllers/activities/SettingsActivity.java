@@ -1,4 +1,4 @@
-package com.sophieopenclass.go4lunch;
+package com.sophieopenclass.go4lunch.controllers.activities;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -6,6 +6,7 @@ import android.view.View;
 
 import androidx.annotation.Nullable;
 
+import com.sophieopenclass.go4lunch.base.BaseActivity;
 import com.sophieopenclass.go4lunch.databinding.ActivitySettingsBinding;
 
 public class SettingsActivity extends BaseActivity {

@@ -15,7 +15,7 @@ public class Restaurants {
     private String nextPageToken;
     @SerializedName("results")
     @Expose
-    private List<Result> results = null;
+    private List<PlaceDetails> placeDetails = null;
     @SerializedName("status")
     @Expose
     private String status;
@@ -36,12 +36,12 @@ public class Restaurants {
         this.nextPageToken = nextPageToken;
     }
 
-    public List<Result> getResults() {
-        return results;
+    public List<PlaceDetails> getPlaceDetails() {
+        return placeDetails;
     }
 
-    public void setResults(List<Result> results) {
-        this.results = results;
+    public void setPlaceDetails(List<PlaceDetails> placeDetails) {
+        this.placeDetails = placeDetails;
     }
 
     public String getStatus() {

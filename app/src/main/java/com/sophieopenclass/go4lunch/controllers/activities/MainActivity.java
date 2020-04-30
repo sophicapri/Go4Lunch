@@ -1,4 +1,4 @@
-package com.sophieopenclass.go4lunch;
+package com.sophieopenclass.go4lunch.controllers.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -6,6 +6,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -13,6 +15,8 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.core.view.GravityCompat;
 import androidx.fragment.app.Fragment;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.libraries.places.api.Places;
@@ -24,7 +28,14 @@ import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 import com.google.android.material.navigation.NavigationView;
+import com.sophieopenclass.go4lunch.base.BaseActivity;
+import com.sophieopenclass.go4lunch.BuildConfig;
+import com.sophieopenclass.go4lunch.R;
+import com.sophieopenclass.go4lunch.controllers.fragments.ListViewFragment;
+import com.sophieopenclass.go4lunch.controllers.fragments.MapViewFragment;
+import com.sophieopenclass.go4lunch.controllers.fragments.WorkmatesListFragment;
 import com.sophieopenclass.go4lunch.databinding.ActivityMainBinding;
+import com.sophieopenclass.go4lunch.databinding.NavHeaderBinding;
 
 import java.util.Arrays;
 
@@ -32,8 +43,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     private ActivityMainBinding binding;
     private final int AUTOCOMPLETE_REQUEST_CODE = 123;
     public PlacesClient placesClient;
-    private int pageNbr = 0;
-    private Place place;
 
     private Fragment fragmentMapView;
     private Fragment fragmentListView;
@@ -52,16 +61,32 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // check if really necessary :
-        setContentView(bindViews().getRoot());
-        //
         configureToolbar();
         configureDrawerLayout();
         configureNavigationView();
         initPlacesApi();
-
+        handleDrawerUI();
         showFragment(FRAGMENT_MAP_VIEW);
         binding.bottomNavView.setOnNavigationItemSelectedListener(this::onNavigationItemSelected);
+    }
+
+    private void handleDrawerUI() {
+        View drawerView = binding.navigationView.getHeaderView(0);
+        ImageView profilePic = drawerView.findViewById(R.id.profile_pic);
+        TextView username = drawerView.findViewById(R.id.profile_username);
+        TextView email = drawerView.findViewById(R.id.profile_email);
+
+        if(getCurrentUser() != null) {
+            if (getCurrentUser().getPhotoUrl() != null){
+                Glide.with(profilePic.getContext())
+                        .load(getCurrentUser().getPhotoUrl())
+                        .apply(RequestOptions.circleCropTransform())
+                        .into(profilePic);
+            }
+
+            username.setText(getCurrentUser().getDisplayName());
+            email.setText(getCurrentUser().getEmail());
+        }
     }
 
     private ActivityMainBinding bindViews() {
@@ -137,13 +162,9 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             return;
         }
 
-        if (pageNbr == 2){
-            showFragment(FRAGMENT_LIST_VIEW);
-            binding.bottomNavView.setSelectedItemId(R.id.list_view);
-        } else if (pageNbr == 1){
-            showFragment(FRAGMENT_MAP_VIEW);
+        if (!fragmentMapView.isVisible())
             binding.bottomNavView.setSelectedItemId(R.id.map_view);
-        } else
+        else
             super.onBackPressed();
     }
 
@@ -156,6 +177,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                 startNewActivity(SettingsActivity.class);
                 break;
             case FRAGMENT_MAP_VIEW:
+                //TODO: pourquoi l'affichage de la map est lent ?
                 showMapViewFragment();
                 break;
             case FRAGMENT_LIST_VIEW:
@@ -169,29 +191,20 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
     private void startNewActivity(Class activity) {
         Intent intent = new Intent(this, activity);
-
-        if (activity.equals(RestaurantDetails.class)){
-            Bundle bundle = new Bundle();
-            //
-        }
-
         startActivity(intent);
     }
 
     private void showMapViewFragment() {
-        pageNbr = 0;
         if (this.fragmentMapView == null) this.fragmentMapView = MapViewFragment.newInstance();
         startTransactionFragment(fragmentMapView);
     }
 
     private void showListViewFragment() {
-        pageNbr = 1;
         if (this.fragmentListView == null) this.fragmentListView = ListViewFragment.newInstance();
         startTransactionFragment(fragmentListView);
     }
 
     private void showWorkmatesListFragment() {
-        pageNbr = 2;
         if (this.fragmentWorkmatesList == null)
             this.fragmentWorkmatesList = WorkmatesListFragment.newInstance();
         startTransactionFragment(fragmentWorkmatesList);
@@ -236,7 +249,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
-                place = Autocomplete.getPlaceFromIntent(data);
+                Place place = Autocomplete.getPlaceFromIntent(data);
                 // startRestaurantDetailsActivity();
                 Log.i("TAG", "onActivityResult: " + place.getName() + ", " + place.getId());
             } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
@@ -250,7 +263,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     }
 
     private void startRestaurantDetailsActivity(){
-    Intent intent = new Intent(this, RestaurantDetails.class);
+    Intent intent = new Intent(this, RestaurantDetailsActivity.class);
 
     }
 
