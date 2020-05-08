@@ -1,5 +1,5 @@
 
-package com.sophieopenclass.go4lunch.models.POJO;
+package com.sophieopenclass.go4lunch.models.json_to_java;
 
 import java.util.List;
 import com.google.gson.annotations.Expose;

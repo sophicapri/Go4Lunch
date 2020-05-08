@@ -1,19 +1,132 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/quantum_lightblue">
-
+    xmlns:tools="http://schemas.android.com/tools">
 
     <TextView
-        android:layout_width="match_parent"
+        android:id="@+id/restaurant_name"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="5dp"
         android:gravity="center"
-        android:text="LIST VIEW"
         android:textColor="@color/quantum_bluegrey950"
-        android:textSize="40sp"
+        android:textSize="14sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="@sample/tasks.json/data_restaurants/restaurantName" />
+
+    <TextView
+        android:id="@+id/type_of_restaurant"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="5dp"
+        android:textColor="@color/quantum_grey700"
+        app:layout_constraintStart_toStartOf="@+id/restaurant_name"
+        app:layout_constraintTop_toBottomOf="@+id/restaurant_name"
+        tools:text="@sample/tasks.json/data_restaurants/typeOfRestaurant" />
+
+    <TextView
+        android:id="@+id/restaurant_address"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:layout_marginEnd="5dp"
+        android:textColor="@color/quantum_grey700"
+        app:layout_constraintEnd_toStartOf="@+id/personLogo"
+        android:maxLines="1"
+        app:layout_constraintStart_toEndOf="@+id/type_of_restaurant"
+        app:layout_constraintTop_toTopOf="@+id/type_of_restaurant"
+        tools:text="@sample/tasks.json/data_restaurants/address" />
+
+    <TextView
+        android:id="@+id/opening_hours"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:textStyle="italic"
+        android:layout_marginBottom="10dp"
+        android:textColor="@color/quantum_grey700"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toStartOf="@+id/type_of_restaurant"
+        app:layout_constraintTop_toBottomOf="@+id/restaurant_address"
+        tools:text="@sample/tasks.json/data_restaurants/openingHours" />
+
+    <ImageView
+        android:id="@+id/restaurant_photo"
+        android:layout_width="70dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="5dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/restaurant_name"
+        app:layout_constraintBottom_toBottomOf="@+id/opening_hours"/>
+
+    <TextView
+        android:id="@+id/restaurant_distance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="10dp"
+        android:textColor="@color/places_ui_default_primary_dark"
+        tools:text="@sample/tasks.json/data_restaurants/distance"
+        app:layout_constraintEnd_toStartOf="@+id/restaurant_photo"
+        app:layout_constraintTop_toTopOf="@+id/restaurant_name"/>
+
+    <TextView
+        android:id="@+id/nbr_of_workmates"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="5dp"
+        app:layout_constraintVertical_bias="0.5"
+        app:layout_constraintBottom_toBottomOf="@+id/restaurant_photo"
+        app:layout_constraintEnd_toStartOf="@+id/restaurant_photo"
+        app:layout_constraintTop_toTopOf="@+id/restaurant_photo"
+        tools:text="@sample/tasks.json/data_restaurants/nbrOfWorkmates" />
+
+
+
+    <ImageView
+        android:id="@+id/personLogo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintVertical_bias="0.8"
+        android:src="@drawable/ic_person_outline_black_24dp"
+        app:layout_constraintBottom_toBottomOf="@+id/nbr_of_workmates"
+        app:layout_constraintEnd_toStartOf="@+id/nbr_of_workmates"
+        app:layout_constraintTop_toTopOf="@+id/nbr_of_workmates"
+        android:contentDescription="person logo" />
+
+    <ImageView
+        android:id="@+id/one_star"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="2dp"
+        android:contentDescription="one star"
+        android:src="@drawable/ic_star_yellow_24dp"
+        app:layout_constraintEnd_toStartOf="@+id/restaurant_photo"
+        app:layout_constraintTop_toBottomOf="@+id/nbr_of_workmates" />
+
+    <ImageView
+        android:id="@+id/two_stars"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_star_yellow_24dp"
+        android:layout_marginTop="5dp"
+        app:layout_constraintEnd_toStartOf="@+id/one_star"
+        app:layout_constraintTop_toBottomOf="@+id/nbr_of_workmates"
+        android:contentDescription="two star" />
+
+    <ImageView
+        android:id="@+id/three_stars"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_star_yellow_24dp"
+        android:layout_marginTop="5dp"
+        app:layout_constraintEnd_toStartOf="@+id/detail_two_stars"
+        app:layout_constraintTop_toBottomOf="@+id/nbr_of_workmates"
+        android:contentDescription="three star" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

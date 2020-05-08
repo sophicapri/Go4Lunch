@@ -1,7 +1,7 @@
 package com.sophieopenclass.go4lunch.api;
 import com.sophieopenclass.go4lunch.BuildConfig;
-import com.sophieopenclass.go4lunch.models.POJO.PlaceDetails;
-import com.sophieopenclass.go4lunch.models.POJO.Restaurants;
+import com.sophieopenclass.go4lunch.models.json_to_java.RestaurantsResult;
+import com.sophieopenclass.go4lunch.models.json_to_java.PlaceDetailsResult;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -12,10 +12,13 @@ public interface PlaceApi {
 
 
     @GET("nearbysearch/json?&type=restaurant&key=" + apiKey)
-    Call<Restaurants> getNearbyPlaces(@Query("location") String location,
-                                      @Query("radius") int radius);
+    Call<RestaurantsResult> getNearbyPlaces(@Query("location") String location,
+                                            @Query("radius") int radius);
 
     @GET("details/json?&key=" + apiKey)
-    Call<PlaceDetails> getPlaceDetails(@Query("place_id") String placeId);
+    Call<PlaceDetailsResult> getPlaceDetails(@Query("place_id") String placeId);
+
+    @GET("photo?maxwidth=400&key=" + apiKey)
+    Call<PlaceDetailsResult> getRestaurantPhoto(@Query("photoreference") String photoReference);
 }
 

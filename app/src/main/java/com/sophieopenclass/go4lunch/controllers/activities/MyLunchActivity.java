@@ -6,10 +6,11 @@ import android.view.View;
 
 import androidx.annotation.Nullable;
 
+import com.sophieopenclass.go4lunch.MyViewModel;
 import com.sophieopenclass.go4lunch.base.BaseActivity;
 import com.sophieopenclass.go4lunch.databinding.ActivityMyLunchBinding;
 
-public class MyLunchActivity extends BaseActivity {
+public class MyLunchActivity extends BaseActivity <MyViewModel> {
 
     public static Activity newInstance() {
         return new MyLunchActivity();
@@ -19,6 +20,11 @@ public class MyLunchActivity extends BaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //setContentView(ActivityMyLunchBinding.inflate(getLayoutInflater()).getRoot());
+    }
+
+    @Override
+    public Class getViewModelClass() {
+        return MyViewModel.class;
     }
 
     @Override

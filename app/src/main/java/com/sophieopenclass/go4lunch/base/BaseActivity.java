@@ -6,6 +6,7 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -16,9 +17,8 @@ import com.sophieopenclass.go4lunch.R;
 import com.sophieopenclass.go4lunch.utils.ViewModelFactory;
 import com.sophieopenclass.go4lunch.injection.Injection;
 
-public abstract class BaseActivity extends AppCompatActivity {
-    public MyViewModel viewModel;
-    private static final String USER_COLLECTION_NAME = "users";
+public abstract class BaseActivity <T extends ViewModel> extends AppCompatActivity {
+    public T viewModel;
 
 
     @Override
@@ -30,10 +30,11 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     protected void configureViewModel() {
-        ViewModelFactory viewModelFactory = Injection.provideViewModelFactory(USER_COLLECTION_NAME);
-        viewModel = new ViewModelProvider(this, viewModelFactory).get(MyViewModel.class);
-        Injection.setViewModel(viewModel);
+        ViewModelFactory viewModelFactory = Injection.provideViewModelFactory();
+        viewModel = (T) new ViewModelProvider(this, viewModelFactory).get(getViewModelClass());
     }
+
+    public abstract Class getViewModelClass();
 
     protected abstract View getFragmentLayout();
 
@@ -56,6 +57,10 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     protected Boolean isCurrentUserLogged() {
         return (this.getCurrentUser() != null);
+    }
+
+    public T getViewModel() {
+        return viewModel;
     }
 }
 

@@ -37,15 +37,18 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.Task;
+import com.sophieopenclass.go4lunch.BuildConfig;
 import com.sophieopenclass.go4lunch.MyViewModel;
 import com.sophieopenclass.go4lunch.R;
+import com.sophieopenclass.go4lunch.base.BaseActivity;
 import com.sophieopenclass.go4lunch.controllers.activities.RestaurantDetailsActivity;
 import com.sophieopenclass.go4lunch.databinding.FragmentMapBinding;
-import com.sophieopenclass.go4lunch.injection.Injection;
-import com.sophieopenclass.go4lunch.models.POJO.PlaceDetails;
-import com.sophieopenclass.go4lunch.models.POJO.Restaurants;
+import com.sophieopenclass.go4lunch.models.json_to_java.RestaurantsResult;
+import com.sophieopenclass.go4lunch.models.json_to_java.PlaceDetails;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+import static com.sophieopenclass.go4lunch.api.PlaceService.API_URL;
+import static com.sophieopenclass.go4lunch.api.PlaceService.PHOTO_URL;
 
 public class MapViewFragment extends Fragment implements OnMapReadyCallback {
 
@@ -72,17 +75,14 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        FragmentMapBinding binding = FragmentMapBinding.inflate(getLayoutInflater());
+        FragmentMapBinding binding = FragmentMapBinding.inflate(inflater, container, false);
 
         if (getActivity() != null) {
             context = getActivity();
-            fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getActivity());
+            viewModel = (MyViewModel) ((BaseActivity)getActivity()).getViewModel();
             locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         }
 
-        viewModel = Injection.getViewModel();
-
-        //TODO : voir si la map est toujours recentrée en appelant fetchLastLocation() dans onCreate();
         if (ActivityCompat.checkSelfPermission(context, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
             requestPermission();
         else
@@ -95,6 +95,8 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
     private void fetchLastLocation() {
         if (!locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER))
             requestLocationActivation();
+
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context);
 
         initMap();
         Task<Location> task = fusedLocationProviderClient.getLastLocation();
@@ -159,6 +161,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
 
     // TODO : ne récupère que 20 restaurants à la fois
     private void executeHttpRequestWithRetrofit() {
+        System.out.println(currentLocation);
         viewModel.getNearbyPlaces(getLatLngString(currentLocation), getRadius())
                 .observe(getViewLifecycleOwner(), this::initMarkers);
     }
@@ -171,7 +174,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
         return ((int) DEFAULT_ZOOM * 50);
     }
 
-    private void initMarkers(Restaurants restaurants) {
+    private void initMarkers(RestaurantsResult restaurants) {
         for (PlaceDetails placeDetails : restaurants.getPlaceDetails()) {
             mMap.addMarker(new MarkerOptions().title(placeDetails.getName()).position(
                     new LatLng(placeDetails.getGeometry().getLocation().getLat(), placeDetails.getGeometry().getLocation().getLng()))
@@ -182,17 +185,10 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
             if (marker.getTag() != "my_position" && marker.getTag() != null) {
                 Intent intent = new Intent(getActivity(), RestaurantDetailsActivity.class);
                 intent.putExtra("placeId", marker.getTag().toString());
-
-                viewModel.getPlaceDetails(marker.getTag().toString()).observe(this, this::result);
                 startActivity(intent);
             }
         });
     }
-
-    private void result(PlaceDetails placeDetails) {
-        System.out.println("FIRST "+placeDetails.getName());
-    }
-
 
     private BitmapDescriptor vectorToBitmap(@DrawableRes int id, @ColorInt int color) {
         Drawable vectorDrawable = ResourcesCompat.getDrawable(getResources(), id, null);

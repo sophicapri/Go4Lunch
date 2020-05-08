@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.recyclerview.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/recycler_view_workmates"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:listitem="@layout/fragment_workmates_list"
+    tools:itemCount="5" >
+
+</androidx.recyclerview.widget.RecyclerView>

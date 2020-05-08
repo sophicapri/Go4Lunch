@@ -1,0 +1,80 @@
+{
+  "data_workmates": [
+    {
+      "workmatesChoice": "Scarlett is eating French (Le Zinc)"
+    },
+    {
+      "workmatesChoice": "Hugh is eating French (Le Zinc)"
+    },
+    {
+      "workmatesChoice": "Nana is eating Korean (Le Zinc)"
+    },
+    {
+      "workmatesChoice": "Godfrey is eating Korean (Le Seoul)"
+    },
+    {
+      "workmatesChoice": "Henry hasn't decided yet"
+    }
+  ],
+
+  "data_restaurants": [
+    {
+      "restaurantName": "Le Zinc",
+      "typeOfRestaurant": "French - ",
+      "address": "12 rue du Faubourg Poissonniere",
+      "openingHours": "Open until 7pm",
+      "distance": "120m",
+      "nbrOfWorkmates" : "(2)"
+    },
+    {
+      "restaurantName": "Tokyomaki",
+      "typeOfRestaurant": "Japanese - ",
+      "address": "24 rue des Petites Ecoles",
+      "openingHours": "Open until 2:30pm",
+      "distance": "170m",
+      "nbrOfWorkmates" : "(3)"
+    },
+    {
+      "restaurantName": "Casa Nostra",
+      "typeOfRestaurant": "Italian - ",
+      "address": "42 rue de Sicile",
+      "openingHours": "Closing soon",
+      "distance": "210m",
+      "nbrOfWorkmates" : ""
+    },
+    {
+      "restaurantName": "Le Seoul",
+      "typeOfRestaurant": "Korean - ",
+      "address": "18 rue de Paradis",
+      "openingHours": "Open until 2:30pm",
+      "distance": "243m",
+      "nbrOfWorkmates" : "(2)"
+    },
+    {
+      "restaurantName": "Burgermania",
+      "typeOfRestaurant": "American - ",
+      "address": "31 rue de Floride",
+      "openingHours": "Open 24/7",
+      "distance": "290m",
+      "nbrOfWorkmates" : "(1)"
+    }
+  ],
+
+  "data_workmates_joining": [
+    {
+      "workmatesJoining": "Scarlett is joining!"
+    },
+    {
+      "workmatesJoining": "Hugh is joining!"
+    },
+    {
+      "workmatesJoining": "Nana is joining!"
+    },
+    {
+      "workmatesJoining": "Godfrey is joining!"
+    },
+    {
+      "workmatesJoining": "Henry joining!"
+    }
+  ]
+}

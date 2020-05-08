@@ -16,7 +16,7 @@
 
         <meta-data android:name="com.google.android.geo.API_KEY" android:value="@string/API_KEY"/>
 
-        <activity android:name="com.sophieopenclass.go4lunch.controllers.activities.LoginPageActivity">
+        <activity android:name="com.sophieopenclass.go4lunch.controllers.activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -26,8 +26,9 @@
         <activity android:name=".controllers.fragments.MapViewFragment" />
         <activity android:name=".controllers.activities.MyLunchActivity" />
         <activity android:name=".controllers.activities.SettingsActivity" />
-        <activity android:name=".controllers.activities.MainActivity" />
+        <activity android:name=".controllers.activities.LoginPageActivity" />
         <activity android:name=".controllers.activities.RestaurantDetailsActivity" />
+        <activity android:name=".controllers.activities.WorkmateDetailActivity" />
     </application>
 
 </manifest>

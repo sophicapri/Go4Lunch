@@ -28,6 +28,7 @@ import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 import com.google.android.material.navigation.NavigationView;
+import com.sophieopenclass.go4lunch.MyViewModel;
 import com.sophieopenclass.go4lunch.base.BaseActivity;
 import com.sophieopenclass.go4lunch.BuildConfig;
 import com.sophieopenclass.go4lunch.R;
@@ -39,11 +40,10 @@ import com.sophieopenclass.go4lunch.databinding.NavHeaderBinding;
 
 import java.util.Arrays;
 
-public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends BaseActivity <MyViewModel> implements NavigationView.OnNavigationItemSelectedListener {
     private ActivityMainBinding binding;
     private final int AUTOCOMPLETE_REQUEST_CODE = 123;
-    public PlacesClient placesClient;
-
+    private String placeId;
     private Fragment fragmentMapView;
     private Fragment fragmentListView;
     private Fragment fragmentWorkmatesList;
@@ -70,14 +70,19 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         binding.bottomNavView.setOnNavigationItemSelectedListener(this::onNavigationItemSelected);
     }
 
+    @Override
+    public Class getViewModelClass() {
+        return MyViewModel.class;
+    }
+
     private void handleDrawerUI() {
         View drawerView = binding.navigationView.getHeaderView(0);
         ImageView profilePic = drawerView.findViewById(R.id.profile_pic);
         TextView username = drawerView.findViewById(R.id.profile_username);
         TextView email = drawerView.findViewById(R.id.profile_email);
 
-        if(getCurrentUser() != null) {
-            if (getCurrentUser().getPhotoUrl() != null){
+        if (getCurrentUser() != null) {
+            if (getCurrentUser().getPhotoUrl() != null) {
                 Glide.with(profilePic.getContext())
                         .load(getCurrentUser().getPhotoUrl())
                         .apply(RequestOptions.circleCropTransform())
@@ -87,6 +92,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             username.setText(getCurrentUser().getDisplayName());
             email.setText(getCurrentUser().getEmail());
         }
+
+        binding.navigationView.setBackgroundResource(R.drawable.ic_drawer_logo);
     }
 
     private ActivityMainBinding bindViews() {
@@ -98,13 +105,13 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         setSupportActionBar(binding.myToolbar);
     }
 
-    // TODO: à quoi sert d'instancier placesClient s'il n'est pas utilisé ?
+    // TODO:
     private void initPlacesApi() {
         // Initialize the SDK
         Places.initialize(getApplicationContext(), BuildConfig.API_KEY);
 
         // Create a new Places client instance
-        placesClient = Places.createClient(this);
+        Places.createClient(this);
     }
 
     private void configureDrawerLayout() {
@@ -191,6 +198,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
     private void startNewActivity(Class activity) {
         Intent intent = new Intent(this, activity);
+        if (activity == RestaurantDetailsActivity.class)
+            intent.putExtra("placeId", placeId);
         startActivity(intent);
     }
 
@@ -234,7 +243,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         LatLng northEast = new LatLng(MapViewFragment.currentLocation.getLatitude() - (0.05),
                 MapViewFragment.currentLocation.getLongitude() - (0.05));
         LatLng southWest = new LatLng(MapViewFragment.currentLocation.getLatitude() + (0.05),
-        MapViewFragment.currentLocation.getLongitude() + (0.05));;
+                MapViewFragment.currentLocation.getLongitude() + (0.05));
+        ;
 
         Intent intent = new Autocomplete.IntentBuilder(
                 AutocompleteActivityMode.OVERLAY, Arrays.asList(Place.Field.ID,
@@ -250,8 +260,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 Place place = Autocomplete.getPlaceFromIntent(data);
-                // startRestaurantDetailsActivity();
-                Log.i("TAG", "onActivityResult: " + place.getName() + ", " + place.getId());
+                placeId = place.getId();
+                startNewActivity(RestaurantDetailsActivity.class);
             } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
                 // handle error
                 Log.i("TAG", "onActivityResult: error ");
@@ -261,11 +271,4 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             }
         }
     }
-
-    private void startRestaurantDetailsActivity(){
-    Intent intent = new Intent(this, RestaurantDetailsActivity.class);
-
-    }
-
-
 }

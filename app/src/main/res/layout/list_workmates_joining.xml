@@ -25,5 +25,6 @@
         app:layout_constraintBottom_toBottomOf="@+id/workmate_profile_pic"
         app:layout_constraintStart_toEndOf="@+id/workmate_profile_pic"
         app:layout_constraintTop_toTopOf="@+id/workmate_profile_pic"
-        tools:text="@sample/tasks.json/data_workmates/workmatesChoice"/>
+        tools:text="@sample/tasks.json/data_workmates_joining/workmatesJoining"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,21 +1,18 @@
 
-package com.sophieopenclass.go4lunch.models.POJO;
+package com.sophieopenclass.go4lunch.models.json_to_java;
 
 import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Restaurants {
+public class PlaceDetailsResult {
 
     @SerializedName("html_attributions")
     @Expose
     private List<Object> htmlAttributions = null;
-    @SerializedName("next_page_token")
+    @SerializedName("result")
     @Expose
-    private String nextPageToken;
-    @SerializedName("results")
-    @Expose
-    private List<PlaceDetails> placeDetails = null;
+    private PlaceDetails placeDetails;
     @SerializedName("status")
     @Expose
     private String status;
@@ -28,19 +25,11 @@ public class Restaurants {
         this.htmlAttributions = htmlAttributions;
     }
 
-    public String getNextPageToken() {
-        return nextPageToken;
-    }
-
-    public void setNextPageToken(String nextPageToken) {
-        this.nextPageToken = nextPageToken;
-    }
-
-    public List<PlaceDetails> getPlaceDetails() {
+    public PlaceDetails getPlaceDetails() {
         return placeDetails;
     }
 
-    public void setPlaceDetails(List<PlaceDetails> placeDetails) {
+    public void setPlaceDetails(PlaceDetails placeDetails) {
         this.placeDetails = placeDetails;
     }
 
@@ -51,5 +40,4 @@ public class Restaurants {
     public void setStatus(String status) {
         this.status = status;
     }
-
 }
