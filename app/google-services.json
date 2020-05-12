@@ -15,7 +15,7 @@
       },
       "oauth_client": [
         {
-          "client_id": "498379279688-h1neimgfq1npgi5jvnr61c3rsev5qcbf.apps.googleusercontent.com",
+          "client_id": "498379279688-n2a4r0ccbric3m5sqegsj0thegjnapc8.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.sophieopenclass.go4lunch",
@@ -29,7 +29,7 @@
       ],
       "api_key": [
         {
-          "current_key": "API_KEY"
+          "current_key": "AIzaSyBYbLghqg-i22o2D7du-GQDzsUqGn7QFxQ"
         }
       ],
       "services": {

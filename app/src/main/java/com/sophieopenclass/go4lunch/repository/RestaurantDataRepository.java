@@ -3,6 +3,7 @@ package com.sophieopenclass.go4lunch.repository;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
+import com.sophieopenclass.go4lunch.BuildConfig;
 import com.sophieopenclass.go4lunch.api.PlaceApi;
 import com.sophieopenclass.go4lunch.models.json_to_java.RestaurantsResult;
 import com.sophieopenclass.go4lunch.models.json_to_java.PlaceDetails;
@@ -12,6 +13,9 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.sophieopenclass.go4lunch.api.PlaceService.API_URL;
+import static com.sophieopenclass.go4lunch.api.PlaceService.PHOTO_URL;
+
 public class RestaurantDataRepository {
     private PlaceApi placeApi;
 
@@ -19,9 +23,9 @@ public class RestaurantDataRepository {
         this.placeApi = placeApi;
     }
 
-    public MutableLiveData<RestaurantsResult> getNearbyPlaces(String location, int radius){
+    public MutableLiveData<RestaurantsResult> getNearbyPlaces(String location){
         MutableLiveData<RestaurantsResult> restaurantsData = new MutableLiveData<>();
-        placeApi.getNearbyPlaces(location, radius).enqueue(new Callback<RestaurantsResult>() {
+        placeApi.getNearbyPlaces(location).enqueue(new Callback<RestaurantsResult>() {
             @Override
             public void onResponse(@NonNull Call<RestaurantsResult> call,
                                    @NonNull Response<RestaurantsResult> response) {
@@ -57,5 +61,25 @@ public class RestaurantDataRepository {
             }
         });
         return placeDetails;
+    }
+
+
+    public MutableLiveData<RestaurantsResult> getMoreNearbyPlaces(String nextPageToken){
+        MutableLiveData<RestaurantsResult> restaurantsData = new MutableLiveData<>();
+        placeApi.getMoreNearbyPlaces(nextPageToken).enqueue(new Callback<RestaurantsResult>() {
+            @Override
+            public void onResponse(@NonNull Call<RestaurantsResult> call,
+                                   @NonNull Response<RestaurantsResult> response) {
+                if (response.isSuccessful()){
+                    restaurantsData.setValue(response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<RestaurantsResult> call, @NonNull Throwable t) {
+                restaurantsData.setValue(null);
+            }
+        });
+        return restaurantsData;
     }
 }

@@ -1,7 +1,21 @@
 package com.sophieopenclass.go4lunch.controllers.fragments;
 
-import androidx.annotation.ColorInt;
-import androidx.annotation.DrawableRes;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
+import android.location.Location;
+import android.location.LocationManager;
+import android.os.Build;
+import android.os.Bundle;
+import android.provider.Settings;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -9,22 +23,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.fragment.app.Fragment;
-
-import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
-import android.location.Location;
-import android.location.LocationManager;
-import android.os.Bundle;
-import android.provider.Settings;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Toast;
+import androidx.lifecycle.Observer;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -35,37 +34,39 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.Task;
-import com.sophieopenclass.go4lunch.BuildConfig;
+import com.google.android.libraries.places.api.net.FindCurrentPlaceRequest;
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.snackbar.Snackbar;
 import com.sophieopenclass.go4lunch.MyViewModel;
 import com.sophieopenclass.go4lunch.R;
 import com.sophieopenclass.go4lunch.base.BaseActivity;
+import com.sophieopenclass.go4lunch.controllers.activities.LoginPageActivity;
 import com.sophieopenclass.go4lunch.controllers.activities.RestaurantDetailsActivity;
 import com.sophieopenclass.go4lunch.databinding.FragmentMapBinding;
-import com.sophieopenclass.go4lunch.models.json_to_java.RestaurantsResult;
+import com.sophieopenclass.go4lunch.models.User;
 import com.sophieopenclass.go4lunch.models.json_to_java.PlaceDetails;
+import com.sophieopenclass.go4lunch.models.json_to_java.RestaurantsResult;
+
+import java.util.List;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
-import static com.sophieopenclass.go4lunch.api.PlaceService.API_URL;
-import static com.sophieopenclass.go4lunch.api.PlaceService.PHOTO_URL;
+import static com.sophieopenclass.go4lunch.utils.Constants.PLACE_ID;
 
 public class MapViewFragment extends Fragment implements OnMapReadyCallback {
 
-    private static final String TAG = "Map";
     private MyViewModel viewModel;
     private GoogleMap mMap;
-    private SupportMapFragment mapFragment;
-    private FusedLocationProviderClient fusedLocationProviderClient;
     private LocationManager locationManager;
-    public static Location currentLocation;
+    private Location currentLocation;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 123;
-    private static final float DEFAULT_ZOOM = 15f;
-    private Context context;
-    private int cameraPosition = (int) DEFAULT_ZOOM;
+    private static final float DEFAULT_ZOOM = 17.5f;
+    private BaseActivity context;
+    private RestaurantsResult restaurantsResult;
 
     public MapViewFragment() {
-        // Required empty public constructor
     }
 
     public static Fragment newInstance() {
@@ -78,8 +79,8 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
         FragmentMapBinding binding = FragmentMapBinding.inflate(inflater, container, false);
 
         if (getActivity() != null) {
-            context = getActivity();
-            viewModel = (MyViewModel) ((BaseActivity)getActivity()).getViewModel();
+            context = (BaseActivity) getActivity();
+            viewModel = (MyViewModel) ((BaseActivity) getActivity()).getViewModel();
             locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         }
 
@@ -92,12 +93,21 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
         return binding.getRoot();
     }
 
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+        mMap.setMyLocationEnabled(true);
+        mMap.getUiSettings().setMyLocationButtonEnabled(false);
+        mMap.getUiSettings().setMapToolbarEnabled(false);
+        mMap.getUiSettings().setZoomGesturesEnabled(true);
+        mMap.setOnInfoWindowClickListener(this::startRestaurantActivity);
+    }
+
     private void fetchLastLocation() {
         if (!locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER))
             requestLocationActivation();
 
-        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context);
-
+        FusedLocationProviderClient fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context);
         initMap();
         Task<Location> task = fusedLocationProviderClient.getLastLocation();
         task.addOnCompleteListener(task1 -> {
@@ -105,6 +115,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
                 currentLocation = task1.getResult();
                 if (currentLocation != null) {
                     configureMap(currentLocation);
+                    context.currentLocation = currentLocation;
                 }
             } else {
                 Toast.makeText(getActivity(), "unable to get current location", Toast.LENGTH_SHORT).show();
@@ -112,11 +123,26 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
         });
     }
 
+    private void initMap() {
+        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
+        if (mapFragment != null) {
+            mapFragment.getMapAsync(this);
+        }
+    }
+
     private void configureMap(Location currentLocation) {
         LatLng latLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, DEFAULT_ZOOM));
-        mMap.addMarker(new MarkerOptions().position(latLng).title("I'm here")).setTag("my_position");
-        executeHttpRequestWithRetrofit();
+        getNearbyPlaces(currentLocation);
+        mMap.setOnCameraMoveListener(new GoogleMap.OnCameraMoveListener() {
+            @Override
+            public void onCameraMove() {
+                Location cameraLocation = new Location("cameraLocation");
+                cameraLocation.setLongitude(mMap.getCameraPosition().target.longitude);
+                cameraLocation.setLatitude(mMap.getCameraPosition().target.latitude);
+                getNearbyPlaces(cameraLocation);
+            }
+        });
     }
 
     private void requestPermission() {
@@ -129,7 +155,9 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 fetchLastLocation();
             } else {
-                // TODO : Display pop up informing the user that the app won't work properly
+                if (getView() != null)
+                    Snackbar.make(getView(), "Géolocalisation désactivée", BaseTransientBottomBar.LENGTH_INDEFINITE)
+                            .setDuration(5000).show();
             }
         }
     }
@@ -143,63 +171,52 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
                 .show();
     }
 
-    private void initMap() {
-        mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
-        if (mapFragment != null) {
-            mapFragment.getMapAsync(this);
-        }
-    }
-
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
-        mMap.setMyLocationEnabled(true);
-        mMap.getUiSettings().setMyLocationButtonEnabled(false);
-        mMap.getUiSettings().setMapToolbarEnabled(false);
-        mMap.getUiSettings().setZoomGesturesEnabled(true);
-    }
-
-    // TODO : ne récupère que 20 restaurants à la fois
-    private void executeHttpRequestWithRetrofit() {
-        System.out.println(currentLocation);
-        viewModel.getNearbyPlaces(getLatLngString(currentLocation), getRadius())
+    private void getNearbyPlaces(Location currentLocation) {
+        viewModel.getNearbyPlaces(getLatLngString(currentLocation))
                 .observe(getViewLifecycleOwner(), this::initMarkers);
     }
 
-    public static String getLatLngString(Location currentLocation) {
+    static String getLatLngString(Location currentLocation) {
         return currentLocation.getLatitude() + "," + currentLocation.getLongitude();
     }
 
-    public static int getRadius() {
-        return ((int) DEFAULT_ZOOM * 50);
-    }
-
     private void initMarkers(RestaurantsResult restaurants) {
+        this.restaurantsResult = restaurants;
         for (PlaceDetails placeDetails : restaurants.getPlaceDetails()) {
-            mMap.addMarker(new MarkerOptions().title(placeDetails.getName()).position(
-                    new LatLng(placeDetails.getGeometry().getLocation().getLat(), placeDetails.getGeometry().getLocation().getLng()))
-                    .icon(vectorToBitmap(R.drawable.ic_marker_tmp, Color.parseColor("#00FF0C")))).setTag(placeDetails.getPlaceId());
-        }
+            viewModel.getUsersByPlaceId(placeDetails.getPlaceId()).observe(getViewLifecycleOwner(), users -> {
+                int markerDrawable;
+                if (users.isEmpty())
+                    markerDrawable = R.drawable.ic_marker_red;
+                else
+                    markerDrawable = R.drawable.ic_marker_green;
 
-        mMap.setOnInfoWindowClickListener(marker -> {
-            if (marker.getTag() != "my_position" && marker.getTag() != null) {
-                Intent intent = new Intent(getActivity(), RestaurantDetailsActivity.class);
-                intent.putExtra("placeId", marker.getTag().toString());
-                startActivity(intent);
-            }
-        });
+                mMap.addMarker(new MarkerOptions().title(placeDetails.getName()).position(
+                        new LatLng(placeDetails.getGeometry().getLocation().getLat(), placeDetails.getGeometry().getLocation().getLng()))
+                        .icon(getBitmapFromVector(markerDrawable))).setTag(placeDetails.getPlaceId());
+            });
+        }
     }
 
-    private BitmapDescriptor vectorToBitmap(@DrawableRes int id, @ColorInt int color) {
-        Drawable vectorDrawable = ResourcesCompat.getDrawable(getResources(), id, null);
+    private void startRestaurantActivity(Marker marker) {
+        if (marker.getTag() != null) {
+            Intent intent = new Intent(getActivity(), RestaurantDetailsActivity.class);
+            intent.putExtra(PLACE_ID, marker.getTag().toString());
+            startActivity(intent);
+        }
+    }
+
+    private BitmapDescriptor getBitmapFromVector(int drawableId) {
+        Drawable drawable = ResourcesCompat.getDrawable(getResources(), drawableId, null);
         Bitmap bitmap = null;
-        if (vectorDrawable != null) {
-            bitmap = Bitmap.createBitmap(vectorDrawable.getIntrinsicWidth(),
-                    vectorDrawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        if (drawable != null) {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+                drawable = (DrawableCompat.wrap(drawable)).mutate();
+            }
+            bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(),
+                    drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(bitmap);
-            vectorDrawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-            DrawableCompat.setTint(vectorDrawable, color);
-            vectorDrawable.draw(canvas);
+            drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+            drawable.draw(canvas);
         }
         return BitmapDescriptorFactory.fromBitmap(bitmap);
     }

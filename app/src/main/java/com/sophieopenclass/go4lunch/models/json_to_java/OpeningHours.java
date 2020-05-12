@@ -3,8 +3,12 @@ package com.sophieopenclass.go4lunch.models.json_to_java;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.sophieopenclass.go4lunch.utils.Constants;
 
+import java.util.Calendar;
 import java.util.List;
+
+import static com.sophieopenclass.go4lunch.utils.Constants.MONDAY;
 
 public class OpeningHours {
 
@@ -40,6 +44,29 @@ public class OpeningHours {
 
     public void setWeekdayText(List<String> weekdayText) {
         this.weekdayText = weekdayText;
+    }
+
+    public static int getTodaysDay() {
+        Calendar calendar = Calendar.getInstance();
+        int day = calendar.get(Calendar.DAY_OF_WEEK);
+        int today = -1;
+
+        if (day == Calendar.MONDAY)
+            today = Constants.MONDAY;
+        else if (day == Calendar.TUESDAY)
+            today = Constants.TUESDAY;
+        else if (day == Calendar.WEDNESDAY)
+            today = Constants.WEDNESDAY;
+        else if (day == Calendar.THURSDAY)
+            today = Constants.THURSDAY;
+        else if (day == Calendar.FRIDAY)
+            today = Constants.FRIDAY;
+        else if (day == Calendar.SATURDAY)
+            today = Constants.SATURDAY;
+        else if (day == Calendar.SUNDAY)
+            today = Constants.SUNDAY;
+
+        return today;
     }
 
 }

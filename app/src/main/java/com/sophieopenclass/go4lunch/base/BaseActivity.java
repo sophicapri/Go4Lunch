@@ -1,5 +1,7 @@
 package com.sophieopenclass.go4lunch.base;
 
+import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
@@ -9,23 +11,32 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.facebook.FacebookAuthorizationException;
+import com.facebook.FacebookGraphResponseException;
+import com.facebook.FacebookSdk;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.sophieopenclass.go4lunch.MyViewModel;
 import com.sophieopenclass.go4lunch.R;
-import com.sophieopenclass.go4lunch.utils.ViewModelFactory;
+import com.sophieopenclass.go4lunch.controllers.activities.WorkmateDetailActivity;
+import com.sophieopenclass.go4lunch.controllers.adapters.WorkmatesViewAdapter;
 import com.sophieopenclass.go4lunch.injection.Injection;
+import com.sophieopenclass.go4lunch.utils.ViewModelFactory;
 
-public abstract class BaseActivity <T extends ViewModel> extends AppCompatActivity {
+import static com.sophieopenclass.go4lunch.utils.Constants.UID;
+
+public abstract class BaseActivity <T extends ViewModel> extends AppCompatActivity implements WorkmatesViewAdapter.OnWorkmateClickListener{
     public T viewModel;
-
+    public Location currentLocation = null;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        configureViewModel();
 
+        FacebookSdk.setAdvertiserIDCollectionEnabled(false);
+        FacebookSdk.setAutoLogAppEventsEnabled(false);
+        configureViewModel();
         this.setContentView(this.getFragmentLayout());
     }
 
@@ -61,6 +72,13 @@ public abstract class BaseActivity <T extends ViewModel> extends AppCompatActivi
 
     public T getViewModel() {
         return viewModel;
+    }
+
+    @Override
+    public void onWorkmateClick(String uid) {
+        Intent intent = new Intent(this, WorkmateDetailActivity.class);
+        intent.putExtra(UID, uid);
+        startActivity(intent);
     }
 }
 

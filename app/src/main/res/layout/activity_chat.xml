@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/header_chat"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:background="@color/colorPrimary"
+        app:layout_constraintStart_toStartOf="parent"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/workmate_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:layout_gravity="end|center"
+            android:text="Jenny"
+            android:textAlignment="textEnd"
+            android:layout_weight="3"
+            android:textColor="@color/colorAccent"/>
+
+        <ImageView
+            android:id="@+id/workmate_profile_pic"
+            android:layout_gravity="center"
+            android:layout_width="40dp"
+            android:layout_height="40dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/chat_recycler_view_container"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/add_message_container"
+        app:layout_constraintTop_toBottomOf="@+id/header_chat">
+
+        <TextView
+            android:id="@+id/chat_text_view_recycler_view_empty"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="Ce fil de discussion ne contient pour le moment aucun message&#8230;"
+            android:textAlignment="center" />
+
+        <!-- RECYCLER VIEW -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/chat_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </LinearLayout>
+
+    <!-- IMAGE CHOSEN PREVIEW -->
+    <ImageView
+        android:id="@+id/chat_image_chosen_preview"
+        android:layout_width="50dip"
+        android:layout_height="50dip"
+        android:layout_marginStart="10dp"
+        android:layout_above="@id/add_message_container"
+        android:layout_margin="10dp"
+        app:layout_constraintBottom_toTopOf="@+id/add_message_container"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <!-- ADD MESSAGE CONTAINER -->
+    <LinearLayout
+        android:id="@+id/add_message_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="10dp"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <!-- ADD FILE BUTTON -->
+        <ImageButton
+            android:id="@+id/activity_mentor_chat_add_file_button"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            app:srcCompat="@drawable/ic_add_black_24dp"
+            android:contentDescription="add file" />
+
+        <!-- TEXT MESSAGE EDIT TEXT -->
+        <EditText
+            android:id="@+id/activity_mentor_chat_message_edit_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="Composer votre message..."
+            android:imeOptions="actionDone"
+            android:inputType="textMultiLine" />
+
+        <Button
+            android:id="@+id/activity_mentor_chat_send_button"
+            style="@style/Widget.AppCompat.Button.Borderless.Colored"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Envoyer" />
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -4,6 +4,10 @@ package com.sophieopenclass.go4lunch.models.json_to_java;
 import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.sophieopenclass.go4lunch.BuildConfig;
+
+import static com.sophieopenclass.go4lunch.api.PlaceService.API_URL;
+import static com.sophieopenclass.go4lunch.api.PlaceService.PHOTO_URL;
 
 public class PlaceDetails {
 
@@ -270,5 +274,14 @@ public class PlaceDetails {
 
     public void setWebsite(String website) {
         this.website = website;
+    }
+
+    public static String urlPhotoFormatter(PlaceDetails placeDetails, int position){
+        if (placeDetails.getPhotos() != null) {
+            String photoReference = placeDetails.getPhotos().get(position).getPhotoReference();
+            return API_URL + PHOTO_URL + photoReference + "&key=" + BuildConfig.API_KEY;
+        }
+        //return "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ffishtankclub.com%2Fwp-content%2Fuploads%2F2016%2F09%2FimgUnavailable.png&f=1&nofb=1";
+        return "https://nommunism.files.wordpress.com/2012/09/image_unavailable_icon_20.jpg?w=250&h=245&zoom=2";
     }
 }

@@ -17,6 +17,16 @@
         <item name="itemIconTint">@color/quantum_white_text</item>
     </style>
 
+    <style name="ChatButton" parent="Widget.AppCompat.Button">
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textColor">@color/colorAccent</item>
+    </style>
+
+    <style name="TextStyleItalic" parent="TextAppearance.AppCompat">
+        <item name="android:textStyle">italic</item>
+        <item name="android:textColor">@color/quantum_grey700</item>
+    </style>
+
     <!-- STYLE SIGN-IN ACTIVITY -->
     <style name="LoginTheme" parent="AppTheme">
         <item name="colorPrimary">@color/colorPrimary</item>

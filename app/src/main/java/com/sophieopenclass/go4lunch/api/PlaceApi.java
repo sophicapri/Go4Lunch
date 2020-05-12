@@ -11,14 +11,14 @@ public interface PlaceApi {
     String apiKey = BuildConfig.API_KEY;
 
 
-    @GET("nearbysearch/json?&type=restaurant&key=" + apiKey)
-    Call<RestaurantsResult> getNearbyPlaces(@Query("location") String location,
-                                            @Query("radius") int radius);
+    @GET("nearbysearch/json?&rankby=distance&type=restaurant&key=" + apiKey)
+    Call<RestaurantsResult> getNearbyPlaces(@Query("location") String location);
+
+
+    @GET("nearbysearch/json?&key=" + apiKey)
+    Call<RestaurantsResult> getMoreNearbyPlaces(@Query("pagetoken") String nextPageToken);
 
     @GET("details/json?&key=" + apiKey)
     Call<PlaceDetailsResult> getPlaceDetails(@Query("place_id") String placeId);
-
-    @GET("photo?maxwidth=400&key=" + apiKey)
-    Call<PlaceDetailsResult> getRestaurantPhoto(@Query("photoreference") String photoReference);
 }
 

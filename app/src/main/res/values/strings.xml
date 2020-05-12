@@ -17,4 +17,19 @@
     <string name="loading">Chargement…</string>
     <string name="connecting">Connexion…</string>
     <string name="signing_out">Déconnexion…</string>
+
+    <string name="workmates_eating_at">"%1$s mange chez %2$s"</string>
+    <string name="workmate_hasnt_chosen">"%s n'a pas encore choisi de restaurant"</string>
+    <string name="workmate_is_eating_here">"%s mange ici !"</string>
+    <string name="no_restaurant_chosen">"Pas de restaurant choisi aujourd'hui."</string>
+    <string name="restaurant_type">"%s - "</string>
+    <string name="nbr_of_workmates">"(%d)"</string>
+    <string name="distance">"%dm"</string>
+    <string name="you_are_eating_here">Vous mangez ici !</string>
+    <string name="chat_with">Discuter avec %s</string>
+    <string name="workmate_lunch_textview">Son déjeuner du jour:</string>
+    <string name="your_lunch_textview">Votre déjeuner du jour:</string>
+    <string name="weekdays_opening_hours_title">Horaires</string>
+    <string name="weekdays_openings">"Monday: 11:30 AM – 3:00 PM, 6:00 – 11:00 PM\nTuesday: 11:30 AM – 3:00 PM, 6:00 – 11:00 PM\nWednesday: 11:30 AM – 3:00 PM, 6:00 – 11:00 PM\nThursday: 11:30 AM – 3:00 PM, 6:00 – 11:00 PM\nFriday: 11:30 AM – 3:00 PM, 6:00 – 11:00 PM\nSaturday: 11:30 AM – 3:00 PM, 6:00 – 11:00 PM\nSunday: Closed"</string>
+
 </resources>

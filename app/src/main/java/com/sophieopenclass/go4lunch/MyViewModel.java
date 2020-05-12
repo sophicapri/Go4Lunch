@@ -3,15 +3,14 @@ package com.sophieopenclass.go4lunch;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.sophieopenclass.go4lunch.models.json_to_java.RestaurantsResult;
 import com.sophieopenclass.go4lunch.models.json_to_java.PlaceDetails;
 import com.sophieopenclass.go4lunch.models.User;
 import com.sophieopenclass.go4lunch.repository.RestaurantDataRepository;
 import com.sophieopenclass.go4lunch.repository.UserDataRepository;
+
+import java.util.List;
 
 public class MyViewModel extends ViewModel {
     private RestaurantDataRepository restaurantDataSource;
@@ -25,8 +24,12 @@ public class MyViewModel extends ViewModel {
 
     // RESTAURANTS
 
-    public LiveData<RestaurantsResult> getNearbyPlaces(String location, int radius) {
-        return restaurantDataSource.getNearbyPlaces(location, radius);
+    public LiveData<RestaurantsResult> getNearbyPlaces(String location) {
+        return restaurantDataSource.getNearbyPlaces(location);
+    }
+
+    public LiveData<RestaurantsResult> getMoreNearbyPlaces(String nextPageToken) {
+        return restaurantDataSource.getMoreNearbyPlaces(nextPageToken);
     }
 
     public LiveData<PlaceDetails> getPlaceDetails(String placeId) {
@@ -43,20 +46,35 @@ public class MyViewModel extends ViewModel {
         return userDataSource.getUser(uid);
     }
 
-    public Task<Void> updateUsername(String username, String uid) {
-        return userDataSource.updateUsername(username, uid);
+    public void updateUserPlaceId(String uid, String placeId) {
+        userDataSource.updateUserPlaceId(uid, placeId);
     }
 
-    public Task<Void> deleteUser(String uid) {
-        return userDataSource.deleteUser(uid);
+    public CollectionReference getCollectionReference(String userCollection) {
+        return userDataSource.getCollectionReference(userCollection);
     }
 
-    public CollectionReference getUsersCollectionReference(){
-        return userDataSource.getUsersCollectionReference();
+    public LiveData<List<User>> getUsersByPlaceId(String placeId) {
+        return userDataSource.getUsersByPlaceId(placeId);
     }
 
     public LiveData<User> getCreatedUserLiveData() {
         return createdUserLiveData;
     }
 
+    public LiveData<String> getPlaceId(String userId) {
+        return userDataSource.getPlaceId(userId);
+    }
+
+        public LiveData<String> updateUsername(String username, String uid) {
+        return userDataSource.updateUsername(username, uid);
+    }
+
+    public LiveData<Void> deleteUser(String uid) {
+        return userDataSource.deleteUser(uid);
+    }
+
+    public LiveData<String> addUserPlaceId(String uid, String placeId) {
+        return userDataSource.addUserPlaceId(uid, placeId);
+    }
 }

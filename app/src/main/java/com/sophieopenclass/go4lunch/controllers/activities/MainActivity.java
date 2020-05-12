@@ -1,7 +1,9 @@
 package com.sophieopenclass.go4lunch.controllers.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,30 +30,37 @@ import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 import com.google.android.material.navigation.NavigationView;
+import com.sophieopenclass.go4lunch.BuildConfig;
 import com.sophieopenclass.go4lunch.MyViewModel;
 import com.sophieopenclass.go4lunch.base.BaseActivity;
-import com.sophieopenclass.go4lunch.BuildConfig;
 import com.sophieopenclass.go4lunch.R;
 import com.sophieopenclass.go4lunch.controllers.fragments.ListViewFragment;
 import com.sophieopenclass.go4lunch.controllers.fragments.MapViewFragment;
 import com.sophieopenclass.go4lunch.controllers.fragments.WorkmatesListFragment;
 import com.sophieopenclass.go4lunch.databinding.ActivityMainBinding;
 import com.sophieopenclass.go4lunch.databinding.NavHeaderBinding;
+import com.sophieopenclass.go4lunch.models.User;
 
 import java.util.Arrays;
 
-public class MainActivity extends BaseActivity <MyViewModel> implements NavigationView.OnNavigationItemSelectedListener {
+import static com.sophieopenclass.go4lunch.utils.Constants.MY_LUNCH;
+import static com.sophieopenclass.go4lunch.utils.Constants.PLACE_ID;
+import static com.sophieopenclass.go4lunch.utils.Constants.UID;
+
+public class MainActivity extends BaseActivity<MyViewModel> implements NavigationView.OnNavigationItemSelectedListener {
     private ActivityMainBinding binding;
     private final int AUTOCOMPLETE_REQUEST_CODE = 123;
     private String placeId;
+    private User currentUser;
     private Fragment fragmentMapView;
     private Fragment fragmentListView;
     private Fragment fragmentWorkmatesList;
-    private static final int ACTIVITY_MY_LUNCH = 0;
+    private static final int ACTIVITY_MY_LUNCH = 3;
     private static final int ACTIVITY_SETTINGS = 1;
     private static final int FRAGMENT_MAP_VIEW = 10;
     private static final int FRAGMENT_LIST_VIEW = 20;
     private static final int FRAGMENT_WORKMATES_LIST = 30;
+    private PlacesClient placesClient;
 
     @Override
     public View getFragmentLayout() {
@@ -67,6 +76,9 @@ public class MainActivity extends BaseActivity <MyViewModel> implements Navigati
         initPlacesApi();
         handleDrawerUI();
         showFragment(FRAGMENT_MAP_VIEW);
+        if (getCurrentUser() != null)
+            viewModel.getUser(getCurrentUser().getUid()).observe(this, user -> currentUser = user);
+
         binding.bottomNavView.setOnNavigationItemSelectedListener(this::onNavigationItemSelected);
     }
 
@@ -111,7 +123,7 @@ public class MainActivity extends BaseActivity <MyViewModel> implements Navigati
         Places.initialize(getApplicationContext(), BuildConfig.API_KEY);
 
         // Create a new Places client instance
-        Places.createClient(this);
+        placesClient = Places.createClient(this);
     }
 
     private void configureDrawerLayout() {
@@ -175,10 +187,10 @@ public class MainActivity extends BaseActivity <MyViewModel> implements Navigati
             super.onBackPressed();
     }
 
-    private void showFragment(int fragmentIdentifier) {
-        switch (fragmentIdentifier) {
+    private void showFragment(int controllerIdentifier) {
+        switch (controllerIdentifier) {
             case ACTIVITY_MY_LUNCH:
-                startNewActivity(MyLunchActivity.class);
+                startNewActivity(WorkmateDetailActivity.class);
                 break;
             case ACTIVITY_SETTINGS:
                 startNewActivity(SettingsActivity.class);
@@ -199,7 +211,9 @@ public class MainActivity extends BaseActivity <MyViewModel> implements Navigati
     private void startNewActivity(Class activity) {
         Intent intent = new Intent(this, activity);
         if (activity == RestaurantDetailsActivity.class)
-            intent.putExtra("placeId", placeId);
+            intent.putExtra(PLACE_ID, placeId);
+        if (activity.equals(WorkmateDetailActivity.class))
+            intent.putExtra(UID, currentUser.getUid());
         startActivity(intent);
     }
 
@@ -230,7 +244,6 @@ public class MainActivity extends BaseActivity <MyViewModel> implements Navigati
         return true;
     }
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.search_bar_menu &&
@@ -240,10 +253,10 @@ public class MainActivity extends BaseActivity <MyViewModel> implements Navigati
     }
 
     private void startAutocompleteActivity() {
-        LatLng northEast = new LatLng(MapViewFragment.currentLocation.getLatitude() - (0.05),
-                MapViewFragment.currentLocation.getLongitude() - (0.05));
-        LatLng southWest = new LatLng(MapViewFragment.currentLocation.getLatitude() + (0.05),
-                MapViewFragment.currentLocation.getLongitude() + (0.05));
+        LatLng northEast = new LatLng(this.currentLocation.getLatitude() - (0.05),
+                this.currentLocation.getLongitude() - (0.05));
+        LatLng southWest = new LatLng(this.currentLocation.getLatitude() + (0.05),
+                this.currentLocation.getLongitude() + (0.05));
         ;
 
         Intent intent = new Autocomplete.IntentBuilder(

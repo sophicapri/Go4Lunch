@@ -1,5 +1,8 @@
 package com.sophieopenclass.go4lunch.controllers.adapters;
 
+import android.content.Context;
+import android.content.res.Resources;
+import android.location.Location;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -7,23 +10,28 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.sophieopenclass.go4lunch.BuildConfig;
+import com.sophieopenclass.go4lunch.MyViewModel;
 import com.sophieopenclass.go4lunch.R;
+import com.sophieopenclass.go4lunch.base.BaseActivity;
 import com.sophieopenclass.go4lunch.databinding.FragmentListViewBinding;
+import com.sophieopenclass.go4lunch.models.User;
+import com.sophieopenclass.go4lunch.models.json_to_java.OpeningHours;
 import com.sophieopenclass.go4lunch.models.json_to_java.PlaceDetails;
 
+import java.sql.Time;
+import java.util.Arrays;
 import java.util.List;
-
-import static com.sophieopenclass.go4lunch.api.PlaceService.API_URL;
-import static com.sophieopenclass.go4lunch.api.PlaceService.PHOTO_URL;
 
 public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ListViewHolder> {
     private List<PlaceDetails> placeDetailsList;
     private OnRestaurantClickListener onRestaurantClickListener;
+    private MyViewModel viewModel;
 
     public ListViewAdapter(List<PlaceDetails> placeDetailsList, OnRestaurantClickListener onRestaurantClickListener) {
         this.placeDetailsList = placeDetailsList;
@@ -46,6 +54,10 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ListVi
     @Override
     public int getItemCount() {
         return placeDetailsList.size();
+    }
+
+    public void setViewModel(MyViewModel viewModel) {
+        this.viewModel = viewModel;
     }
 
     class ListViewHolder extends RecyclerView.ViewHolder {
@@ -80,33 +92,57 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ListVi
         }
 
         void bind(PlaceDetails placeDetails) {
-            String photoReference = placeDetails.getPhotos().get(0).getPhotoReference();
-            String urlPhoto = API_URL + PHOTO_URL + photoReference + "&key=" + BuildConfig.API_KEY;
+            BaseActivity context = (BaseActivity) itemView.getContext();
+            Resources res = context.getResources();
 
             restaurantName.setText(placeDetails.getName());
-            typeOfRestaurant.setText(placeDetails.getTypes().get(0) + " - ");
+            typeOfRestaurant.setText(res.getString(R.string.restaurant_type, placeDetails.getTypes().get(0)));
             restaurantAddress.setText(placeDetails.getVicinity());
 
             // TODO: find out how to display correctly
-            if (placeDetails.getOpeningHours() != null && placeDetails.getOpeningHours().getOpenNow())
-            openingHours.setText("Ouvert");
-            else
-                openingHours.setText("Fermé");
+            if (placeDetails.getOpeningHours() != null)
+                if (placeDetails.getOpeningHours().getOpenNow())
+                    viewModel.getPlaceDetails(placeDetails.getPlaceId()).observe(context, this::displayOpeningHours);
+                else
+                    openingHours.setText("Fermé");
 
+            String urlPhoto = PlaceDetails.urlPhotoFormatter(placeDetails, 0);
             Glide.with(restaurantPhoto.getContext())
                     .load(urlPhoto)
                     .apply(RequestOptions.centerCropTransform())
                     .into(restaurantPhoto);
 
-            // TODO: find out how to calculate the distance
-            restaurantDistance.setText("distance");
+            Location restaurantLocation = new Location(placeDetails.getName());
+            restaurantLocation.setLatitude(placeDetails.getGeometry().getLocation().getLat());
+            restaurantLocation.setLongitude(placeDetails.getGeometry().getLocation().getLng());
+            int distance = (int) restaurantLocation.distanceTo(context.currentLocation);
+            restaurantDistance.setText(res.getString(R.string.distance, distance));
 
-            // TODO: figure out how to know how many workmates chose a restaurant
-            nbrOfWorkmates.setText("7");
+            viewModel.getUsersByPlaceId(placeDetails.getPlaceId()).observe(context, users -> {
+                nbrOfWorkmates.setText(res.getString(R.string.nbr_of_workmates, users.size()));
+            });
 
+            // TODO: find out how to calculate the rating
             oneStar.setVisibility(View.VISIBLE);
             twoStars.setVisibility(View.VISIBLE);
             threeStars.setVisibility(View.INVISIBLE);
+        }
+
+        //TODO : how to format time ?
+        private void displayOpeningHours(PlaceDetails placeDetails) {
+            int today = OpeningHours.getTodaysDay();
+            if (today >= 0) {
+                String time = placeDetails.getOpeningHours().getPeriods().get(today).getClose().getTime();
+               // char[] finalTime = new char[5];
+                char[] finalTime = new char[5];
+                time.getChars(0,2, finalTime, 0);
+                finalTime[2] = 'h';
+                time.getChars(2,4, finalTime, 3);
+                System.out.println(finalTime);
+                openingHours.setText("Ouvert jusqu'à " + Arrays.toString(finalTime));
+            } else
+                openingHours.setText("Ouvert");
+
         }
     }
 
