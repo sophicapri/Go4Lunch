@@ -28,6 +28,9 @@ import com.sophieopenclass.go4lunch.databinding.ActivityRestaurantDetailsBinding
 import com.sophieopenclass.go4lunch.models.User;
 import com.sophieopenclass.go4lunch.models.json_to_java.PlaceDetails;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static com.sophieopenclass.go4lunch.injection.Injection.PLACES_COLLECTION_NAME;
 import static com.sophieopenclass.go4lunch.utils.Constants.MY_LUNCH;
 import static com.sophieopenclass.go4lunch.utils.Constants.PLACE_ID;
@@ -163,8 +166,12 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
             binding.weekdaysOpenings.setVisibility(View.VISIBLE);
             StringBuilder weekdays = new StringBuilder();
             if (placeDetails.getOpeningHours() != null) {
-                for (String weekday : placeDetails.getOpeningHours().getWeekdayText()) {
-                    weekdays.append(weekday).append("\n");
+                List<String> weekdaysArray = placeDetails.getOpeningHours().getWeekdayText();
+                for (int i = 0; i < weekdaysArray.size(); i++) {
+                    if (i != weekdaysArray.size() - 1)
+                        weekdays.append(weekdaysArray.get(i)).append("\n");
+                    else
+                        weekdays.append(weekdaysArray.get(i));
                 }
                 binding.weekdaysOpenings.setText(weekdays.toString());
             } else {

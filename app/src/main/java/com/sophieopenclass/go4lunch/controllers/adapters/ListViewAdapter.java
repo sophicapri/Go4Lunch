@@ -23,9 +23,6 @@ import com.sophieopenclass.go4lunch.databinding.FragmentListViewBinding;
 import com.sophieopenclass.go4lunch.models.User;
 import com.sophieopenclass.go4lunch.models.json_to_java.OpeningHours;
 import com.sophieopenclass.go4lunch.models.json_to_java.PlaceDetails;
-
-import java.sql.Time;
-import java.util.Arrays;
 import java.util.List;
 
 public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ListViewHolder> {
@@ -99,7 +96,6 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ListVi
             typeOfRestaurant.setText(res.getString(R.string.restaurant_type, placeDetails.getTypes().get(0)));
             restaurantAddress.setText(placeDetails.getVicinity());
 
-            // TODO: find out how to display correctly
             if (placeDetails.getOpeningHours() != null)
                 if (placeDetails.getOpeningHours().getOpenNow())
                     viewModel.getPlaceDetails(placeDetails.getPlaceId()).observe(context, this::displayOpeningHours);
@@ -128,18 +124,12 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ListVi
             threeStars.setVisibility(View.INVISIBLE);
         }
 
-        //TODO : how to format time ?
         private void displayOpeningHours(PlaceDetails placeDetails) {
             int today = OpeningHours.getTodaysDay();
             if (today >= 0) {
                 String time = placeDetails.getOpeningHours().getPeriods().get(today).getClose().getTime();
-               // char[] finalTime = new char[5];
-                char[] finalTime = new char[5];
-                time.getChars(0,2, finalTime, 0);
-                finalTime[2] = 'h';
-                time.getChars(2,4, finalTime, 3);
-                System.out.println(finalTime);
-                openingHours.setText("Ouvert jusqu'à " + Arrays.toString(finalTime));
+                String finalTime = time.substring(0,2) + "h" + time.substring(2);
+                openingHours.setText("Ouvert jusqu'à " + finalTime);
             } else
                 openingHours.setText("Ouvert");
 

@@ -34,7 +34,6 @@ public class UserDataRepository {
 
     public MutableLiveData<User> createUser(User user) {
         MutableLiveData<User> userToCreate = new MutableLiveData<>();
-
         userCollectionRef.document(user.getUid()).get().addOnCompleteListener(uidTask -> {
             if (uidTask.isSuccessful()) {
                 if (uidTask.getResult() != null)
@@ -88,7 +87,6 @@ public class UserDataRepository {
         return placeId;
     }
 
-    //TODO : how to write the method properly ? do I return a void value ?
     public void updateUserPlaceId(String uid, String placeId) {
         MutableLiveData<String> newPlaceId = new MutableLiveData<>();
         placesCollectionRef.document(uid).update(PLACE_ID, placeId).addOnCompleteListener(updatePlaceId -> {
@@ -111,18 +109,14 @@ public class UserDataRepository {
         return newUsername;
     }
 
-
-    // TODO : is this good practice ?
-    public MutableLiveData<Void> deleteUser(String uid) {
-        MutableLiveData<Void> deletedUser = new MutableLiveData<>();
-
+    // TODO: is this good practice ?
+    public void deleteUser(String uid) {
         userCollectionRef.document(uid).delete().addOnCompleteListener(deleteUser -> {
             if (deleteUser.isSuccessful())
-                Log.i(TAG, "updatePlaceId: " + (deleteUser.isSuccessful()));
+                Log.i(TAG, "deleteUser: " + (deleteUser.isSuccessful()));
             else if (deleteUser.getException() != null)
-                Log.e(TAG, "updatePlaceId: " + (deleteUser.getException().getMessage()));
+                Log.e(TAG, "deleteUser: " + (deleteUser.getException().getMessage()));
         });
-        return deletedUser;
     }
 
     public MutableLiveData<String> addUserPlaceId(String uid, String placeId) {

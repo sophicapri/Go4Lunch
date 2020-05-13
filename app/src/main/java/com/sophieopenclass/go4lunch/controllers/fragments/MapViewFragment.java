@@ -65,6 +65,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
     private static final float DEFAULT_ZOOM = 17.5f;
     private BaseActivity context;
     private RestaurantsResult restaurantsResult;
+    private Location cameraLocation;
 
     public MapViewFragment() {
     }
@@ -86,8 +87,12 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
 
         if (ActivityCompat.checkSelfPermission(context, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
             requestPermission();
-        else
-            fetchLastLocation();
+        else {
+            if (cameraLocation == null)
+                fetchLastLocation();
+            else
+                getNearbyPlaces(currentLocation);
+        }
 
         binding.fab.setOnClickListener(v -> fetchLastLocation());
         return binding.getRoot();
@@ -137,7 +142,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
         mMap.setOnCameraMoveListener(new GoogleMap.OnCameraMoveListener() {
             @Override
             public void onCameraMove() {
-                Location cameraLocation = new Location("cameraLocation");
+                cameraLocation = new Location("cameraLocation");
                 cameraLocation.setLongitude(mMap.getCameraPosition().target.longitude);
                 cameraLocation.setLatitude(mMap.getCameraPosition().target.latitude);
                 getNearbyPlaces(cameraLocation);
@@ -219,5 +224,12 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
             drawable.draw(canvas);
         }
         return BitmapDescriptorFactory.fromBitmap(bitmap);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        System.out.println("onDestroy");
+        cameraLocation = null;
     }
 }

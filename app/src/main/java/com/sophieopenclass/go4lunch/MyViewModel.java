@@ -70,8 +70,8 @@ public class MyViewModel extends ViewModel {
         return userDataSource.updateUsername(username, uid);
     }
 
-    public LiveData<Void> deleteUser(String uid) {
-        return userDataSource.deleteUser(uid);
+    public void deleteUser(String uid) {
+        userDataSource.deleteUser(uid);
     }
 
     public LiveData<String> addUserPlaceId(String uid, String placeId) {

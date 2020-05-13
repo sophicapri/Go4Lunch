@@ -94,7 +94,6 @@ public class LoginPageActivity extends BaseActivity<MyViewModel> {
 
             viewModel.createUser(currentUser);
 
-            // TODO : is this a good practice ?
             viewModel.getCreatedUserLiveData().observe(this, user -> {
                 if (user == null)
                     onFailureListener();

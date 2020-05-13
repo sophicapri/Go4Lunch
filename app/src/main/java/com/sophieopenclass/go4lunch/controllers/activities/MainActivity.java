@@ -257,7 +257,6 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
                 this.currentLocation.getLongitude() - (0.05));
         LatLng southWest = new LatLng(this.currentLocation.getLatitude() + (0.05),
                 this.currentLocation.getLongitude() + (0.05));
-        ;
 
         Intent intent = new Autocomplete.IntentBuilder(
                 AutocompleteActivityMode.OVERLAY, Arrays.asList(Place.Field.ID,
