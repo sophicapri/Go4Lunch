@@ -90,6 +90,9 @@ public class UserDataRepository {
                 else if (task.getException() != null)
                     Log.e(TAG, "getUsersByPlaceId: " + (task.getException().getMessage()));
         });
+
+        userCollectionRef.whereEqualTo("dates." +date.toString(), placeId).get().addOnFailureListener(task -> {
+            Log.e(TAG, "getUsersByPlaceIdDate: ", (task.getCause()));});
         return users;
     }
 

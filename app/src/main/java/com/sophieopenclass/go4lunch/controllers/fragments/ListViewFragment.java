@@ -21,6 +21,7 @@ import com.sophieopenclass.go4lunch.models.json_to_java.PlaceDetails;
 import com.sophieopenclass.go4lunch.models.json_to_java.RestaurantsResult;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static com.sophieopenclass.go4lunch.controllers.fragments.MapViewFragment.getLatLngString;
 import static com.sophieopenclass.go4lunch.utils.Constants.PLACE_ID;
@@ -57,27 +58,45 @@ public class ListViewFragment extends Fragment implements ListViewAdapter.OnRest
 
         if (nextPageToken == null)
             viewModel.getNearbyPlaces(getLatLngString(context.currentLocation))
-                    .observe(getViewLifecycleOwner(), this::getNumberOfWorkmatesAndUpdateRecyclerView);
+                    .observe(getViewLifecycleOwner(), this::getNumberOfWorkmatesAtARestaurant);
         else
-            viewModel.getMoreNearbyPlaces(nextPageToken).observe(getViewLifecycleOwner(), this::getNumberOfWorkmatesAndUpdateRecyclerView);
+            viewModel.getMoreNearbyPlaces(nextPageToken).observe(getViewLifecycleOwner(), this::getNumberOfWorkmatesAtARestaurant);
     }
 
-    private void getNumberOfWorkmatesAndUpdateRecyclerView(RestaurantsResult restaurants) {
+    private void getNumberOfWorkmatesAtARestaurant(RestaurantsResult restaurants) {
         usersEatingAtRestaurant = new ArrayList<>();
+        List<PlaceDetails> placeDetailsList = restaurants.getPlaceDetails();
 
-        for (PlaceDetails placeDetails : restaurants.getPlaceDetails()) {
-            System.out.println("here");
-
+        for (PlaceDetails placeDetails : placeDetailsList) {
             viewModel.getUsersByPlaceIdDate(placeDetails.getPlaceId(), User.getTodaysDate())
-                    .observe(getViewLifecycleOwner(), users ->{
-                            usersEatingAtRestaurant.add(users.size());
-                        System.out.println(users.size());});
+                    .observe(getViewLifecycleOwner(), users -> {
+                        usersEatingAtRestaurant.add(users.size());
+                        if (usersEatingAtRestaurant.size() == placeDetailsList.size()) {
+                            getFullPlaceDetails(restaurants.getPlaceDetails());
+                        }
+                    });
         }
-        updateRecyclerView(restaurants, usersEatingAtRestaurant);
     }
 
-    private void updateRecyclerView(RestaurantsResult restaurants, ArrayList<Integer> usersEatingAtRestaurant) {
-        ListViewAdapter adapter = new ListViewAdapter(restaurants.getPlaceDetails(), usersEatingAtRestaurant, this);
+    // Nearby Search doesn't return all the fields required in a PlaceDetails, therefore another
+    // query is necessary to retrieve the missing fields (ex : opening hours)
+    private void getFullPlaceDetails(List<PlaceDetails> restaurants) {
+        ArrayList<PlaceDetails> completePlaceDetailsList = new ArrayList<>();
+        for (PlaceDetails placeDetails : restaurants) {
+            viewModel.getPlaceDetails(placeDetails.getPlaceId())
+                    .observe(getViewLifecycleOwner(), restaurant -> {
+                        completePlaceDetailsList.add(restaurant);
+                        if (completePlaceDetailsList.size() == restaurants.size()) {
+                            updateRecyclerView(completePlaceDetailsList, usersEatingAtRestaurant);
+                        }
+                    });
+        }
+    }
+
+
+    private void updateRecyclerView(ArrayList<PlaceDetails> restaurants, ArrayList<Integer> usersEatingAtRestaurant) {
+
+        ListViewAdapter adapter = new ListViewAdapter(restaurants, usersEatingAtRestaurant, this);
         adapter.setViewModel(viewModel);
         binding.recyclerViewRestaurants.setAdapter(adapter);
 
@@ -86,9 +105,7 @@ public class ListViewFragment extends Fragment implements ListViewAdapter.OnRest
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-                if (!recyclerView.canScrollVertically(1))
-                    if (restaurants.getNextPageToken() != null)
-                        observePlaces(restaurants.getNextPageToken());
+
             }
         });
 

@@ -30,7 +30,6 @@ import java.util.List;
 public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ListViewHolder> {
     private List<PlaceDetails> placeDetailsList;
     private OnRestaurantClickListener onRestaurantClickListener;
-    private MyViewModel viewModel;
     private ArrayList<Integer> usersEatingAtRestaurant;
 
     public ListViewAdapter(List<PlaceDetails> placeDetailsList, ArrayList<Integer> usersEatingAtRestaurant, OnRestaurantClickListener onRestaurantClickListener) {
@@ -55,10 +54,6 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ListVi
     @Override
     public int getItemCount() {
         return placeDetailsList.size();
-    }
-
-    public void setViewModel(MyViewModel viewModel) {
-        this.viewModel = viewModel;
     }
 
     class ListViewHolder extends RecyclerView.ViewHolder {
@@ -103,7 +98,6 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ListVi
             if (placeDetails.getOpeningHours() != null)
                 if (placeDetails.getOpeningHours().getOpenNow())
                     displayOpeningHours(placeDetails);
-                   // viewModel.getPlaceDetails(placeDetails.getPlaceId()).observe(context, this::displayOpeningHours);
                 else
                     openingHours.setText("Fermé");
 
@@ -119,11 +113,6 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ListVi
             int distance = (int) restaurantLocation.distanceTo(context.currentLocation);
             restaurantDistance.setText(res.getString(R.string.distance, distance));
 
-            // GIVE LIST OF USERS
-           /* viewModel.getUsersByPlaceIdDate(placeDetails.getPlaceId(), User.getTodaysDate()).observe(context, users -> {
-                nbrOfWorkmates.setText(res.getString(R.string.nbr_of_workmates, users.size()));
-            });
-            */
             nbrOfWorkmates.setText(res.getString(R.string.nbr_of_workmates, usersEatingAtRestaurant));
 
             // TODO: find out how to calculate the rating
@@ -134,7 +123,7 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ListVi
 
         private void displayOpeningHours(PlaceDetails placeDetails) {
             int today = OpeningHours.getTodaysDay();
-            if (today >= 0) {
+            if (today >= 0 && placeDetails.getOpeningHours().getPeriods()!= null) {
                 String time = placeDetails.getOpeningHours().getPeriods().get(today).getClose().getTime();
                 String finalTime = time.substring(0,2) + "h" + time.substring(2);
                 openingHours.setText("Ouvert jusqu'à " + finalTime);
