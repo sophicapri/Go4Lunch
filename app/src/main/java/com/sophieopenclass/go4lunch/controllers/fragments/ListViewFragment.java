@@ -16,7 +16,11 @@ import com.sophieopenclass.go4lunch.base.BaseActivity;
 import com.sophieopenclass.go4lunch.controllers.activities.RestaurantDetailsActivity;
 import com.sophieopenclass.go4lunch.controllers.adapters.ListViewAdapter;
 import com.sophieopenclass.go4lunch.databinding.RecyclerViewRestaurantsBinding;
+import com.sophieopenclass.go4lunch.models.User;
+import com.sophieopenclass.go4lunch.models.json_to_java.PlaceDetails;
 import com.sophieopenclass.go4lunch.models.json_to_java.RestaurantsResult;
+
+import java.util.ArrayList;
 
 import static com.sophieopenclass.go4lunch.controllers.fragments.MapViewFragment.getLatLngString;
 import static com.sophieopenclass.go4lunch.utils.Constants.PLACE_ID;
@@ -25,6 +29,7 @@ public class ListViewFragment extends Fragment implements ListViewAdapter.OnRest
     private MyViewModel viewModel;
     private RecyclerViewRestaurantsBinding binding;
     private BaseActivity context;
+    private ArrayList<Integer> usersEatingAtRestaurant;
 
     public static Fragment newInstance() {
         return new ListViewFragment();
@@ -51,14 +56,28 @@ public class ListViewFragment extends Fragment implements ListViewAdapter.OnRest
         binding.recyclerViewRestaurants.setLayoutManager(new LinearLayoutManager(getContext()));
 
         if (nextPageToken == null)
-        viewModel.getNearbyPlaces(getLatLngString(context.currentLocation))
-                .observe(getViewLifecycleOwner(), this::updateRecyclerView);
+            viewModel.getNearbyPlaces(getLatLngString(context.currentLocation))
+                    .observe(getViewLifecycleOwner(), this::getNumberOfWorkmatesAndUpdateRecyclerView);
         else
-            viewModel.getMoreNearbyPlaces(nextPageToken).observe(getViewLifecycleOwner(), this::updateRecyclerView);
+            viewModel.getMoreNearbyPlaces(nextPageToken).observe(getViewLifecycleOwner(), this::getNumberOfWorkmatesAndUpdateRecyclerView);
     }
 
-    private void updateRecyclerView(RestaurantsResult restaurants) {
-        ListViewAdapter adapter = new ListViewAdapter(restaurants.getPlaceDetails(), this);
+    private void getNumberOfWorkmatesAndUpdateRecyclerView(RestaurantsResult restaurants) {
+        usersEatingAtRestaurant = new ArrayList<>();
+
+        for (PlaceDetails placeDetails : restaurants.getPlaceDetails()) {
+            System.out.println("here");
+
+            viewModel.getUsersByPlaceIdDate(placeDetails.getPlaceId(), User.getTodaysDate())
+                    .observe(getViewLifecycleOwner(), users ->{
+                            usersEatingAtRestaurant.add(users.size());
+                        System.out.println(users.size());});
+        }
+        updateRecyclerView(restaurants, usersEatingAtRestaurant);
+    }
+
+    private void updateRecyclerView(RestaurantsResult restaurants, ArrayList<Integer> usersEatingAtRestaurant) {
+        ListViewAdapter adapter = new ListViewAdapter(restaurants.getPlaceDetails(), usersEatingAtRestaurant, this);
         adapter.setViewModel(viewModel);
         binding.recyclerViewRestaurants.setAdapter(adapter);
 
@@ -69,7 +88,7 @@ public class ListViewFragment extends Fragment implements ListViewAdapter.OnRest
                 super.onScrollStateChanged(recyclerView, newState);
                 if (!recyclerView.canScrollVertically(1))
                     if (restaurants.getNextPageToken() != null)
-                    observePlaces(restaurants.getNextPageToken());
+                        observePlaces(restaurants.getNextPageToken());
             }
         });
 

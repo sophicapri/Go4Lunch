@@ -43,6 +43,14 @@ public class WorkmateDetailActivity extends BaseActivity<MyViewModel> {
             viewModel.getUser(uid).observe(this, this::initUI);
         }
         binding.chatWithWorkmateBtn.setOnClickListener(v -> startChatActivity(uid));
+
+        //CHECK IF A RESTAURANT HAS BEEN CHOSEN FOR THE CURRENT DAY/
+        checkIfRestaurantHasBeenChosenToday();
+
+    }
+
+    private void checkIfRestaurantHasBeenChosenToday() {
+
     }
 
     private void initUI(User user) {
@@ -52,27 +60,27 @@ public class WorkmateDetailActivity extends BaseActivity<MyViewModel> {
                 .apply(RequestOptions.circleCropTransform())
                 .into(binding.workmateProfilePic);
 
-        viewModel.getPlaceId(user.getUid()).observe(this, placeId -> {
+        viewModel.getPlaceIdDate(user.getUid(), User.getTodaysDate()).observe(this, placeId -> {
             if (placeId != null) {
                 viewModel.getPlaceDetails(placeId).observe(this, placeDetails -> {
-                    binding.workmateDetailLunch.setVisibility(View.VISIBLE);
-                    binding.detailsRestaurantName.setText(placeDetails.getName());
-                    binding.detailsTypeOfRestaurant.setText(getString(R.string.restaurant_type, placeDetails.getTypes().get(0)));
-                    binding.detailsRestaurantAddress.setText(placeDetails.getVicinity());
+                    binding.workmateDetailLunch.workmateDetailLunch.setVisibility(View.VISIBLE);
+                    binding.workmateDetailLunch.detailsRestaurantName.setText(placeDetails.getName());
+                    binding.workmateDetailLunch.detailsTypeOfRestaurant.setText(getString(R.string.restaurant_type, placeDetails.getTypes().get(0)));
+                    binding.workmateDetailLunch.detailsRestaurantAddress.setText(placeDetails.getVicinity());
                     String urlPhoto = PlaceDetails.urlPhotoFormatter(placeDetails, 0);
-                    Glide.with(binding.restaurantPhoto)
+                    Glide.with(binding.workmateDetailLunch.restaurantPhoto)
                             .load(urlPhoto)
                             .apply(RequestOptions.centerCropTransform())
-                            .into(binding.restaurantPhoto);
+                            .into(binding.workmateDetailLunch.restaurantPhoto);
                     if (getCurrentUser() != null)
                         if (user.getUid().equals(getCurrentUser().getUid()))
                             binding.workmateLunchTextview.setText(getString(R.string.your_lunch_textview));
-                    if (binding.workmateDetailLunch.getVisibility() == View.VISIBLE)
-                        binding.workmateDetailLunch.setOnClickListener(v -> startRestaurantActivity(placeId));
+                    if (binding.workmateDetailLunch.workmateDetailLunch.getVisibility() == View.VISIBLE)
+                        binding.workmateDetailLunch.workmateDetailLunch.setOnClickListener(v -> startRestaurantActivity(placeId));
                     // TODO : handle stars
                 });
             } else {
-                binding.workmateDetailLunch.setVisibility(View.GONE);
+                binding.workmateDetailLunch.workmateDetailLunch.setVisibility(View.GONE);
                 binding.workmateLunchTextview.setText(R.string.no_restaurant_chosen);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     binding.workmateLunchTextview.setTextAppearance(R.style.TextStyleItalic);

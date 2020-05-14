@@ -188,7 +188,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
     private void initMarkers(RestaurantsResult restaurants) {
         this.restaurantsResult = restaurants;
         for (PlaceDetails placeDetails : restaurants.getPlaceDetails()) {
-            viewModel.getUsersByPlaceId(placeDetails.getPlaceId()).observe(getViewLifecycleOwner(), users -> {
+            viewModel.getUsersByPlaceIdDate(placeDetails.getPlaceId(), User.getTodaysDate()).observe(getViewLifecycleOwner(), users -> {
                 int markerDrawable;
                 if (users.isEmpty())
                     markerDrawable = R.drawable.ic_marker_red;

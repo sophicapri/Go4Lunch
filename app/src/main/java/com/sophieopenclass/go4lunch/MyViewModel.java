@@ -1,6 +1,9 @@
 package com.sophieopenclass.go4lunch;
 
+import android.util.Log;
+
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.google.firebase.firestore.CollectionReference;
@@ -10,7 +13,10 @@ import com.sophieopenclass.go4lunch.models.User;
 import com.sophieopenclass.go4lunch.repository.RestaurantDataRepository;
 import com.sophieopenclass.go4lunch.repository.UserDataRepository;
 
+import java.util.Date;
 import java.util.List;
+
+import static com.firebase.ui.auth.AuthUI.TAG;
 
 public class MyViewModel extends ViewModel {
     private RestaurantDataRepository restaurantDataSource;
@@ -58,7 +64,19 @@ public class MyViewModel extends ViewModel {
         return userDataSource.getUsersByPlaceId(placeId);
     }
 
-    public LiveData<User> getCreatedUserLiveData() {
+    public LiveData<List<User>> getUsersByPlaceIdDate(String placeId, Date date) {
+        return userDataSource.getUsersByPlaceIdDate(placeId, date);
+    }
+
+    public LiveData<String> addPlaceId(String uid, String placeId, Date date) {
+        return  userDataSource.addPlaceId(uid,placeId,date);
+    }
+
+    public void deletePlaceId(String uid, Date date) {
+        userDataSource.deletePlaceId(uid, date);
+    }
+
+        public LiveData<User> getCreatedUserLiveData() {
         return createdUserLiveData;
     }
 
@@ -66,7 +84,13 @@ public class MyViewModel extends ViewModel {
         return userDataSource.getPlaceId(userId);
     }
 
-        public LiveData<String> updateUsername(String username, String uid) {
+
+    public MutableLiveData<String> getPlaceIdDate(String userId, Date date) {
+        return userDataSource.getPlaceIdDate(userId, date);
+    }
+
+
+    public LiveData<String> updateUsername(String username, String uid) {
         return userDataSource.updateUsername(username, uid);
     }
 

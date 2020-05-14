@@ -83,7 +83,7 @@ public class WorkmatesViewAdapter extends FirestoreRecyclerAdapter<User, Workmat
         }
 
         void bind(User model) {
-            viewModel.getPlaceId(model.getUid()).observe((LifecycleOwner) context, placeId ->
+            viewModel.getPlaceIdDate(model.getUid(), User.getTodaysDate()).observe((LifecycleOwner) context, placeId ->
             {
                 Glide.with(profilePhoto.getContext())
                         .load(model.getUrlPicture())

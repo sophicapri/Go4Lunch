@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.sophieopenclass.go4lunch.injection.Injection.PLACES_COLLECTION_NAME;
+import static com.sophieopenclass.go4lunch.injection.Injection.USER_COLLECTION_NAME;
 import static com.sophieopenclass.go4lunch.utils.Constants.MY_LUNCH;
 import static com.sophieopenclass.go4lunch.utils.Constants.PLACE_ID;
 import static com.sophieopenclass.go4lunch.utils.Constants.RESTAURANT_ACTIVITY;
@@ -74,7 +75,7 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
             viewModel.getUser(getCurrentUser().getUid()).observe(this, user -> {
                 currentUser = user;
             });
-            viewModel.getPlaceId(getCurrentUser().getUid()).observe(this, placeId -> {
+            viewModel.getPlaceIdDate(getCurrentUser().getUid(), User.getTodaysDate()).observe(this, placeId -> {
                 if (this.placeId.equals(placeId))
                     binding.addRestaurant.setImageDrawable(getResources().getDrawable(R.drawable.ic_check_circle_black_24dp));
             });
@@ -98,7 +99,7 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
 
     private void setUpRecyclerView() {
         FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>()
-                .setQuery(viewModel.getCollectionReference(PLACES_COLLECTION_NAME).whereEqualTo(PLACE_ID, placeId), User.class)
+                .setQuery(viewModel.getCollectionReference(USER_COLLECTION_NAME).whereEqualTo("dates." +User.getTodaysDate(), placeId), User.class)
                 .build();
         adapter = new WorkmatesViewAdapter(options, RESTAURANT_ACTIVITY, this);
         ((WorkmatesViewAdapter) adapter).setViewModel(viewModel);
@@ -148,7 +149,7 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
     @Override
     public void onClick(View v) {
         if (v == binding.addRestaurant)
-            viewModel.getPlaceId(currentUser.getUid()).observe(this, this::handleRestaurantSelection);
+            viewModel.getPlaceIdDate(currentUser.getUid(), User.getTodaysDate() ).observe(this, this::handleRestaurantSelection);
         else if (v == binding.callBtn || v == binding.callTextview)
             callRestaurant();
         else if (v == binding.likeRestaurantBtn || v == binding.likeTextview) {
@@ -184,17 +185,17 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
         if (!placeId.equals(currentUserPlaceId)) {
             binding.addRestaurant.setImageDrawable(getResources().getDrawable(R.drawable.ic_check_circle_black_24dp));
             if (currentUserPlaceId == null)
-                viewModel.addUserPlaceId(currentUser.getUid(), placeId).observe(this, placeId -> {
+                viewModel.addPlaceId(currentUser.getUid(), placeId, User.getTodaysDate()).observe(this, placeId -> {
                     if (placeId == null) {
                         Toast.makeText(this, "Une erreur est survenue", Toast.LENGTH_LONG).show();
                         binding.addRestaurant.setImageDrawable(getResources().getDrawable(R.drawable.ic_add_black_24dp));
                     }
                 });
             else
-                viewModel.updateUserPlaceId(currentUser.getUid(), placeId);
+                viewModel.addPlaceId(currentUser.getUid(), placeId, User.getTodaysDate());
         } else {
             binding.addRestaurant.setImageDrawable(getResources().getDrawable(R.drawable.ic_add_black_24dp));
-            viewModel.updateUserPlaceId(currentUser.getUid(), null);
+            viewModel.deletePlaceId(currentUser.getUid(), User.getTodaysDate());
         }
     }
 
