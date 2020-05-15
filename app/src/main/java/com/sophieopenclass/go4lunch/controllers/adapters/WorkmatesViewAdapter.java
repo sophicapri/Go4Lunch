@@ -70,16 +70,14 @@ public class WorkmatesViewAdapter extends FirestoreRecyclerAdapter<User, Workmat
     }
 
     class UserViewHolder extends RecyclerView.ViewHolder {
-        ImageView profilePhoto;
-        TextView restaurantPicked;
         OnWorkmateClickListener onWorkmateClickListener;
+        FragmentWorkmatesListBinding binding;
         Context context;
 
         UserViewHolder(@NonNull View itemView, OnWorkmateClickListener onWorkmateClickListener) {
             super(itemView);
             context = itemView.getContext();
-            profilePhoto = FragmentWorkmatesListBinding.bind(itemView).workmateProfilePic;
-            restaurantPicked = FragmentWorkmatesListBinding.bind(itemView).workmatesChoice;
+            binding = FragmentWorkmatesListBinding.bind(itemView);
             this.onWorkmateClickListener = onWorkmateClickListener;
             itemView.setOnClickListener(v -> onWorkmateClickListener.onWorkmateClick(getItem(getBindingAdapterPosition()).getUid()));
         }
@@ -87,29 +85,29 @@ public class WorkmatesViewAdapter extends FirestoreRecyclerAdapter<User, Workmat
         void bind(User model) {
             viewModel.getPlaceIdByDate(model.getUid(), User.getTodaysDate()).observe((LifecycleOwner) context, placeId ->
             {
-                Glide.with(profilePhoto.getContext())
+                Glide.with(binding.workmateProfilePic.getContext())
                         .load(model.getUrlPicture())
                         .apply(RequestOptions.circleCropTransform())
-                        .into(profilePhoto);
+                        .into(binding.workmateProfilePic);
 
                 if (controller == WORKMATES_FRAGMENT) {
                     if (placeId != null) {
                         viewModel.getPlaceDetails(placeId).observe((LifecycleOwner) context, placeDetails ->
-                                restaurantPicked.setText(context.getResources()
+                                binding.workmatesChoice.setText(context.getResources()
                                         .getString(R.string.workmates_eating_at, model.getUsername(), placeDetails.getName())));
                     } else {
-                        restaurantPicked.setText(context.getResources()
+                        binding.workmatesChoice.setText(context.getResources()
                                 .getString(R.string.workmate_hasnt_chosen, model.getUsername()));
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                            restaurantPicked.setTextAppearance(R.style.TextStyleItalic);
+                            binding.workmatesChoice.setTextAppearance(R.style.TextStyleItalic);
                         } else
-                            restaurantPicked.setTextColor(context.getResources().getColor(R.color.quantum_grey700));
+                            binding.workmatesChoice.setTextColor(context.getResources().getColor(R.color.quantum_grey700));
                     }
                 } else {
                     if (model.getUid().equals(currentUser.getUid()))
-                        restaurantPicked.setText(context.getResources().getString(R.string.you_are_eating_here));
+                        binding.workmatesChoice.setText(context.getResources().getString(R.string.you_are_eating_here));
                     else
-                        restaurantPicked.setText(context.getResources().getString(R.string.workmate_is_eating_here, model.getUsername()));
+                        binding.workmatesChoice.setText(context.getResources().getString(R.string.workmate_is_eating_here, model.getUsername()));
                 }
             });
         }

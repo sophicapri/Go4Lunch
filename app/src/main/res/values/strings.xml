@@ -33,5 +33,8 @@
     <string name="weekdays_opening_hours_title">Horaires</string>
     <string name="weekdays_openings">"Monday: 11:30 AM – 3:00 PM, 6:00 – 11:00 PM\nTuesday: 11:30 AM – 3:00 PM, 6:00 – 11:00 PM\nWednesday: 11:30 AM – 3:00 PM, 6:00 – 11:00 PM\nThursday: 11:30 AM – 3:00 PM, 6:00 – 11:00 PM\nFriday: 11:30 AM – 3:00 PM, 6:00 – 11:00 PM\nSaturday: 11:30 AM – 3:00 PM, 6:00 – 11:00 PM\nSunday: Closed"</string>
     <string name="previous_restaurants">PRÉCÉDENTS DÉJEUNERS:</string>
+    <string name="open_until">"Ouvert jusqu'à %s"</string>
+    <string name="open">Ouvert</string>
+    <string name="close">Fermé</string>
 
 </resources>

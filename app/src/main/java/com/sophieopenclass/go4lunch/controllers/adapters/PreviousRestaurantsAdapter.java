@@ -14,6 +14,7 @@ import com.sophieopenclass.go4lunch.R;
 import com.sophieopenclass.go4lunch.base.BaseActivity;
 import com.sophieopenclass.go4lunch.databinding.WorkmatesRestaurantPreviewBinding;
 import com.sophieopenclass.go4lunch.listeners.Listeners;
+import com.sophieopenclass.go4lunch.models.User;
 import com.sophieopenclass.go4lunch.models.json_to_java.PlaceDetails;
 
 import java.util.ArrayList;
@@ -21,11 +22,13 @@ import java.util.ArrayList;
 public class PreviousRestaurantsAdapter extends RecyclerView.Adapter<PreviousRestaurantsAdapter.WorkmatesDetailHolder> {
     private ArrayList<PlaceDetails> placeDetailsList;
     private Listeners.OnRestaurantClickListener onRestaurantClickListener;
+    private User user;
 
 
-    public PreviousRestaurantsAdapter(ArrayList<PlaceDetails> placeDetailsList, Listeners.OnRestaurantClickListener onRestaurantClickListener) {
+    public PreviousRestaurantsAdapter(ArrayList<PlaceDetails> placeDetailsList, User selectedUser, Listeners.OnRestaurantClickListener onRestaurantClickListener) {
         this.placeDetailsList = placeDetailsList;
         this.onRestaurantClickListener = onRestaurantClickListener;
+        this.user = selectedUser;
     }
 
     @NonNull
@@ -61,6 +64,18 @@ public class PreviousRestaurantsAdapter extends RecyclerView.Adapter<PreviousRes
         void bind(PlaceDetails placeDetails) {
             BaseActivity context = (BaseActivity) itemView.getContext();
             Resources res = context.getResources();
+            Object[] dateArray = user.getDatesAndPlaceIds().keySet().toArray();
+
+            binding.dateOfPreviousLunch.setVisibility(View.VISIBLE);
+            System.out.println(dateArray[getBindingAdapterPosition()] + "first");
+            System.out.println(dateArray[0] + "second");
+
+            if (placeDetailsList.size() == user.getDatesAndPlaceIds().size())
+                binding.dateOfPreviousLunch.setText((String)dateArray[getBindingAdapterPosition()]);
+            else{
+                binding.dateOfPreviousLunch.setText((String) dateArray[getBindingAdapterPosition() + 1]);
+                    System.out.println(dateArray[getBindingAdapterPosition() + 1 ]);
+                }
 
             binding.detailsRestaurantName.setText(placeDetails.getName());
             binding.detailsTypeOfRestaurant.setText(res.getString(R.string.restaurant_type, placeDetails.getTypes().get(0)));

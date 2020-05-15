@@ -51,7 +51,19 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        binding.addRestaurant.setOnClickListener(this);
+        binding.callTextview.setOnClickListener(this);
+        binding.callBtn.setOnClickListener(this);
+        binding.likeRestaurantBtn.setOnClickListener(this);
+        binding.likeTextview.setOnClickListener(this);
+        binding.websiteBtn.setOnClickListener(this);
+        binding.websiteTextview.setOnClickListener(this);
+        binding.openingHoursTitle.setOnClickListener(this);
+    }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
         if (getIntent().getExtras() != null) {
             if (getIntent().hasExtra(PLACE_ID)) {
                 placeId = (String) getIntent().getExtras().get(PLACE_ID);
@@ -75,28 +87,17 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
             viewModel.getPlaceIdByDate(getCurrentUser().getUid(), User.getTodaysDate()).observe(this, placeId -> {
                 if (this.placeId.equals(placeId))
                     binding.addRestaurant.setImageDrawable(getResources().getDrawable(R.drawable.ic_check_circle_black_24dp));
+                else
+                    binding.addRestaurant.setImageDrawable(getResources().getDrawable(R.drawable.ic_add_black_24dp));
             });
         }
 
-        binding.addRestaurant.setOnClickListener(this);
-        binding.callTextview.setOnClickListener(this);
-        binding.callBtn.setOnClickListener(this);
-        binding.likeRestaurantBtn.setOnClickListener(this);
-        binding.likeTextview.setOnClickListener(this);
-        binding.websiteBtn.setOnClickListener(this);
-        binding.websiteTextview.setOnClickListener(this);
-        binding.openingHoursTitle.setOnClickListener(this);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
         setUpRecyclerView();
     }
 
     private void setUpRecyclerView() {
         FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>()
-                .setQuery(viewModel.getCollectionReference().whereEqualTo("datesAndPlacesIds." +User.getTodaysDate(), placeId), User.class)
+                .setQuery(viewModel.getCollectionReference().whereEqualTo("datesAndPlaceIds." +User.getTodaysDate(), placeId), User.class)
                 .build();
         adapter = new WorkmatesViewAdapter(options, RESTAURANT_ACTIVITY, this);
         ((WorkmatesViewAdapter) adapter).setViewModel(viewModel);
@@ -182,17 +183,21 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
         if (!placeId.equals(currentUserPlaceId)) {
             binding.addRestaurant.setImageDrawable(getResources().getDrawable(R.drawable.ic_check_circle_black_24dp));
             if (currentUserPlaceId == null)
-                viewModel.addPlaceId(currentUser.getUid(), placeId, User.getTodaysDate()).observe(this, placeId -> {
+                viewModel.updateUserPlaceId(currentUser.getUid(), placeId, User.getTodaysDate()).observe(this, placeId -> {
                     if (placeId == null) {
                         Toast.makeText(this, "Une erreur est survenue", Toast.LENGTH_LONG).show();
                         binding.addRestaurant.setImageDrawable(getResources().getDrawable(R.drawable.ic_add_black_24dp));
                     }
                 });
             else
-                viewModel.addPlaceId(currentUser.getUid(), placeId, User.getTodaysDate());
+                viewModel.updateUserPlaceId(currentUser.getUid(), placeId, User.getTodaysDate());
         } else {
             binding.addRestaurant.setImageDrawable(getResources().getDrawable(R.drawable.ic_add_black_24dp));
             viewModel.deletePlaceId(currentUser.getUid(), User.getTodaysDate());
+
+            if (currentUser.getDatesAndPlaceIds().keySet().isEmpty()) {
+                viewModel.deleteDatesAndPlaceIdsField(currentUser.getUid());
+            }
         }
     }
 

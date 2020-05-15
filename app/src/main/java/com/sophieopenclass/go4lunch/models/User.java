@@ -1,9 +1,7 @@
 package com.sophieopenclass.go4lunch.models;
 
-import android.icu.text.RelativeDateTimeFormatter;
-import android.util.ArrayMap;
-
 import androidx.annotation.Nullable;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -17,9 +15,10 @@ public class User {
     private String username;
     @Nullable
     private String urlPicture;
-    private Map<String, String> datesAndPlacesIds = new HashMap<>();
+    private Map<String, String> datesAndPlaceIds = new HashMap<>();
 
-    public User() { }
+    public User() {
+    }
 
     public User(String uid, String username, @Nullable String urlPicture) {
         this.uid = uid;
@@ -28,33 +27,69 @@ public class User {
     }
 
     // --- GETTERS ---
-    public String getUid() { return uid; }
-    public String getUsername() { return username; }
+    public String getUid() {
+        return uid;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
     @Nullable
-    public String getUrlPicture() { return urlPicture; }
+    public String getUrlPicture() {
+        return urlPicture;
+    }
 
     // --- SETTERS ---
-    public void setUsername(String username) { this.username = username; }
-    public void setUid(String uid) { this.uid = uid; }
-    public void setUrlPicture(@Nullable String urlPicture) { this.urlPicture = urlPicture; }
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
-    public static Date getTodaysDate(){
-        Date date = null;
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
+
+    public void setUrlPicture(@Nullable String urlPicture) {
+        this.urlPicture = urlPicture;
+    }
+
+    // Always save the date as Locale.US in Firebase
+    public static String getTodaysDate() {
+        Date date = new Date();
+        String formatted = date.toString().substring(4, 10) + " " + date.toString().substring(24);
+        SimpleDateFormat formatter = new SimpleDateFormat("MMM dd yyyy", Locale.US);
         try {
-            DateFormat formatter = SimpleDateFormat.getDateInstance(DateFormat.SHORT, Locale.FRENCH);
-            date = formatter.parse(formatter.format(new Date()));
+            date = formatter.parse(formatted);
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        return date;
+        DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.LONG, Locale.US);
+        if (date != null)
+            return dateFormat.format(date);
+        return "";
     }
 
-    public Map<String, String> getDatesAndPlacesIds() {
-        return datesAndPlacesIds;
+    // To display the date of the previous restaurants in WorkmatesDetailActivity
+    // either in French or in English
+    public static String formatDate(String dateString) {
+        SimpleDateFormat formatter = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
+        Date date = null;
+        try {
+            date = formatter.parse(dateString);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault());
+        if (date != null)
+            return dateFormat.format(date);
+        return "";
     }
 
-    public void setDatesAndPlacesIds(Map<String, String> datesAndPlacesIds) {
-        this.datesAndPlacesIds = datesAndPlacesIds;
+    public Map<String, String> getDatesAndPlaceIds() {
+        return datesAndPlaceIds;
     }
 
+    public void setDatesAndPlaceIds(Map<String, String> datesAndPlaceIds) {
+        this.datesAndPlaceIds = datesAndPlaceIds;
+    }
 }

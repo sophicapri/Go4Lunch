@@ -62,6 +62,17 @@
         app:layout_constraintTop_toTopOf="@+id/details_type_of_restaurant"
         tools:text="@sample/tasks.json/data_restaurants/address" />
 
+    <TextView
+        android:id="@+id/date_of_previous_lunch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_margin="10dp"
+        android:text="15 mai 2020"
+        android:textStyle="italic"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <ImageView
         android:id="@+id/detail_one_star"
         android:layout_width="wrap_content"

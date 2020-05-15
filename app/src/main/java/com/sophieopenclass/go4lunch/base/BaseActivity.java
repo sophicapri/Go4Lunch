@@ -37,7 +37,6 @@ public abstract class BaseActivity<T extends ViewModel> extends AppCompatActivit
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         FacebookSdk.setAdvertiserIDCollectionEnabled(false);
         FacebookSdk.setAutoLogAppEventsEnabled(false);
         configureViewModel();

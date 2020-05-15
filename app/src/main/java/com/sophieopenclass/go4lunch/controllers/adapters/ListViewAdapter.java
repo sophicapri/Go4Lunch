@@ -1,6 +1,5 @@
 package com.sophieopenclass.go4lunch.controllers.adapters;
 
-import android.content.Context;
 import android.content.res.Resources;
 import android.location.Location;
 import android.view.LayoutInflater;
@@ -10,24 +9,21 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.LifecycleOwner;
-import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.sophieopenclass.go4lunch.MyViewModel;
 import com.sophieopenclass.go4lunch.R;
 import com.sophieopenclass.go4lunch.base.BaseActivity;
 import com.sophieopenclass.go4lunch.databinding.FragmentListViewBinding;
-
 import com.sophieopenclass.go4lunch.models.json_to_java.OpeningHours;
 import com.sophieopenclass.go4lunch.models.json_to_java.PlaceDetails;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
-import static com.sophieopenclass.go4lunch.listeners.Listeners.*;
+import static com.sophieopenclass.go4lunch.listeners.Listeners.OnRestaurantClickListener;
 
 public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ListViewHolder> {
     private List<PlaceDetails> placeDetailsList;
@@ -59,77 +55,62 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ListVi
     }
 
     class ListViewHolder extends RecyclerView.ViewHolder {
-        TextView restaurantName;
-        TextView typeOfRestaurant;
-        TextView restaurantAddress;
-        TextView openingHours;
-        ImageView restaurantPhoto;
-        TextView restaurantDistance;
-        TextView nbrOfWorkmates;
-        ImageView oneStar;
-        ImageView twoStars;
-        ImageView threeStars;
+        FragmentListViewBinding binding;
         OnRestaurantClickListener onRestaurantClickListener;
+        BaseActivity context;
+        Resources res;
 
         ListViewHolder(@NonNull View itemView, OnRestaurantClickListener onRestaurantClickListener) {
             super(itemView);
             this.onRestaurantClickListener = onRestaurantClickListener;
-            FragmentListViewBinding binding = FragmentListViewBinding.bind(itemView);
-            restaurantName = binding.restaurantName;
-            typeOfRestaurant = binding.typeOfRestaurant;
-            restaurantAddress = binding.restaurantAddress;
-            openingHours = binding.openingHours;
-            restaurantPhoto = binding.restaurantPhoto;
-            restaurantDistance = binding.restaurantDistance;
-            nbrOfWorkmates = binding.nbrOfWorkmates;
-            oneStar = binding.oneStar;
-            twoStars = binding.twoStars;
-            threeStars = binding.threeStars;
+            binding = FragmentListViewBinding.bind(itemView);
             itemView.setOnClickListener(v -> onRestaurantClickListener
                     .onRestaurantClick(placeDetailsList.get(getBindingAdapterPosition()).getPlaceId()));
+
+            res = context.getResources();
+            context = (BaseActivity) itemView.getContext();
         }
 
         void bind(PlaceDetails placeDetails, Integer usersEatingAtRestaurant) {
-            BaseActivity context = (BaseActivity) itemView.getContext();
-            Resources res = context.getResources();
-
-            restaurantName.setText(placeDetails.getName());
-            typeOfRestaurant.setText(res.getString(R.string.restaurant_type, placeDetails.getTypes().get(0)));
-            restaurantAddress.setText(placeDetails.getVicinity());
+            binding.restaurantName.setText(placeDetails.getName());
+            binding.typeOfRestaurant.setText(res.getString(R.string.restaurant_type, placeDetails.getTypes().get(0)));
+            binding.restaurantAddress.setText(placeDetails.getVicinity());
 
             if (placeDetails.getOpeningHours() != null)
                 if (placeDetails.getOpeningHours().getOpenNow())
                     displayOpeningHours(placeDetails);
                 else
-                    openingHours.setText("Fermé");
+                    binding.openingHours.setText(R.string.close);
 
             String urlPhoto = PlaceDetails.urlPhotoFormatter(placeDetails, 0);
-            Glide.with(restaurantPhoto.getContext())
+            Glide.with(binding.restaurantPhoto.getContext())
                     .load(urlPhoto)
                     .apply(RequestOptions.centerCropTransform())
-                    .into(restaurantPhoto);
+                    .into(binding.restaurantPhoto);
 
             Location restaurantLocation = new Location(placeDetails.getName());
             restaurantLocation.setLatitude(placeDetails.getGeometry().getLocation().getLat());
             restaurantLocation.setLongitude(placeDetails.getGeometry().getLocation().getLng());
             int distance = (int) restaurantLocation.distanceTo(context.currentLocation);
-            restaurantDistance.setText(res.getString(R.string.distance, distance));
-            nbrOfWorkmates.setText(res.getString(R.string.nbr_of_workmates, usersEatingAtRestaurant));
+            binding.restaurantDistance.setText(res.getString(R.string.distance, distance));
+            binding.nbrOfWorkmates.setText(res.getString(R.string.nbr_of_workmates, usersEatingAtRestaurant));
 
             // TODO: find out how to calculate the rating
-            oneStar.setVisibility(View.VISIBLE);
-            twoStars.setVisibility(View.VISIBLE);
-            threeStars.setVisibility(View.INVISIBLE);
+            binding.oneStar.setVisibility(View.VISIBLE);
+            binding.twoStars.setVisibility(View.VISIBLE);
+            binding.threeStars.setVisibility(View.INVISIBLE);
         }
 
         private void displayOpeningHours(PlaceDetails placeDetails) {
             int today = OpeningHours.getTodaysDay();
             if (today >= 0 && placeDetails.getOpeningHours().getPeriods()!= null) {
-                String time = placeDetails.getOpeningHours().getPeriods().get(today).getClose().getTime();
-                String finalTime = time.substring(0,2) + "h" + time.substring(2);
-                openingHours.setText("Ouvert jusqu'à " + finalTime);
+                if (placeDetails.getOpeningHours().getPeriods().size() == Calendar.DAY_OF_WEEK) {
+                    String time = placeDetails.getOpeningHours().getPeriods().get(today).getClose().getTime();
+                    String finalTime = time.substring(0, 2) + "h" + time.substring(2);
+                    binding.openingHours.setText(res.getString(R.string.open_until, finalTime));
+                }
             } else
-                openingHours.setText("Ouvert");
+                binding.openingHours.setText(R.string.open);
 
         }
     }

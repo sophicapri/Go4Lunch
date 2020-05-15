@@ -1,7 +1,6 @@
 package com.sophieopenclass.go4lunch;
 
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.google.firebase.firestore.CollectionReference;
@@ -52,15 +51,20 @@ public class MyViewModel extends ViewModel {
         return userDataSource.getCollectionReference();
     }
 
-    public LiveData<List<User>> getUsersByPlaceIdDate(String placeId, Date date) {
+    public LiveData<List<User>> getUsersByPlaceIdDate(String placeId, String date) {
         return userDataSource.getUsersByPlaceIdDate(placeId, date);
     }
 
-    public LiveData<String> addPlaceId(String uid, String placeId, Date date) {
+    public LiveData<String> updateUserPlaceId(String uid, String placeId, String date) {
         return  userDataSource.updateUserPlaceId(uid,placeId,date);
     }
 
-    public void deletePlaceId(String uid, Date date) {
+    public void deleteDatesAndPlaceIdsField(String uid) {
+        userDataSource.deleteDatesAndPlaceIdsField(uid);
+    }
+
+
+        public void deletePlaceId(String uid, String date) {
         userDataSource.deletePlaceId(uid, date);
     }
 
@@ -69,7 +73,7 @@ public class MyViewModel extends ViewModel {
     }
 
 
-    public LiveData<String> getPlaceIdByDate(String userId, Date date) {
+    public LiveData<String> getPlaceIdByDate(String userId, String date) {
         return userDataSource.getPlaceIdByDate(userId, date);
     }
 

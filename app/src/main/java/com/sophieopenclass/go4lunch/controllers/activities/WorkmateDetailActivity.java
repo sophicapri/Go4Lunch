@@ -26,7 +26,8 @@ public class WorkmateDetailActivity extends BaseActivity<MyViewModel> {
     ActivityWorkmateDetailBinding binding;
     String uid = null;
     ArrayList<PlaceDetails> placeDetailsList;
-    int minus = 0;
+    int minus;
+    User selectedUser;
 
     @Override
     public Class getViewModelClass() {
@@ -40,8 +41,9 @@ public class WorkmateDetailActivity extends BaseActivity<MyViewModel> {
     }
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void onStart() {
+        super.onStart();
+        minus = 0;
         if (getIntent().getExtras() != null && getIntent().hasExtra(UID)) {
             uid = (String) getIntent().getExtras().get(UID);
             viewModel.getUser(uid).observe(this, this::initUI);
@@ -50,13 +52,15 @@ public class WorkmateDetailActivity extends BaseActivity<MyViewModel> {
     }
 
     private void initUI(User user) {
+        selectedUser = user;
         binding.workmatesDetailName.setText(user.getUsername());
         Glide.with(binding.workmateProfilePic.getContext())
                 .load(user.getUrlPicture())
                 .apply(RequestOptions.circleCropTransform())
                 .into(binding.workmateProfilePic);
 
-        String todaysPlaceId = user.getDatesAndPlacesIds().get(User.getTodaysDate().toString());
+
+        String todaysPlaceId = user.getDatesAndPlaceIds().get(User.getTodaysDate().toString());
         if (todaysPlaceId != null) {
             displayTodaysRestaurant(todaysPlaceId);
         } else {
@@ -100,28 +104,25 @@ public class WorkmateDetailActivity extends BaseActivity<MyViewModel> {
         binding.previousRestaurantsRecyclerview.setLayoutManager(new LinearLayoutManager(this));
         placeDetailsList = new ArrayList<>();
         String placeId;
-        System.out.println(user.getDatesAndPlacesIds().keySet());
 
-        for (String date : user.getDatesAndPlacesIds().keySet()) {
-            if (!date.equals(User.getTodaysDate().toString())) {
-                placeId = user.getDatesAndPlacesIds().get(date);
-                System.out.println(placeId);
+        for (String date : user.getDatesAndPlaceIds().keySet()) {
+            if (!date.equals(User.getTodaysDate())) {
+                placeId = user.getDatesAndPlaceIds().get(date);
                 viewModel.getPlaceDetails(placeId).observe(this, placeDetails -> {
                         placeDetailsList.add(placeDetails);
-                    if (placeDetailsList.size() == user.getDatesAndPlacesIds().values().size() - minus) {
+                    if (placeDetailsList.size() == user.getDatesAndPlaceIds().values().size() - minus)
                         updateRecyclerView(placeDetailsList);
-                    } else {
-                    minus++;
-                }
                 });
-            }
+            } else {
+            minus++;
+        }
         }
     }
 
     private void updateRecyclerView(ArrayList<PlaceDetails> placeDetailsList) {
         if (!placeDetailsList.isEmpty())
             binding.noPreviousRestaurants.setVisibility(View.GONE);
-        PreviousRestaurantsAdapter adapter = new PreviousRestaurantsAdapter(placeDetailsList, this);
+        PreviousRestaurantsAdapter adapter = new PreviousRestaurantsAdapter(placeDetailsList, selectedUser,  this);
         binding.previousRestaurantsRecyclerview.setAdapter(adapter);
     }
 
@@ -130,12 +131,4 @@ public class WorkmateDetailActivity extends BaseActivity<MyViewModel> {
         intent.putExtra(UID, uid);
         startActivity(intent);
     }
-
-/*    private void startRestaurantActivity(String placeId) {
-        Intent intent = new Intent(this, RestaurantDetailsActivity.class);
-        intent.putExtra(PLACE_ID, placeId);
-        startActivity(intent);
-    }
- */
-
 }
