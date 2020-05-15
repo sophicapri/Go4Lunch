@@ -28,12 +28,10 @@ import static com.sophieopenclass.go4lunch.listeners.Listeners.OnRestaurantClick
 public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ListViewHolder> {
     private List<PlaceDetails> placeDetailsList;
     private OnRestaurantClickListener onRestaurantClickListener;
-    private ArrayList<Integer> usersEatingAtRestaurant;
 
-    public ListViewAdapter(List<PlaceDetails> placeDetailsList, ArrayList<Integer> usersEatingAtRestaurant, OnRestaurantClickListener onRestaurantClickListener) {
+    public ListViewAdapter(List<PlaceDetails> placeDetailsList, OnRestaurantClickListener onRestaurantClickListener) {
         this.placeDetailsList = placeDetailsList;
         this.onRestaurantClickListener = onRestaurantClickListener;
-        this.usersEatingAtRestaurant = usersEatingAtRestaurant;
     }
 
     @NonNull
@@ -46,7 +44,7 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ListVi
 
     @Override
     public void onBindViewHolder(@NonNull ListViewHolder holder, int position) {
-        holder.bind(placeDetailsList.get(position), usersEatingAtRestaurant.get(position));
+        holder.bind(placeDetailsList.get(position));
     }
 
     @Override
@@ -67,11 +65,11 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ListVi
             itemView.setOnClickListener(v -> onRestaurantClickListener
                     .onRestaurantClick(placeDetailsList.get(getBindingAdapterPosition()).getPlaceId()));
 
-            res = context.getResources();
             context = (BaseActivity) itemView.getContext();
+            res = context.getResources();
         }
 
-        void bind(PlaceDetails placeDetails, Integer usersEatingAtRestaurant) {
+        void bind(PlaceDetails placeDetails) {
             binding.restaurantName.setText(placeDetails.getName());
             binding.typeOfRestaurant.setText(res.getString(R.string.restaurant_type, placeDetails.getTypes().get(0)));
             binding.restaurantAddress.setText(placeDetails.getVicinity());
@@ -93,7 +91,7 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ListVi
             restaurantLocation.setLongitude(placeDetails.getGeometry().getLocation().getLng());
             int distance = (int) restaurantLocation.distanceTo(context.currentLocation);
             binding.restaurantDistance.setText(res.getString(R.string.distance, distance));
-            binding.nbrOfWorkmates.setText(res.getString(R.string.nbr_of_workmates, usersEatingAtRestaurant));
+            binding.nbrOfWorkmates.setText(res.getString(R.string.nbr_of_workmates, placeDetails.getNumbreOfWorkmates()));
 
             // TODO: find out how to calculate the rating
             binding.oneStar.setVisibility(View.VISIBLE);

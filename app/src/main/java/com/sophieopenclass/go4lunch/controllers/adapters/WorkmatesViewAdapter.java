@@ -83,33 +83,30 @@ public class WorkmatesViewAdapter extends FirestoreRecyclerAdapter<User, Workmat
         }
 
         void bind(User model) {
-            viewModel.getPlaceIdByDate(model.getUid(), User.getTodaysDate()).observe((LifecycleOwner) context, placeId ->
-            {
-                Glide.with(binding.workmateProfilePic.getContext())
-                        .load(model.getUrlPicture())
-                        .apply(RequestOptions.circleCropTransform())
-                        .into(binding.workmateProfilePic);
+            String placeId = model.getDatesAndPlaceIds().get(User.getTodaysDate());
+            Glide.with(binding.workmateProfilePic.getContext())
+                    .load(model.getUrlPicture())
+                    .apply(RequestOptions.circleCropTransform())
+                    .into(binding.workmateProfilePic);
 
-                if (controller == WORKMATES_FRAGMENT) {
-                    if (placeId != null) {
-                        viewModel.getPlaceDetails(placeId).observe((LifecycleOwner) context, placeDetails ->
-                                binding.workmatesChoice.setText(context.getResources()
-                                        .getString(R.string.workmates_eating_at, model.getUsername(), placeDetails.getName())));
-                    } else {
-                        binding.workmatesChoice.setText(context.getResources()
-                                .getString(R.string.workmate_hasnt_chosen, model.getUsername()));
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                            binding.workmatesChoice.setTextAppearance(R.style.TextStyleItalic);
-                        } else
-                            binding.workmatesChoice.setTextColor(context.getResources().getColor(R.color.quantum_grey700));
-                    }
+            if (controller == WORKMATES_FRAGMENT) {
+                if (placeId != null) {
+                    binding.workmatesChoice.setText(context.getResources()
+                            .getString(R.string.workmates_eating_at, model.getUsername(), model.getChosenRestaurantName()));
                 } else {
-                    if (model.getUid().equals(currentUser.getUid()))
-                        binding.workmatesChoice.setText(context.getResources().getString(R.string.you_are_eating_here));
-                    else
-                        binding.workmatesChoice.setText(context.getResources().getString(R.string.workmate_is_eating_here, model.getUsername()));
+                    binding.workmatesChoice.setText(context.getResources()
+                            .getString(R.string.workmate_hasnt_chosen, model.getUsername()));
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        binding.workmatesChoice.setTextAppearance(R.style.TextStyleItalic);
+                    } else
+                        binding.workmatesChoice.setTextColor(context.getResources().getColor(R.color.quantum_grey700));
                 }
-            });
+            } else {
+                if (model.getUid().equals(currentUser.getUid()))
+                    binding.workmatesChoice.setText(context.getResources().getString(R.string.you_are_eating_here));
+                else
+                    binding.workmatesChoice.setText(context.getResources().getString(R.string.workmate_is_eating_here, model.getUsername()));
+            }
         }
     }
 

@@ -83,6 +83,7 @@ public class PlaceDetails {
     @SerializedName("website")
     @Expose
     private String website;
+    private int nbrOfWorkmates;
 
     public List<AddressComponent> getAddressComponents() {
         return addressComponents;
@@ -283,5 +284,13 @@ public class PlaceDetails {
         }
         //return "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ffishtankclub.com%2Fwp-content%2Fuploads%2F2016%2F09%2FimgUnavailable.png&f=1&nofb=1";
         return "https://nommunism.files.wordpress.com/2012/09/image_unavailable_icon_20.jpg?w=250&h=245&zoom=2";
+    }
+
+    public int getNumbreOfWorkmates(){
+        return nbrOfWorkmates;
+    }
+
+    public void setNbrOfWorkmates(int nbrOfWorkmates){
+        this.nbrOfWorkmates = nbrOfWorkmates;
     }
 }

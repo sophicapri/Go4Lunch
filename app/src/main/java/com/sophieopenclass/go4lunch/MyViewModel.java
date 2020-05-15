@@ -10,7 +10,6 @@ import com.sophieopenclass.go4lunch.models.User;
 import com.sophieopenclass.go4lunch.repository.RestaurantDataRepository;
 import com.sophieopenclass.go4lunch.repository.UserDataRepository;
 
-import java.util.Date;
 import java.util.List;
 
 public class MyViewModel extends ViewModel {
@@ -47,6 +46,10 @@ public class MyViewModel extends ViewModel {
         return userDataSource.getUser(uid);
     }
 
+    public LiveData<List<User>> getAllUsers() {
+        return userDataSource.getAllUsers();
+    }
+
     public CollectionReference getCollectionReference() {
         return userDataSource.getCollectionReference();
     }
@@ -56,19 +59,23 @@ public class MyViewModel extends ViewModel {
     }
 
     public LiveData<String> updateUserPlaceId(String uid, String placeId, String date) {
-        return  userDataSource.updateUserPlaceId(uid,placeId,date);
+        return userDataSource.updateUserPlaceId(uid, placeId, date);
     }
 
-    public void deleteDatesAndPlaceIdsField(String uid) {
+    public void updateRestaurantName(String uid, String restaurantName) {
+        userDataSource.updateRestaurantName(uid, restaurantName);
+    }
+
+        public void deleteDatesAndPlaceIdsField(String uid) {
         userDataSource.deleteDatesAndPlaceIdsField(uid);
     }
 
 
-        public void deletePlaceId(String uid, String date) {
+    public void deletePlaceId(String uid, String date) {
         userDataSource.deletePlaceId(uid, date);
     }
 
-        public LiveData<User> getCreatedUserLiveData() {
+    public LiveData<User> getCreatedUserLiveData() {
         return createdUserLiveData;
     }
 

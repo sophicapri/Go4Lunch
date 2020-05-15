@@ -50,55 +50,42 @@ public class ListViewFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        observePlaces(null);
+        observePlaces();
     }
 
-    private void observePlaces(String nextPageToken) {
+    private void observePlaces() {
         binding.recyclerViewRestaurants.setHasFixedSize(true);
         binding.recyclerViewRestaurants.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        if (nextPageToken == null)
-            viewModel.getNearbyPlaces(getLatLngString(context.currentLocation))
-                    .observe(getViewLifecycleOwner(), this::getNumberOfWorkmatesAtARestaurant);
-        else
-            viewModel.getMoreNearbyPlaces(nextPageToken).observe(getViewLifecycleOwner(), this::getNumberOfWorkmatesAtARestaurant);
-    }
 
+        viewModel.getNearbyPlaces(getLatLngString(context.currentLocation))
+                .observe(getViewLifecycleOwner(), this::getFullPlaceDetails);
 
-    // Calling getFullPlaceDetails inside the viewModel call because otherwise the method gets called
-    // before the loop has ended.
-    private void getNumberOfWorkmatesAtARestaurant(RestaurantsResult restaurants) {
-        usersEatingAtRestaurant = new ArrayList<>();
-        List<PlaceDetails> placeDetailsList = restaurants.getPlaceDetails();
-
-        for (PlaceDetails placeDetails : placeDetailsList) {
-            viewModel.getUsersByPlaceIdDate(placeDetails.getPlaceId(), User.getTodaysDate())
-                    .observe(getViewLifecycleOwner(), users -> {
-                        usersEatingAtRestaurant.add(users.size());
-                        if (usersEatingAtRestaurant.size() == placeDetailsList.size()) {
-                            getFullPlaceDetails(restaurants.getPlaceDetails());
-                        }
-                    });
-        }
     }
 
     // Nearby Search doesn't return all the fields required in a PlaceDetails, therefore another
     // query is necessary to retrieve the missing fields (ex : opening hours)
-    private void getFullPlaceDetails(List<PlaceDetails> restaurants) {
+    private void getFullPlaceDetails(RestaurantsResult restaurantsResult) {
+        List<PlaceDetails> placeDetailsList = restaurantsResult.getPlaceDetails();
         ArrayList<PlaceDetails> completePlaceDetailsList = new ArrayList<>();
-        for (PlaceDetails placeDetails : restaurants) {
+
+        for (PlaceDetails placeDetails : placeDetailsList) {
             viewModel.getPlaceDetails(placeDetails.getPlaceId())
                     .observe(getViewLifecycleOwner(), restaurant -> {
-                        completePlaceDetailsList.add(restaurant);
-                        if (completePlaceDetailsList.size() == restaurants.size()) {
-                            updateRecyclerView(completePlaceDetailsList, usersEatingAtRestaurant);
-                        }
+                        viewModel.getUsersByPlaceIdDate(placeDetails.getPlaceId(), User.getTodaysDate())
+                                .observe(getViewLifecycleOwner(), users -> {
+                                    restaurant.setNbrOfWorkmates(users.size());
+                                    completePlaceDetailsList.add(restaurant);
+                                    if (completePlaceDetailsList.size() == placeDetailsList.size()) {
+                                        updateRecyclerView(completePlaceDetailsList);
+                                    }
+                                });
                     });
         }
     }
 
-    private void updateRecyclerView(ArrayList<PlaceDetails> restaurants, ArrayList<Integer> usersEatingAtRestaurant) {
-        ListViewAdapter adapter = new ListViewAdapter(restaurants, usersEatingAtRestaurant, context);
+    private void updateRecyclerView(ArrayList<PlaceDetails> restaurants) {
+        ListViewAdapter adapter = new ListViewAdapter(restaurants, context);
         binding.recyclerViewRestaurants.setAdapter(adapter);
     }
 }

@@ -174,7 +174,7 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
                 }
                 binding.weekdaysOpenings.setText(weekdays.toString());
             } else {
-                binding.weekdaysOpenings.setText("Horaires non renseignés");
+                binding.weekdaysOpenings.setText(R.string.opening_hours_unavailable);
             }
         }
     }
@@ -186,15 +186,18 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
                 viewModel.updateUserPlaceId(currentUser.getUid(), placeId, User.getTodaysDate()).observe(this, placeId -> {
                     if (placeId == null) {
                         Toast.makeText(this, "Une erreur est survenue", Toast.LENGTH_LONG).show();
+                        viewModel.updateRestaurantName(currentUser.getUid(), "");
                         binding.addRestaurant.setImageDrawable(getResources().getDrawable(R.drawable.ic_add_black_24dp));
                     }
                 });
             else
                 viewModel.updateUserPlaceId(currentUser.getUid(), placeId, User.getTodaysDate());
+            viewModel.updateRestaurantName(currentUser.getUid(), placeDetails.getName());
         } else {
             binding.addRestaurant.setImageDrawable(getResources().getDrawable(R.drawable.ic_add_black_24dp));
             viewModel.deletePlaceId(currentUser.getUid(), User.getTodaysDate());
-
+            viewModel.updateRestaurantName(currentUser.getUid(), "");
+            // TODO :might delete this
             if (currentUser.getDatesAndPlaceIds().keySet().isEmpty()) {
                 viewModel.deleteDatesAndPlaceIdsField(currentUser.getUid());
             }
@@ -243,7 +246,6 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
             binding.likeRestaurantBtn.setImageDrawable(getResources().getDrawable(R.drawable.ic_star_border_black_24dp));
         }
     }
-
     */
 
 }

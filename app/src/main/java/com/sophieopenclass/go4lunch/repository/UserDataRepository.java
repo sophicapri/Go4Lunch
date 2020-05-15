@@ -6,12 +6,9 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FieldValue;
 import com.sophieopenclass.go4lunch.models.User;
 
-import java.lang.reflect.Field;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -60,9 +57,22 @@ public class UserDataRepository {
         return userData;
     }
 
-    public LiveData<List<User>> getUsersByPlaceIdDate(String placeId, String date) {
+
+    public MutableLiveData<List<User>> getAllUsers() {
         MutableLiveData<List<User>> users = new MutableLiveData<>();
-        userCollectionRef.whereEqualTo(FieldPath.of("datesAndPlaceIds." + date), placeId).get().addOnCompleteListener(task -> {
+        userCollectionRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful())
+                if (task.getResult() != null)
+                    users.postValue(task.getResult().toObjects(User.class));
+                else if (task.getException() != null)
+                    Log.e(TAG, "getUser" + (task.getException().getMessage()));
+        });
+        return users;
+    }
+
+    public MutableLiveData<List<User>> getUsersByPlaceIdDate(String placeId, String date) {
+        MutableLiveData<List<User>> users = new MutableLiveData<>();
+        userCollectionRef.whereEqualTo("datesAndPlaceIds." + date, placeId).get().addOnCompleteListener(task -> {
             if (task.isSuccessful())
                 if (task.getResult() != null)
                     users.postValue(task.getResult().toObjects(User.class));
@@ -149,6 +159,18 @@ public class UserDataRepository {
         });
         return newPlaceId;
     }
+
+    public void updateRestaurantName(String uid, String restaurantName) {
+        MutableLiveData<String> newRestaurantName = new MutableLiveData<>();
+        userCollectionRef.document(uid).update("chosenRestaurantName", restaurantName).addOnCompleteListener(updateRestaurant -> {
+            if(updateRestaurant.isSuccessful())
+                newRestaurantName.setValue(restaurantName);
+            else if (updateRestaurant.getException() != null){
+                Log.e(TAG, "updateRestaurant: " + (updateRestaurant.getException().getMessage()));
+            }
+        });
+    }
+
 
    /* public MutableLiveData<String> getDatesAndPlaceIds(String uid) {
         MutableLiveData<Map<String, Object>> datesAndPlaceIds = new MutableLiveData<>();

@@ -16,6 +16,7 @@ public class User {
     @Nullable
     private String urlPicture;
     private Map<String, String> datesAndPlaceIds = new HashMap<>();
+    private String chosenRestaurantName;
 
     public User() {
     }
@@ -91,5 +92,13 @@ public class User {
 
     public void setDatesAndPlaceIds(Map<String, String> datesAndPlaceIds) {
         this.datesAndPlaceIds = datesAndPlaceIds;
+    }
+
+    public String getChosenRestaurantName() {
+        return chosenRestaurantName;
+    }
+
+    public void setChosenRestaurantName(String chosenRestaurantName) {
+        this.chosenRestaurantName = chosenRestaurantName;
     }
 }

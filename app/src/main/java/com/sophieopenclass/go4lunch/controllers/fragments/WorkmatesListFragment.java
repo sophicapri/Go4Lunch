@@ -16,6 +16,10 @@ import com.sophieopenclass.go4lunch.base.BaseActivity;
 import com.sophieopenclass.go4lunch.controllers.adapters.WorkmatesViewAdapter;
 import com.sophieopenclass.go4lunch.databinding.RecyclerViewWorkmatesBinding;
 import com.sophieopenclass.go4lunch.models.User;
+import com.sophieopenclass.go4lunch.models.json_to_java.PlaceDetails;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.sophieopenclass.go4lunch.injection.Injection.USER_COLLECTION_NAME;
 import static com.sophieopenclass.go4lunch.utils.Constants.WORKMATES_FRAGMENT;
@@ -24,6 +28,7 @@ public class WorkmatesListFragment extends Fragment {
     private RecyclerViewWorkmatesBinding binding;
     private MyViewModel viewModel;
     private FirestoreRecyclerAdapter adapter;
+    List<PlaceDetails> placeDetailsList = new ArrayList<>();
 
     public static Fragment newInstance() {
         return new WorkmatesListFragment();
@@ -49,6 +54,7 @@ public class WorkmatesListFragment extends Fragment {
         FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>()
                 .setQuery(viewModel.getCollectionReference(), User.class)
                 .build();
+
         adapter = new WorkmatesViewAdapter(options,  WORKMATES_FRAGMENT, ((BaseActivity) getActivity()));
         ((WorkmatesViewAdapter) adapter).setViewModel(viewModel);
         binding.recyclerViewWorkmates.setHasFixedSize(true);
