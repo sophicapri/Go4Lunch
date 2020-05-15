@@ -16,6 +16,7 @@ import com.sophieopenclass.go4lunch.base.BaseActivity;
 import com.sophieopenclass.go4lunch.databinding.ActivityLoginBinding;
 import com.sophieopenclass.go4lunch.models.User;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 
 
@@ -30,6 +31,7 @@ public class LoginPageActivity extends BaseActivity<MyViewModel> {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         if (isCurrentUserLogged()) {
             startMainActivity();
         } else

@@ -27,7 +27,7 @@
     <string name="distance">"%dm"</string>
     <string name="you_are_eating_here">Vous mangez ici !</string>
     <string name="chat_with">Discuter avec %s</string>
-    <string name="workmate_lunch_textview">DÉJEUNER DU JOUR:</string>
+    <string name="detail_lunch_textview">DÉJEUNER DU JOUR:</string>
     <string name="your_lunch_textview">VOTRE DÉJEUNER DU JOUR:</string>
     <string name="no_previous_restaurant">"Pas de précédents restaurants…"</string>
     <string name="weekdays_opening_hours_title">Horaires</string>

@@ -16,15 +16,16 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.firebase.ui.firestore.ObservableSnapshotArray;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.sophieopenclass.go4lunch.MyViewModel;
 import com.sophieopenclass.go4lunch.R;
 import com.sophieopenclass.go4lunch.databinding.FragmentWorkmatesListBinding;
 import com.sophieopenclass.go4lunch.models.User;
-import com.sophieopenclass.go4lunch.models.UserPlaceId;
 import com.sophieopenclass.go4lunch.utils.Constants.Controller;
 
+import static com.sophieopenclass.go4lunch.listeners.Listeners.*;
 import static com.sophieopenclass.go4lunch.utils.Constants.RESTAURANT_ACTIVITY;
 import static com.sophieopenclass.go4lunch.utils.Constants.WORKMATES_FRAGMENT;
 
@@ -44,22 +45,23 @@ public class WorkmatesViewAdapter extends FirestoreRecyclerAdapter<User, Workmat
 
     @NonNull
     @Override
+    public ObservableSnapshotArray<User> getSnapshots() {
+        return super.getSnapshots();
+    }
+
+    @NonNull
+    @Override
     public UserViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_workmates_list,
                 parent, false);
         return new UserViewHolder(view, onWorkmateClickListener);
     }
 
-    /**
-     *
-     * @param model  - the model received is either a User or a UserPlaceId (extending User) depending
-     *               on which activity/fragment is called. The ViewModel is called to get all the information
-     *               on the user.
-     */
+
     @Override
     protected void onBindViewHolder(@NonNull UserViewHolder holder, int position, @NonNull User model) {
         if (controller == RESTAURANT_ACTIVITY)
-            viewModel.getUser(model.getUid()).observe((LifecycleOwner) holder.context, holder::bind);
+            holder.bind(model);
         else if (controller == WORKMATES_FRAGMENT) {
             if (!model.getUid().equals(currentUser.getUid())) {
                 holder.bind(model);
@@ -83,7 +85,7 @@ public class WorkmatesViewAdapter extends FirestoreRecyclerAdapter<User, Workmat
         }
 
         void bind(User model) {
-            viewModel.getPlaceIdDate(model.getUid(), User.getTodaysDate()).observe((LifecycleOwner) context, placeId ->
+            viewModel.getPlaceIdByDate(model.getUid(), User.getTodaysDate()).observe((LifecycleOwner) context, placeId ->
             {
                 Glide.with(profilePhoto.getContext())
                         .load(model.getUrlPicture())
@@ -111,10 +113,6 @@ public class WorkmatesViewAdapter extends FirestoreRecyclerAdapter<User, Workmat
                 }
             });
         }
-    }
-
-    public interface OnWorkmateClickListener {
-        void onWorkmateClick(String uid);
     }
 
     public void setViewModel(MyViewModel viewModel) {

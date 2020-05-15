@@ -12,7 +12,6 @@ import com.sophieopenclass.go4lunch.repository.UserDataRepository;
 
 public class Injection {
     public static final String USER_COLLECTION_NAME = "users";
-    public static final String PLACES_COLLECTION_NAME = "placesAndUsers";
 
     private static RestaurantDataRepository provideRestaurantDataSource(){
         PlaceApi placeApi = PlaceService.createService(PlaceApi.class);
@@ -21,8 +20,7 @@ public class Injection {
 
     private static UserDataRepository provideUserDataSource() {
         CollectionReference userCollectionReference = FirebaseFirestore.getInstance().collection(USER_COLLECTION_NAME);
-        CollectionReference placesCollectionReference = FirebaseFirestore.getInstance().collection(PLACES_COLLECTION_NAME);
-        return new UserDataRepository(userCollectionReference, placesCollectionReference);
+        return new UserDataRepository(userCollectionReference);
     }
 
     public static ViewModelFactory provideViewModelFactory() {

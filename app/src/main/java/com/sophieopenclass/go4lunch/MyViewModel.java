@@ -1,7 +1,5 @@
 package com.sophieopenclass.go4lunch;
 
-import android.util.Log;
-
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -15,8 +13,6 @@ import com.sophieopenclass.go4lunch.repository.UserDataRepository;
 
 import java.util.Date;
 import java.util.List;
-
-import static com.firebase.ui.auth.AuthUI.TAG;
 
 public class MyViewModel extends ViewModel {
     private RestaurantDataRepository restaurantDataSource;
@@ -52,16 +48,8 @@ public class MyViewModel extends ViewModel {
         return userDataSource.getUser(uid);
     }
 
-    public void updateUserPlaceId(String uid, String placeId) {
-        userDataSource.updateUserPlaceId(uid, placeId);
-    }
-
-    public CollectionReference getCollectionReference(String userCollection) {
-        return userDataSource.getCollectionReference(userCollection);
-    }
-
-    public LiveData<List<User>> getUsersByPlaceId(String placeId) {
-        return userDataSource.getUsersByPlaceId(placeId);
+    public CollectionReference getCollectionReference() {
+        return userDataSource.getCollectionReference();
     }
 
     public LiveData<List<User>> getUsersByPlaceIdDate(String placeId, Date date) {
@@ -69,7 +57,7 @@ public class MyViewModel extends ViewModel {
     }
 
     public LiveData<String> addPlaceId(String uid, String placeId, Date date) {
-        return  userDataSource.addPlaceId(uid,placeId,date);
+        return  userDataSource.updateUserPlaceId(uid,placeId,date);
     }
 
     public void deletePlaceId(String uid, Date date) {
@@ -80,13 +68,9 @@ public class MyViewModel extends ViewModel {
         return createdUserLiveData;
     }
 
-    public LiveData<String> getPlaceId(String userId) {
-        return userDataSource.getPlaceId(userId);
-    }
 
-
-    public MutableLiveData<String> getPlaceIdDate(String userId, Date date) {
-        return userDataSource.getPlaceIdDate(userId, date);
+    public LiveData<String> getPlaceIdByDate(String userId, Date date) {
+        return userDataSource.getPlaceIdByDate(userId, date);
     }
 
 
@@ -98,7 +82,4 @@ public class MyViewModel extends ViewModel {
         userDataSource.deleteUser(uid);
     }
 
-    public LiveData<String> addUserPlaceId(String uid, String placeId) {
-        return userDataSource.addUserPlaceId(uid, placeId);
-    }
 }

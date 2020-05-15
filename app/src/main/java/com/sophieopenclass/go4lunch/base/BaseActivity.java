@@ -19,14 +19,18 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.sophieopenclass.go4lunch.R;
+import com.sophieopenclass.go4lunch.controllers.activities.RestaurantDetailsActivity;
 import com.sophieopenclass.go4lunch.controllers.activities.WorkmateDetailActivity;
+import com.sophieopenclass.go4lunch.controllers.adapters.ListViewAdapter;
 import com.sophieopenclass.go4lunch.controllers.adapters.WorkmatesViewAdapter;
 import com.sophieopenclass.go4lunch.injection.Injection;
+import com.sophieopenclass.go4lunch.listeners.Listeners;
 import com.sophieopenclass.go4lunch.utils.ViewModelFactory;
 
+import static com.sophieopenclass.go4lunch.utils.Constants.PLACE_ID;
 import static com.sophieopenclass.go4lunch.utils.Constants.UID;
 
-public abstract class BaseActivity <T extends ViewModel> extends AppCompatActivity implements WorkmatesViewAdapter.OnWorkmateClickListener{
+public abstract class BaseActivity<T extends ViewModel> extends AppCompatActivity implements Listeners.OnWorkmateClickListener, Listeners.OnRestaurantClickListener {
     public T viewModel;
     public Location currentLocation = null;
 
@@ -78,6 +82,12 @@ public abstract class BaseActivity <T extends ViewModel> extends AppCompatActivi
     public void onWorkmateClick(String uid) {
         Intent intent = new Intent(this, WorkmateDetailActivity.class);
         intent.putExtra(UID, uid);
+        startActivity(intent);
+    }
+    @Override
+    public void onRestaurantClick(String placeId) {
+        Intent intent = new Intent(this, RestaurantDetailsActivity.class);
+        intent.putExtra(PLACE_ID, placeId);
         startActivity(intent);
     }
 }

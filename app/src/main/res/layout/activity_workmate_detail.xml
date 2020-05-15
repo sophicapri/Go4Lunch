@@ -21,7 +21,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
         android:layout_marginStart="10dp"
-        android:text="@string/workmate_lunch_textview"
+        android:text="@string/detail_lunch_textview"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"

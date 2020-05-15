@@ -23,18 +23,13 @@ import static com.sophieopenclass.go4lunch.utils.Constants.PLACE_ID;
 
 public class UserDataRepository {
     private CollectionReference userCollectionRef;
-    private CollectionReference placesCollectionRef;
 
-    public UserDataRepository(CollectionReference userCollectionRef, CollectionReference placesCollectionRef) {
+    public UserDataRepository(CollectionReference userCollectionRef) {
         this.userCollectionRef = userCollectionRef;
-        this.placesCollectionRef = placesCollectionRef;
     }
 
-    public CollectionReference getCollectionReference(String userCollection) {
-        if (userCollection.equals(USER_COLLECTION_NAME))
+    public CollectionReference getCollectionReference() {
             return userCollectionRef;
-        else
-            return placesCollectionRef;
     }
 
     public MutableLiveData<User> createUser(User user) {
@@ -68,69 +63,29 @@ public class UserDataRepository {
         return userData;
     }
 
-    public MutableLiveData<List<User>> getUsersByPlaceId(String placeId) {
-        MutableLiveData<List<User>> users = new MutableLiveData<>();
-        placesCollectionRef.whereEqualTo("placeId", placeId).get().addOnCompleteListener(task -> {
-            if (task.isSuccessful())
-                if (task.getResult() != null)
-                    users.postValue(task.getResult().toObjects(User.class));
-                else if (task.getException() != null)
-                    Log.e(TAG, "getUsersByPlaceId: " + (task.getException().getMessage()));
-        });
-        return users;
-    }
-
-
     public LiveData<List<User>> getUsersByPlaceIdDate(String placeId, Date date) {
         MutableLiveData<List<User>> users = new MutableLiveData<>();
-        userCollectionRef.whereEqualTo("dates." +date.toString(), placeId).get().addOnCompleteListener(task -> {
+        userCollectionRef.whereEqualTo("datesAndPlacesIds." +date.toString(), placeId).get().addOnCompleteListener(task -> {
             if (task.isSuccessful())
                 if (task.getResult() != null)
                     users.postValue(task.getResult().toObjects(User.class));
                 else if (task.getException() != null)
                     Log.e(TAG, "getUsersByPlaceId: " + (task.getException().getMessage()));
         });
-
-        userCollectionRef.whereEqualTo("dates." +date.toString(), placeId).get().addOnFailureListener(task -> {
-            Log.e(TAG, "getUsersByPlaceIdDate: ", (task.getCause()));});
         return users;
     }
 
-    public MutableLiveData<String> getPlaceId(String userId) {
-        MutableLiveData<String> placeId = new MutableLiveData<>();
-        placesCollectionRef.document(userId).get().addOnCompleteListener(task -> {
-            if (task.isSuccessful())
-                if (task.getResult() != null)
-                    placeId.postValue(task.getResult().getString("placeId"));
-                else if (task.getException() != null)
-                    Log.e(TAG, "getPlaceId: " + (task.getException().getMessage()));
-        });
-        return placeId;
-    }
-
-
-    public MutableLiveData<String> getPlaceIdDate(String userId, Date date) {
+    public MutableLiveData<String> getPlaceIdByDate(String userId, Date date) {
         MutableLiveData<String> placeId = new MutableLiveData<>();
         userCollectionRef.document(userId).get().addOnCompleteListener(task -> {
             if (task.isSuccessful())
                 if (task.getResult() != null)
-                    placeId.postValue((String)task.getResult().get("dates."+date.toString()));
+                    placeId.postValue((String)task.getResult().get("datesAndPlacesIds."+date.toString()));
                 else if (task.getException() != null)
                     Log.e(TAG, "getPlaceId: " + (task.getException().getMessage()));
         });
         return placeId;
     }
-
-    public void updateUserPlaceId(String uid, String placeId) {
-        MutableLiveData<String> newPlaceId = new MutableLiveData<>();
-        placesCollectionRef.document(uid).update(PLACE_ID, placeId).addOnCompleteListener(updatePlaceId -> {
-            if (updatePlaceId.isSuccessful())
-                newPlaceId.setValue(placeId);
-            else if (updatePlaceId.getException() != null)
-                Log.e(TAG, "updatePlaceId: " + (updatePlaceId.getException().getMessage()));
-        });
-    }
-
 
     public MutableLiveData<String> updateUsername(String username, String uid) {
         MutableLiveData<String> newUsername = new MutableLiveData<>();
@@ -155,20 +110,21 @@ public class UserDataRepository {
 
     // TODO: is this good practice ?
     public void deletePlaceId(String uid, Date date) {
-        userCollectionRef.document(uid).update("dates",
+        userCollectionRef.document(uid).update("datesAndPlacesIds",
                 FieldValue.arrayRemove(date.toString())).addOnCompleteListener(deleteUser -> {
             if (deleteUser.isSuccessful())
                 Log.i(TAG, "deleteUser: " + (deleteUser.isSuccessful()));
+
             else if (deleteUser.getException() != null)
                 Log.e(TAG, "deleteUser: " + (deleteUser.getException().getMessage()));
         });
     }
 
 
-    public MutableLiveData<String> addPlaceId(String uid, String placeId, Date date) {
+    public MutableLiveData<String> updateUserPlaceId(String uid, String placeId, Date date) {
         MutableLiveData<String> newPlaceId = new MutableLiveData<>();
         Map<String, Object> updates = new HashMap<>();
-        updates.put(("dates." +date.toString()), placeId);
+        updates.put(("datesAndPlacesIds." +date.toString()), placeId);
         userCollectionRef.document(uid).get().addOnCompleteListener(uidTask -> {
             if (uidTask.isSuccessful()) {
                 if (uidTask.getResult() != null)
@@ -185,25 +141,4 @@ public class UserDataRepository {
         });
         return newPlaceId;
     }
-
-    public MutableLiveData<String> addUserPlaceId(String uid, String placeId) {
-        MutableLiveData<String> newPlaceId = new MutableLiveData<>();
-        UserPlaceId userPlaceId = new UserPlaceId(uid, placeId);
-        placesCollectionRef.document(uid).get().addOnCompleteListener(uidTask -> {
-            if (uidTask.isSuccessful()) {
-                if (uidTask.getResult() != null)
-                    placesCollectionRef.document(uid).set(userPlaceId).addOnCompleteListener(userCreationTask -> {
-                        if (userCreationTask.isSuccessful())
-                            newPlaceId.setValue(placeId);
-                        else if (userCreationTask.getException() != null)
-                            Log.e(TAG, " addPlaceId: " + userCreationTask.getException().getMessage());
-                    });
-                else
-                    newPlaceId.setValue(placeId);
-            } else if (uidTask.getException() != null)
-                Log.e(TAG, " addPlaceId: " + uidTask.getException().getMessage());
-        });
-        return newPlaceId;
-    }
-
 }

@@ -16,6 +16,7 @@ import com.sophieopenclass.go4lunch.base.BaseActivity;
 import com.sophieopenclass.go4lunch.controllers.activities.RestaurantDetailsActivity;
 import com.sophieopenclass.go4lunch.controllers.adapters.ListViewAdapter;
 import com.sophieopenclass.go4lunch.databinding.RecyclerViewRestaurantsBinding;
+import com.sophieopenclass.go4lunch.listeners.Listeners;
 import com.sophieopenclass.go4lunch.models.User;
 import com.sophieopenclass.go4lunch.models.json_to_java.PlaceDetails;
 import com.sophieopenclass.go4lunch.models.json_to_java.RestaurantsResult;
@@ -26,7 +27,7 @@ import java.util.List;
 import static com.sophieopenclass.go4lunch.controllers.fragments.MapViewFragment.getLatLngString;
 import static com.sophieopenclass.go4lunch.utils.Constants.PLACE_ID;
 
-public class ListViewFragment extends Fragment implements ListViewAdapter.OnRestaurantClickListener {
+public class ListViewFragment extends Fragment {
     private MyViewModel viewModel;
     private RecyclerViewRestaurantsBinding binding;
     private BaseActivity context;
@@ -63,6 +64,9 @@ public class ListViewFragment extends Fragment implements ListViewAdapter.OnRest
             viewModel.getMoreNearbyPlaces(nextPageToken).observe(getViewLifecycleOwner(), this::getNumberOfWorkmatesAtARestaurant);
     }
 
+
+    // Calling getFullPlaceDetails inside the viewModel call because otherwise the method gets called
+    // before the loop has ended.
     private void getNumberOfWorkmatesAtARestaurant(RestaurantsResult restaurants) {
         usersEatingAtRestaurant = new ArrayList<>();
         List<PlaceDetails> placeDetailsList = restaurants.getPlaceDetails();
@@ -93,28 +97,8 @@ public class ListViewFragment extends Fragment implements ListViewAdapter.OnRest
         }
     }
 
-
     private void updateRecyclerView(ArrayList<PlaceDetails> restaurants, ArrayList<Integer> usersEatingAtRestaurant) {
-
-        ListViewAdapter adapter = new ListViewAdapter(restaurants, usersEatingAtRestaurant, this);
-        adapter.setViewModel(viewModel);
+        ListViewAdapter adapter = new ListViewAdapter(restaurants, usersEatingAtRestaurant, context);
         binding.recyclerViewRestaurants.setAdapter(adapter);
-
-        //TODO : manage data update better
-        binding.recyclerViewRestaurants.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-
-            }
-        });
-
-    }
-
-    @Override
-    public void onRestaurantClick(String placeId) {
-        Intent intent = new Intent(getActivity(), RestaurantDetailsActivity.class);
-        intent.putExtra(PLACE_ID, placeId);
-        startActivity(intent);
     }
 }

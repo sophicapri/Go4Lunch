@@ -229,7 +229,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        System.out.println("onDestroy");
         cameraLocation = null;
     }
 }

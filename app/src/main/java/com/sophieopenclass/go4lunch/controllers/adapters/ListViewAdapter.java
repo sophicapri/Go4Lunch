@@ -20,12 +20,14 @@ import com.sophieopenclass.go4lunch.MyViewModel;
 import com.sophieopenclass.go4lunch.R;
 import com.sophieopenclass.go4lunch.base.BaseActivity;
 import com.sophieopenclass.go4lunch.databinding.FragmentListViewBinding;
-import com.sophieopenclass.go4lunch.models.User;
+
 import com.sophieopenclass.go4lunch.models.json_to_java.OpeningHours;
 import com.sophieopenclass.go4lunch.models.json_to_java.PlaceDetails;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.sophieopenclass.go4lunch.listeners.Listeners.*;
 
 public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ListViewHolder> {
     private List<PlaceDetails> placeDetailsList;
@@ -112,7 +114,6 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ListVi
             restaurantLocation.setLongitude(placeDetails.getGeometry().getLocation().getLng());
             int distance = (int) restaurantLocation.distanceTo(context.currentLocation);
             restaurantDistance.setText(res.getString(R.string.distance, distance));
-
             nbrOfWorkmates.setText(res.getString(R.string.nbr_of_workmates, usersEatingAtRestaurant));
 
             // TODO: find out how to calculate the rating
@@ -133,7 +134,5 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ListVi
         }
     }
 
-    public interface OnRestaurantClickListener {
-        void onRestaurantClick(String placeId);
-    }
+
 }

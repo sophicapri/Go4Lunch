@@ -1,12 +1,15 @@
 package com.sophieopenclass.go4lunch.models;
 
-import androidx.annotation.Nullable;
+import android.icu.text.RelativeDateTimeFormatter;
+import android.util.ArrayMap;
 
+import androidx.annotation.Nullable;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 public class User {
@@ -14,7 +17,7 @@ public class User {
     private String username;
     @Nullable
     private String urlPicture;
-    private Map<String, String> dateAndPlaces = new HashMap<>();
+    private Map<String, String> datesAndPlacesIds = new HashMap<>();
 
     public User() { }
 
@@ -38,11 +41,20 @@ public class User {
     public static Date getTodaysDate(){
         Date date = null;
         try {
-            DateFormat formatter = SimpleDateFormat.getDateInstance();
+            DateFormat formatter = SimpleDateFormat.getDateInstance(DateFormat.SHORT, Locale.FRENCH);
             date = formatter.parse(formatter.format(new Date()));
         } catch (ParseException e) {
             e.printStackTrace();
         }
         return date;
     }
+
+    public Map<String, String> getDatesAndPlacesIds() {
+        return datesAndPlacesIds;
+    }
+
+    public void setDatesAndPlacesIds(Map<String, String> datesAndPlacesIds) {
+        this.datesAndPlacesIds = datesAndPlacesIds;
+    }
+
 }

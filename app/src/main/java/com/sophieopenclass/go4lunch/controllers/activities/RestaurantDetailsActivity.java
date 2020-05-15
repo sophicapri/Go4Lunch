@@ -28,11 +28,8 @@ import com.sophieopenclass.go4lunch.databinding.ActivityRestaurantDetailsBinding
 import com.sophieopenclass.go4lunch.models.User;
 import com.sophieopenclass.go4lunch.models.json_to_java.PlaceDetails;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import static com.sophieopenclass.go4lunch.injection.Injection.PLACES_COLLECTION_NAME;
-import static com.sophieopenclass.go4lunch.injection.Injection.USER_COLLECTION_NAME;
 import static com.sophieopenclass.go4lunch.utils.Constants.MY_LUNCH;
 import static com.sophieopenclass.go4lunch.utils.Constants.PLACE_ID;
 import static com.sophieopenclass.go4lunch.utils.Constants.RESTAURANT_ACTIVITY;
@@ -75,7 +72,7 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
             viewModel.getUser(getCurrentUser().getUid()).observe(this, user -> {
                 currentUser = user;
             });
-            viewModel.getPlaceIdDate(getCurrentUser().getUid(), User.getTodaysDate()).observe(this, placeId -> {
+            viewModel.getPlaceIdByDate(getCurrentUser().getUid(), User.getTodaysDate()).observe(this, placeId -> {
                 if (this.placeId.equals(placeId))
                     binding.addRestaurant.setImageDrawable(getResources().getDrawable(R.drawable.ic_check_circle_black_24dp));
             });
@@ -99,7 +96,7 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
 
     private void setUpRecyclerView() {
         FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>()
-                .setQuery(viewModel.getCollectionReference(USER_COLLECTION_NAME).whereEqualTo("dates." +User.getTodaysDate(), placeId), User.class)
+                .setQuery(viewModel.getCollectionReference().whereEqualTo("datesAndPlacesIds." +User.getTodaysDate(), placeId), User.class)
                 .build();
         adapter = new WorkmatesViewAdapter(options, RESTAURANT_ACTIVITY, this);
         ((WorkmatesViewAdapter) adapter).setViewModel(viewModel);
@@ -149,7 +146,7 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
     @Override
     public void onClick(View v) {
         if (v == binding.addRestaurant)
-            viewModel.getPlaceIdDate(currentUser.getUid(), User.getTodaysDate() ).observe(this, this::handleRestaurantSelection);
+            viewModel.getPlaceIdByDate(currentUser.getUid(), User.getTodaysDate() ).observe(this, this::handleRestaurantSelection);
         else if (v == binding.callBtn || v == binding.callTextview)
             callRestaurant();
         else if (v == binding.likeRestaurantBtn || v == binding.likeTextview) {

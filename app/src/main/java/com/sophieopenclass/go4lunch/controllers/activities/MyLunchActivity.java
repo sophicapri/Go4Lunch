@@ -18,11 +18,13 @@ public class MyLunchActivity extends BaseActivity <MyViewModel> {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getCurrentUser()!= null)
-            viewModel.getPlaceId(getCurrentUser().getUid()).observe(this, placeId -> {
+        //if (getCurrentUser()!= null)
+           /* viewModel.getPlaceId(getCurrentUser().getUid()).observe(this, placeId -> {
                 if(placeId != null)
                     startRestaurantDetailActivity(placeId);
             });
+
+            */
     }
 
     private void startRestaurantDetailActivity(String placeId) {
