@@ -25,13 +25,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.sophieopenclass.go4lunch.controllers.fragments.MapViewFragment.getLatLngString;
-import static com.sophieopenclass.go4lunch.utils.Constants.PLACE_ID;
 
 public class ListViewFragment extends Fragment {
     private MyViewModel viewModel;
     private RecyclerViewRestaurantsBinding binding;
     private BaseActivity context;
-    private ArrayList<Integer> usersEatingAtRestaurant;
 
     public static Fragment newInstance() {
         return new ListViewFragment();
@@ -56,8 +54,6 @@ public class ListViewFragment extends Fragment {
     private void observePlaces() {
         binding.recyclerViewRestaurants.setHasFixedSize(true);
         binding.recyclerViewRestaurants.setLayoutManager(new LinearLayoutManager(getContext()));
-
-
         viewModel.getNearbyPlaces(getLatLngString(context.currentLocation))
                 .observe(getViewLifecycleOwner(), this::getFullPlaceDetails);
 

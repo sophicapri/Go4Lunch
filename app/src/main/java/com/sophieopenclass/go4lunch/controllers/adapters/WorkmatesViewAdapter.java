@@ -5,11 +5,8 @@ import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.LifecycleOwner;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -19,13 +16,12 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.firebase.ui.firestore.ObservableSnapshotArray;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.sophieopenclass.go4lunch.MyViewModel;
 import com.sophieopenclass.go4lunch.R;
 import com.sophieopenclass.go4lunch.databinding.FragmentWorkmatesListBinding;
 import com.sophieopenclass.go4lunch.models.User;
 import com.sophieopenclass.go4lunch.utils.Constants.Controller;
 
-import static com.sophieopenclass.go4lunch.listeners.Listeners.*;
+import static com.sophieopenclass.go4lunch.listeners.Listeners.OnWorkmateClickListener;
 import static com.sophieopenclass.go4lunch.utils.Constants.RESTAURANT_ACTIVITY;
 import static com.sophieopenclass.go4lunch.utils.Constants.WORKMATES_FRAGMENT;
 
@@ -33,7 +29,6 @@ public class WorkmatesViewAdapter extends FirestoreRecyclerAdapter<User, Workmat
     private FirebaseUser currentUser;
     private OnWorkmateClickListener onWorkmateClickListener;
     private int controller;
-    private MyViewModel viewModel;
 
     public WorkmatesViewAdapter(@NonNull FirestoreRecyclerOptions<User> options, @Controller int controller,
                                 OnWorkmateClickListener onWorkmateClickListener) {
@@ -108,9 +103,5 @@ public class WorkmatesViewAdapter extends FirestoreRecyclerAdapter<User, Workmat
                     binding.workmatesChoice.setText(context.getResources().getString(R.string.workmate_is_eating_here, model.getUsername()));
             }
         }
-    }
-
-    public void setViewModel(MyViewModel viewModel) {
-        this.viewModel = viewModel;
     }
 }
