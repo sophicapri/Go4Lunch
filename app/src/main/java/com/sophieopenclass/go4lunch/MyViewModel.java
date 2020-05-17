@@ -1,7 +1,6 @@
 package com.sophieopenclass.go4lunch;
 
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.google.firebase.firestore.CollectionReference;
@@ -69,7 +68,7 @@ public class MyViewModel extends ViewModel {
         userDataSource.updateRestaurantName(uid, restaurantName);
     }
 
-        public void deleteDatesAndPlaceIdsField(String uid) {
+    public void deleteDatesAndPlaceIdsField(String uid) {
         userDataSource.deleteDatesAndPlaceIdsField(uid);
     }
 
@@ -99,15 +98,24 @@ public class MyViewModel extends ViewModel {
 
     // CHAT
 
-    public Query getAllMessages(){
-        return messageDataSource.getAllMessageForChat();
+    public Query getAllMessagesForChat(String idSender, String idReceiver) {
+        return messageDataSource.getAllMessagesForChat(idSender, idReceiver);
     }
 
-    public LiveData<Message> createMessageForChat(String textMessage, User userSender) {
-        return  messageDataSource.createMessageForChat(textMessage, userSender);
+    public Query getAllMessages() {
+        return messageDataSource.getAllMessagesForChat();
     }
 
-    public LiveData<Message> createMessageWithImageForChat(String urlImage, String textMessage, User userSender) {
-        return  messageDataSource.createMessageWithImageForChat(urlImage, textMessage, userSender);
+  /*  public Query getAllConversations(String idSender, String idReceiver) {
+        return messageDataSource.getAllConversations(idSender, idReceiver);
+    }
+   */
+
+    public LiveData<Message> createMessageForChat(String textMessage, String userSenderId, String userReceiverId) {
+        return messageDataSource.createMessageForChat(textMessage, userSenderId, userReceiverId);
+    }
+
+    public LiveData<Message> createMessageWithImageForChat(String urlImage, String textMessage, String userSenderId, String userReceiverId) {
+        return messageDataSource.createMessageWithImageForChat(urlImage, textMessage, userSenderId, userReceiverId);
     }
 }

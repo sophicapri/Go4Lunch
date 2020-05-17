@@ -10,6 +10,9 @@ import com.google.firebase.firestore.Query;
 import com.sophieopenclass.go4lunch.models.Message;
 import com.sophieopenclass.go4lunch.models.User;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class MessageDataRepository {
     private CollectionReference messageCollectionRef;
 
@@ -19,21 +22,24 @@ public class MessageDataRepository {
 
     // --- GET ---
 
-    public Query getAllMessageForChat(String idSender, String idReceiver) {
-        return messageCollectionRef.whereEqualTo("users." + idSender, true)
-                .whereEqualTo("users." + idReceiver, true).orderBy("dateCreated").limit(50);
+    public Query getAllMessagesForChat(String idSender, String idReceiver) {
+        return messageCollectionRef.limit(50).whereEqualTo("participants." + idSender, true)
+                .whereEqualTo("participants." + idReceiver, true);
     }
 
     // not correct.
-    public Query getAllMessageForChat() {
+    public Query getAllMessagesForChat() {
         return messageCollectionRef.orderBy("dateCreated").limit(50);
     }
 
     // --- CREATE ---
 
-    public MutableLiveData<Message> createMessageForChat(String textMessage, User userSender) {
+    public MutableLiveData<Message> createMessageForChat(String textMessage, String userSenderId, String userReceiverId) {
         MutableLiveData<Message> newMessage = new MutableLiveData<>();
-        Message message = new Message(textMessage, userSender);
+        Map<String, Boolean> participants = new HashMap<>();
+        participants.put(userSenderId, true);
+        participants.put(userReceiverId, true);
+        Message message = new Message(textMessage, userSenderId, participants);
 
         messageCollectionRef.add(message).addOnCompleteListener(addMessageTask -> {
             if (addMessageTask.isSuccessful()) {
@@ -45,9 +51,12 @@ public class MessageDataRepository {
         return newMessage;
     }
 
-    public MutableLiveData<Message> createMessageWithImageForChat(String urlImage, String textMessage, User userSender) {
+    public MutableLiveData<Message> createMessageWithImageForChat(String urlImage, String textMessage, String userSenderId, String userReceiverId) {
         MutableLiveData<Message> newMessage = new MutableLiveData<>();
-        Message message = new Message(textMessage, urlImage, userSender);
+        Map<String, Boolean> participants = new HashMap<>();
+        participants.put(userSenderId, true);
+        participants.put(userReceiverId, true);
+        Message message = new Message(textMessage, urlImage, participants);
 
         messageCollectionRef.add(message).addOnCompleteListener(addMessageTask -> {
             if (addMessageTask.isSuccessful()) {

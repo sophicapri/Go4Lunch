@@ -1,7 +1,6 @@
 package com.sophieopenclass.go4lunch.controllers.adapters;
 
 import android.graphics.drawable.Drawable;
-import android.opengl.EGLImage;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,22 +13,35 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.RequestManager;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.firebase.ui.firestore.ObservableSnapshotArray;
 import com.sophieopenclass.go4lunch.R;
+import com.sophieopenclass.go4lunch.controllers.activities.ChatActivity;
 import com.sophieopenclass.go4lunch.databinding.ChatActivityMessageItemBinding;
 import com.sophieopenclass.go4lunch.models.Message;
+import com.sophieopenclass.go4lunch.models.json_to_java.PlaceDetails;
+import com.sophieopenclass.go4lunch.utils.MyFirestoreRecyclerAdapter;
 
+import java.lang.reflect.Array;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 public class ChatViewAdapter extends FirestoreRecyclerAdapter<Message, ChatViewAdapter.MessageViewHolder> {
-   private String currentUserId;
-   private RequestManager glide;
-   private Listener callback;
+    private String currentUserId;
+    private RequestManager glide;
+    private Listener callback;
+    private FirestoreRecyclerOptions<Message> options;
 
     public ChatViewAdapter(@NonNull FirestoreRecyclerOptions<Message> options, String currentUserId, RequestManager glide, Listener callback) {
         super(options);
+        this.options = options;
         this.currentUserId = currentUserId;
         this.glide = glide;
         this.callback = callback;
@@ -37,6 +49,11 @@ public class ChatViewAdapter extends FirestoreRecyclerAdapter<Message, ChatViewA
 
     @Override
     protected void onBindViewHolder(@NonNull MessageViewHolder holder, int position, @NonNull Message model) {
+        // Because we cannot make a query using whereEqualTo() AND orderBy() simultaneously* I order the list below.
+        // *It is possible when the fields required to make indexes are known beforehand
+        // but in our case we do not know them, the fields are created dynamically (ex : participants.$userId)
+        Message[] array = options.getSnapshots().toArray(new Message[0]);
+        Arrays.sort(array, new ChatActivity.MessageRecentComparator());
         holder.bind(model, currentUserId);
     }
 
@@ -59,22 +76,21 @@ public class ChatViewAdapter extends FirestoreRecyclerAdapter<Message, ChatViewA
             bkgRemoteUser = ContextCompat.getDrawable(itemView.getContext(), R.drawable.bkg_message_start);
         }
 
-        void bind(Message message, String currentUserId){
+        void bind(Message message, String currentUserId) {
             // Check if current user is the sender
 
-            System.out.println(" 1 " + message.getMessage());
-            Boolean isCurrentUser = message.getUserSender().getUid().equals(currentUserId);
-            System.out.println(" 2 " + message.getMessage());
+            Boolean isCurrentUser = message.getUserSenderId().equals(currentUserId);
 
             // Update message TextView
             binding.messageContainerTextView.setText(message.getMessage());
             binding.messageContainerTextView.setTextAlignment(isCurrentUser ? View.TEXT_ALIGNMENT_TEXT_END : View.TEXT_ALIGNMENT_TEXT_START);
 
             // Update date TextView
-            if (message.getDateCreated() != null) binding.messageDateTextView.setText(this.convertDateToHour(message.getDateCreated()));
+            if (message.getDateCreated() != null)
+                binding.messageDateTextView.setText(this.convertDateToHour(message.getDateCreated()));
 
             // Update image sent ImageView
-            if (message.getUrlImage() != null){
+            if (message.getUrlImage() != null) {
                 glide.load(message.getUrlImage())
                         .into(binding.imageSent);
                 binding.imageSent.setVisibility(View.VISIBLE);
@@ -89,7 +105,7 @@ public class ChatViewAdapter extends FirestoreRecyclerAdapter<Message, ChatViewA
             this.updateDesignDependingUser(isCurrentUser);
         }
 
-        private void updateDesignDependingUser(Boolean isSender){
+        private void updateDesignDependingUser(Boolean isSender) {
             // MESSAGE CONTAINER
             RelativeLayout.LayoutParams paramsLayoutContent = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
             paramsLayoutContent.addRule(isSender ? RelativeLayout.ALIGN_PARENT_RIGHT : RelativeLayout.ALIGN_PARENT_LEFT);
@@ -105,7 +121,7 @@ public class ChatViewAdapter extends FirestoreRecyclerAdapter<Message, ChatViewA
 
         // ---
 
-        private String convertDateToHour(Date date){
+        private String convertDateToHour(Date date) {
             DateFormat format = new SimpleDateFormat("HH:mm", Locale.getDefault());
             return format.format(date);
         }

@@ -84,6 +84,7 @@ public class PlaceDetails {
     @Expose
     private String website;
     private int nbrOfWorkmates;
+    private String dateOfLunch;
 
     public List<AddressComponent> getAddressComponents() {
         return addressComponents;
@@ -286,11 +287,20 @@ public class PlaceDetails {
         return "https://nommunism.files.wordpress.com/2012/09/image_unavailable_icon_20.jpg?w=250&h=245&zoom=2";
     }
 
-    public int getNumbreOfWorkmates(){
+    public int getNbrOfWorkmates(){
         return nbrOfWorkmates;
     }
 
     public void setNbrOfWorkmates(int nbrOfWorkmates){
         this.nbrOfWorkmates = nbrOfWorkmates;
+    }
+
+
+    public String getDateOfLunch() {
+        return dateOfLunch;
+    }
+
+    public void setDateOfLunch(String dateOfLunch) {
+        this.dateOfLunch = dateOfLunch;
     }
 }

@@ -2,10 +2,8 @@ package com.sophieopenclass.go4lunch.controllers.activities;
 
 import android.content.Intent;
 import android.os.Build;
-import android.os.Bundle;
 import android.view.View;
 
-import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.bumptech.glide.Glide;
@@ -19,6 +17,8 @@ import com.sophieopenclass.go4lunch.models.User;
 import com.sophieopenclass.go4lunch.models.json_to_java.PlaceDetails;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import static com.sophieopenclass.go4lunch.utils.Constants.UID;
 
@@ -109,20 +109,33 @@ public class WorkmateDetailActivity extends BaseActivity<MyViewModel> {
             if (!date.equals(User.getTodaysDate())) {
                 placeId = user.getDatesAndPlaceIds().get(date);
                 viewModel.getPlaceDetails(placeId).observe(this, placeDetails -> {
-                        placeDetailsList.add(placeDetails);
-                    if (placeDetailsList.size() == user.getDatesAndPlaceIds().values().size() - minus)
+                    placeDetails.setDateOfLunch(date);
+                    placeDetailsList.add(placeDetails);
+                    if (placeDetailsList.size() == user.getDatesAndPlaceIds().values().size() - minus) {
+                        Collections.sort(placeDetailsList, new RestaurantRecentComparator());
                         updateRecyclerView(placeDetailsList);
+                    }
                 });
             } else {
-            minus++;
+                minus++;
+            }
         }
+    }
+
+    /**
+     * Comparator to sort places from last added to first
+     */
+    public static class RestaurantRecentComparator implements Comparator<PlaceDetails> {
+        @Override
+        public int compare(PlaceDetails left, PlaceDetails right) {
+            return right.getDateOfLunch().compareTo(left.getDateOfLunch());
         }
     }
 
     private void updateRecyclerView(ArrayList<PlaceDetails> placeDetailsList) {
         if (!placeDetailsList.isEmpty())
             binding.noPreviousRestaurants.setVisibility(View.GONE);
-        PreviousRestaurantsAdapter adapter = new PreviousRestaurantsAdapter(placeDetailsList, selectedUser,  this,  Glide.with(this));
+        PreviousRestaurantsAdapter adapter = new PreviousRestaurantsAdapter(placeDetailsList, selectedUser, this, Glide.with(this));
         binding.previousRestaurantsRecyclerview.setAdapter(adapter);
     }
 

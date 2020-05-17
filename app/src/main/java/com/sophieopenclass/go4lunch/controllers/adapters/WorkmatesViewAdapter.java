@@ -43,12 +43,6 @@ public class WorkmatesViewAdapter extends FirestoreRecyclerAdapter<User, Workmat
 
     @NonNull
     @Override
-    public ObservableSnapshotArray<User> getSnapshots() {
-        return super.getSnapshots();
-    }
-
-    @NonNull
-    @Override
     public UserViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_workmates_list,
                 parent, false);

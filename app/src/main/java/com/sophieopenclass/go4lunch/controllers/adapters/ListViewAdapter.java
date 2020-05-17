@@ -5,13 +5,10 @@ import android.location.Location;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.request.RequestOptions;
 import com.sophieopenclass.go4lunch.R;
@@ -20,7 +17,6 @@ import com.sophieopenclass.go4lunch.databinding.FragmentListViewBinding;
 import com.sophieopenclass.go4lunch.models.json_to_java.OpeningHours;
 import com.sophieopenclass.go4lunch.models.json_to_java.PlaceDetails;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -92,7 +88,7 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ListVi
             restaurantLocation.setLongitude(placeDetails.getGeometry().getLocation().getLng());
             int distance = (int) restaurantLocation.distanceTo(context.currentLocation);
             binding.restaurantDistance.setText(res.getString(R.string.distance, distance));
-            binding.nbrOfWorkmates.setText(res.getString(R.string.nbr_of_workmates, placeDetails.getNumbreOfWorkmates()));
+            binding.nbrOfWorkmates.setText(res.getString(R.string.nbr_of_workmates, placeDetails.getNbrOfWorkmates()));
 
             // TODO: find out how to calculate the rating
             binding.oneStar.setVisibility(View.VISIBLE);

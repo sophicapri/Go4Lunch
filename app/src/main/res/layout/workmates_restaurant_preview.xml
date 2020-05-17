@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout android:id="@+id/workmate_detail_lunch"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/workmate_detail_lunch"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="10dp"
@@ -7,10 +10,7 @@
     android:visibility="visible"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toBottomOf="@+id/workmate_lunch_textview"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+    app:layout_constraintTop_toBottomOf="@+id/workmate_lunch_textview">
 
     <ImageView
         android:id="@+id/restaurant_photo"
@@ -28,8 +28,11 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:layout_toEndOf="@+id/restaurant_photo"
+        android:ellipsize="end"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/guideline"
+        app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toEndOf="@+id/restaurant_photo"
         app:layout_constraintTop_toTopOf="@+id/restaurant_photo"
         app:layout_constraintVertical_bias="0.4"
@@ -66,10 +69,10 @@
         android:id="@+id/date_of_previous_lunch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="gone"
         android:layout_margin="10dp"
         android:text="15 mai 2020"
         android:textStyle="italic"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -106,7 +109,16 @@
         android:layout_toEndOf="@id/detail_two_stars"
         android:contentDescription="three star"
         app:layout_constraintBottom_toBottomOf="@+id/detail_two_stars"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toEndOf="@+id/detail_two_stars"
         app:layout_constraintTop_toTopOf="@+id/detail_two_stars"
         app:srcCompat="@drawable/ic_star_yellow_24dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="324dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

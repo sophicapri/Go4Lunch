@@ -22,8 +22,10 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Map;
 
 public class PreviousRestaurantsAdapter extends RecyclerView.Adapter<PreviousRestaurantsAdapter.WorkmatesDetailHolder> {
     private ArrayList<PlaceDetails> placeDetailsList;
@@ -72,15 +74,9 @@ public class PreviousRestaurantsAdapter extends RecyclerView.Adapter<PreviousRes
         void bind(PlaceDetails placeDetails) {
             BaseActivity context = (BaseActivity) itemView.getContext();
             Resources res = context.getResources();
-            Object[] dateArray = user.getDatesAndPlaceIds().keySet().toArray();
 
             binding.dateOfPreviousLunch.setVisibility(View.VISIBLE);
-
-            if (placeDetailsList.size() == user.getDatesAndPlaceIds().size()) 
-                binding.dateOfPreviousLunch.setText(formatDate((String) dateArray[getBindingAdapterPosition()]));
-            else
-                binding.dateOfPreviousLunch.setText(formatDate((String) dateArray[getBindingAdapterPosition() + 1]));
-
+            binding.dateOfPreviousLunch.setText(formatDate(placeDetails.getDateOfLunch()));
             binding.detailsRestaurantName.setText(placeDetails.getName());
             binding.detailsTypeOfRestaurant.setText(res.getString(R.string.restaurant_type, placeDetails.getTypes().get(0)));
             binding.detailsRestaurantAddress.setText(placeDetails.getVicinity());

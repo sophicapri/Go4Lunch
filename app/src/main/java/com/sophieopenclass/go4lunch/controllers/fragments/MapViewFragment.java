@@ -10,6 +10,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcel;
 import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -43,13 +44,16 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.model.AutocompletePrediction;
 import com.google.android.libraries.places.api.model.AutocompleteSessionToken;
+import com.google.android.libraries.places.api.model.LocationBias;
 import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.model.RectangularBounds;
 import com.google.android.libraries.places.api.model.TypeFilter;
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest;
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse;
 import com.google.android.libraries.places.api.net.FindCurrentPlaceRequest;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.gson.Gson;
 import com.sophieopenclass.go4lunch.MyViewModel;
 import com.sophieopenclass.go4lunch.R;
 import com.sophieopenclass.go4lunch.base.BaseActivity;
@@ -65,6 +69,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+import static com.android.volley.VolleyLog.setTag;
 import static com.sophieopenclass.go4lunch.utils.Constants.PLACE_ID;
 
 public class MapViewFragment extends Fragment implements OnMapReadyCallback {
@@ -75,6 +80,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
     private Location currentLocation;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 123;
     private static final float DEFAULT_ZOOM = 17.5f;
+   // private static final float DEFAULT_ZOOM = 10f;
     private BaseActivity context;
     private Location cameraLocation;
     private List<AutocompletePrediction> predictionList;
@@ -118,10 +124,17 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                LatLng northEast = new LatLng(currentLocation.getLatitude() - (0.05),
+                        currentLocation.getLongitude() - (0.05));
+                LatLng southWest = new LatLng(currentLocation.getLatitude() + (0.05),
+                        currentLocation.getLongitude() + (0.05));
+
+
                 FindAutocompletePredictionsRequest predictionsRequest = FindAutocompletePredictionsRequest.builder()
-                        .setTypeFilter(TypeFilter.ESTABLISHMENT)
+                        //.setTypeFilter(TypeFilter.ESTABLISHMENT)
                         .setSessionToken(token)
-                       // .setOrigin(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()))
+                        .setLocationBias(RectangularBounds.newInstance(northEast, southWest))
+                        .setOrigin(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()))
                         .setQuery(s.toString())
                         .build();
                 activity.placesClient.findAutocompletePredictions(predictionsRequest).addOnCompleteListener(task -> {
@@ -129,13 +142,16 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
                         FindAutocompletePredictionsResponse predictionsResponse = task.getResult();
                         if (predictionsResponse != null) {
                             predictionList = predictionsResponse.getAutocompletePredictions();
+                            Gson gson = new Gson();
+                            Log.i(TAG, "onTextChanged: 1" + gson.toJson(predictionList));
                             List<String> suggestionsList = new ArrayList<>();
                             for (int i = 0; i < predictionList.size(); i++) {
                                 AutocompletePrediction prediction = predictionList.get(i);
-                               if (prediction.getPlaceTypes().contains(Place.Type.RESTAURANT)){
-                                   suggestionsList.add(prediction.getPlaceId());
-                               }
+                                if (prediction.getPlaceTypes().contains(Place.Type.RESTAURANT)) {
+                                    suggestionsList.add(prediction.getPlaceId());
+                                }
                             }
+                            Log.i(TAG, "onTextChanged: 2 " + gson.toJson(suggestionsList));
                             getPlaceDetailAutocompleteList(suggestionsList);
                         }
                     } else {
@@ -155,12 +171,14 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
 
     private void getPlaceDetailAutocompleteList(List<String> suggestionsList) {
         List<PlaceDetails> placeDetailsList = new ArrayList<>();
+        mMap.clear();
         for (String placeId : suggestionsList)
-        viewModel.getPlaceDetails(placeId).observe(context, placeDetails -> {
+            viewModel.getPlaceDetails(placeId).observe(context, placeDetails -> {
                 placeDetailsList.add(placeDetails);
-                if (placeDetailsList.size() == suggestionsList.size())
+                if (placeDetailsList.size() == suggestionsList.size()) {
                     initMarkers(placeDetailsList);
-        });
+                }
+            });
     }
 
     @Override

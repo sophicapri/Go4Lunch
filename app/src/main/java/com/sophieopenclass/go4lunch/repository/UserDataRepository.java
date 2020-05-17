@@ -128,7 +128,7 @@ public class UserDataRepository {
     public MutableLiveData<String> updateUserPlaceId(String uid, String placeId, String date) {
         MutableLiveData<String> newPlaceId = new MutableLiveData<>();
         Map<String, Object> updates = new HashMap<>();
-        updates.put(("datesAndPlaceIds." +date), placeId);
+        updates.put(("datesAndPlaceIds." + date), placeId);
         userCollectionRef.document(uid).get().addOnCompleteListener(uidTask -> {
             if (uidTask.isSuccessful()) {
                 if (uidTask.getResult() != null)

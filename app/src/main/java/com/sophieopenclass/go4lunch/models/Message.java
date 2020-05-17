@@ -3,36 +3,48 @@ package com.sophieopenclass.go4lunch.models;
 import com.google.firebase.firestore.ServerTimestamp;
 
 import java.util.Date;
+import java.util.Map;
 
 public class Message {
     private String message;
     private Date dateCreated;
-    private User userSender;
+    private String userSenderId;
+    private Map<String, Boolean> participants;
     private String urlImage;
 
     public Message() { }
 
-    public Message(String message, User userSender) {
+    public Message(String message, String userSenderId, Map<String, Boolean> participants) {
         this.message = message;
-        this.userSender = userSender;
+        this.userSenderId = userSenderId;
+        this.participants = participants;
+        this.dateCreated = new Date();
     }
 
-    public Message(String message, String urlImage, User userSender) {
+    public Message(String message, String urlImage, String userSenderId, Map<String, Boolean> participants ) {
         this.message = message;
         this.urlImage = urlImage;
-        this.userSender = userSender;
+        this.userSenderId = userSenderId;
+        this.participants = participants;
     }
 
     // --- GETTERS ---
     public String getMessage() { return message; }
-    @ServerTimestamp
     public Date getDateCreated() { return dateCreated; }
-    public User getUserSender() { return userSender; }
+    public String getUserSenderId() { return userSenderId; }
     public String getUrlImage() { return urlImage; }
 
     // --- SETTERS ---
     public void setMessage(String message) { this.message = message; }
     public void setDateCreated(Date dateCreated) { this.dateCreated = dateCreated; }
-    public void setUserSender(User userSender) { this.userSender = userSender; }
+    public void setUserSenderId(String userSenderId) { this.userSenderId = userSenderId; }
     public void setUrlImage(String urlImage) { this.urlImage = urlImage; }
+
+    public Map<String, Boolean> getParticipants() {
+        return participants;
+    }
+
+    public void setParticipants(Map<String, Boolean> participants) {
+        this.participants = participants;
+    }
 }
