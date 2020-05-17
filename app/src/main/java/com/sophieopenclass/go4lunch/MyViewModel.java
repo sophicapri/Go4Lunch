@@ -1,12 +1,16 @@
 package com.sophieopenclass.go4lunch;
 
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.Query;
+import com.sophieopenclass.go4lunch.models.Message;
 import com.sophieopenclass.go4lunch.models.json_to_java.RestaurantsResult;
 import com.sophieopenclass.go4lunch.models.json_to_java.PlaceDetails;
 import com.sophieopenclass.go4lunch.models.User;
+import com.sophieopenclass.go4lunch.repository.MessageDataRepository;
 import com.sophieopenclass.go4lunch.repository.RestaurantDataRepository;
 import com.sophieopenclass.go4lunch.repository.UserDataRepository;
 
@@ -15,11 +19,14 @@ import java.util.List;
 public class MyViewModel extends ViewModel {
     private RestaurantDataRepository restaurantDataSource;
     private UserDataRepository userDataSource;
+    private MessageDataRepository messageDataSource;
     private LiveData<User> createdUserLiveData;
 
-    public MyViewModel(RestaurantDataRepository restaurantDataSource, UserDataRepository userDataSource) {
+    public MyViewModel(RestaurantDataRepository restaurantDataSource, UserDataRepository userDataSource,
+                       MessageDataRepository messageDataSource) {
         this.restaurantDataSource = restaurantDataSource;
         this.userDataSource = userDataSource;
+        this.messageDataSource = messageDataSource;
     }
 
     // RESTAURANTS
@@ -44,10 +51,6 @@ public class MyViewModel extends ViewModel {
 
     public LiveData<User> getUser(String uid) {
         return userDataSource.getUser(uid);
-    }
-
-    public LiveData<List<User>> getAllUsers() {
-        return userDataSource.getAllUsers();
     }
 
     public CollectionReference getCollectionReference() {
@@ -93,4 +96,18 @@ public class MyViewModel extends ViewModel {
         userDataSource.deleteUser(uid);
     }
 
+
+    // CHAT
+
+    public Query getAllMessages(){
+        return messageDataSource.getAllMessageForChat();
+    }
+
+    public LiveData<Message> createMessageForChat(String textMessage, User userSender) {
+        return  messageDataSource.createMessageForChat(textMessage, userSender);
+    }
+
+    public LiveData<Message> createMessageWithImageForChat(String urlImage, String textMessage, User userSender) {
+        return  messageDataSource.createMessageWithImageForChat(urlImage, textMessage, userSender);
+    }
 }

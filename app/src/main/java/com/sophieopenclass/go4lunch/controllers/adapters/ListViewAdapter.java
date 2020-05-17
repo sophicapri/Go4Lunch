@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.request.RequestOptions;
 import com.sophieopenclass.go4lunch.R;
 import com.sophieopenclass.go4lunch.base.BaseActivity;
@@ -28,10 +29,12 @@ import static com.sophieopenclass.go4lunch.listeners.Listeners.OnRestaurantClick
 public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ListViewHolder> {
     private List<PlaceDetails> placeDetailsList;
     private OnRestaurantClickListener onRestaurantClickListener;
+    private RequestManager glide;
 
-    public ListViewAdapter(List<PlaceDetails> placeDetailsList, OnRestaurantClickListener onRestaurantClickListener) {
+    public ListViewAdapter(List<PlaceDetails> placeDetailsList, OnRestaurantClickListener onRestaurantClickListener, RequestManager glide) {
         this.placeDetailsList = placeDetailsList;
         this.onRestaurantClickListener = onRestaurantClickListener;
+        this.glide = glide;
     }
 
     @NonNull
@@ -81,9 +84,7 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ListVi
                     binding.openingHours.setText(R.string.close);
 
             String urlPhoto = PlaceDetails.urlPhotoFormatter(placeDetails, 0);
-            Glide.with(binding.restaurantPhoto.getContext())
-                    .load(urlPhoto)
-                    .apply(RequestOptions.centerCropTransform())
+            glide.load(urlPhoto).apply(RequestOptions.centerCropTransform())
                     .into(binding.restaurantPhoto);
 
             Location restaurantLocation = new Location(placeDetails.getName());

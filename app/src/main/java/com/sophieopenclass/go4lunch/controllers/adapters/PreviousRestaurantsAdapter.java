@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.request.RequestOptions;
 import com.sophieopenclass.go4lunch.R;
 import com.sophieopenclass.go4lunch.base.BaseActivity;
@@ -17,18 +18,25 @@ import com.sophieopenclass.go4lunch.listeners.Listeners;
 import com.sophieopenclass.go4lunch.models.User;
 import com.sophieopenclass.go4lunch.models.json_to_java.PlaceDetails;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 
 public class PreviousRestaurantsAdapter extends RecyclerView.Adapter<PreviousRestaurantsAdapter.WorkmatesDetailHolder> {
     private ArrayList<PlaceDetails> placeDetailsList;
     private Listeners.OnRestaurantClickListener onRestaurantClickListener;
     private User user;
+    private RequestManager glide;
 
 
-    public PreviousRestaurantsAdapter(ArrayList<PlaceDetails> placeDetailsList, User selectedUser, Listeners.OnRestaurantClickListener onRestaurantClickListener) {
+    public PreviousRestaurantsAdapter(ArrayList<PlaceDetails> placeDetailsList, User selectedUser, Listeners.OnRestaurantClickListener onRestaurantClickListener, RequestManager glide) {
         this.placeDetailsList = placeDetailsList;
         this.onRestaurantClickListener = onRestaurantClickListener;
         this.user = selectedUser;
+        this.glide = glide;
     }
 
     @NonNull
@@ -67,24 +75,32 @@ public class PreviousRestaurantsAdapter extends RecyclerView.Adapter<PreviousRes
             Object[] dateArray = user.getDatesAndPlaceIds().keySet().toArray();
 
             binding.dateOfPreviousLunch.setVisibility(View.VISIBLE);
-            System.out.println(dateArray[getBindingAdapterPosition()] + "first");
-            System.out.println(dateArray[0] + "second");
 
-            if (placeDetailsList.size() == user.getDatesAndPlaceIds().size())
-                binding.dateOfPreviousLunch.setText((String)dateArray[getBindingAdapterPosition()]);
-            else{
-                binding.dateOfPreviousLunch.setText((String) dateArray[getBindingAdapterPosition() + 1]);
-                    System.out.println(dateArray[getBindingAdapterPosition() + 1 ]);
-                }
+            if (placeDetailsList.size() == user.getDatesAndPlaceIds().size()) 
+                binding.dateOfPreviousLunch.setText(formatDate((String) dateArray[getBindingAdapterPosition()]));
+            else
+                binding.dateOfPreviousLunch.setText(formatDate((String) dateArray[getBindingAdapterPosition() + 1]));
 
             binding.detailsRestaurantName.setText(placeDetails.getName());
             binding.detailsTypeOfRestaurant.setText(res.getString(R.string.restaurant_type, placeDetails.getTypes().get(0)));
             binding.detailsRestaurantAddress.setText(placeDetails.getVicinity());
             String urlPhoto = PlaceDetails.urlPhotoFormatter(placeDetails, 0);
-            Glide.with(binding.restaurantPhoto)
-                    .load(urlPhoto)
-                    .apply(RequestOptions.centerCropTransform())
+            glide.load(urlPhoto).apply(RequestOptions.centerCropTransform())
                     .into(binding.restaurantPhoto);
         }
+    }
+
+    private String formatDate(String dateString) {
+        SimpleDateFormat formatter = new SimpleDateFormat("MMM dd, yyyy", Locale.US);
+        Date date = null;
+        try {
+            date = formatter.parse(dateString);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault());
+        if (date != null)
+            return dateFormat.format(date);
+        return "";
     }
 }

@@ -58,18 +58,6 @@ public class UserDataRepository {
     }
 
 
-    public MutableLiveData<List<User>> getAllUsers() {
-        MutableLiveData<List<User>> users = new MutableLiveData<>();
-        userCollectionRef.get().addOnCompleteListener(task -> {
-            if (task.isSuccessful())
-                if (task.getResult() != null)
-                    users.postValue(task.getResult().toObjects(User.class));
-                else if (task.getException() != null)
-                    Log.e(TAG, "getUser" + (task.getException().getMessage()));
-        });
-        return users;
-    }
-
     public MutableLiveData<List<User>> getUsersByPlaceIdDate(String placeId, String date) {
         MutableLiveData<List<User>> users = new MutableLiveData<>();
         userCollectionRef.whereEqualTo("datesAndPlaceIds." + date, placeId).get().addOnCompleteListener(task -> {
@@ -105,7 +93,6 @@ public class UserDataRepository {
         return newUsername;
     }
 
-    // TODO: is this good practice ?
     public void deleteUser(String uid) {
         userCollectionRef.document(uid).delete().addOnCompleteListener(deleteUser -> {
             if (deleteUser.isSuccessful())
@@ -126,7 +113,6 @@ public class UserDataRepository {
         });
     }
 
-    // TODO: is this good practice ?
     public void deleteDatesAndPlaceIdsField(String uid) {
         Map<String, Object> updates = new HashMap<>();
         updates.put("datesAndPlaceIds", FieldValue.delete());

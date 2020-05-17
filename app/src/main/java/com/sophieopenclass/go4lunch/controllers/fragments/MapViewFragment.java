@@ -11,6 +11,9 @@ import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,7 +39,14 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.libraries.places.api.model.AutocompletePrediction;
+import com.google.android.libraries.places.api.model.AutocompleteSessionToken;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.model.TypeFilter;
+import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest;
+import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse;
 import com.google.android.libraries.places.api.net.FindCurrentPlaceRequest;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
@@ -44,12 +54,14 @@ import com.sophieopenclass.go4lunch.MyViewModel;
 import com.sophieopenclass.go4lunch.R;
 import com.sophieopenclass.go4lunch.base.BaseActivity;
 import com.sophieopenclass.go4lunch.controllers.activities.LoginPageActivity;
+import com.sophieopenclass.go4lunch.controllers.activities.MainActivity;
 import com.sophieopenclass.go4lunch.controllers.activities.RestaurantDetailsActivity;
 import com.sophieopenclass.go4lunch.databinding.FragmentMapBinding;
 import com.sophieopenclass.go4lunch.models.User;
 import com.sophieopenclass.go4lunch.models.json_to_java.PlaceDetails;
 import com.sophieopenclass.go4lunch.models.json_to_java.RestaurantsResult;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
@@ -64,8 +76,9 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 123;
     private static final float DEFAULT_ZOOM = 17.5f;
     private BaseActivity context;
-    private RestaurantsResult restaurantsResult;
     private Location cameraLocation;
+    private List<AutocompletePrediction> predictionList;
+    public static final String TAG = "MAIN ACTIVITY";
 
     public MapViewFragment() {
     }
@@ -94,8 +107,60 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
                 getNearbyPlaces(currentLocation);
         }
 
+        MainActivity activity = ((MainActivity) getActivity());
+        activity.binding.closeSearchBar.setOnClickListener(v -> activity.binding.searchBar.setVisibility(View.GONE));
+        final AutocompleteSessionToken token = AutocompleteSessionToken.newInstance();
+        activity.binding.searchBarInput.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                FindAutocompletePredictionsRequest predictionsRequest = FindAutocompletePredictionsRequest.builder()
+                        .setTypeFilter(TypeFilter.ESTABLISHMENT)
+                        .setSessionToken(token)
+                       // .setOrigin(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()))
+                        .setQuery(s.toString())
+                        .build();
+                activity.placesClient.findAutocompletePredictions(predictionsRequest).addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        FindAutocompletePredictionsResponse predictionsResponse = task.getResult();
+                        if (predictionsResponse != null) {
+                            predictionList = predictionsResponse.getAutocompletePredictions();
+                            List<String> suggestionsList = new ArrayList<>();
+                            for (int i = 0; i < predictionList.size(); i++) {
+                                AutocompletePrediction prediction = predictionList.get(i);
+                               if (prediction.getPlaceTypes().contains(Place.Type.RESTAURANT)){
+                                   suggestionsList.add(prediction.getPlaceId());
+                               }
+                            }
+                            getPlaceDetailAutocompleteList(suggestionsList);
+                        }
+                    } else {
+                        Log.i(TAG, "Prediction fetching task unsuccessful");
+                    }
+                });
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
         binding.fab.setOnClickListener(v -> fetchLastLocation());
         return binding.getRoot();
+    }
+
+    private void getPlaceDetailAutocompleteList(List<String> suggestionsList) {
+        List<PlaceDetails> placeDetailsList = new ArrayList<>();
+        for (String placeId : suggestionsList)
+        viewModel.getPlaceDetails(placeId).observe(context, placeDetails -> {
+                placeDetailsList.add(placeDetails);
+                if (placeDetailsList.size() == suggestionsList.size())
+                    initMarkers(placeDetailsList);
+        });
     }
 
     @Override
@@ -139,14 +204,11 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
         LatLng latLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, DEFAULT_ZOOM));
         getNearbyPlaces(currentLocation);
-        mMap.setOnCameraMoveListener(new GoogleMap.OnCameraMoveListener() {
-            @Override
-            public void onCameraMove() {
-                cameraLocation = new Location("cameraLocation");
-                cameraLocation.setLongitude(mMap.getCameraPosition().target.longitude);
-                cameraLocation.setLatitude(mMap.getCameraPosition().target.latitude);
-                getNearbyPlaces(cameraLocation);
-            }
+        mMap.setOnCameraMoveListener(() -> {
+            cameraLocation = new Location("cameraLocation");
+            cameraLocation.setLongitude(mMap.getCameraPosition().target.longitude);
+            cameraLocation.setLatitude(mMap.getCameraPosition().target.latitude);
+            getNearbyPlaces(cameraLocation);
         });
     }
 
@@ -178,16 +240,15 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
 
     private void getNearbyPlaces(Location currentLocation) {
         viewModel.getNearbyPlaces(getLatLngString(currentLocation))
-                .observe(getViewLifecycleOwner(), this::initMarkers);
+                .observe(getViewLifecycleOwner(), restaurantsResult -> initMarkers(restaurantsResult.getPlaceDetails()));
     }
 
     static String getLatLngString(Location currentLocation) {
         return currentLocation.getLatitude() + "," + currentLocation.getLongitude();
     }
 
-    private void initMarkers(RestaurantsResult restaurants) {
-        this.restaurantsResult = restaurants;
-        for (PlaceDetails placeDetails : restaurants.getPlaceDetails()) {
+    private void initMarkers(List<PlaceDetails> placeDetailsList) {
+        for (PlaceDetails placeDetails : placeDetailsList) {
             viewModel.getUsersByPlaceIdDate(placeDetails.getPlaceId(), User.getTodaysDate()).observe(getViewLifecycleOwner(), users -> {
                 int markerDrawable;
                 if (users.isEmpty())

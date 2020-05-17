@@ -55,6 +55,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
 
+
     // Firebase
 
     // FirebaseUI
@@ -67,6 +68,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-firestore:21.4.3'
 
     implementation 'com.google.firebase:firebase-analytics:17.4.1'
+    implementation 'com.google.firebase:firebase-messaging:20.1.7'
 
 
     // Api Google Play Service : Map

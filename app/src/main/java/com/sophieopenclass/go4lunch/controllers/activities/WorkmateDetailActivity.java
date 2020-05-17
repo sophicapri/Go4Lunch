@@ -122,7 +122,7 @@ public class WorkmateDetailActivity extends BaseActivity<MyViewModel> {
     private void updateRecyclerView(ArrayList<PlaceDetails> placeDetailsList) {
         if (!placeDetailsList.isEmpty())
             binding.noPreviousRestaurants.setVisibility(View.GONE);
-        PreviousRestaurantsAdapter adapter = new PreviousRestaurantsAdapter(placeDetailsList, selectedUser,  this);
+        PreviousRestaurantsAdapter adapter = new PreviousRestaurantsAdapter(placeDetailsList, selectedUser,  this,  Glide.with(this));
         binding.previousRestaurantsRecyclerview.setAdapter(adapter);
     }
 

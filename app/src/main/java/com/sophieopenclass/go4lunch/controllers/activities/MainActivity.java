@@ -3,11 +3,14 @@ package com.sophieopenclass.go4lunch.controllers.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -21,10 +24,16 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.AutocompletePrediction;
+import com.google.android.libraries.places.api.model.AutocompleteSessionToken;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.model.RectangularBounds;
 import com.google.android.libraries.places.api.model.TypeFilter;
+import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest;
+import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
@@ -41,14 +50,16 @@ import com.sophieopenclass.go4lunch.databinding.ActivityMainBinding;
 import com.sophieopenclass.go4lunch.databinding.NavHeaderBinding;
 import com.sophieopenclass.go4lunch.models.User;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import static com.sophieopenclass.go4lunch.utils.Constants.MY_LUNCH;
 import static com.sophieopenclass.go4lunch.utils.Constants.PLACE_ID;
 import static com.sophieopenclass.go4lunch.utils.Constants.UID;
 
 public class MainActivity extends BaseActivity<MyViewModel> implements NavigationView.OnNavigationItemSelectedListener {
-    private ActivityMainBinding binding;
+    public ActivityMainBinding binding;
     private final int AUTOCOMPLETE_REQUEST_CODE = 123;
     private String placeId;
     private User currentUser;
@@ -60,7 +71,7 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
     private static final int FRAGMENT_MAP_VIEW = 10;
     private static final int FRAGMENT_LIST_VIEW = 20;
     private static final int FRAGMENT_WORKMATES_LIST = 30;
-    private PlacesClient placesClient;
+    public PlacesClient placesClient;
 
     @Override
     public View getFragmentLayout() {
@@ -117,7 +128,6 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
         setSupportActionBar(binding.myToolbar);
     }
 
-    // TODO:
     private void initPlacesApi() {
         // Initialize the SDK
         Places.initialize(getApplicationContext(), BuildConfig.API_KEY);
@@ -248,7 +258,9 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.search_bar_menu &&
                 (fragmentWorkmatesList == null || !fragmentWorkmatesList.isVisible()))
-            startAutocompleteActivity();
+            binding.searchBar.setVisibility(View.VISIBLE);
+
+           // startAutocompleteActivity();
         return true;
     }
 

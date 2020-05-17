@@ -57,33 +57,8 @@ public class User {
     // Always save the date as Locale.US in Firebase
     public static String getTodaysDate() {
         Date date = new Date();
-        String formatted = date.toString().substring(4, 10) + " " + date.toString().substring(24);
-        SimpleDateFormat formatter = new SimpleDateFormat("MMM dd yyyy", Locale.US);
-        try {
-            date = formatter.parse(formatted);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.LONG, Locale.US);
-        if (date != null)
-            return dateFormat.format(date);
-        return "";
-    }
-
-    // To display the date of the previous restaurants in WorkmatesDetailActivity
-    // either in French or in English
-    public static String formatDate(String dateString) {
-        SimpleDateFormat formatter = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
-        Date date = null;
-        try {
-            date = formatter.parse(dateString);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault());
-        if (date != null)
-            return dateFormat.format(date);
-        return "";
+        DateFormat formatter = DateFormat.getDateInstance(DateFormat.LONG, Locale.US);
+        return formatter.format(date);
     }
 
     public Map<String, String> getDatesAndPlaceIds() {

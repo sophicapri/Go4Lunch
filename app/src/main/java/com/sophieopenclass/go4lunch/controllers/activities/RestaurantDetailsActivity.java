@@ -17,6 +17,7 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.annotation.GlideModule;
 import com.bumptech.glide.request.RequestOptions;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
@@ -99,8 +100,7 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
         FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>()
                 .setQuery(viewModel.getCollectionReference().whereEqualTo("datesAndPlaceIds." +User.getTodaysDate(), placeId), User.class)
                 .build();
-        adapter = new WorkmatesViewAdapter(options, RESTAURANT_ACTIVITY, this);
-        ((WorkmatesViewAdapter) adapter).setViewModel(viewModel);
+        adapter = new WorkmatesViewAdapter(options, RESTAURANT_ACTIVITY, this, Glide.with(this));
         binding.detailRecyclerViewWorkmates.setHasFixedSize(true);
         binding.detailRecyclerViewWorkmates.setLayoutManager(new LinearLayoutManager(this));
         binding.detailRecyclerViewWorkmates.setAdapter(adapter);
@@ -197,10 +197,12 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
             binding.addRestaurant.setImageDrawable(getResources().getDrawable(R.drawable.ic_add_black_24dp));
             viewModel.deletePlaceId(currentUser.getUid(), User.getTodaysDate());
             viewModel.updateRestaurantName(currentUser.getUid(), "");
-            // TODO :might delete this
+            /*// TODO :might delete this
             if (currentUser.getDatesAndPlaceIds().keySet().isEmpty()) {
                 viewModel.deleteDatesAndPlaceIdsField(currentUser.getUid());
             }
+
+             */
         }
     }
 

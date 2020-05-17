@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.request.RequestOptions;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
@@ -29,13 +30,15 @@ public class WorkmatesViewAdapter extends FirestoreRecyclerAdapter<User, Workmat
     private FirebaseUser currentUser;
     private OnWorkmateClickListener onWorkmateClickListener;
     private int controller;
+    private RequestManager glide;
 
     public WorkmatesViewAdapter(@NonNull FirestoreRecyclerOptions<User> options, @Controller int controller,
-                                OnWorkmateClickListener onWorkmateClickListener) {
+                                OnWorkmateClickListener onWorkmateClickListener, RequestManager glide) {
         super(options);
         this.controller = controller;
         this.onWorkmateClickListener = onWorkmateClickListener;
         this.currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        this.glide = glide;
     }
 
     @NonNull
@@ -79,8 +82,7 @@ public class WorkmatesViewAdapter extends FirestoreRecyclerAdapter<User, Workmat
 
         void bind(User model) {
             String placeId = model.getDatesAndPlaceIds().get(User.getTodaysDate());
-            Glide.with(binding.workmateProfilePic.getContext())
-                    .load(model.getUrlPicture())
+            glide.load(model.getUrlPicture())
                     .apply(RequestOptions.circleCropTransform())
                     .into(binding.workmateProfilePic);
 

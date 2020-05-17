@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.bumptech.glide.Glide;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.sophieopenclass.go4lunch.MyViewModel;
@@ -30,7 +31,6 @@ public class WorkmatesListFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = RecyclerViewWorkmatesBinding.inflate(inflater, container, false);
-
         if (getActivity() != null) {
             viewModel = (MyViewModel) ((BaseActivity) getActivity()).getViewModel();
         }
@@ -48,7 +48,7 @@ public class WorkmatesListFragment extends Fragment {
                 .setQuery(viewModel.getCollectionReference(), User.class)
                 .build();
 
-        adapter = new WorkmatesViewAdapter(options,  WORKMATES_FRAGMENT, ((BaseActivity) getActivity()));
+        adapter = new WorkmatesViewAdapter(options,  WORKMATES_FRAGMENT, ((BaseActivity) getActivity()), Glide.with(this));
         binding.recyclerViewWorkmates.setHasFixedSize(true);
         binding.recyclerViewWorkmates.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.recyclerViewWorkmates.setAdapter(adapter);
