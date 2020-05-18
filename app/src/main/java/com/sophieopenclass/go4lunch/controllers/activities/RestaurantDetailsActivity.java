@@ -197,12 +197,6 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
             binding.addRestaurant.setImageDrawable(getResources().getDrawable(R.drawable.ic_add_black_24dp));
             viewModel.deletePlaceId(currentUser.getUid(), User.getTodaysDate());
             viewModel.updateRestaurantName(currentUser.getUid(), "");
-            /*// TODO :might delete this
-            if (currentUser.getDatesAndPlaceIds().keySet().isEmpty()) {
-                viewModel.deleteDatesAndPlaceIdsField(currentUser.getUid());
-            }
-
-             */
         }
     }
 

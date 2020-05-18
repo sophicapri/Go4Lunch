@@ -80,7 +80,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
     private Location currentLocation;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 123;
     private static final float DEFAULT_ZOOM = 17.5f;
-   // private static final float DEFAULT_ZOOM = 10f;
+    private boolean autocompleteActive;
     private BaseActivity context;
     private Location cameraLocation;
     private List<AutocompletePrediction> predictionList;
@@ -114,7 +114,11 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
         }
 
         MainActivity activity = ((MainActivity) getActivity());
-        activity.binding.closeSearchBar.setOnClickListener(v -> activity.binding.searchBar.setVisibility(View.GONE));
+        activity.binding.closeSearchBar.setOnClickListener(v -> {
+            activity.binding.searchBar.setVisibility(View.GONE);
+            autocompleteActive = false;
+        });
+
         final AutocompleteSessionToken token = AutocompleteSessionToken.newInstance();
         activity.binding.searchBarInput.addTextChangedListener(new TextWatcher() {
             @Override
@@ -124,6 +128,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                autocompleteActive = true;
                 LatLng northEast = new LatLng(currentLocation.getLatitude() - (0.05),
                         currentLocation.getLongitude() - (0.05));
                 LatLng southWest = new LatLng(currentLocation.getLatitude() + (0.05),
@@ -131,7 +136,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
 
 
                 FindAutocompletePredictionsRequest predictionsRequest = FindAutocompletePredictionsRequest.builder()
-                        //.setTypeFilter(TypeFilter.ESTABLISHMENT)
+                        .setTypeFilter(TypeFilter.ESTABLISHMENT)
                         .setSessionToken(token)
                         .setLocationBias(RectangularBounds.newInstance(northEast, southWest))
                         .setOrigin(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()))
@@ -226,7 +231,8 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
             cameraLocation = new Location("cameraLocation");
             cameraLocation.setLongitude(mMap.getCameraPosition().target.longitude);
             cameraLocation.setLatitude(mMap.getCameraPosition().target.latitude);
-            getNearbyPlaces(cameraLocation);
+            if (!autocompleteActive)
+                getNearbyPlaces(cameraLocation);
         });
     }
 

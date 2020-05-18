@@ -157,25 +157,4 @@ public class UserDataRepository {
         });
     }
 
-
-   /* public MutableLiveData<String> getDatesAndPlaceIds(String uid) {
-        MutableLiveData<Map<String, Object>> datesAndPlaceIds = new MutableLiveData<>();
-        userCollectionRef.document(uid).get().addOnCompleteListener(uidTask -> {
-            if (uidTask.isSuccessful()) {
-                if (uidTask.getResult() != null)
-                    userCollectionRef.document(uid).get().addOnCompleteListener(addPlaceIdTask -> {
-                        if (addPlaceIdTask.isSuccessful())
-                            datesAndPlaceIds.setValue(placeId);
-                        else if (addPlaceIdTask.getException() != null)
-                            Log.e(TAG, " addPlaceId: " + addPlaceIdTask.getException().getMessage());
-                    });
-                else
-                    newPlaceId.setValue(placeId);
-            } else if (uidTask.getException() != null)
-                Log.e(TAG, " addPlaceId: " + uidTask.getException().getMessage());
-        });
-        return newPlaceId;
-    }
-
-    */
 }

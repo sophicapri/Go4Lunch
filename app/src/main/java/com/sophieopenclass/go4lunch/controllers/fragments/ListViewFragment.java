@@ -44,6 +44,8 @@ public class ListViewFragment extends Fragment {
     private RecyclerViewRestaurantsBinding binding;
     private BaseActivity context;
     private List<AutocompletePrediction> predictionList;
+    //private EndlessRecyclerViewScrollListener scrollListener;
+
 
     public static Fragment newInstance() {
         return new ListViewFragment();

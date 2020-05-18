@@ -13,35 +13,22 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.RequestManager;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
-import com.firebase.ui.firestore.ObservableSnapshotArray;
 import com.sophieopenclass.go4lunch.R;
-import com.sophieopenclass.go4lunch.controllers.activities.ChatActivity;
 import com.sophieopenclass.go4lunch.databinding.ChatActivityMessageItemBinding;
 import com.sophieopenclass.go4lunch.models.Message;
-import com.sophieopenclass.go4lunch.models.json_to_java.PlaceDetails;
-import com.sophieopenclass.go4lunch.utils.MyFirestoreRecyclerAdapter;
 
-import java.lang.reflect.Array;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 
 public class ChatViewAdapter extends FirestoreRecyclerAdapter<Message, ChatViewAdapter.MessageViewHolder> {
     private String currentUserId;
     private RequestManager glide;
     private Listener callback;
-    private FirestoreRecyclerOptions<Message> options;
 
     public ChatViewAdapter(@NonNull FirestoreRecyclerOptions<Message> options, String currentUserId, RequestManager glide, Listener callback) {
         super(options);
-        this.options = options;
         this.currentUserId = currentUserId;
         this.glide = glide;
         this.callback = callback;
@@ -49,11 +36,6 @@ public class ChatViewAdapter extends FirestoreRecyclerAdapter<Message, ChatViewA
 
     @Override
     protected void onBindViewHolder(@NonNull MessageViewHolder holder, int position, @NonNull Message model) {
-        // Because we cannot make a query using whereEqualTo() AND orderBy() simultaneously* I order the list below.
-        // *It is possible when the fields required to make indexes are known beforehand
-        // but in our case we do not know them, the fields are created dynamically (ex : participants.$userId)
-        Message[] array = options.getSnapshots().toArray(new Message[0]);
-        Arrays.sort(array, new ChatActivity.MessageRecentComparator());
         holder.bind(model, currentUserId);
     }
 

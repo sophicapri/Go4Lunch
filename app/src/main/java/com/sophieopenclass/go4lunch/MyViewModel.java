@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.Query;
+import com.sophieopenclass.go4lunch.models.Chat;
 import com.sophieopenclass.go4lunch.models.Message;
 import com.sophieopenclass.go4lunch.models.json_to_java.RestaurantsResult;
 import com.sophieopenclass.go4lunch.models.json_to_java.PlaceDetails;
@@ -32,10 +33,6 @@ public class MyViewModel extends ViewModel {
 
     public LiveData<RestaurantsResult> getNearbyPlaces(String location) {
         return restaurantDataSource.getNearbyPlaces(location);
-    }
-
-    public LiveData<RestaurantsResult> getMoreNearbyPlaces(String nextPageToken) {
-        return restaurantDataSource.getMoreNearbyPlaces(nextPageToken);
     }
 
     public LiveData<PlaceDetails> getPlaceDetails(String placeId) {
@@ -98,24 +95,25 @@ public class MyViewModel extends ViewModel {
 
     // CHAT
 
-    public Query getAllMessagesForChat(String idSender, String idReceiver) {
-        return messageDataSource.getAllMessagesForChat(idSender, idReceiver);
+    public LiveData<Message> createMessageForChat(String textMessage, String userSenderId, String chatId) {
+        return messageDataSource.createMessageForChat(textMessage, userSenderId,chatId);
     }
 
-    public Query getAllMessages() {
-        return messageDataSource.getAllMessagesForChat();
+    public LiveData<Message> createMessageWithImageForChat(String urlImage, String textMessage, String userSenderId) {
+        return messageDataSource.createMessageWithImageForChat(urlImage, textMessage, userSenderId);
     }
 
-  /*  public Query getAllConversations(String idSender, String idReceiver) {
-        return messageDataSource.getAllConversations(idSender, idReceiver);
-    }
-   */
-
-    public LiveData<Message> createMessageForChat(String textMessage, String userSenderId, String userReceiverId) {
-        return messageDataSource.createMessageForChat(textMessage, userSenderId, userReceiverId);
+    public LiveData<String> getChatId(String currentUserId, String workmateId) {
+        return messageDataSource.getChatId(currentUserId, workmateId);
     }
 
-    public LiveData<Message> createMessageWithImageForChat(String urlImage, String textMessage, String userSenderId, String userReceiverId) {
-        return messageDataSource.createMessageWithImageForChat(urlImage, textMessage, userSenderId, userReceiverId);
+
+    public Query getMessages(String chatId) {
+        return messageDataSource.getMessages(chatId);
     }
+
+    public LiveData<Boolean> createChat(String currentUserId, String workmateId) {
+       return messageDataSource.createChat(currentUserId, workmateId);
+    }
+
 }
