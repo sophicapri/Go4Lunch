@@ -7,8 +7,6 @@ import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
-import androidx.lifecycle.LifecycleOwner;
-import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -22,8 +20,6 @@ import com.sophieopenclass.go4lunch.controllers.adapters.ChatViewAdapter;
 import com.sophieopenclass.go4lunch.databinding.ActivityChatBinding;
 import com.sophieopenclass.go4lunch.models.Message;
 import com.sophieopenclass.go4lunch.models.User;
-
-import java.util.Comparator;
 
 import io.reactivex.annotations.NonNull;
 
@@ -56,7 +52,11 @@ public class ChatActivity extends BaseActivity<MyViewModel> implements ChatViewA
             workmateId = (String) getIntent().getExtras().get(UID);
             viewModel.getUser(workmateId).observe(this, this::initUI);
         }
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
         if (getCurrentUser() != null) {
             viewModel.getUser(getCurrentUser().getUid()).observe(this, user -> {
                 currentUser = user;
@@ -126,7 +126,7 @@ public class ChatActivity extends BaseActivity<MyViewModel> implements ChatViewA
 
     private void updateRecyclerView(User currentUser, String chatId) {
         options = new FirestoreRecyclerOptions.Builder<Message>()
-                .setQuery(viewModel.getMessages(chatId), Message.class)
+                .setQuery(viewModel.getMessagesQuery(chatId), Message.class)
                 .build();
 
         adapter = new ChatViewAdapter(options, currentUser.getUid(), Glide.with(this), this);

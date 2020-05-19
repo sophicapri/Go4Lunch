@@ -46,12 +46,12 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <RelativeLayout
-            android:id="@+id/relativeLayout"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraint_layout_restau_infos"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="10dp"
             android:background="@color/colorPrimary"
+            android:padding="10dp"
             app:layout_constraintTop_toTopOf="parent">
 
             <TextView
@@ -60,6 +60,11 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/quantum_white_text"
                 android:textSize="16sp"
+                app:layout_constraintHorizontal_bias="0"
+                android:ellipsize="end"
+                app:layout_constraintEnd_toStartOf="@+id/guideline3"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
                 tools:text="@sample/tasks.json/data_restaurants/restaurantName" />
 
             <TextView
@@ -68,15 +73,21 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/details_restaurant_name"
                 android:textColor="@color/quantum_white_text"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/details_restaurant_name"
                 tools:text="@sample/tasks.json/data_restaurants/typeOfRestaurant" />
 
             <TextView
                 android:id="@+id/details_restaurant_address"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_alignBaseline="@id/details_type_of_restaurant"
                 android:layout_toEndOf="@id/details_type_of_restaurant"
                 android:textColor="@color/quantum_white_text"
+                app:layout_constraintBottom_toBottomOf="@id/details_type_of_restaurant"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/details_type_of_restaurant"
+                app:layout_constraintTop_toBottomOf="@+id/details_restaurant_name"
                 tools:text="@sample/tasks.json/data_restaurants/address" />
 
 
@@ -88,6 +99,9 @@
                 android:layout_marginStart="5dp"
                 android:layout_toEndOf="@id/details_restaurant_name"
                 android:contentDescription="one star"
+                app:layout_constraintBottom_toTopOf="@+id/details_type_of_restaurant"
+                app:layout_constraintStart_toEndOf="@+id/details_restaurant_name"
+                app:layout_constraintTop_toTopOf="@+id/details_restaurant_name"
                 app:srcCompat="@drawable/ic_star_yellow_24dp" />
 
             <ImageView
@@ -97,6 +111,9 @@
                 android:layout_alignBottom="@id/details_restaurant_name"
                 android:layout_toEndOf="@id/detail_one_star"
                 android:contentDescription="two star"
+                app:layout_constraintBottom_toBottomOf="@+id/detail_one_star"
+                app:layout_constraintStart_toEndOf="@+id/detail_one_star"
+                app:layout_constraintTop_toTopOf="@+id/detail_one_star"
                 app:srcCompat="@drawable/ic_star_yellow_24dp" />
 
             <ImageView
@@ -106,6 +123,9 @@
                 android:layout_alignBottom="@id/details_restaurant_name"
                 android:layout_toEndOf="@id/detail_two_stars"
                 android:contentDescription="three star"
+                app:layout_constraintBottom_toBottomOf="@+id/detail_two_stars"
+                app:layout_constraintStart_toEndOf="@+id/detail_two_stars"
+                app:layout_constraintTop_toTopOf="@+id/detail_two_stars"
                 app:srcCompat="@drawable/ic_star_yellow_24dp" />
 
             <TextView
@@ -113,29 +133,46 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/details_type_of_restaurant"
-                android:text="@string/weekdays_opening_hours_title"
-                android:layout_marginTop="2dp"
-                android:textStyle="italic|bold"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/bkg_empty_rectangle"
+                android:clickable="true"
                 android:focusable="true"
                 android:paddingStart="5dp"
-                android:paddingEnd="5dp"
                 android:paddingTop="2dp"
+                android:paddingEnd="5dp"
                 android:paddingBottom="2dp"
-                android:clickable="true"
-                android:background="@drawable/bkg_empty_rectangle"
-                android:textColor="@color/colorAccent"/>
+                android:text="@string/weekdays_opening_hours_title"
+                android:textColor="@color/colorAccent"
+                android:textStyle="italic|bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/details_type_of_restaurant" />
 
             <TextView
-                android:visibility="gone"
                 android:id="@+id/weekdays_openings"
-                android:layout_marginTop="5dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/opening_hours_title"
+                android:layout_marginTop="5dp"
                 android:text="@string/weekdays_openings"
-                android:textColor="@color/colorAccent"/>
+                android:textColor="@color/colorAccent"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/opening_hours_title" />
 
-        </RelativeLayout>
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_begin="256dp" />
+
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/barrier"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:barrierDirection="top" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <ImageView
             android:id="@+id/call_btn"
@@ -164,7 +201,7 @@
             android:layout_marginTop="15dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/relativeLayout"
+            app:layout_constraintTop_toBottomOf="@+id/constraint_layout_restau_infos"
             app:srcCompat="@drawable/ic_star_border_black_24dp" />
 
         <TextView

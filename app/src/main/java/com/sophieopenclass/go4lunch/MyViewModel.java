@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel;
 
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.Query;
-import com.sophieopenclass.go4lunch.models.Chat;
 import com.sophieopenclass.go4lunch.models.Message;
 import com.sophieopenclass.go4lunch.models.json_to_java.RestaurantsResult;
 import com.sophieopenclass.go4lunch.models.json_to_java.PlaceDetails;
@@ -55,6 +54,10 @@ public class MyViewModel extends ViewModel {
 
     public CollectionReference getCollectionReference() {
         return userDataSource.getCollectionReference();
+    }
+
+    public LiveData<List<User>> getListUsers() {
+        return userDataSource.getListUsers();
     }
 
     public LiveData<List<User>> getUsersByPlaceIdDate(String placeId, String date) {
@@ -112,8 +115,8 @@ public class MyViewModel extends ViewModel {
     }
 
 
-    public Query getMessages(String chatId) {
-        return messageDataSource.getMessages(chatId);
+    public Query getMessagesQuery(String chatId) {
+        return messageDataSource.getMessagesQuery(chatId);
     }
 
     public LiveData<Boolean> createChat(String currentUserId, String workmateId) {

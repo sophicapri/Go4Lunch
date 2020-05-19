@@ -92,10 +92,10 @@ public class ListViewFragment extends Fragment {
                 restaurants.clear();
                 adapter.notifyDataSetChanged();
 
-                LatLng northEast = new LatLng(BaseActivity.currentLocation.getLatitude() - (0.005),
-                        BaseActivity.currentLocation.getLongitude() - (0.005));
-                LatLng southWest = new LatLng(BaseActivity.currentLocation.getLatitude() + (0.005),
-                        BaseActivity.currentLocation.getLongitude() + (0.005));
+                LatLng northEast = new LatLng(BaseActivity.currentLocation.getLatitude() - (0.02),
+                        BaseActivity.currentLocation.getLongitude() - (0.02));
+                LatLng southWest = new LatLng(BaseActivity.currentLocation.getLatitude() + (0.02),
+                        BaseActivity.currentLocation.getLongitude() + (0.02));
 
 
                 FindAutocompletePredictionsRequest predictionsRequest = FindAutocompletePredictionsRequest.builder()

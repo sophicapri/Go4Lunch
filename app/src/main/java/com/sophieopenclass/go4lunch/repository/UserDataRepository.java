@@ -57,6 +57,18 @@ public class UserDataRepository {
         return userData;
     }
 
+    public MutableLiveData<List<User>> getListUsers(){
+        MutableLiveData<List<User>> users = new MutableLiveData<>();
+        userCollectionRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful())
+                if (task.getResult() != null)
+                    users.postValue(task.getResult().toObjects(User.class));
+                else if (task.getException() != null)
+                    Log.e(TAG, "getListUsers: " + (task.getException().getMessage()));
+        });
+        return users;
+    }
+
 
     public MutableLiveData<List<User>> getUsersByPlaceIdDate(String placeId, String date) {
         MutableLiveData<List<User>> users = new MutableLiveData<>();

@@ -39,7 +39,7 @@ public class MessageDataRepository {
         return chatId;
     }
 
-    public Query getMessages(String chatId) {
+    public Query getMessagesQuery(String chatId) {
         return messageCollectionRef.document(chatId).collection("conversation").orderBy("dateCreated").limit(50);
     }
 

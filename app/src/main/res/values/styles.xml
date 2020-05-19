@@ -31,6 +31,11 @@
         <item name="android:textColor">@color/quantum_grey700</item>
     </style>
 
+    <style name="TextStyleNormal" parent="TextAppearance.AppCompat">
+        <item name="android:textStyle">normal</item>
+        <item name="android:textColor">@color/quantum_black_100</item>
+    </style>
+
     <!-- STYLE SIGN-IN ACTIVITY -->
     <style name="LoginTheme" parent="AppTheme">
         <item name="colorPrimary">@color/colorPrimary</item>

@@ -37,8 +37,6 @@ public class LoginPageActivity extends BaseActivity<MyViewModel> {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        //System.out.println(viewModel.getAllConversations());
         if (isCurrentUserLogged()) {
             startMainActivity();
         } else

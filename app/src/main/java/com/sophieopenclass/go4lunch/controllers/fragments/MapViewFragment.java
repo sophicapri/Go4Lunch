@@ -127,7 +127,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
             autocompleteActive = false;
         });
 
-
         activity.binding.searchBarMap.searchBarInput.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -220,7 +219,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
                 currentLocation = task1.getResult();
                 if (currentLocation != null) {
                     configureMap(currentLocation);
-                    context.currentLocation = currentLocation;
+                    BaseActivity.currentLocation = currentLocation;
                     //
                     cameraLocation = currentLocation;
                 }
@@ -242,7 +241,8 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, DEFAULT_ZOOM));
         if (!autocompleteActive)
             getNearbyPlaces(currentLocation);
-        mMap.setOnCameraMoveListener(() -> {
+
+        mMap.setOnCameraMoveStartedListener(i -> {
             cameraLocation = new Location("cameraLocation");
             cameraLocation.setLongitude(mMap.getCameraPosition().target.longitude);
             cameraLocation.setLatitude(mMap.getCameraPosition().target.latitude);

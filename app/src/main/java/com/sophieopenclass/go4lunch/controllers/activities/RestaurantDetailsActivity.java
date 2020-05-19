@@ -24,6 +24,7 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.sophieopenclass.go4lunch.MyViewModel;
 import com.sophieopenclass.go4lunch.R;
 import com.sophieopenclass.go4lunch.base.BaseActivity;
+import com.sophieopenclass.go4lunch.controllers.adapters.WorkmatesListAdapter;
 import com.sophieopenclass.go4lunch.controllers.adapters.WorkmatesViewAdapter;
 import com.sophieopenclass.go4lunch.databinding.ActivityRestaurantDetailsBinding;
 import com.sophieopenclass.go4lunch.models.User;
@@ -100,7 +101,7 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
         FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>()
                 .setQuery(viewModel.getCollectionReference().whereEqualTo("datesAndPlaceIds." +User.getTodaysDate(), placeId), User.class)
                 .build();
-        adapter = new WorkmatesViewAdapter(options, RESTAURANT_ACTIVITY, this, Glide.with(this));
+        adapter = new WorkmatesListAdapter(options, this, Glide.with(this));
         binding.detailRecyclerViewWorkmates.setHasFixedSize(true);
         binding.detailRecyclerViewWorkmates.setLayoutManager(new LinearLayoutManager(this));
         binding.detailRecyclerViewWorkmates.setAdapter(adapter);
