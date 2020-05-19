@@ -80,11 +80,16 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
     private Location currentLocation;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 123;
     private static final float DEFAULT_ZOOM = 17.5f;
+    //private static final float DEFAULT_ZOOM = 15f;
     private boolean autocompleteActive;
     private BaseActivity context;
     private Location cameraLocation;
     private List<AutocompletePrediction> predictionList;
     public static final String TAG = "MAIN ACTIVITY";
+    private String searchBarTextInput;
+    private MainActivity activity;
+    private final AutocompleteSessionToken token = AutocompleteSessionToken.newInstance();
+    public static boolean mapViewVisible = false;
 
     public MapViewFragment() {
     }
@@ -97,7 +102,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         FragmentMapBinding binding = FragmentMapBinding.inflate(inflater, container, false);
-
         if (getActivity() != null) {
             context = (BaseActivity) getActivity();
             viewModel = (MyViewModel) ((BaseActivity) getActivity()).getViewModel();
@@ -112,15 +116,19 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
             else
                 getNearbyPlaces(currentLocation);
         }
-
-        MainActivity activity = ((MainActivity) getActivity());
-        activity.binding.closeSearchBar.setOnClickListener(v -> {
-            activity.binding.searchBar.setVisibility(View.GONE);
+        activity = ((MainActivity) getActivity());
+        activity.binding.searchBarMap.closeSearchBar.setOnClickListener(v -> {
+            activity.binding.searchBarMap.searchBarMap.setVisibility(View.GONE);
+            activity.binding.searchBarMap.searchBarInput.getText().clear();
+            if (cameraLocation != null)
+                getNearbyPlaces(cameraLocation);
+            else
+                getNearbyPlaces(currentLocation);
             autocompleteActive = false;
         });
 
-        final AutocompleteSessionToken token = AutocompleteSessionToken.newInstance();
-        activity.binding.searchBarInput.addTextChangedListener(new TextWatcher() {
+
+        activity.binding.searchBarMap.searchBarInput.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -128,41 +136,9 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                searchBarTextInput = s.toString();
                 autocompleteActive = true;
-                LatLng northEast = new LatLng(currentLocation.getLatitude() - (0.05),
-                        currentLocation.getLongitude() - (0.05));
-                LatLng southWest = new LatLng(currentLocation.getLatitude() + (0.05),
-                        currentLocation.getLongitude() + (0.05));
-
-
-                FindAutocompletePredictionsRequest predictionsRequest = FindAutocompletePredictionsRequest.builder()
-                        .setTypeFilter(TypeFilter.ESTABLISHMENT)
-                        .setSessionToken(token)
-                        .setLocationBias(RectangularBounds.newInstance(northEast, southWest))
-                        .setOrigin(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()))
-                        .setQuery(s.toString())
-                        .build();
-                activity.placesClient.findAutocompletePredictions(predictionsRequest).addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        FindAutocompletePredictionsResponse predictionsResponse = task.getResult();
-                        if (predictionsResponse != null) {
-                            predictionList = predictionsResponse.getAutocompletePredictions();
-                            Gson gson = new Gson();
-                            Log.i(TAG, "onTextChanged: 1" + gson.toJson(predictionList));
-                            List<String> suggestionsList = new ArrayList<>();
-                            for (int i = 0; i < predictionList.size(); i++) {
-                                AutocompletePrediction prediction = predictionList.get(i);
-                                if (prediction.getPlaceTypes().contains(Place.Type.RESTAURANT)) {
-                                    suggestionsList.add(prediction.getPlaceId());
-                                }
-                            }
-                            Log.i(TAG, "onTextChanged: 2 " + gson.toJson(suggestionsList));
-                            getPlaceDetailAutocompleteList(suggestionsList);
-                        }
-                    } else {
-                        Log.i(TAG, "Prediction fetching task unsuccessful");
-                    }
-                });
+                displayResultsAutocomplete(searchBarTextInput);
             }
 
             @Override
@@ -172,6 +148,42 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
         });
         binding.fab.setOnClickListener(v -> fetchLastLocation());
         return binding.getRoot();
+    }
+
+    private void displayResultsAutocomplete(String searchBarTextInput) {
+        LatLng northEast = new LatLng(cameraLocation.getLatitude() - (0.004),
+                cameraLocation.getLongitude() - (0.004));
+        LatLng southWest = new LatLng(cameraLocation.getLatitude() + (0.004),
+                cameraLocation.getLongitude() + (0.004));
+
+        FindAutocompletePredictionsRequest predictionsRequest = FindAutocompletePredictionsRequest.builder()
+                .setTypeFilter(TypeFilter.ESTABLISHMENT)
+                .setSessionToken(token)
+                .setLocationRestriction(RectangularBounds.newInstance(northEast, southWest))
+                .setOrigin(new LatLng(cameraLocation.getLatitude(), cameraLocation.getLongitude()))
+                .setQuery(searchBarTextInput)
+                .build();
+        activity.placesClient.findAutocompletePredictions(predictionsRequest).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                FindAutocompletePredictionsResponse predictionsResponse = task.getResult();
+                if (predictionsResponse != null) {
+                    predictionList = predictionsResponse.getAutocompletePredictions();
+                    Gson gson = new Gson();
+                    Log.i(TAG, "onTextChanged: 1" + gson.toJson(predictionList));
+                    List<String> suggestionsList = new ArrayList<>();
+                    for (int i = 0; i < predictionList.size(); i++) {
+                        AutocompletePrediction prediction = predictionList.get(i);
+                        if (prediction.getPlaceTypes().contains(Place.Type.RESTAURANT)) {
+                            suggestionsList.add(prediction.getPlaceId());
+                        }
+                    }
+                    Log.i(TAG, "onTextChanged: 2 " + gson.toJson(suggestionsList));
+                    getPlaceDetailAutocompleteList(suggestionsList);
+                }
+            } else {
+                Log.i(TAG, "Prediction fetching task unsuccessful");
+            }
+        });
     }
 
     private void getPlaceDetailAutocompleteList(List<String> suggestionsList) {
@@ -209,6 +221,8 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
                 if (currentLocation != null) {
                     configureMap(currentLocation);
                     context.currentLocation = currentLocation;
+                    //
+                    cameraLocation = currentLocation;
                 }
             } else {
                 Toast.makeText(getActivity(), "unable to get current location", Toast.LENGTH_SHORT).show();
@@ -226,13 +240,16 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
     private void configureMap(Location currentLocation) {
         LatLng latLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, DEFAULT_ZOOM));
-        getNearbyPlaces(currentLocation);
+        if (!autocompleteActive)
+            getNearbyPlaces(currentLocation);
         mMap.setOnCameraMoveListener(() -> {
             cameraLocation = new Location("cameraLocation");
             cameraLocation.setLongitude(mMap.getCameraPosition().target.longitude);
             cameraLocation.setLatitude(mMap.getCameraPosition().target.latitude);
             if (!autocompleteActive)
                 getNearbyPlaces(cameraLocation);
+            else
+                displayResultsAutocomplete(searchBarTextInput);
         });
     }
 

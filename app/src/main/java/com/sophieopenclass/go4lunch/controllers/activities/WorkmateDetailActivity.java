@@ -95,7 +95,6 @@ public class WorkmateDetailActivity extends BaseActivity<MyViewModel> {
             binding.workmateLunchTextview.setText(getString(R.string.detail_lunch_textview));
             if (binding.workmateDetailLunch.workmateDetailLunch.getVisibility() == View.VISIBLE)
                 binding.workmateDetailLunch.workmateDetailLunch.setOnClickListener(v -> onRestaurantClick(todaysPlaceId));
-            // TODO : handle stars
         });
     }
 
@@ -135,7 +134,7 @@ public class WorkmateDetailActivity extends BaseActivity<MyViewModel> {
     private void updateRecyclerView(ArrayList<PlaceDetails> placeDetailsList) {
         if (!placeDetailsList.isEmpty())
             binding.noPreviousRestaurants.setVisibility(View.GONE);
-        PreviousRestaurantsAdapter adapter = new PreviousRestaurantsAdapter(placeDetailsList, selectedUser, this, Glide.with(this));
+        PreviousRestaurantsAdapter adapter = new PreviousRestaurantsAdapter(placeDetailsList, this, Glide.with(this));
         binding.previousRestaurantsRecyclerview.setAdapter(adapter);
     }
 

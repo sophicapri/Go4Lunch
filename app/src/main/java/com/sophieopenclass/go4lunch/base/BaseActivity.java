@@ -32,7 +32,7 @@ import static com.sophieopenclass.go4lunch.utils.Constants.UID;
 
 public abstract class BaseActivity<T extends ViewModel> extends AppCompatActivity implements Listeners.OnWorkmateClickListener, Listeners.OnRestaurantClickListener {
     public T viewModel;
-    public Location currentLocation = null;
+    public static Location currentLocation = null;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

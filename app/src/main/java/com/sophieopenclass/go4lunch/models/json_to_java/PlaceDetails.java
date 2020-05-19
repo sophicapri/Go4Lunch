@@ -1,10 +1,13 @@
 
 package com.sophieopenclass.go4lunch.models.json_to_java;
 
+import android.location.Location;
+
 import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.sophieopenclass.go4lunch.BuildConfig;
+import com.sophieopenclass.go4lunch.base.BaseActivity;
 
 import static com.sophieopenclass.go4lunch.api.PlaceService.API_URL;
 import static com.sophieopenclass.go4lunch.api.PlaceService.PHOTO_URL;
@@ -85,6 +88,7 @@ public class PlaceDetails {
     private String website;
     private int nbrOfWorkmates;
     private String dateOfLunch;
+    private int distance;
 
     public List<AddressComponent> getAddressComponents() {
         return addressComponents;
@@ -278,6 +282,8 @@ public class PlaceDetails {
         this.website = website;
     }
 
+    //
+
     public static String urlPhotoFormatter(PlaceDetails placeDetails, int position){
         if (placeDetails.getPhotos() != null) {
             String photoReference = placeDetails.getPhotos().get(position).getPhotoReference();
@@ -303,4 +309,16 @@ public class PlaceDetails {
     public void setDateOfLunch(String dateOfLunch) {
         this.dateOfLunch = dateOfLunch;
     }
+
+    public int getDistance() {
+        Location restaurantLocation = new Location(this.getName());
+        restaurantLocation.setLatitude(this.getGeometry().getLocation().getLat());
+        restaurantLocation.setLongitude(this.getGeometry().getLocation().getLng());
+        return (int) restaurantLocation.distanceTo(BaseActivity.currentLocation);
+    }
+
+    public void setDistance(int distance) {
+        this.distance = distance;
+    }
+
 }

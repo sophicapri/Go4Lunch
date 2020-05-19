@@ -206,7 +206,6 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
                 startNewActivity(SettingsActivity.class);
                 break;
             case FRAGMENT_MAP_VIEW:
-                //TODO: pourquoi l'affichage de la map est lent ?
                 showMapViewFragment();
                 break;
             case FRAGMENT_LIST_VIEW:
@@ -246,6 +245,9 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
     private void startTransactionFragment(Fragment fragment) {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.frame_layout, fragment).commit();
+
+        binding.searchBarListView.searchBarListView.setVisibility(View.GONE);
+        binding.searchBarMap.searchBarMap.setVisibility(View.GONE);
     }
 
     @Override
@@ -258,9 +260,10 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.search_bar_menu &&
                 (fragmentWorkmatesList == null || !fragmentWorkmatesList.isVisible()))
-            binding.searchBar.setVisibility(View.VISIBLE);
-
-           // startAutocompleteActivity();
+            if (fragmentMapView.isVisible())
+                binding.searchBarMap.searchBarMap.setVisibility(View.VISIBLE);
+            else
+                binding.searchBarListView.searchBarListView.setVisibility(View.VISIBLE);
         return true;
     }
 

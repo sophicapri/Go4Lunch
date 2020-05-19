@@ -207,7 +207,6 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
                 ActivityCompat.requestPermissions(this,
                         new String[]{Manifest.permission.CALL_PHONE}, REQUEST_CALL);
             } else {
-                // TODO : add Alert dialog before calling
                 String dial = "tel:" + placeDetails.getInternationalPhoneNumber();
                 startActivity(new Intent(Intent.ACTION_CALL, Uri.parse(dial)));
             }
@@ -228,7 +227,6 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
 
     private void visitWebsite(String urlWebsite) {
         if (urlWebsite != null) {
-            // TODO : add Alert dialog before opening browser
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(urlWebsite));
             startActivity(intent);
         } else

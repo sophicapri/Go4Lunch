@@ -142,16 +142,6 @@ public class ChatActivity extends BaseActivity<MyViewModel> implements ChatViewA
         adapter.startListening();
     }
 
-    /**
-     * Comparator to sort messages from last sent to first
-     */
-    public static class MessageRecentComparator implements Comparator<Message> {
-        @Override
-        public int compare(Message left, Message right) {
-            return (int) (left.getDateCreated().getTime() - right.getDateCreated().getTime());
-        }
-    }
-
     @Override
     public void onDataChanged() {
         binding.chatTextViewRecyclerViewEmpty.setVisibility(adapter.getItemCount() == 0 ? View.VISIBLE : View.GONE);

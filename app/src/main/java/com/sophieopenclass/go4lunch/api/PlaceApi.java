@@ -14,7 +14,6 @@ public interface PlaceApi {
     @GET("nearbysearch/json?&rankby=distance&type=restaurant&key=" + apiKey)
     Call<RestaurantsResult> getNearbyPlaces(@Query("location") String location);
 
-
     @GET("nearbysearch/json?&key=" + apiKey)
     Call<RestaurantsResult> getMoreNearbyPlaces(@Query("pagetoken") String nextPageToken);
 

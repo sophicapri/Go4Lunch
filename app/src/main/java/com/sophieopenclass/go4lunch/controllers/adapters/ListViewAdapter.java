@@ -5,8 +5,10 @@ import android.location.Location;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.RequestManager;
@@ -14,20 +16,23 @@ import com.bumptech.glide.request.RequestOptions;
 import com.sophieopenclass.go4lunch.R;
 import com.sophieopenclass.go4lunch.base.BaseActivity;
 import com.sophieopenclass.go4lunch.databinding.FragmentListViewBinding;
+import com.sophieopenclass.go4lunch.databinding.PlaceLoadingBinding;
 import com.sophieopenclass.go4lunch.models.json_to_java.OpeningHours;
 import com.sophieopenclass.go4lunch.models.json_to_java.PlaceDetails;
+import com.sophieopenclass.go4lunch.utils.EndlessRecyclerViewScrollListener;
 
 import java.util.Calendar;
 import java.util.List;
 
 import static com.sophieopenclass.go4lunch.listeners.Listeners.OnRestaurantClickListener;
 
-public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ListViewHolder> {
+public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.PlaceViewHolder> {
     private List<PlaceDetails> placeDetailsList;
     private OnRestaurantClickListener onRestaurantClickListener;
     private RequestManager glide;
 
-    public ListViewAdapter(List<PlaceDetails> placeDetailsList, OnRestaurantClickListener onRestaurantClickListener, RequestManager glide) {
+    public ListViewAdapter(List<PlaceDetails> placeDetailsList,
+                           OnRestaurantClickListener onRestaurantClickListener, RequestManager glide) {
         this.placeDetailsList = placeDetailsList;
         this.onRestaurantClickListener = onRestaurantClickListener;
         this.glide = glide;
@@ -35,14 +40,14 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ListVi
 
     @NonNull
     @Override
-    public ListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public PlaceViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_list_view,
                 parent, false);
-        return new ListViewHolder(view, onRestaurantClickListener);
+        return new PlaceViewHolder(view, onRestaurantClickListener);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ListViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull PlaceViewHolder holder, int position) {
         holder.bind(placeDetailsList.get(position));
     }
 
@@ -51,13 +56,13 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ListVi
         return placeDetailsList.size();
     }
 
-    class ListViewHolder extends RecyclerView.ViewHolder {
+    class PlaceViewHolder extends RecyclerView.ViewHolder {
         FragmentListViewBinding binding;
         OnRestaurantClickListener onRestaurantClickListener;
         BaseActivity context;
         Resources res;
 
-        ListViewHolder(@NonNull View itemView, OnRestaurantClickListener onRestaurantClickListener) {
+        PlaceViewHolder(@NonNull View itemView, OnRestaurantClickListener onRestaurantClickListener) {
             super(itemView);
             this.onRestaurantClickListener = onRestaurantClickListener;
             binding = FragmentListViewBinding.bind(itemView);
@@ -83,14 +88,14 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ListVi
             glide.load(urlPhoto).apply(RequestOptions.centerCropTransform())
                     .into(binding.restaurantPhoto);
 
-            Location restaurantLocation = new Location(placeDetails.getName());
+            /*Location restaurantLocation = new Location(placeDetails.getName());
             restaurantLocation.setLatitude(placeDetails.getGeometry().getLocation().getLat());
             restaurantLocation.setLongitude(placeDetails.getGeometry().getLocation().getLng());
-            int distance = (int) restaurantLocation.distanceTo(context.currentLocation);
-            binding.restaurantDistance.setText(res.getString(R.string.distance, distance));
+            int distance = (int) restaurantLocation.distanceTo(BaseActivity.currentLocation);
+             */
+            binding.restaurantDistance.setText(res.getString(R.string.distance, placeDetails.getDistance()));
             binding.nbrOfWorkmates.setText(res.getString(R.string.nbr_of_workmates, placeDetails.getNbrOfWorkmates()));
 
-            // TODO: find out how to calculate the rating
             binding.oneStar.setVisibility(View.VISIBLE);
             binding.twoStars.setVisibility(View.VISIBLE);
             binding.threeStars.setVisibility(View.INVISIBLE);
@@ -109,6 +114,4 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.ListVi
 
         }
     }
-
-
 }

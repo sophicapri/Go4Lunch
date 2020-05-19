@@ -30,14 +30,12 @@ import java.util.Map;
 public class PreviousRestaurantsAdapter extends RecyclerView.Adapter<PreviousRestaurantsAdapter.WorkmatesDetailHolder> {
     private ArrayList<PlaceDetails> placeDetailsList;
     private Listeners.OnRestaurantClickListener onRestaurantClickListener;
-    private User user;
     private RequestManager glide;
 
 
-    public PreviousRestaurantsAdapter(ArrayList<PlaceDetails> placeDetailsList, User selectedUser, Listeners.OnRestaurantClickListener onRestaurantClickListener, RequestManager glide) {
+    public PreviousRestaurantsAdapter(ArrayList<PlaceDetails> placeDetailsList, Listeners.OnRestaurantClickListener onRestaurantClickListener, RequestManager glide) {
         this.placeDetailsList = placeDetailsList;
         this.onRestaurantClickListener = onRestaurantClickListener;
-        this.user = selectedUser;
         this.glide = glide;
     }
 

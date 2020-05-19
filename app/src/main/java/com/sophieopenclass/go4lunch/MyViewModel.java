@@ -35,6 +35,10 @@ public class MyViewModel extends ViewModel {
         return restaurantDataSource.getNearbyPlaces(location);
     }
 
+    public LiveData<RestaurantsResult> getMoreNearbyPlaces(String pageToken) {
+        return restaurantDataSource.getMoreNearbyPlaces(pageToken);
+    }
+
     public LiveData<PlaceDetails> getPlaceDetails(String placeId) {
         return restaurantDataSource.getPlaceDetails(placeId);
     }
