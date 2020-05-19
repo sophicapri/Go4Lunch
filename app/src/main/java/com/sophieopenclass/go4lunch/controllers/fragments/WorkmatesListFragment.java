@@ -84,26 +84,4 @@ public class WorkmatesListFragment extends Fragment {
             adapter.updateList(orderedList);
         });
     }
-
-   /* private void setUpRecyclerView() {
-        FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>()
-                .setQuery(viewModel.getCollectionReference(), User.class)
-                .build();
-
-        adapter = new WorkmatesViewAdapter(options,  WORKMATES_FRAGMENT, ((BaseActivity) getActivity()), Glide.with(this));
-        binding.recyclerViewWorkmates.setHasFixedSize(true);
-        binding.recyclerViewWorkmates.setLayoutManager(new LinearLayoutManager(getContext()));
-        binding.recyclerViewWorkmates.setAdapter(adapter);
-        adapter.startListening();
-    }
-    */
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        /*if (adapter != null)
-            adapter.stopListening();
-
-         */
-    }
 }

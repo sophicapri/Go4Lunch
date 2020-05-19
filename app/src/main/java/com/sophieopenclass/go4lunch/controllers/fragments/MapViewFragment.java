@@ -89,7 +89,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
     private String searchBarTextInput;
     private MainActivity activity;
     private final AutocompleteSessionToken token = AutocompleteSessionToken.newInstance();
-    public static boolean mapViewVisible = false;
 
     public MapViewFragment() {
     }

@@ -84,6 +84,8 @@ public class PreviousRestaurantsAdapter extends RecyclerView.Adapter<PreviousRes
         }
     }
 
+    // Formatting the date saved in Firestore in Locale.US to display it in French or in English
+    // with Locale.getDefault
     private String formatDate(String dateString) {
         SimpleDateFormat formatter = new SimpleDateFormat("MMM dd, yyyy", Locale.US);
         Date date = null;

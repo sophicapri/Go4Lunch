@@ -34,10 +34,10 @@ import java.util.List;
 
 import static com.sophieopenclass.go4lunch.utils.Constants.MY_LUNCH;
 import static com.sophieopenclass.go4lunch.utils.Constants.PLACE_ID;
-import static com.sophieopenclass.go4lunch.utils.Constants.RESTAURANT_ACTIVITY;
 
 public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> implements View.OnClickListener {
     public static final int REQUEST_CALL = 567;
+    public static final int MAX_PHOTOS = 3;
     private ActivityRestaurantDetailsBinding binding;
     private FirestoreRecyclerAdapter adapter;
     private String placeId;
@@ -69,12 +69,10 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
         if (getIntent().getExtras() != null) {
             if (getIntent().hasExtra(PLACE_ID)) {
                 placeId = (String) getIntent().getExtras().get(PLACE_ID);
-
-                if (placeId != null && !placeId.matches("")) {
+                if (placeId != null && !placeId.isEmpty())
                     viewModel.getPlaceDetails(placeId).observe(this, this::displayRestaurant);
-                } else {
+                 else
                     binding.addRestaurant.setVisibility(View.GONE);
-                }
             }
             if (getIntent().hasExtra(MY_LUNCH)) {
                 binding.myLunchToolbar.setVisibility(View.VISIBLE);
@@ -125,16 +123,20 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
         binding.detailsRestaurantName.setText(placeDetails.getName());
         binding.detailsTypeOfRestaurant.setText(getString(R.string.restaurant_type, placeDetails.getTypes().get(0)));
         binding.detailsRestaurantAddress.setText(placeDetails.getVicinity());
-
+        int layoutParam = 0;
         int nbrOfPhotos = 1;
-        int layoutParam = ViewGroup.LayoutParams.MATCH_PARENT;
 
-        if (placeDetails.getPhotos() != null) {
+        // To center the image
+        if (placeDetails.getPhotos() == null || placeDetails.getPhotos().size() == 1) {
+            layoutParam = ViewGroup.LayoutParams.MATCH_PARENT;
+        }
+
+        if (placeDetails.getPhotos() != null && placeDetails.getPhotos().size() != 1) {
             nbrOfPhotos = placeDetails.getPhotos().size();
             layoutParam = ViewGroup.LayoutParams.WRAP_CONTENT;
         }
 
-        for (int i = 0; i < nbrOfPhotos; i++) {
+        for (int i = 0; i < nbrOfPhotos && i < MAX_PHOTOS; i++) {
             String urlPhoto = PlaceDetails.urlPhotoFormatter(placeDetails, i);
             ImageView newPhoto = new ImageView(this);
             binding.restaurantPhotosGroup.addView(newPhoto, layoutParam, ViewGroup.LayoutParams.MATCH_PARENT);

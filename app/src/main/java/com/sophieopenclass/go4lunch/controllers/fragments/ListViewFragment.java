@@ -52,6 +52,7 @@ public class ListViewFragment extends Fragment {
     private String nextPageToken;
     private ListViewAdapter adapter;
     private List<PlaceDetails> restaurants = new ArrayList<>();
+    private final AutocompleteSessionToken token = AutocompleteSessionToken.newInstance();
     private MainActivity activity;
 
     public static Fragment newInstance() {
@@ -79,7 +80,6 @@ public class ListViewFragment extends Fragment {
             autocompleteActive = false;
             observePlaces(null);
         });
-        final AutocompleteSessionToken token = AutocompleteSessionToken.newInstance();
         activity.binding.searchBarListView.searchBarInput.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -91,44 +91,47 @@ public class ListViewFragment extends Fragment {
                 autocompleteActive = true;
                 restaurants.clear();
                 adapter.notifyDataSetChanged();
-
-                LatLng northEast = new LatLng(BaseActivity.currentLocation.getLatitude() - (0.02),
-                        BaseActivity.currentLocation.getLongitude() - (0.02));
-                LatLng southWest = new LatLng(BaseActivity.currentLocation.getLatitude() + (0.02),
-                        BaseActivity.currentLocation.getLongitude() + (0.02));
-
-
-                FindAutocompletePredictionsRequest predictionsRequest = FindAutocompletePredictionsRequest.builder()
-                        .setTypeFilter(TypeFilter.ESTABLISHMENT)
-                        .setSessionToken(token)
-                        .setLocationRestriction(RectangularBounds.newInstance(northEast, southWest))
-                        .setQuery(s.toString())
-                        .build();
-                activity.placesClient.findAutocompletePredictions(predictionsRequest).addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        FindAutocompletePredictionsResponse predictionsResponse = task.getResult();
-                        if (predictionsResponse != null) {
-                            predictionList = predictionsResponse.getAutocompletePredictions();
-                            List<String> suggestionsList = new ArrayList<>();
-                            for (int i = 0; i < predictionList.size(); i++) {
-                                AutocompletePrediction prediction = predictionList.get(i);
-                                if (prediction.getPlaceTypes().contains(Place.Type.RESTAURANT)) {
-                                    suggestionsList.add(prediction.getPlaceId());
-                                }
-                            }
-
-                            getPlaceDetailAutocompleteList(suggestionsList);
-                        }
-                    } else {
-                        Log.i(TAG, "Prediction fetching task unsuccessful");
-                    }
-                });
+                displayResultsAutocomplete(s.toString());
             }
-
 
             @Override
             public void afterTextChanged(Editable s) {
 
+            }
+        });
+    }
+
+    private void displayResultsAutocomplete(String textInput) {
+        LatLng northEast = new LatLng(BaseActivity.currentLocation.getLatitude() - (0.02),
+                BaseActivity.currentLocation.getLongitude() - (0.02));
+        LatLng southWest = new LatLng(BaseActivity.currentLocation.getLatitude() + (0.02),
+                BaseActivity.currentLocation.getLongitude() + (0.02));
+
+
+        FindAutocompletePredictionsRequest predictionsRequest = FindAutocompletePredictionsRequest.builder()
+                .setTypeFilter(TypeFilter.ESTABLISHMENT)
+                .setSessionToken(token)
+                .setLocationRestriction(RectangularBounds.newInstance(northEast, southWest))
+                .setQuery(textInput)
+                .build();
+
+        activity.placesClient.findAutocompletePredictions(predictionsRequest).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                FindAutocompletePredictionsResponse predictionsResponse = task.getResult();
+                if (predictionsResponse != null) {
+                    predictionList = predictionsResponse.getAutocompletePredictions();
+                    List<String> suggestionsList = new ArrayList<>();
+                    for (int i = 0; i < predictionList.size(); i++) {
+                        AutocompletePrediction prediction = predictionList.get(i);
+                        if (prediction.getPlaceTypes().contains(Place.Type.RESTAURANT)) {
+                            suggestionsList.add(prediction.getPlaceId());
+                        }
+                    }
+
+                    getPlaceDetailAutocompleteList(suggestionsList);
+                }
+            } else {
+                Log.i(TAG, "Prediction fetching task unsuccessful");
             }
         });
     }
@@ -146,12 +149,10 @@ public class ListViewFragment extends Fragment {
 
     @Override
     public void onResume() {
-        Log.i(TAG, "onResume: ");
         if (restaurants.isEmpty())
             observePlaces(null);
         super.onResume();
     }
-
 
     private void observePlaces(String nextPageToken) {
         if (nextPageToken == null)
