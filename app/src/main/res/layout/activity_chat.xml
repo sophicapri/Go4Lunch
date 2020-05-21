@@ -54,6 +54,9 @@
 
         <!-- RECYCLER VIEW -->
         <androidx.recyclerview.widget.RecyclerView
+            android:layout_marginTop="@dimen/default_margin"
+            android:layout_marginStart="@dimen/default_margin"
+            android:layout_marginEnd="@dimen/default_margin"
             android:id="@+id/chat_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
@@ -65,11 +68,11 @@
         android:id="@+id/chat_image_chosen_preview"
         android:layout_width="50dip"
         android:layout_height="50dip"
-        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
         android:layout_above="@id/add_message_container"
         android:layout_margin="10dp"
         app:layout_constraintBottom_toTopOf="@+id/add_message_container"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <!-- ADD MESSAGE CONTAINER -->
     <LinearLayout

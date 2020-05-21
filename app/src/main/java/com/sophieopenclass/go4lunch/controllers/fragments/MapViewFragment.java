@@ -74,6 +74,7 @@ import static com.sophieopenclass.go4lunch.utils.Constants.PLACE_ID;
 
 public class MapViewFragment extends Fragment implements OnMapReadyCallback {
 
+    public static final double AREA_MAP_AUTOCOMPLETE = 0.004;
     private MyViewModel viewModel;
     private GoogleMap mMap;
     private LocationManager locationManager;
@@ -149,10 +150,10 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
     }
 
     private void displayResultsAutocomplete(String searchBarTextInput) {
-        LatLng northEast = new LatLng(cameraLocation.getLatitude() - (0.004),
-                cameraLocation.getLongitude() - (0.004));
-        LatLng southWest = new LatLng(cameraLocation.getLatitude() + (0.004),
-                cameraLocation.getLongitude() + (0.004));
+        LatLng northEast = new LatLng(cameraLocation.getLatitude() - AREA_MAP_AUTOCOMPLETE,
+                cameraLocation.getLongitude() - (AREA_MAP_AUTOCOMPLETE));
+        LatLng southWest = new LatLng(cameraLocation.getLatitude() + (AREA_MAP_AUTOCOMPLETE),
+                cameraLocation.getLongitude() + (AREA_MAP_AUTOCOMPLETE));
 
         FindAutocompletePredictionsRequest predictionsRequest = FindAutocompletePredictionsRequest.builder()
                 .setTypeFilter(TypeFilter.ESTABLISHMENT)

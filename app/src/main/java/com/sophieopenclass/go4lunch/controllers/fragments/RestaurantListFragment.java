@@ -7,11 +7,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -31,7 +29,6 @@ import com.sophieopenclass.go4lunch.controllers.adapters.ListViewAdapter;
 import com.sophieopenclass.go4lunch.databinding.RecyclerViewRestaurantsBinding;
 import com.sophieopenclass.go4lunch.models.User;
 import com.sophieopenclass.go4lunch.models.json_to_java.PlaceDetails;
-import com.sophieopenclass.go4lunch.models.json_to_java.RestaurantsResult;
 import com.sophieopenclass.go4lunch.utils.EndlessRecyclerViewScrollListener;
 
 import java.util.ArrayList;
@@ -41,8 +38,9 @@ import java.util.List;
 
 import static com.sophieopenclass.go4lunch.controllers.fragments.MapViewFragment.getLatLngString;
 
-public class ListViewFragment extends Fragment {
-    public static final String TAG = "listviewfragment";
+public class RestaurantListFragment extends Fragment {
+    public static final String TAG = "restaurantListFrag";
+    public static final double AREA_LIST_AUTOCOMPLETE = 0.02;
     private MyViewModel viewModel;
     private RecyclerViewRestaurantsBinding binding;
     private BaseActivity context;
@@ -56,7 +54,7 @@ public class ListViewFragment extends Fragment {
     private MainActivity activity;
 
     public static Fragment newInstance() {
-        return new ListViewFragment();
+        return new RestaurantListFragment();
     }
 
     @Override
@@ -102,11 +100,10 @@ public class ListViewFragment extends Fragment {
     }
 
     private void displayResultsAutocomplete(String textInput) {
-        LatLng northEast = new LatLng(BaseActivity.currentLocation.getLatitude() - (0.02),
-                BaseActivity.currentLocation.getLongitude() - (0.02));
-        LatLng southWest = new LatLng(BaseActivity.currentLocation.getLatitude() + (0.02),
-                BaseActivity.currentLocation.getLongitude() + (0.02));
-
+        LatLng northEast = new LatLng(BaseActivity.currentLocation.getLatitude() - AREA_LIST_AUTOCOMPLETE,
+                BaseActivity.currentLocation.getLongitude() - (AREA_LIST_AUTOCOMPLETE));
+        LatLng southWest = new LatLng(BaseActivity.currentLocation.getLatitude() + (AREA_LIST_AUTOCOMPLETE),
+                BaseActivity.currentLocation.getLongitude() + (AREA_LIST_AUTOCOMPLETE));
 
         FindAutocompletePredictionsRequest predictionsRequest = FindAutocompletePredictionsRequest.builder()
                 .setTypeFilter(TypeFilter.ESTABLISHMENT)

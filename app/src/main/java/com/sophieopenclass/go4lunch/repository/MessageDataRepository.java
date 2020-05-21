@@ -11,9 +11,8 @@ import com.sophieopenclass.go4lunch.models.Message;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
-import static com.sophieopenclass.go4lunch.controllers.fragments.ListViewFragment.TAG;
+import static com.sophieopenclass.go4lunch.controllers.fragments.RestaurantListFragment.TAG;
 
 public class MessageDataRepository {
     private CollectionReference messageCollectionRef;
@@ -74,11 +73,11 @@ public class MessageDataRepository {
         return newMessage;
     }
 
-    public MutableLiveData<Message> createMessageWithImageForChat(String urlImage, String textMessage, String userSenderId) {
+    public MutableLiveData<Message> createMessageWithImageForChat(String urlImage, String textMessage, String userSenderId, String chatId) {
         MutableLiveData<Message> newMessage = new MutableLiveData<>();
         Message message = new Message(textMessage, urlImage, userSenderId);
 
-        messageCollectionRef.add(message).addOnCompleteListener(addMessageTask -> {
+        messageCollectionRef.document(chatId).collection("conversation").add(message).addOnCompleteListener(addMessageTask -> {
             if (addMessageTask.isSuccessful()) {
                 if (addMessageTask.getResult() != null) {
                     newMessage.postValue(message);

@@ -23,6 +23,7 @@ public class Message {
         this.message = message;
         this.urlImage = urlImage;
         this.userSenderId = userSenderId;
+        this.dateCreated = new Date();
     }
 
     // --- GETTERS ---

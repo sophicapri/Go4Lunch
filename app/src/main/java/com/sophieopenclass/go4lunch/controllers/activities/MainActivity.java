@@ -1,16 +1,11 @@
 package com.sophieopenclass.go4lunch.controllers.activities;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -23,38 +18,22 @@ import androidx.fragment.app.Fragment;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.firebase.ui.auth.AuthUI;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
-import com.google.android.libraries.places.api.model.AutocompletePrediction;
-import com.google.android.libraries.places.api.model.AutocompleteSessionToken;
 import com.google.android.libraries.places.api.model.Place;
-import com.google.android.libraries.places.api.model.RectangularBounds;
-import com.google.android.libraries.places.api.model.TypeFilter;
-import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest;
-import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
-import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 import com.google.android.material.navigation.NavigationView;
 import com.sophieopenclass.go4lunch.BuildConfig;
 import com.sophieopenclass.go4lunch.MyViewModel;
 import com.sophieopenclass.go4lunch.base.BaseActivity;
 import com.sophieopenclass.go4lunch.R;
-import com.sophieopenclass.go4lunch.controllers.fragments.ListViewFragment;
+import com.sophieopenclass.go4lunch.controllers.fragments.RestaurantListFragment;
 import com.sophieopenclass.go4lunch.controllers.fragments.MapViewFragment;
 import com.sophieopenclass.go4lunch.controllers.fragments.WorkmatesListFragment;
 import com.sophieopenclass.go4lunch.databinding.ActivityMainBinding;
-import com.sophieopenclass.go4lunch.databinding.NavHeaderBinding;
 import com.sophieopenclass.go4lunch.models.User;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import static com.sophieopenclass.go4lunch.utils.Constants.MY_LUNCH;
 import static com.sophieopenclass.go4lunch.utils.Constants.PLACE_ID;
 import static com.sophieopenclass.go4lunch.utils.Constants.UID;
 
@@ -64,12 +43,12 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
     private String placeId;
     private User currentUser;
     private Fragment fragmentMapView;
-    private Fragment fragmentListView;
+    private Fragment fragmentRestaurantList;
     private Fragment fragmentWorkmatesList;
     private static final int ACTIVITY_MY_LUNCH = 3;
     private static final int ACTIVITY_SETTINGS = 1;
     private static final int FRAGMENT_MAP_VIEW = 10;
-    private static final int FRAGMENT_LIST_VIEW = 20;
+    private static final int FRAGMENT_RESTAURANT_LIST_VIEW = 20;
     private static final int FRAGMENT_WORKMATES_LIST = 30;
     public PlacesClient placesClient;
 
@@ -165,7 +144,7 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
                 showFragment(FRAGMENT_MAP_VIEW);
                 break;
             case R.id.list_view:
-                showFragment(FRAGMENT_LIST_VIEW);
+                showFragment(FRAGMENT_RESTAURANT_LIST_VIEW);
                 break;
             case R.id.workmates_view:
                 showFragment(FRAGMENT_WORKMATES_LIST);
@@ -208,8 +187,8 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
             case FRAGMENT_MAP_VIEW:
                 showMapViewFragment();
                 break;
-            case FRAGMENT_LIST_VIEW:
-                showListViewFragment();
+            case FRAGMENT_RESTAURANT_LIST_VIEW:
+                showRestaurantListFragment();
                 break;
             case FRAGMENT_WORKMATES_LIST:
                 showWorkmatesListFragment();
@@ -231,9 +210,9 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
         startTransactionFragment(fragmentMapView);
     }
 
-    private void showListViewFragment() {
-        if (this.fragmentListView == null) this.fragmentListView = ListViewFragment.newInstance();
-        startTransactionFragment(fragmentListView);
+    private void showRestaurantListFragment() {
+        if (this.fragmentRestaurantList == null) this.fragmentRestaurantList = RestaurantListFragment.newInstance();
+        startTransactionFragment(fragmentRestaurantList);
     }
 
     private void showWorkmatesListFragment() {
@@ -265,20 +244,6 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
             else
                 binding.searchBarListView.searchBarListView.setVisibility(View.VISIBLE);
         return true;
-    }
-
-    private void startAutocompleteActivity() {
-        LatLng northEast = new LatLng(this.currentLocation.getLatitude() - (0.05),
-                this.currentLocation.getLongitude() - (0.05));
-        LatLng southWest = new LatLng(this.currentLocation.getLatitude() + (0.05),
-                this.currentLocation.getLongitude() + (0.05));
-
-        Intent intent = new Autocomplete.IntentBuilder(
-                AutocompleteActivityMode.OVERLAY, Arrays.asList(Place.Field.ID,
-                Place.Field.NAME)).setTypeFilter(TypeFilter.ESTABLISHMENT)
-                .setLocationBias(RectangularBounds.newInstance(northEast, southWest))
-                .build(this);
-        startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE);
     }
 
     @Override

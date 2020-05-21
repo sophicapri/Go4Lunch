@@ -1,6 +1,7 @@
 package com.sophieopenclass.go4lunch;
 
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.google.firebase.firestore.CollectionReference;
@@ -106,8 +107,9 @@ public class MyViewModel extends ViewModel {
         return messageDataSource.createMessageForChat(textMessage, userSenderId,chatId);
     }
 
-    public LiveData<Message> createMessageWithImageForChat(String urlImage, String textMessage, String userSenderId) {
-        return messageDataSource.createMessageWithImageForChat(urlImage, textMessage, userSenderId);
+    public MutableLiveData<Message> createMessageWithImageForChat(String urlImage, String textMessage
+            , String userSenderId, String chatId) {
+        return messageDataSource.createMessageWithImageForChat(urlImage, textMessage, userSenderId, chatId);
     }
 
     public LiveData<String> getChatId(String currentUserId, String workmateId) {
@@ -122,5 +124,4 @@ public class MyViewModel extends ViewModel {
     public LiveData<Boolean> createChat(String currentUserId, String workmateId) {
        return messageDataSource.createChat(currentUserId, workmateId);
     }
-
 }

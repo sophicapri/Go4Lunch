@@ -8,6 +8,7 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -27,6 +28,8 @@ import com.sophieopenclass.go4lunch.injection.Injection;
 import com.sophieopenclass.go4lunch.listeners.Listeners;
 import com.sophieopenclass.go4lunch.utils.ViewModelFactory;
 
+import javax.annotation.CheckForSigned;
+
 import static com.sophieopenclass.go4lunch.utils.Constants.PLACE_ID;
 import static com.sophieopenclass.go4lunch.utils.Constants.UID;
 
@@ -40,9 +43,11 @@ public abstract class BaseActivity<T extends ViewModel> extends AppCompatActivit
         FacebookSdk.setAdvertiserIDCollectionEnabled(false);
         FacebookSdk.setAutoLogAppEventsEnabled(false);
         configureViewModel();
+
         this.setContentView(this.getFragmentLayout());
     }
 
+    @SuppressWarnings("unchecked")
     protected void configureViewModel() {
         ViewModelFactory viewModelFactory = Injection.provideViewModelFactory();
         viewModel = (T) new ViewModelProvider(this, viewModelFactory).get(getViewModelClass());

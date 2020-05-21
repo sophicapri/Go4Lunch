@@ -14,7 +14,7 @@ import com.bumptech.glide.RequestManager;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.sophieopenclass.go4lunch.R;
-import com.sophieopenclass.go4lunch.databinding.ChatActivityMessageItemBinding;
+import com.sophieopenclass.go4lunch.databinding.ChatMessageItemBinding;
 import com.sophieopenclass.go4lunch.models.Message;
 
 import java.text.DateFormat;
@@ -42,18 +42,18 @@ public class ChatViewAdapter extends FirestoreRecyclerAdapter<Message, ChatViewA
     @NonNull
     @Override
     public MessageViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_activity_message_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_message_item, parent, false);
         return new MessageViewHolder(view);
     }
 
     class MessageViewHolder extends RecyclerView.ViewHolder {
-        private ChatActivityMessageItemBinding binding;
+        private ChatMessageItemBinding binding;
         private final Drawable bkgCurrentUser;
         private final Drawable bkgRemoteUser;
 
         MessageViewHolder(View itemView) {
             super(itemView);
-            binding = ChatActivityMessageItemBinding.bind(itemView);
+            binding = ChatMessageItemBinding.bind(itemView);
             bkgCurrentUser = ContextCompat.getDrawable(itemView.getContext(), R.drawable.bkg_message_end);
             bkgRemoteUser = ContextCompat.getDrawable(itemView.getContext(), R.drawable.bkg_message_start);
         }
@@ -80,6 +80,8 @@ public class ChatViewAdapter extends FirestoreRecyclerAdapter<Message, ChatViewA
                 binding.imageSent.setVisibility(View.GONE);
             }
 
+            // TODO : add onClickListener to image -> full screen
+
             //Update Message Bubble Color Background
             binding.messageContainer.setBackground(isCurrentUser ? bkgCurrentUser : bkgRemoteUser);
 
@@ -90,12 +92,20 @@ public class ChatViewAdapter extends FirestoreRecyclerAdapter<Message, ChatViewA
         private void updateDesignDependingUser(Boolean isSender) {
             // MESSAGE CONTAINER
             RelativeLayout.LayoutParams paramsLayoutContent = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-            paramsLayoutContent.addRule(isSender ? RelativeLayout.ALIGN_PARENT_RIGHT : RelativeLayout.ALIGN_PARENT_LEFT);
+            paramsLayoutContent.addRule(isSender ? RelativeLayout.ALIGN_PARENT_END : RelativeLayout.ALIGN_PARENT_START);
             binding.messageContainer.setLayoutParams(paramsLayoutContent);
+
+            // DATE
+            RelativeLayout.LayoutParams paramsDateView = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+            paramsDateView.addRule(isSender ? RelativeLayout.ALIGN_PARENT_END : RelativeLayout.ALIGN_PARENT_START);
+            paramsDateView.addRule(RelativeLayout.BELOW , R.id.image_sent_cardview);
+            binding.messageDateTextView.setLayoutParams(paramsDateView);
 
             // CARDVIEW IMAGE SENT
             RelativeLayout.LayoutParams paramsImageView = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-            paramsImageView.addRule(isSender ? RelativeLayout.ALIGN_LEFT : RelativeLayout.ALIGN_RIGHT, R.id.message_container);
+            paramsImageView.addRule(isSender ? RelativeLayout.ALIGN_PARENT_END : RelativeLayout.ALIGN_PARENT_START);
+            paramsImageView.addRule(RelativeLayout.BELOW , R.id.message_container );
+            paramsImageView.setMargins(0, 10, 0, 10);
             binding.imageSentCardview.setLayoutParams(paramsImageView);
 
             binding.chatContainerRoot.requestLayout();
