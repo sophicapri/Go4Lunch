@@ -17,9 +17,16 @@ import static com.firebase.ui.auth.AuthUI.TAG;
 
 public class UserDataRepository {
     private CollectionReference userCollectionRef;
+    private static UserDataRepository userDataRepository;
 
     public UserDataRepository(CollectionReference userCollectionRef) {
         this.userCollectionRef = userCollectionRef;
+        userDataRepository = this;
+    }
+
+    // To be able to update Notifications from NotificationWorker class.
+    public static UserDataRepository getUserRepository(){
+        return userDataRepository;
     }
 
     public CollectionReference getCollectionReference() {
@@ -70,7 +77,7 @@ public class UserDataRepository {
     }
 
 
-    public MutableLiveData<List<User>> getUsersByPlaceIdDate(String placeId, String date) {
+    public MutableLiveData<List<User>> getUsersByPlaceIdAndDate(String placeId, String date) {
         MutableLiveData<List<User>> users = new MutableLiveData<>();
         userCollectionRef.whereEqualTo("datesAndPlaceIds." + date, placeId).get().addOnCompleteListener(task -> {
             if (task.isSuccessful())

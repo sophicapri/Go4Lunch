@@ -39,6 +39,7 @@
     <string name="opening_hours_unavailable">Horaires non renseignés</string>
 
     <string name="notification_message">"Vous mangez ce midi chez %1$s en compagnie de %2$s"</string>
+    <string name="notification_message_solo_lunch">"Vous mangez ce midi chez %s !"</string>
     <string name="toast_title_no_image_chosen">"Pas d'image choisie"</string>
 
 </resources>

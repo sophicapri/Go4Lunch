@@ -9,27 +9,27 @@
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@id/button_timepicker"
+        android:layout_above="@id/activate_reminder"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="30dp"
         android:text="No Alarm set"
         android:textSize="30sp" />
 
     <Button
-        android:id="@+id/button_timepicker"
+        android:id="@+id/activate_reminder"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:text="open time picker" />
+        android:text="activer notitications" />
 
     <Button
-        android:id="@+id/button_cancel"
+        android:id="@+id/cancel_reminder"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/button_timepicker"
+        android:layout_below="@id/activate_reminder"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="27dp"
-        android:text="cancel alarm" />
+        android:text="annuler notifications" />
 
 </RelativeLayout>

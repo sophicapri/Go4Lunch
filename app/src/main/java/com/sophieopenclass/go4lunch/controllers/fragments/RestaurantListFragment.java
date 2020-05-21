@@ -179,7 +179,7 @@ public class RestaurantListFragment extends Fragment {
         for (PlaceDetails placeDetails : placeDetailsList) {
             viewModel.getPlaceDetails(placeDetails.getPlaceId())
                     .observe(getViewLifecycleOwner(), restaurant ->
-                            viewModel.getUsersByPlaceIdDate(placeDetails.getPlaceId(), User.getTodaysDate())
+                            viewModel.getUsersByPlaceIdAndDate(placeDetails.getPlaceId(), User.getTodaysDate())
                                     .observe(getViewLifecycleOwner(), users -> {
                                         restaurant.setNbrOfWorkmates(users.size());
                                         completePlaceDetailsList.add(restaurant);

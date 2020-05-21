@@ -61,8 +61,8 @@ public class MyViewModel extends ViewModel {
         return userDataSource.getListUsers();
     }
 
-    public LiveData<List<User>> getUsersByPlaceIdDate(String placeId, String date) {
-        return userDataSource.getUsersByPlaceIdDate(placeId, date);
+    public LiveData<List<User>> getUsersByPlaceIdAndDate(String placeId, String date) {
+        return userDataSource.getUsersByPlaceIdAndDate(placeId, date);
     }
 
     public LiveData<String> updateUserPlaceId(String uid, String placeId, String date) {

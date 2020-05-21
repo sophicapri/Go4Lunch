@@ -48,7 +48,6 @@
                 android:layout_height="wrap_content"
                 android:textIsSelectable="true"
                 android:textSize="@dimen/default_text_size" />
-
         </LinearLayout>
 
     </LinearLayout>
@@ -60,7 +59,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/image_sent_cardview"
         android:layout_alignEnd="@id/message_container"
-        android:text="text"
+        android:text="date"
         android:textSize="@dimen/default_text_size_mini"
         android:textStyle="bold" />
 

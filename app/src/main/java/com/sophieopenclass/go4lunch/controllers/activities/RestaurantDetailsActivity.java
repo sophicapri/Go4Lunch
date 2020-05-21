@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -12,6 +13,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -54,12 +56,9 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding.addRestaurant.setOnClickListener(this);
-        binding.callTextview.setOnClickListener(this);
         binding.callBtn.setOnClickListener(this);
         binding.likeRestaurantBtn.setOnClickListener(this);
-        binding.likeTextview.setOnClickListener(this);
         binding.websiteBtn.setOnClickListener(this);
-        binding.websiteTextview.setOnClickListener(this);
         binding.openingHoursTitle.setOnClickListener(this);
     }
 
@@ -71,7 +70,7 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
                 placeId = (String) getIntent().getExtras().get(PLACE_ID);
                 if (placeId != null && !placeId.isEmpty())
                     viewModel.getPlaceDetails(placeId).observe(this, this::displayRestaurant);
-                 else
+                else
                     binding.addRestaurant.setVisibility(View.GONE);
             }
             if (getIntent().hasExtra(MY_LUNCH)) {
@@ -97,7 +96,7 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
 
     private void setUpRecyclerView() {
         FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>()
-                .setQuery(viewModel.getCollectionReference().whereEqualTo("datesAndPlaceIds." +User.getTodaysDate(), placeId), User.class)
+                .setQuery(viewModel.getCollectionReference().whereEqualTo("datesAndPlaceIds." + User.getTodaysDate(), placeId), User.class)
                 .build();
         adapter = new WorkmatesListAdapter(options, this, Glide.with(this));
         binding.detailRecyclerViewWorkmates.setHasFixedSize(true);
@@ -150,12 +149,12 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
     @Override
     public void onClick(View v) {
         if (v == binding.addRestaurant)
-            viewModel.getPlaceIdByDate(currentUser.getUid(), User.getTodaysDate() ).observe(this, this::handleRestaurantSelection);
-        else if (v == binding.callBtn || v == binding.callTextview)
+            viewModel.getPlaceIdByDate(currentUser.getUid(), User.getTodaysDate()).observe(this, this::handleRestaurantSelection);
+        else if (v == binding.callBtn)
             callRestaurant();
-        else if (v == binding.likeRestaurantBtn || v == binding.likeTextview) {
+        else if (v == binding.likeRestaurantBtn) {
             //likeRestaurant();
-        } else if (v == binding.websiteBtn || v == binding.websiteTextview)
+        } else if (v == binding.websiteBtn)
             visitWebsite(placeDetails.getWebsite());
         else if (v == binding.openingHoursTitle)
             displayOpeningHours();
@@ -211,7 +210,12 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
                         new String[]{Manifest.permission.CALL_PHONE}, REQUEST_CALL);
             } else {
                 String dial = "tel:" + placeDetails.getInternationalPhoneNumber();
-                startActivity(new Intent(Intent.ACTION_CALL, Uri.parse(dial)));
+                new AlertDialog.Builder(this)
+                        .setMessage("Souhaitez-vous appeler le restaurant " + placeDetails.getName() + " ? ")
+                        .setPositiveButton("Appeler", (paramDialogInterface, paramInt) ->
+                                startActivity(new Intent(Intent.ACTION_CALL, Uri.parse(dial))))
+                        .setNegativeButton(R.string.Cancel, null)
+                        .show();
             }
         } else
             Toast.makeText(this, "N° de téléphone non renseigné", Toast.LENGTH_LONG).show();
@@ -230,8 +234,12 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
 
     private void visitWebsite(String urlWebsite) {
         if (urlWebsite != null) {
-            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(urlWebsite));
-            startActivity(intent);
+            new AlertDialog.Builder(this)
+                    .setMessage("Souhaitez-vous visiter le site web de " + placeDetails.getName() + " ? ")
+                    .setPositiveButton("Ouvrir le navigateur", (paramDialogInterface, paramInt) ->
+                            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(urlWebsite))))
+                    .setNegativeButton(R.string.Cancel, null)
+                    .show();
         } else
             Toast.makeText(this, "Site web non renseigné", Toast.LENGTH_LONG).show();
     }

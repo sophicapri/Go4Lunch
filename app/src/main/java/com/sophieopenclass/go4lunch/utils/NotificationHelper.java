@@ -39,7 +39,7 @@ public class NotificationHelper extends ContextWrapper {
     public NotificationCompat.Builder getChannelNotification(String message) {
         return new NotificationCompat.Builder(getApplicationContext(), channelID)
                 .setContentTitle("C'est bientôt l'heure !")
-                .setContentText(message)
+                .setStyle(new NotificationCompat.BigTextStyle().bigText(message))
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setCategory(NotificationCompat.CATEGORY_EVENT)
                 .setSmallIcon(R.drawable.ic_logo_auth);

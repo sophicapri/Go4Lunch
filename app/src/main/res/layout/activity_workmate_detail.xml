@@ -158,8 +158,23 @@
         android:text="Discuter avec Jenny"
         android:textColor="@color/quantum_white_text"
         android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        tools:layout_editor_absoluteX="10dp" />
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <TextView
+        android:visibility="gone"
+        android:id="@+id/favorite_restaurants"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:background="@drawable/bkg_message_btn"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center"
+        android:padding="10dp"
+        android:text="Afficher mes restaurants favoris"
+        android:textColor="@color/quantum_white_text"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"/>
     
     <TextView
         android:id="@+id/previous_restaurants"

@@ -174,66 +174,41 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <ImageView
+
+        <TextView
             android:id="@+id/call_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="CALL"
+            android:drawableTop="@drawable/ic_call_black_24dp"
+            android:textColor="@color/colorPrimary"
             app:layout_constraintEnd_toStartOf="@+id/like_restaurant_btn"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/like_restaurant_btn"
-            app:srcCompat="@drawable/ic_call_black_24dp" />
+            app:layout_constraintTop_toTopOf="@+id/like_restaurant_btn"/>
 
         <TextView
-            android:id="@+id/call_textview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:text="CALL"
-            android:textColor="@color/colorPrimary"
-            app:layout_constraintEnd_toEndOf="@+id/call_btn"
-            app:layout_constraintStart_toStartOf="@+id/call_btn"
-            app:layout_constraintTop_toBottomOf="@id/call_btn" />
-
-        <ImageView
             android:id="@+id/like_restaurant_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:drawableTop="@drawable/ic_star_border_black_24dp"
+            android:text="LIKE"
+            android:textColor="@color/colorPrimary"
             android:layout_marginTop="15dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/constraint_layout_restau_infos"
-            app:srcCompat="@drawable/ic_star_border_black_24dp" />
+            />
 
         <TextView
-            android:id="@+id/like_textview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:text="LIKE"
-            android:textColor="@color/colorPrimary"
-            app:layout_constraintEnd_toEndOf="@+id/like_restaurant_btn"
-            app:layout_constraintStart_toStartOf="@id/like_restaurant_btn"
-            app:layout_constraintTop_toBottomOf="@id/like_restaurant_btn" />
-
-        <ImageView
             android:id="@+id/website_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="WEBSITE"
+            android:drawableTop="@drawable/ic_website_24dp"
+            android:textColor="@color/colorPrimary"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/like_restaurant_btn"
-            app:layout_constraintTop_toTopOf="@+id/like_restaurant_btn"
-            app:srcCompat="@drawable/ic_website_24dp" />
-
-        <TextView
-            android:id="@+id/website_textview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:text="WEBSITE"
-            android:textColor="@color/colorPrimary"
-            app:layout_constraintEnd_toEndOf="@+id/website_btn"
-            app:layout_constraintStart_toStartOf="@id/website_btn"
-            app:layout_constraintTop_toBottomOf="@id/website_btn" />
+            app:layout_constraintTop_toTopOf="@+id/like_restaurant_btn"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/detail_recycler_view_workmates"
@@ -242,7 +217,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/like_textview"
+            app:layout_constraintTop_toBottomOf="@+id/like_restaurant_btn"
             tools:itemCount="2"
             tools:listitem="@layout/list_workmates_joining" />
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -10,7 +10,6 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Parcel;
 import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -27,7 +26,6 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -40,36 +38,30 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.model.AutocompletePrediction;
 import com.google.android.libraries.places.api.model.AutocompleteSessionToken;
-import com.google.android.libraries.places.api.model.LocationBias;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.model.RectangularBounds;
 import com.google.android.libraries.places.api.model.TypeFilter;
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest;
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse;
-import com.google.android.libraries.places.api.net.FindCurrentPlaceRequest;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 import com.sophieopenclass.go4lunch.MyViewModel;
 import com.sophieopenclass.go4lunch.R;
 import com.sophieopenclass.go4lunch.base.BaseActivity;
-import com.sophieopenclass.go4lunch.controllers.activities.LoginPageActivity;
 import com.sophieopenclass.go4lunch.controllers.activities.MainActivity;
 import com.sophieopenclass.go4lunch.controllers.activities.RestaurantDetailsActivity;
 import com.sophieopenclass.go4lunch.databinding.FragmentMapBinding;
 import com.sophieopenclass.go4lunch.models.User;
 import com.sophieopenclass.go4lunch.models.json_to_java.PlaceDetails;
-import com.sophieopenclass.go4lunch.models.json_to_java.RestaurantsResult;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
-import static com.android.volley.VolleyLog.setTag;
 import static com.sophieopenclass.go4lunch.utils.Constants.PLACE_ID;
 
 public class MapViewFragment extends Fragment implements OnMapReadyCallback {
@@ -290,7 +282,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
 
     private void initMarkers(List<PlaceDetails> placeDetailsList) {
         for (PlaceDetails placeDetails : placeDetailsList) {
-            viewModel.getUsersByPlaceIdDate(placeDetails.getPlaceId(), User.getTodaysDate()).observe(getViewLifecycleOwner(), users -> {
+            viewModel.getUsersByPlaceIdAndDate(placeDetails.getPlaceId(), User.getTodaysDate()).observe(getViewLifecycleOwner(), users -> {
                 int markerDrawable;
                 if (users.isEmpty())
                     markerDrawable = R.drawable.ic_marker_red;

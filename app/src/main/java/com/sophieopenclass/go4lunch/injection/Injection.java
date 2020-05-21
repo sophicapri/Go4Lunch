@@ -25,15 +25,15 @@ public class Injection {
         return new UserDataRepository(userCollectionReference);
     }
 
+    private static MessageDataRepository provideMessageDataSource() {
+        CollectionReference messageCollectionRef = FirebaseFirestore.getInstance().collection(MESSAGE_COLLECTION_NAME);
+        return new MessageDataRepository(messageCollectionRef);
+    }
+
     public static ViewModelFactory provideViewModelFactory() {
         RestaurantDataRepository restaurantDataSource = provideRestaurantDataSource();
         UserDataRepository userDataSource = provideUserDataSource();
         MessageDataRepository messageDataSource = provideMessageDataSource();
         return new ViewModelFactory(restaurantDataSource, userDataSource, messageDataSource);
-    }
-
-    private static MessageDataRepository provideMessageDataSource() {
-        CollectionReference messageCollectionRef = FirebaseFirestore.getInstance().collection(MESSAGE_COLLECTION_NAME);
-        return new MessageDataRepository(messageCollectionRef);
     }
 }

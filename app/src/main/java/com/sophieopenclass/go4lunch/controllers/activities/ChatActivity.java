@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -35,8 +36,6 @@ import com.sophieopenclass.go4lunch.models.Message;
 import com.sophieopenclass.go4lunch.models.User;
 
 import java.util.UUID;
-
-import io.reactivex.annotations.NonNull;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
