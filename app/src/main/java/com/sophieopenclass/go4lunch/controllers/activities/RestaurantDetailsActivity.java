@@ -30,7 +30,10 @@ import com.sophieopenclass.go4lunch.models.User;
 import com.sophieopenclass.go4lunch.models.json_to_java.PlaceDetails;
 import com.sophieopenclass.go4lunch.utils.CalculateRatings;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 import static com.sophieopenclass.go4lunch.utils.Constants.DATES_AND_PLACE_IDS_FIELD;
 import static com.sophieopenclass.go4lunch.utils.Constants.PLACE_ID;
@@ -43,6 +46,11 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
     private String placeId;
     private PlaceDetails placeDetails;
     private User currentUser;
+
+    @Override
+    public Class getViewModelClass() {
+        return MyViewModel.class;
+    }
 
     @Override
     protected View getFragmentLayout() {
@@ -71,52 +79,18 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
             if (getIntent().hasExtra(PLACE_ID)) {
                 placeId = (String) getIntent().getExtras().get(PLACE_ID);
                 if (placeId != null && !placeId.isEmpty())
-                    viewModel.getPlaceDetails(placeId).observe(this, this::displayRestaurant);
+                    viewModel.getPlaceDetails(placeId).observe(this, this::initUI);
                 else {
                     Toast.makeText(this, "Erreur inconnue", Toast.LENGTH_SHORT).show();
                     finish();
                 }
             }
         }
-
-        if (getCurrentUser() != null) {
-            viewModel.getUser(getCurrentUser().getUid()).observe(this, user -> {
-                currentUser = user;
-            });
-            viewModel.getPlaceIdByDate(getCurrentUser().getUid(), User.getTodaysDate()).observe(this, placeId -> {
-                if (this.placeId.equals(placeId))
-                    binding.addRestaurant.setImageDrawable(getResources().getDrawable(R.drawable.ic_check_circle_black_24dp));
-                else
-                    binding.addRestaurant.setImageDrawable(getResources().getDrawable(R.drawable.ic_add_black_24dp));
-            });
-        }
         setUpRecyclerView();
     }
 
-    private void setUpRecyclerView() {
-        FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>()
-                .setQuery(viewModel.getCollectionReference().whereEqualTo(DATES_AND_PLACE_IDS_FIELD + User.getTodaysDate(), placeId), User.class)
-                .build();
-        adapter = new WorkmatesListAdapter(options, this, Glide.with(this));
-        binding.detailRecyclerViewWorkmates.setHasFixedSize(true);
-        binding.detailRecyclerViewWorkmates.setLayoutManager(new LinearLayoutManager(this));
-        binding.detailRecyclerViewWorkmates.setAdapter(adapter);
-        adapter.startListening();
-    }
 
-    @Override
-    public void onStop() {
-        super.onStop();
-        if (adapter != null)
-            adapter.stopListening();
-    }
-
-    @Override
-    public Class getViewModelClass() {
-        return MyViewModel.class;
-    }
-
-    private void displayRestaurant(PlaceDetails placeDetails) {
+    private void initUI(PlaceDetails placeDetails) {
         this.placeDetails = placeDetails;
         binding.detailsRestaurantName.setText(placeDetails.getName());
         binding.detailsTypeOfRestaurant.setText(getString(R.string.restaurant_type, placeDetails.getTypes().get(0)));
@@ -146,21 +120,49 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
         }
 
         displayStars();
+        displayButtons();
+    }
 
+    private void displayButtons() {
+        if (getCurrentUser() != null) {
+            viewModel.getUser(getCurrentUser().getUid()).observe(this, user -> {
+                currentUser = user;
+                if (placeId.equals(user.getDatesAndPlaceIds().get(User.getTodaysDate())))
+                    binding.addRestaurant.setImageDrawable(getResources().getDrawable(R.drawable.ic_check_circle_black_24dp));
+                else
+                    binding.addRestaurant.setImageDrawable(getResources().getDrawable(R.drawable.ic_add_black_24dp));
+
+                if (!user.getFavoriteRestaurantIds().contains(placeId))
+                    binding.likeRestaurantStar.setImageDrawable(getResources().getDrawable(R.drawable.ic_star_border_black_24dp));
+                else
+                    binding.likeRestaurantStar.setImageDrawable(getResources().getDrawable(R.drawable.ic_star_full_24dp));
+            });
+        }
     }
 
     private void displayStars() {
-        viewModel.getListUsers().observe(this, users -> {
-            viewModel.getNumberOfLikesByPlaceId(placeId).observe(this, likes -> {
-                int numberOfStars = CalculateRatings.getNumberOfStarsToDisplay(users.size(), likes);
-                if (numberOfStars == 1)
-                    binding.oneStar.setVisibility(View.VISIBLE);
-                if (numberOfStars == 2)
-                    binding.twoStars.setVisibility(View.VISIBLE);
-                if (numberOfStars == 3)
-                    binding.threeStars.setVisibility(View.VISIBLE);
-            });
-        });
+        viewModel.getListUsers().observe(this, users ->
+                viewModel.getNumberOfLikesByPlaceId(placeId).observe(this, likes -> {
+                    int numberOfStars = CalculateRatings.getNumberOfStarsToDisplay(users.size(), likes);
+                    if (numberOfStars == 1)
+                        binding.oneStar.setVisibility(View.VISIBLE);
+                    if (numberOfStars == 2)
+                        binding.twoStars.setVisibility(View.VISIBLE);
+                    if (numberOfStars == 3)
+                        binding.threeStars.setVisibility(View.VISIBLE);
+                }));
+    }
+
+    private void setUpRecyclerView() {
+        FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>()
+                .setQuery(viewModel.getCollectionReference()
+                        .whereEqualTo(DATES_AND_PLACE_IDS_FIELD + User.getTodaysDate(), placeId), User.class)
+                .build();
+        adapter = new WorkmatesListAdapter(options, this, Glide.with(this));
+        binding.detailRecyclerViewWorkmates.setHasFixedSize(true);
+        binding.detailRecyclerViewWorkmates.setLayoutManager(new LinearLayoutManager(this));
+        binding.detailRecyclerViewWorkmates.setAdapter(adapter);
+        adapter.startListening();
     }
 
     @Override
@@ -169,9 +171,9 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
             viewModel.getPlaceIdByDate(currentUser.getUid(), User.getTodaysDate()).observe(this, this::handleRestaurantSelection);
         else if (v == binding.callBtn)
             callRestaurant();
-        else if (v == binding.likeRestaurantBtn) {
-            //likeRestaurant();
-        } else if (v == binding.websiteBtn)
+        else if (v == binding.likeRestaurantBtn)
+            handleLikeRestaurantClick();
+        else if (v == binding.websiteBtn)
             visitWebsite(placeDetails.getWebsite());
         else if (v == binding.openingHoursTitle)
             displayOpeningHours();
@@ -187,15 +189,29 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
                 List<String> weekdaysArray = placeDetails.getOpeningHours().getWeekdayText();
                 for (int i = 0; i < weekdaysArray.size(); i++) {
                     if (i != weekdaysArray.size() - 1)
-                        weekdays.append(weekdaysArray.get(i)).append("\n");
-                    else
+                        if (!Locale.getDefault().getLanguage().equals(Locale.FRANCE.getLanguage()))
+                            weekdays.append(weekdaysArray.get(i)).append("\n");
+                        else
+                            weekdays.append(getDayInFrench(weekdaysArray.get(i), i)).append("\n");
+                    else if (!Locale.getDefault().getLanguage().equals(Locale.FRANCE.getLanguage()))
                         weekdays.append(weekdaysArray.get(i));
+                    else
+                        weekdays.append(getDayInFrench(weekdaysArray.get(i), i));
                 }
                 binding.weekdaysOpenings.setText(weekdays.toString());
             } else {
                 binding.weekdaysOpenings.setText(R.string.opening_hours_unavailable);
             }
         }
+    }
+
+    public String getDayInFrench(String openingHour, int index) {
+        String[] daysInEnglish = getResources().getStringArray(R.array.days_in_english);
+        String[] daysInFrench = getResources().getStringArray(R.array.days_in_french);
+        String result = openingHour.replace(daysInEnglish[index], daysInFrench[index]);
+        if (result.contains("Closed"))
+            result = result.replace("Closed", "Fermé");
+        return result;
     }
 
     private void handleRestaurantSelection(String currentUserPlaceId) {
@@ -205,17 +221,17 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
                 viewModel.updateUserPlaceId(currentUser.getUid(), placeId, User.getTodaysDate()).observe(this, placeId -> {
                     if (placeId == null) {
                         Toast.makeText(this, "Une erreur est survenue", Toast.LENGTH_LONG).show();
-                        viewModel.updateRestaurantName(currentUser.getUid(), "");
+                        viewModel.updateRestaurantChosen(currentUser.getUid(), "", "");
                         binding.addRestaurant.setImageDrawable(getResources().getDrawable(R.drawable.ic_add_black_24dp));
                     }
                 });
             else
                 viewModel.updateUserPlaceId(currentUser.getUid(), placeId, User.getTodaysDate());
-            viewModel.updateRestaurantName(currentUser.getUid(), placeDetails.getName());
+            viewModel.updateRestaurantChosen(currentUser.getUid(), placeDetails.getName(), placeDetails.getVicinity());
         } else {
             binding.addRestaurant.setImageDrawable(getResources().getDrawable(R.drawable.ic_add_black_24dp));
             viewModel.deletePlaceId(currentUser.getUid(), User.getTodaysDate());
-            viewModel.updateRestaurantName(currentUser.getUid(), "");
+            viewModel.updateRestaurantChosen(currentUser.getUid(), "", "");
         }
     }
 
@@ -261,13 +277,24 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
             Toast.makeText(this, "Site web non renseigné", Toast.LENGTH_LONG).show();
     }
 
-   /* private void likeRestaurant() {
-        if () {
-            binding.likeRestaurantBtn.setImageDrawable(getResources().getDrawable(R.drawable.ic_star_full_24dp));
+    private void handleLikeRestaurantClick() {
+        if (!currentUser.getFavoriteRestaurantIds().contains(placeId)) {
+            viewModel.addRestaurantToFavorites(placeId, currentUser.getUid());
+            binding.likeRestaurantStar.setImageDrawable(getResources().getDrawable(R.drawable.ic_star_full_24dp));
+            Toast.makeText(this, "Ajouté aux favoris", Toast.LENGTH_SHORT).show();
         } else {
-            binding.likeRestaurantBtn.setImageDrawable(getResources().getDrawable(R.drawable.ic_star_border_black_24dp));
+            viewModel.deleteRestaurantFromFavorites(placeId, currentUser.getUid());
+            binding.likeRestaurantStar.setImageDrawable(getResources().getDrawable(R.drawable.ic_star_border_black_24dp));
+            Toast.makeText(this, "Supprimé des favoris", Toast.LENGTH_SHORT).show();
         }
     }
-    */
+
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (adapter != null)
+            adapter.stopListening();
+    }
 
 }

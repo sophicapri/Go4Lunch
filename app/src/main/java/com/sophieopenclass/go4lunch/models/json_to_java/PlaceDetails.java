@@ -89,6 +89,7 @@ public class PlaceDetails {
     private int nbrOfWorkmates;
     private String dateOfLunch;
     private int distance;
+    private int numberOfStars;
 
     public List<AddressComponent> getAddressComponents() {
         return addressComponents;
@@ -319,6 +320,14 @@ public class PlaceDetails {
 
     public void setDistance(int distance) {
         this.distance = distance;
+    }
+
+    public void setNumberOfStars(int numberOfStars) {
+        this.numberOfStars = numberOfStars;
+    }
+
+    public int getNumberOfStars() {
+        return numberOfStars ;
     }
 
 }

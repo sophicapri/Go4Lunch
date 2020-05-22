@@ -81,6 +81,13 @@ public class PreviousRestaurantsAdapter extends RecyclerView.Adapter<PreviousRes
             String urlPhoto = PlaceDetails.urlPhotoFormatter(placeDetails, 0);
             glide.load(urlPhoto).apply(RequestOptions.centerCropTransform())
                     .into(binding.restaurantPhoto);
+
+            if (placeDetails.getNumberOfStars() == 1)
+                binding.detailOneStar.setVisibility(View.VISIBLE);
+            if (placeDetails.getNumberOfStars() == 2)
+                binding.detailTwoStars.setVisibility(View.VISIBLE);
+            if (placeDetails.getNumberOfStars() == 3)
+                binding.detailThreeStars.setVisibility(View.VISIBLE);
         }
     }
 

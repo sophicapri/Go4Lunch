@@ -97,7 +97,8 @@ public class LoginPageActivity extends BaseActivity<MyViewModel> {
             String urlPicture = (getCurrentUser().getPhotoUrl() != null) ? getCurrentUser().getPhotoUrl().toString() : null;
             String username = getCurrentUser().getDisplayName();
             String uid = getCurrentUser().getUid();
-            User currentUser = new User(uid, username, urlPicture);
+            String email = getCurrentUser().getEmail();
+            User currentUser = new User(uid, username, urlPicture, email);
 
             viewModel.createUser(currentUser);
 

@@ -10,22 +10,27 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import static com.sophieopenclass.go4lunch.utils.Constants.ADDRESS_RESTAURANT;
+import static com.sophieopenclass.go4lunch.utils.Constants.NAME_RESTAURANT;
+
 public class User {
     private String uid;
     private String username;
     @Nullable
     private String urlPicture;
     private Map<String, String> datesAndPlaceIds = new HashMap<>();
-    private String chosenRestaurantName;
+    private Map<String, String> chosenRestaurant;
+    private String email;
     private List<String> favoriteRestaurantIds = new ArrayList<>();
 
     public User() {
     }
 
-    public User(String uid, String username, @Nullable String urlPicture) {
+    public User(String uid, String username, @org.jetbrains.annotations.Nullable String urlPicture, String email) {
         this.uid = uid;
         this.username = username;
         this.urlPicture = urlPicture;
+        this.email = email;
     }
 
     // --- GETTERS ---
@@ -70,12 +75,20 @@ public class User {
         this.datesAndPlaceIds = datesAndPlaceIds;
     }
 
-    public String getChosenRestaurantName() {
-        return chosenRestaurantName;
+    public Map<String,String> getChosenRestaurant() {
+        return chosenRestaurant;
     }
 
-    public void setChosenRestaurantName(String chosenRestaurantName) {
-        this.chosenRestaurantName = chosenRestaurantName;
+    public void setChosenRestaurant(Map<String,String> chosenRestaurant) {
+        this.chosenRestaurant = chosenRestaurant;
+    }
+
+    public String getChosenRestaurantName() {
+        return chosenRestaurant.get(NAME_RESTAURANT);
+    }
+
+    public String getChosenRestaurantAddress() {
+        return chosenRestaurant.get(ADDRESS_RESTAURANT);
     }
 
     public List<String> getFavoriteRestaurantIds() {
@@ -85,4 +98,14 @@ public class User {
     public void setFavoriteRestaurantIds(List<String> favoriteRestaurantIds) {
         this.favoriteRestaurantIds = favoriteRestaurantIds;
     }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
 }
+
+

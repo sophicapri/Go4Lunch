@@ -67,8 +67,8 @@ public class SettingsActivity extends BaseActivity<MyViewModel> {
         Calendar currentDate = Calendar.getInstance();
         Calendar dueDate = Calendar.getInstance();
         // Set Execution time of the reminder
-        dueDate.set(Calendar.HOUR_OF_DAY, 11);
-        dueDate.set(Calendar.MINUTE, 50);
+        dueDate.set(Calendar.HOUR_OF_DAY, 18);
+        dueDate.set(Calendar.MINUTE, 29);
         dueDate.set(Calendar.SECOND, 0);
         dueDate.set(Calendar.MILLISECOND, 0);
 
@@ -95,6 +95,5 @@ public class SettingsActivity extends BaseActivity<MyViewModel> {
 
     private void cancelReminder(WorkManager workManager) {
         workManager.cancelAllWork();
-        binding.textView.setText(R.string.reminder_deactivated);
     }
 }

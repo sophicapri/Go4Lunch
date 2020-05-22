@@ -2,7 +2,6 @@ package com.sophieopenclass.go4lunch.repository;
 
 import android.util.Log;
 
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.google.firebase.firestore.CollectionReference;
@@ -14,9 +13,12 @@ import java.util.List;
 import java.util.Map;
 
 import static com.firebase.ui.auth.AuthUI.TAG;
-import static com.sophieopenclass.go4lunch.utils.Constants.CHOSEN_RESTAURANT_NAME_FIELD;
+import static com.sophieopenclass.go4lunch.utils.Constants.ADDRESS_RESTAURANT;
+import static com.sophieopenclass.go4lunch.utils.Constants.CHOSEN_RESTAURANT_FIELD;
 import static com.sophieopenclass.go4lunch.utils.Constants.DATES_AND_PLACE_IDS_FIELD;
 import static com.sophieopenclass.go4lunch.utils.Constants.FAVORITE_RESTAURANTS_FIELD;
+import static com.sophieopenclass.go4lunch.utils.Constants.NAME_RESTAURANT;
+import static com.sophieopenclass.go4lunch.utils.Constants.USERNAME_FIELD;
 
 public class UserDataRepository {
     private CollectionReference userCollectionRef;
@@ -118,15 +120,24 @@ public class UserDataRepository {
         return numberOfLikes;
     }
 
-    public MutableLiveData<String> updateUsername(String username, String uid) {
+    public void updateUsername(String username, String uid) {
         MutableLiveData<String> newUsername = new MutableLiveData<>();
-        userCollectionRef.document(uid).update("username", username).addOnCompleteListener(updateUsername -> {
+        userCollectionRef.document(uid).update(USERNAME_FIELD, username).addOnCompleteListener(updateUsername -> {
             if (updateUsername.isSuccessful())
                 newUsername.setValue(username);
             else if (updateUsername.getException() != null)
                 Log.e(TAG, "updatePlaceId: " + (updateUsername.getException().getMessage()));
         });
-        return newUsername;
+    }
+
+    public void updateUrlPicture(String urlPicture, String uid) {
+        MutableLiveData<String> newUrlPicture = new MutableLiveData<>();
+        userCollectionRef.document(uid).update("urlPicture", urlPicture).addOnCompleteListener(updateUsername -> {
+            if (updateUsername.isSuccessful())
+                newUrlPicture.setValue(urlPicture);
+            else if (updateUsername.getException() != null)
+                Log.e(TAG, "updatePlaceId: " + (updateUsername.getException().getMessage()));
+        });
     }
 
     public void deleteUser(String uid) {
@@ -143,7 +154,6 @@ public class UserDataRepository {
                 FieldValue.delete()).addOnCompleteListener(deleteUser -> {
             if (deleteUser.isSuccessful())
                 Log.i(TAG, "deleteUser: " + (deleteUser.isSuccessful()));
-
             else if (deleteUser.getException() != null)
                 Log.e(TAG, "deleteUser: " + (deleteUser.getException().getMessage()));
         });
@@ -170,9 +180,12 @@ public class UserDataRepository {
         return newPlaceId;
     }
 
-    public void updateRestaurantName(String uid, String restaurantName) {
+    public void updateRestaurantChosen(String uid, String restaurantName, String address) {
         MutableLiveData<String> newRestaurantName = new MutableLiveData<>();
-        userCollectionRef.document(uid).update(CHOSEN_RESTAURANT_NAME_FIELD, restaurantName).addOnCompleteListener(updateRestaurant -> {
+        Map<String, String> restaurant = new HashMap<>();
+        restaurant.put(NAME_RESTAURANT, restaurantName);
+        restaurant.put(ADDRESS_RESTAURANT, address);
+        userCollectionRef.document(uid).update(CHOSEN_RESTAURANT_FIELD, restaurant).addOnCompleteListener(updateRestaurant -> {
             if(updateRestaurant.isSuccessful())
                 newRestaurantName.setValue(restaurantName);
             else if (updateRestaurant.getException() != null){
@@ -182,4 +195,11 @@ public class UserDataRepository {
     }
 
 
+    public void deleteRestaurantFromFavorites(String placeId, String userId) {
+        userCollectionRef.document(userId).update(FAVORITE_RESTAURANTS_FIELD, FieldValue.arrayRemove(placeId))
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful())
+                        Log.i(TAG, "deleteFromFavorites: " + (task.isSuccessful()));
+                });
+    }
 }

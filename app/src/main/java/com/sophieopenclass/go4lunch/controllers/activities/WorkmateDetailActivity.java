@@ -15,6 +15,7 @@ import com.sophieopenclass.go4lunch.controllers.adapters.PreviousRestaurantsAdap
 import com.sophieopenclass.go4lunch.databinding.ActivityWorkmateDetailBinding;
 import com.sophieopenclass.go4lunch.models.User;
 import com.sophieopenclass.go4lunch.models.json_to_java.PlaceDetails;
+import com.sophieopenclass.go4lunch.utils.CalculateRatings;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -100,6 +101,22 @@ public class WorkmateDetailActivity extends BaseActivity<MyViewModel> {
             if (binding.workmateDetailLunch.workmateDetailLunch.getVisibility() == View.VISIBLE)
                 binding.workmateDetailLunch.workmateDetailLunch.setOnClickListener(v -> onRestaurantClick(todaysPlaceId));
         });
+
+        displayStars(todaysPlaceId);
+    }
+
+    private void displayStars(String placeId) {
+        viewModel.getListUsers().observe(this, users -> {
+            viewModel.getNumberOfLikesByPlaceId(placeId).observe(this, likes -> {
+                int numberOfStars = CalculateRatings.getNumberOfStarsToDisplay(users.size(), likes);
+                if (numberOfStars == 1)
+                    binding.workmateDetailLunch.detailOneStar.setVisibility(View.VISIBLE);
+                if (numberOfStars == 2)
+                    binding.workmateDetailLunch.detailTwoStars.setVisibility(View.VISIBLE);
+                if (numberOfStars == 3)
+                    binding.workmateDetailLunch.detailThreeStars.setVisibility(View.VISIBLE);
+            });
+        });
     }
 
     private void displayPreviousRestaurants(User user) {
@@ -113,11 +130,18 @@ public class WorkmateDetailActivity extends BaseActivity<MyViewModel> {
                 placeId = user.getDatesAndPlaceIds().get(date);
                 viewModel.getPlaceDetails(placeId).observe(this, placeDetails -> {
                     placeDetails.setDateOfLunch(date);
-                    placeDetailsList.add(placeDetails);
-                    if (placeDetailsList.size() == user.getDatesAndPlaceIds().values().size() - minus) {
-                        Collections.sort(placeDetailsList, new RestaurantRecentComparator());
-                        updateRecyclerView(placeDetailsList);
-                    }
+                    // Add number of stars
+                    viewModel.getListUsers().observe(this, allUsers -> {
+                        viewModel.getNumberOfLikesByPlaceId(placeDetails.getPlaceId()).observe(this, likes -> {
+                            int numberOfStars = CalculateRatings.getNumberOfStarsToDisplay(allUsers.size(), likes);
+                            placeDetails.setNumberOfStars(numberOfStars);
+                            placeDetailsList.add(placeDetails);
+                            if (placeDetailsList.size() == user.getDatesAndPlaceIds().values().size() - minus) {
+                                Collections.sort(placeDetailsList, new RestaurantRecentComparator());
+                                updateRecyclerView(placeDetailsList);
+                            }
+                        });
+                    });
                 });
             } else {
                 minus++;

@@ -4,13 +4,17 @@ import android.annotation.TargetApi;
 import android.app.Application;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.content.Intent;
 import android.os.Build;
 
 import androidx.core.app.NotificationCompat;
 
 import com.sophieopenclass.go4lunch.R;
+
+import static com.sophieopenclass.go4lunch.utils.Constants.PLACE_ID;
 
 public class NotificationHelper extends ContextWrapper {
     public static final String channelID = "channelID";
@@ -36,12 +40,14 @@ public class NotificationHelper extends ContextWrapper {
         return mManager;
     }
 
-    public NotificationCompat.Builder getChannelNotification(String message) {
+    public NotificationCompat.Builder getChannelNotification(String message, PendingIntent intent) {
         return new NotificationCompat.Builder(getApplicationContext(), channelID)
                 .setContentTitle("C'est bientôt l'heure !")
                 .setStyle(new NotificationCompat.BigTextStyle().bigText(message))
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setCategory(NotificationCompat.CATEGORY_EVENT)
+                .setContentIntent(intent)
+                .setAutoCancel(true)
                 .setSmallIcon(R.drawable.ic_logo_auth);
     }
 }

@@ -25,10 +25,11 @@ import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRe
 import com.sophieopenclass.go4lunch.MyViewModel;
 import com.sophieopenclass.go4lunch.base.BaseActivity;
 import com.sophieopenclass.go4lunch.controllers.activities.MainActivity;
-import com.sophieopenclass.go4lunch.controllers.adapters.ListViewAdapter;
+import com.sophieopenclass.go4lunch.controllers.adapters.RestaurantListAdapter;
 import com.sophieopenclass.go4lunch.databinding.RecyclerViewRestaurantsBinding;
 import com.sophieopenclass.go4lunch.models.User;
 import com.sophieopenclass.go4lunch.models.json_to_java.PlaceDetails;
+import com.sophieopenclass.go4lunch.utils.CalculateRatings;
 import com.sophieopenclass.go4lunch.utils.EndlessRecyclerViewScrollListener;
 
 import java.util.ArrayList;
@@ -48,7 +49,7 @@ public class RestaurantListFragment extends Fragment {
     private LinearLayoutManager linearLayoutManager;
     private boolean autocompleteActive = false;
     private String nextPageToken;
-    private ListViewAdapter adapter;
+    private RestaurantListAdapter adapter;
     private List<PlaceDetails> restaurants = new ArrayList<>();
     private final AutocompleteSessionToken token = AutocompleteSessionToken.newInstance();
     private MainActivity activity;
@@ -182,21 +183,27 @@ public class RestaurantListFragment extends Fragment {
                             viewModel.getUsersByPlaceIdAndDate(placeDetails.getPlaceId(), User.getTodaysDate())
                                     .observe(getViewLifecycleOwner(), users -> {
                                         restaurant.setNbrOfWorkmates(users.size());
-                                        // add setNbrOfStars
-                                        completePlaceDetailsList.add(restaurant);
-                                        if (completePlaceDetailsList.size() == placeDetailsList.size()) {
-                                            Collections.sort(completePlaceDetailsList, new NearestRestaurantComparator());
-                                            if ((!restaurants.isEmpty()) && adapter != null) {
-                                                int indexStart = restaurants.size() - 1;
-                                                this.restaurants.addAll(completePlaceDetailsList);
-                                                adapter.notifyItemRangeInserted(indexStart, completePlaceDetailsList.size());
-                                            } else
-                                                updateRecyclerView(completePlaceDetailsList);
-                                        }
+                                        viewModel.getListUsers().observe(getViewLifecycleOwner(), allUsers -> {
+                                            viewModel.getNumberOfLikesByPlaceId(placeDetails.getPlaceId()).observe(getViewLifecycleOwner(), likes -> {
+                                                int numberOfStars = CalculateRatings.getNumberOfStarsToDisplay(allUsers.size(), likes);
+                                                restaurant.setNumberOfStars(numberOfStars);
+                                                completePlaceDetailsList.add(restaurant);
+                                                if (completePlaceDetailsList.size() == placeDetailsList.size()) {
+                                                    Collections.sort(completePlaceDetailsList, new NearestRestaurantComparator());
+                                                    if ((!restaurants.isEmpty()) && adapter != null) {
+                                                        int indexStart = restaurants.size() - 1;
+                                                        this.restaurants.addAll(completePlaceDetailsList);
+                                                        adapter.notifyItemRangeInserted(indexStart, completePlaceDetailsList.size());
+                                                    } else
+                                                        updateRecyclerView(completePlaceDetailsList);
+                                                }
+                                            });
+                                        });
                                     }));
         }
     }
 
+    // Clear list of restaurants so that we don't display the same results below the previous ones.
     @Override
     public void onDestroyView() {
         super.onDestroyView();
@@ -220,7 +227,7 @@ public class RestaurantListFragment extends Fragment {
         binding.recyclerViewRestaurants.setLayoutManager(linearLayoutManager);
 
         this.restaurants = restaurants;
-        adapter = new ListViewAdapter(this.restaurants, context, Glide.with(this));
+        adapter = new RestaurantListAdapter(this.restaurants, context, Glide.with(this));
         binding.recyclerViewRestaurants.setAdapter(adapter);
         EndlessRecyclerViewScrollListener scrollListener = new EndlessRecyclerViewScrollListener(linearLayoutManager) {
             @Override

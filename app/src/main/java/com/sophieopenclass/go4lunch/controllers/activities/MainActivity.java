@@ -57,10 +57,12 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
         configureDrawerLayout();
         configureNavigationView();
         initPlacesApi();
-        handleDrawerUI();
         showFragment(FRAGMENT_MAP_VIEW);
         if (getCurrentUser() != null)
-            viewModel.getUser(getCurrentUser().getUid()).observe(this, user -> currentUser = user);
+            viewModel.getUser(getCurrentUser().getUid()).observe(this, user -> {
+                currentUser = user;
+                handleDrawerUI(user);
+            });
 
         binding.bottomNavView.setOnNavigationItemSelectedListener(this::onNavigationItemSelected);
     }
@@ -70,24 +72,21 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
         return MyViewModel.class;
     }
 
-    private void handleDrawerUI() {
+    private void handleDrawerUI(User user) {
         View drawerView = binding.navigationView.getHeaderView(0);
         ImageView profilePic = drawerView.findViewById(R.id.profile_pic);
         TextView username = drawerView.findViewById(R.id.profile_username);
         TextView email = drawerView.findViewById(R.id.profile_email);
 
-        if (getCurrentUser() != null) {
-            if (getCurrentUser().getPhotoUrl() != null) {
-                Glide.with(profilePic.getContext())
-                        .load(getCurrentUser().getPhotoUrl())
-                        .apply(RequestOptions.circleCropTransform())
-                        .into(profilePic);
-            }
+        if (user.getUrlPicture() != null) {
+            Glide.with(profilePic.getContext())
+                    .load(user.getUrlPicture())
+                    .apply(RequestOptions.circleCropTransform())
+                    .into(profilePic);
 
-            username.setText(getCurrentUser().getDisplayName());
-            email.setText(getCurrentUser().getEmail());
+            username.setText(user.getUsername());
+            email.setText(user.getEmail());
         }
-
         binding.navigationView.setBackgroundResource(R.drawable.ic_drawer_logo);
     }
 
@@ -202,7 +201,8 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
     }
 
     private void showRestaurantListFragment() {
-        if (this.fragmentRestaurantList == null) this.fragmentRestaurantList = RestaurantListFragment.newInstance();
+        if (this.fragmentRestaurantList == null)
+            this.fragmentRestaurantList = RestaurantListFragment.newInstance();
         startTransactionFragment(fragmentRestaurantList);
     }
 
