@@ -207,4 +207,15 @@
         app:layout_constraintBottom_toTopOf="@id/chat_with_workmate_btn"
         tools:listitem="@layout/workmates_restaurant_preview" />
 
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/my_lunch_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_gravity="bottom"
+        android:background="@color/colorPrimaryDark"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:title="Mon profil"
+        app:titleTextColor="@color/colorAccent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -182,6 +182,7 @@ public class RestaurantListFragment extends Fragment {
                             viewModel.getUsersByPlaceIdAndDate(placeDetails.getPlaceId(), User.getTodaysDate())
                                     .observe(getViewLifecycleOwner(), users -> {
                                         restaurant.setNbrOfWorkmates(users.size());
+                                        // add setNbrOfStars
                                         completePlaceDetailsList.add(restaurant);
                                         if (completePlaceDetailsList.size() == placeDetailsList.size()) {
                                             Collections.sort(completePlaceDetailsList, new NearestRestaurantComparator());

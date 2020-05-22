@@ -3,10 +3,10 @@ package com.sophieopenclass.go4lunch.models;
 import androidx.annotation.Nullable;
 
 import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -17,6 +17,7 @@ public class User {
     private String urlPicture;
     private Map<String, String> datesAndPlaceIds = new HashMap<>();
     private String chosenRestaurantName;
+    private List<String> favoriteRestaurantIds = new ArrayList<>();
 
     public User() {
     }
@@ -75,5 +76,13 @@ public class User {
 
     public void setChosenRestaurantName(String chosenRestaurantName) {
         this.chosenRestaurantName = chosenRestaurantName;
+    }
+
+    public List<String> getFavoriteRestaurantIds() {
+        return favoriteRestaurantIds;
+    }
+
+    public void setFavoriteRestaurantIds(List<String> favoriteRestaurantIds) {
+        this.favoriteRestaurantIds = favoriteRestaurantIds;
     }
 }

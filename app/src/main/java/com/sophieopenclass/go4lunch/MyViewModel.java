@@ -73,11 +73,6 @@ public class MyViewModel extends ViewModel {
         userDataSource.updateRestaurantName(uid, restaurantName);
     }
 
-    public void deleteDatesAndPlaceIdsField(String uid) {
-        userDataSource.deleteDatesAndPlaceIdsField(uid);
-    }
-
-
     public void deletePlaceId(String uid, String date) {
         userDataSource.deletePlaceId(uid, date);
     }
@@ -91,6 +86,13 @@ public class MyViewModel extends ViewModel {
         return userDataSource.getPlaceIdByDate(userId, date);
     }
 
+    public void addRestaurantToFavorites(String placeId, String userId) {
+        userDataSource.addRestaurantToFavorites(placeId, userId);
+    }
+
+    public LiveData<Integer> getNumberOfLikesByPlaceId(String placeId) {
+        return userDataSource.getNumberOfLikesByPlaceId(placeId);
+    }
 
     public LiveData<String> updateUsername(String username, String uid) {
         return userDataSource.updateUsername(username, uid);
@@ -104,7 +106,7 @@ public class MyViewModel extends ViewModel {
     // CHAT
 
     public LiveData<Message> createMessageForChat(String textMessage, String userSenderId, String chatId) {
-        return messageDataSource.createMessageForChat(textMessage, userSenderId,chatId);
+        return messageDataSource.createMessageForChat(textMessage, userSenderId, chatId);
     }
 
     public MutableLiveData<Message> createMessageWithImageForChat(String urlImage, String textMessage
@@ -122,6 +124,6 @@ public class MyViewModel extends ViewModel {
     }
 
     public LiveData<Boolean> createChat(String currentUserId, String workmateId) {
-       return messageDataSource.createChat(currentUserId, workmateId);
+        return messageDataSource.createChat(currentUserId, workmateId);
     }
 }

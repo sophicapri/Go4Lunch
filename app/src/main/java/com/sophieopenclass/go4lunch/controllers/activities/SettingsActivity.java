@@ -8,6 +8,7 @@ import android.view.View;
 import androidx.core.app.NotificationCompat;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.work.Data;
 import androidx.work.ExistingPeriodicWorkPolicy;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkInfo;
@@ -27,8 +28,11 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import static android.content.Intent.EXTRA_UID;
+
 public class SettingsActivity extends BaseActivity<MyViewModel> {
     private static final String TAG = "SettingsActivity";
+    public static final String WORK_REQUEST_NAME = "Lunch reminder";
     final WorkManager workManager = WorkManager.getInstance(this);
     ActivitySettingsBinding binding;
 
@@ -52,8 +56,6 @@ public class SettingsActivity extends BaseActivity<MyViewModel> {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        workManager.pruneWork();
-        workManager.cancelAllWork();
 
         binding.activateReminder.setOnClickListener(v -> {
             activateReminder(workManager);
@@ -64,9 +66,9 @@ public class SettingsActivity extends BaseActivity<MyViewModel> {
     private void activateReminder(WorkManager workManager) {
         Calendar currentDate = Calendar.getInstance();
         Calendar dueDate = Calendar.getInstance();
-        // Set Execution time
-        dueDate.set(Calendar.HOUR_OF_DAY, 22);
-        dueDate.set(Calendar.MINUTE, 56);
+        // Set Execution time of the reminder
+        dueDate.set(Calendar.HOUR_OF_DAY, 11);
+        dueDate.set(Calendar.MINUTE, 50);
         dueDate.set(Calendar.SECOND, 0);
         dueDate.set(Calendar.MILLISECOND, 0);
 
@@ -76,66 +78,23 @@ public class SettingsActivity extends BaseActivity<MyViewModel> {
 
         long timeDiff = dueDate.getTimeInMillis() - currentDate.getTimeInMillis();
 
+        Data userId = new Data.Builder().build();
+        if (getCurrentUser() != null)
+            userId = new Data.Builder()
+                    .putString(EXTRA_UID, getCurrentUser().getUid())
+                    .build();
+
         PeriodicWorkRequest workRequest = new PeriodicWorkRequest.Builder(NotificationWorker.class, 1,
                 TimeUnit.DAYS)
+                .setInputData(userId)
                 .setInitialDelay(timeDiff, TimeUnit.MILLISECONDS)
-                .addTag("REMINDER")
                 .build();
 
-
-        workManager.enqueueUniquePeriodicWork("REMINDERR", ExistingPeriodicWorkPolicy.REPLACE, workRequest);
-        workManager.getWorkInfoByIdLiveData(workRequest.getId()).observe(this, workInfo -> {
-            System.out.println("work info : " + workInfo.getState().toString());
-            if (workInfo.getState().isFinished()) {
-                    if (getCurrentUser() != null)
-                        viewModel.getUser(getCurrentUser().getUid()).observe(this, user -> {
-                                    String chosenPlaceId = user.getDatesAndPlaceIds().get(User.getTodaysDate());
-                                    if (chosenPlaceId != null) {
-                                        NotificationHelper notificationHelper = new NotificationHelper(this);
-                                        getNotificationMessage(user, chosenPlaceId).observe(this, notificationMessage -> {
-                                            NotificationCompat.Builder nb = notificationHelper
-                                                    .getChannelNotification(notificationMessage);
-                                            notificationHelper.getManager().notify(1, nb.build());
-                                        });
-
-                                    }
-                                }
-                        );
-                }
-        });
-    }
-
-    public LiveData<String> getNotificationMessage(User user, String chosenPlaceId) {
-        MutableLiveData<String> notificationMessage = new MutableLiveData<>();
-        StringBuilder stringBuilderWorkmates = new StringBuilder();
-        viewModel.getUsersByPlaceIdAndDate(chosenPlaceId, User.getTodaysDate())
-                .observe(this, users -> {
-                    if (users.size() != 1) {
-                        ArrayList<String> workmates = new ArrayList<>();
-                        for (User workmate : users)
-                            if (!workmate.getUid().equals(user.getUid()))
-                                workmates.add(workmate.getUsername());
-
-                        for (int i = 0; i < workmates.size(); i++) {
-                            stringBuilderWorkmates.append(workmates.get(i));
-                            if (i < workmates.size() - 2)
-                                stringBuilderWorkmates.append(", ");
-                            else if (i == workmates.size() - 2)
-                                stringBuilderWorkmates.append(" et ");
-                            if (i == workmates.size() - 1)
-                                stringBuilderWorkmates.append(".");
-                        }
-                        notificationMessage.setValue(getString(R.string.notification_message,
-                                user.getChosenRestaurantName(), stringBuilderWorkmates.toString()));
-                    } else
-                        notificationMessage.setValue(getString(R.string.notification_message_solo_lunch,
-                                user.getChosenRestaurantName()));
-                });
-        return notificationMessage;
+        workManager.enqueueUniquePeriodicWork(WORK_REQUEST_NAME, ExistingPeriodicWorkPolicy.REPLACE, workRequest);
     }
 
     private void cancelReminder(WorkManager workManager) {
         workManager.cancelAllWork();
-        binding.textView.setText("Rappel journalier désactivé");
+        binding.textView.setText(R.string.reminder_deactivated);
     }
 }

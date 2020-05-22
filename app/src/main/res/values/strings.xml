@@ -34,12 +34,18 @@
     <string name="weekdays_openings">"Monday: 11:30 AM – 3:00 PM, 6:00 – 11:00 PM\nTuesday: 11:30 AM – 3:00 PM, 6:00 – 11:00 PM\nWednesday: 11:30 AM – 3:00 PM, 6:00 – 11:00 PM\nThursday: 11:30 AM – 3:00 PM, 6:00 – 11:00 PM\nFriday: 11:30 AM – 3:00 PM, 6:00 – 11:00 PM\nSaturday: 11:30 AM – 3:00 PM, 6:00 – 11:00 PM\nSunday: Closed"</string>
     <string name="previous_restaurants">PRÉCÉDENTS DÉJEUNERS:</string>
     <string name="open_until">"Ouvert jusqu'à %s"</string>
+    <string name="open_at">"Ouvert à partir de %s"</string>
+
     <string name="open">Ouvert</string>
     <string name="close">Fermé</string>
+    <string name="close_will_open_at">"Fermé. Ouvre "</string>
+
+
     <string name="opening_hours_unavailable">Horaires non renseignés</string>
 
     <string name="notification_message">"Vous mangez ce midi chez %1$s en compagnie de %2$s"</string>
     <string name="notification_message_solo_lunch">"Vous mangez ce midi chez %s !"</string>
     <string name="toast_title_no_image_chosen">"Pas d'image choisie"</string>
+    <string name="reminder_deactivated">Rappel journalier désactivé</string>
 
 </resources>

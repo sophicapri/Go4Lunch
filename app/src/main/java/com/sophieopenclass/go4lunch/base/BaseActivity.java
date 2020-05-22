@@ -8,30 +8,22 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.NotificationManagerCompat;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.facebook.FacebookAuthorizationException;
-import com.facebook.FacebookGraphResponseException;
 import com.facebook.FacebookSdk;
 import com.google.android.gms.tasks.OnFailureListener;
-import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.sophieopenclass.go4lunch.R;
 import com.sophieopenclass.go4lunch.controllers.activities.RestaurantDetailsActivity;
 import com.sophieopenclass.go4lunch.controllers.activities.WorkmateDetailActivity;
-import com.sophieopenclass.go4lunch.controllers.adapters.ListViewAdapter;
-import com.sophieopenclass.go4lunch.controllers.adapters.WorkmatesViewAdapter;
 import com.sophieopenclass.go4lunch.injection.Injection;
 import com.sophieopenclass.go4lunch.listeners.Listeners;
 import com.sophieopenclass.go4lunch.utils.ViewModelFactory;
 
-import javax.annotation.CheckForSigned;
-
+import static android.content.Intent.EXTRA_UID;
 import static com.sophieopenclass.go4lunch.utils.Constants.PLACE_ID;
-import static com.sophieopenclass.go4lunch.utils.Constants.UID;
 
 public abstract class BaseActivity<T extends ViewModel> extends AppCompatActivity implements Listeners.OnWorkmateClickListener, Listeners.OnRestaurantClickListener {
     public T viewModel;
@@ -85,7 +77,7 @@ public abstract class BaseActivity<T extends ViewModel> extends AppCompatActivit
     @Override
     public void onWorkmateClick(String uid) {
         Intent intent = new Intent(this, WorkmateDetailActivity.class);
-        intent.putExtra(UID, uid);
+        intent.putExtra(EXTRA_UID, uid);
         startActivity(intent);
     }
     @Override

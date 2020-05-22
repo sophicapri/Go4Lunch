@@ -77,42 +77,75 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
-        android:id="@+id/detail_one_star"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@id/details_restaurant_name"
-        android:layout_marginStart="7dp"
-        android:layout_toEndOf="@id/details_restaurant_name"
-        android:contentDescription="one star"
-        app:layout_constraintStart_toEndOf="@+id/restaurant_photo"
-        app:layout_constraintTop_toBottomOf="@+id/details_type_of_restaurant"
-        app:srcCompat="@drawable/ic_star_yellow_24dp" />
-
-    <ImageView
-        android:id="@+id/detail_two_stars"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@id/details_restaurant_name"
-        android:layout_toEndOf="@id/detail_one_star"
-        android:contentDescription="two star"
-        app:layout_constraintStart_toEndOf="@+id/detail_one_star"
-        app:layout_constraintTop_toTopOf="@+id/detail_one_star"
-        app:srcCompat="@drawable/ic_star_yellow_24dp" />
-
-    <ImageView
+    <LinearLayout
         android:id="@+id/detail_three_stars"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@id/details_restaurant_name"
-        android:layout_toEndOf="@id/detail_two_stars"
-        android:contentDescription="three star"
-        app:layout_constraintBottom_toBottomOf="@+id/detail_two_stars"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0"
-        app:layout_constraintStart_toEndOf="@+id/detail_two_stars"
-        app:layout_constraintTop_toTopOf="@+id/detail_two_stars"
-        app:srcCompat="@drawable/ic_star_yellow_24dp" />
+        android:layout_marginTop="5dp"
+        android:visibility="visible"
+        android:layout_marginStart="6dp"
+        app:layout_constraintStart_toEndOf="@+id/restaurant_photo"
+        app:layout_constraintTop_toBottomOf="@+id/details_type_of_restaurant">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="one star"
+            app:srcCompat="@drawable/ic_star_yellow_24dp" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="two star"
+            app:srcCompat="@drawable/ic_star_yellow_24dp" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="three star"
+            app:srcCompat="@drawable/ic_star_yellow_24dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/detail_two_stars"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginStart="6dp"
+        android:visibility="visible"
+        app:layout_constraintStart_toEndOf="@+id/restaurant_photo"
+        app:layout_constraintTop_toBottomOf="@+id/details_type_of_restaurant" >
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="one star"
+            app:srcCompat="@drawable/ic_star_yellow_24dp" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/ic_star_yellow_24dp"
+            app:layout_constraintEnd_toStartOf="@+id/one_star"
+            app:layout_constraintTop_toBottomOf="@+id/nbr_of_workmates"
+            android:contentDescription="two star" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/detail_one_star"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginStart="6dp"
+        android:visibility="visible"
+        app:layout_constraintStart_toEndOf="@+id/restaurant_photo"
+        app:layout_constraintTop_toBottomOf="@+id/details_type_of_restaurant" >
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="one star"
+            app:srcCompat="@drawable/ic_star_yellow_24dp" />
+    </LinearLayout>
+
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"

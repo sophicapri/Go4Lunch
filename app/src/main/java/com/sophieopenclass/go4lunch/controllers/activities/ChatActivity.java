@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.storage.StorageManager;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
@@ -21,12 +20,10 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 import com.sophieopenclass.go4lunch.MyViewModel;
 import com.sophieopenclass.go4lunch.R;
 import com.sophieopenclass.go4lunch.base.BaseActivity;
@@ -37,9 +34,8 @@ import com.sophieopenclass.go4lunch.models.User;
 
 import java.util.UUID;
 
-import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
-import static com.sophieopenclass.go4lunch.utils.Constants.UID;
+import static android.content.Intent.EXTRA_UID;
 
 public class ChatActivity extends BaseActivity<MyViewModel> implements ChatViewAdapter.Listener {
     public static final int RC_CHOOSE_PHOTO = 222;
@@ -67,8 +63,8 @@ public class ChatActivity extends BaseActivity<MyViewModel> implements ChatViewA
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getIntent().getExtras() != null && getIntent().hasExtra(UID)) {
-            workmateId = (String) getIntent().getExtras().get(UID);
+        if (getIntent().getExtras() != null && getIntent().hasExtra(EXTRA_UID)) {
+            workmateId = (String) getIntent().getExtras().get(EXTRA_UID);
             viewModel.getUser(workmateId).observe(this, this::initUI);
         }
     }
@@ -103,7 +99,6 @@ public class ChatActivity extends BaseActivity<MyViewModel> implements ChatViewA
 
     private void onSendMessageClick() {
         if (!TextUtils.isEmpty(binding.messageEditText.getText()) && currentUserId != null) {
-            // SEND A TEXT MESSAGE
             if (chatId == null) {
                 Log.i("TAG", "onSendMessageClick: just once");
                 createChatAndSendMessage();

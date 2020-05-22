@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -19,7 +18,6 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.annotation.GlideModule;
 import com.bumptech.glide.request.RequestOptions;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
@@ -27,14 +25,14 @@ import com.sophieopenclass.go4lunch.MyViewModel;
 import com.sophieopenclass.go4lunch.R;
 import com.sophieopenclass.go4lunch.base.BaseActivity;
 import com.sophieopenclass.go4lunch.controllers.adapters.WorkmatesListAdapter;
-import com.sophieopenclass.go4lunch.controllers.adapters.WorkmatesViewAdapter;
 import com.sophieopenclass.go4lunch.databinding.ActivityRestaurantDetailsBinding;
 import com.sophieopenclass.go4lunch.models.User;
 import com.sophieopenclass.go4lunch.models.json_to_java.PlaceDetails;
+import com.sophieopenclass.go4lunch.utils.CalculateRatings;
 
 import java.util.List;
 
-import static com.sophieopenclass.go4lunch.utils.Constants.MY_LUNCH;
+import static com.sophieopenclass.go4lunch.utils.Constants.DATES_AND_PLACE_IDS_FIELD;
 import static com.sophieopenclass.go4lunch.utils.Constants.PLACE_ID;
 
 public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> implements View.OnClickListener {
@@ -65,18 +63,20 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
     @Override
     protected void onStart() {
         super.onStart();
+        binding.oneStar.setVisibility(View.GONE);
+        binding.twoStars.setVisibility(View.GONE);
+        binding.threeStars.setVisibility(View.GONE);
+
         if (getIntent().getExtras() != null) {
             if (getIntent().hasExtra(PLACE_ID)) {
                 placeId = (String) getIntent().getExtras().get(PLACE_ID);
                 if (placeId != null && !placeId.isEmpty())
                     viewModel.getPlaceDetails(placeId).observe(this, this::displayRestaurant);
-                else
-                    binding.addRestaurant.setVisibility(View.GONE);
+                else {
+                    Toast.makeText(this, "Erreur inconnue", Toast.LENGTH_SHORT).show();
+                    finish();
+                }
             }
-            if (getIntent().hasExtra(MY_LUNCH)) {
-                binding.myLunchToolbar.setVisibility(View.VISIBLE);
-            } else
-                binding.myLunchToolbar.setVisibility(View.GONE);
         }
 
         if (getCurrentUser() != null) {
@@ -90,13 +90,12 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
                     binding.addRestaurant.setImageDrawable(getResources().getDrawable(R.drawable.ic_add_black_24dp));
             });
         }
-
         setUpRecyclerView();
     }
 
     private void setUpRecyclerView() {
         FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>()
-                .setQuery(viewModel.getCollectionReference().whereEqualTo("datesAndPlaceIds." + User.getTodaysDate(), placeId), User.class)
+                .setQuery(viewModel.getCollectionReference().whereEqualTo(DATES_AND_PLACE_IDS_FIELD + User.getTodaysDate(), placeId), User.class)
                 .build();
         adapter = new WorkmatesListAdapter(options, this, Glide.with(this));
         binding.detailRecyclerViewWorkmates.setHasFixedSize(true);
@@ -135,6 +134,7 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
             layoutParam = ViewGroup.LayoutParams.WRAP_CONTENT;
         }
 
+        // Display list of photos
         for (int i = 0; i < nbrOfPhotos && i < MAX_PHOTOS; i++) {
             String urlPhoto = PlaceDetails.urlPhotoFormatter(placeDetails, i);
             ImageView newPhoto = new ImageView(this);
@@ -144,6 +144,23 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
                     .apply(RequestOptions.fitCenterTransform())
                     .into(newPhoto);
         }
+
+        displayStars();
+
+    }
+
+    private void displayStars() {
+        viewModel.getListUsers().observe(this, users -> {
+            viewModel.getNumberOfLikesByPlaceId(placeId).observe(this, likes -> {
+                int numberOfStars = CalculateRatings.getNumberOfStarsToDisplay(users.size(), likes);
+                if (numberOfStars == 1)
+                    binding.oneStar.setVisibility(View.VISIBLE);
+                if (numberOfStars == 2)
+                    binding.twoStars.setVisibility(View.VISIBLE);
+                if (numberOfStars == 3)
+                    binding.threeStars.setVisibility(View.VISIBLE);
+            });
+        });
     }
 
     @Override

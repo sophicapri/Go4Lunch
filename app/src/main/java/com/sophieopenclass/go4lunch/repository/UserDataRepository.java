@@ -14,19 +14,15 @@ import java.util.List;
 import java.util.Map;
 
 import static com.firebase.ui.auth.AuthUI.TAG;
+import static com.sophieopenclass.go4lunch.utils.Constants.CHOSEN_RESTAURANT_NAME_FIELD;
+import static com.sophieopenclass.go4lunch.utils.Constants.DATES_AND_PLACE_IDS_FIELD;
+import static com.sophieopenclass.go4lunch.utils.Constants.FAVORITE_RESTAURANTS_FIELD;
 
 public class UserDataRepository {
     private CollectionReference userCollectionRef;
-    private static UserDataRepository userDataRepository;
 
     public UserDataRepository(CollectionReference userCollectionRef) {
         this.userCollectionRef = userCollectionRef;
-        userDataRepository = this;
-    }
-
-    // To be able to update Notifications from NotificationWorker class.
-    public static UserDataRepository getUserRepository(){
-        return userDataRepository;
     }
 
     public CollectionReference getCollectionReference() {
@@ -79,7 +75,7 @@ public class UserDataRepository {
 
     public MutableLiveData<List<User>> getUsersByPlaceIdAndDate(String placeId, String date) {
         MutableLiveData<List<User>> users = new MutableLiveData<>();
-        userCollectionRef.whereEqualTo("datesAndPlaceIds." + date, placeId).get().addOnCompleteListener(task -> {
+        userCollectionRef.whereEqualTo(DATES_AND_PLACE_IDS_FIELD + date, placeId).get().addOnCompleteListener(task -> {
             if (task.isSuccessful())
                 if (task.getResult() != null)
                     users.postValue(task.getResult().toObjects(User.class));
@@ -94,11 +90,32 @@ public class UserDataRepository {
         userCollectionRef.document(userId).get().addOnCompleteListener(task -> {
             if (task.isSuccessful())
                 if (task.getResult() != null)
-                    placeId.postValue((String)task.getResult().get("datesAndPlaceIds."+date));
+                    placeId.postValue((String)task.getResult().get(DATES_AND_PLACE_IDS_FIELD +date));
                 else if (task.getException() != null)
                     Log.e(TAG, "getPlaceId: " + (task.getException().getMessage()));
         });
         return placeId;
+    }
+
+    public void addRestaurantToFavorites(String placeId, String userId){
+        userCollectionRef.document(userId).update(FAVORITE_RESTAURANTS_FIELD, FieldValue.arrayUnion(placeId))
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful())
+                        Log.i(TAG, "addToFavorites: " + (task.isSuccessful()));
+                });
+    }
+
+    public MutableLiveData<Integer> getNumberOfLikesByPlaceId(String placeId) {
+        MutableLiveData<Integer> numberOfLikes = new MutableLiveData<>();
+        userCollectionRef.whereArrayContains(FAVORITE_RESTAURANTS_FIELD, placeId).get().addOnCompleteListener(task -> {
+           if (task.isSuccessful())
+               if (task.getResult() != null)
+               numberOfLikes.setValue(task.getResult().getDocuments().size());
+               else if (task.getException() != null)
+                   Log.e(TAG, "getLikes: " + (task.getException().getMessage()));
+
+        });
+        return numberOfLikes;
     }
 
     public MutableLiveData<String> updateUsername(String username, String uid) {
@@ -122,7 +139,7 @@ public class UserDataRepository {
     }
 
     public void deletePlaceId(String uid, String date) {
-        userCollectionRef.document(uid).update("datesAndPlaceIds."+date,
+        userCollectionRef.document(uid).update(DATES_AND_PLACE_IDS_FIELD + date,
                 FieldValue.delete()).addOnCompleteListener(deleteUser -> {
             if (deleteUser.isSuccessful())
                 Log.i(TAG, "deleteUser: " + (deleteUser.isSuccessful()));
@@ -132,22 +149,10 @@ public class UserDataRepository {
         });
     }
 
-    public void deleteDatesAndPlaceIdsField(String uid) {
-        Map<String, Object> updates = new HashMap<>();
-        updates.put("datesAndPlaceIds", FieldValue.delete());
-        userCollectionRef.document(uid).update(updates).addOnCompleteListener(deleteField -> {
-            if (deleteField.isSuccessful())
-                Log.i(TAG, "deleteField: " + (deleteField.isSuccessful()));
-
-            else if (deleteField.getException() != null)
-                Log.e(TAG, "deleteField: " + (deleteField.getException().getMessage()));
-        });
-    }
-
     public MutableLiveData<String> updateUserPlaceId(String uid, String placeId, String date) {
         MutableLiveData<String> newPlaceId = new MutableLiveData<>();
         Map<String, Object> updates = new HashMap<>();
-        updates.put(("datesAndPlaceIds." + date), placeId);
+        updates.put((DATES_AND_PLACE_IDS_FIELD + date), placeId);
         userCollectionRef.document(uid).get().addOnCompleteListener(uidTask -> {
             if (uidTask.isSuccessful()) {
                 if (uidTask.getResult() != null)
@@ -167,7 +172,7 @@ public class UserDataRepository {
 
     public void updateRestaurantName(String uid, String restaurantName) {
         MutableLiveData<String> newRestaurantName = new MutableLiveData<>();
-        userCollectionRef.document(uid).update("chosenRestaurantName", restaurantName).addOnCompleteListener(updateRestaurant -> {
+        userCollectionRef.document(uid).update(CHOSEN_RESTAURANT_NAME_FIELD, restaurantName).addOnCompleteListener(updateRestaurant -> {
             if(updateRestaurant.isSuccessful())
                 newRestaurantName.setValue(restaurantName);
             else if (updateRestaurant.getException() != null){
@@ -175,5 +180,6 @@ public class UserDataRepository {
             }
         });
     }
+
 
 }

@@ -12,7 +12,7 @@ import com.sophieopenclass.go4lunch.repository.RestaurantDataRepository;
 import com.sophieopenclass.go4lunch.repository.UserDataRepository;
 
 public class Injection {
-    private static final String USER_COLLECTION_NAME = "users";
+    public static final String USER_COLLECTION_NAME = "users";
     private static final String MESSAGE_COLLECTION_NAME = "messages";
 
     private static RestaurantDataRepository provideRestaurantDataSource(){

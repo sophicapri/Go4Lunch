@@ -111,7 +111,6 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.PlaceV
                 }
             } else
                 binding.openingHours.setText(R.string.open);
-
         }
     }
 }

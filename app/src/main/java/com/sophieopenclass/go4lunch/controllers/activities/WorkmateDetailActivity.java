@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-import static com.sophieopenclass.go4lunch.utils.Constants.UID;
+import static android.content.Intent.EXTRA_UID;
 
 public class WorkmateDetailActivity extends BaseActivity<MyViewModel> {
     ActivityWorkmateDetailBinding binding;
@@ -44,8 +44,8 @@ public class WorkmateDetailActivity extends BaseActivity<MyViewModel> {
     protected void onStart() {
         super.onStart();
         minus = 0;
-        if (getIntent().getExtras() != null && getIntent().hasExtra(UID)) {
-            uid = (String) getIntent().getExtras().get(UID);
+        if (getIntent().getExtras() != null && getIntent().hasExtra(EXTRA_UID)) {
+            uid = (String) getIntent().getExtras().get(EXTRA_UID);
             viewModel.getUser(uid).observe(this, this::initUI);
         }
         binding.chatWithWorkmateBtn.setOnClickListener(v -> startChatActivity(uid));
@@ -74,10 +74,14 @@ public class WorkmateDetailActivity extends BaseActivity<MyViewModel> {
 
         displayPreviousRestaurants(user);
         //
-        binding.chatWithWorkmateBtn.setText(getString(R.string.chat_with, user.getUsername()));
         if (getCurrentUser() != null)
-            if (user.getUid().equals(getCurrentUser().getUid()))
+            if (user.getUid().equals(getCurrentUser().getUid())) {
                 binding.chatWithWorkmateBtn.setVisibility(View.GONE);
+                binding.myLunchToolbar.setVisibility(View.VISIBLE);
+            } else {
+                binding.chatWithWorkmateBtn.setText(getString(R.string.chat_with, user.getUsername()));
+                binding.myLunchToolbar.setVisibility(View.GONE);
+            }
     }
 
     private void displayTodaysRestaurant(String todaysPlaceId) {
@@ -140,7 +144,7 @@ public class WorkmateDetailActivity extends BaseActivity<MyViewModel> {
 
     private void startChatActivity(String uid) {
         Intent intent = new Intent(this, ChatActivity.class);
-        intent.putExtra(UID, uid);
+        intent.putExtra(EXTRA_UID, uid);
         startActivity(intent);
     }
 }
