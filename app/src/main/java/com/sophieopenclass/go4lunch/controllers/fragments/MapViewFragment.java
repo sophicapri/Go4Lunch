@@ -65,20 +65,19 @@ import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static com.sophieopenclass.go4lunch.utils.Constants.PLACE_ID;
 
 public class MapViewFragment extends Fragment implements OnMapReadyCallback {
-
-    public static final double AREA_MAP_AUTOCOMPLETE = 0.004;
+    private static final String TAG = "MAIN ACTIVITY";
+    private static final double AREA_MAP_AUTOCOMPLETE = 0.004;
+    public static final String CAMERA_LOCATION = "cameraLocation";
     private MyViewModel viewModel;
     private GoogleMap mMap;
     private LocationManager locationManager;
     private Location currentLocation;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 123;
     private static final float DEFAULT_ZOOM = 17.5f;
-    //private static final float DEFAULT_ZOOM = 15f;
     private boolean autocompleteActive;
     private BaseActivity context;
     private Location cameraLocation;
     private List<AutocompletePrediction> predictionList;
-    public static final String TAG = "MAIN ACTIVITY";
     private String searchBarTextInput;
     private MainActivity activity;
     private final AutocompleteSessionToken token = AutocompleteSessionToken.newInstance();
@@ -159,8 +158,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
                 FindAutocompletePredictionsResponse predictionsResponse = task.getResult();
                 if (predictionsResponse != null) {
                     predictionList = predictionsResponse.getAutocompletePredictions();
-                    Gson gson = new Gson();
-                    Log.i(TAG, "onTextChanged: 1" + gson.toJson(predictionList));
                     List<String> suggestionsList = new ArrayList<>();
                     for (int i = 0; i < predictionList.size(); i++) {
                         AutocompletePrediction prediction = predictionList.get(i);
@@ -168,7 +165,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
                             suggestionsList.add(prediction.getPlaceId());
                         }
                     }
-                    Log.i(TAG, "onTextChanged: 2 " + gson.toJson(suggestionsList));
                     getPlaceDetailAutocompleteList(suggestionsList);
                 }
             } else {
@@ -216,7 +212,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
                     cameraLocation = currentLocation;
                 }
             } else {
-                Toast.makeText(getActivity(), "unable to get current location", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), R.string.cant_get_location, Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -235,7 +231,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
             getNearbyPlaces(currentLocation);
 
         mMap.setOnCameraMoveStartedListener(i -> {
-            cameraLocation = new Location("cameraLocation");
+            cameraLocation = new Location(CAMERA_LOCATION);
             cameraLocation.setLongitude(mMap.getCameraPosition().target.longitude);
             cameraLocation.setLatitude(mMap.getCameraPosition().target.latitude);
             if (!autocompleteActive)
@@ -256,7 +252,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
                 fetchLastLocation();
             } else {
                 if (getView() != null)
-                    Snackbar.make(getView(), "Géolocalisation désactivée", BaseTransientBottomBar.LENGTH_INDEFINITE)
+                    Snackbar.make(getView(), R.string.location_deactivated, BaseTransientBottomBar.LENGTH_INDEFINITE)
                             .setDuration(5000).show();
             }
         }

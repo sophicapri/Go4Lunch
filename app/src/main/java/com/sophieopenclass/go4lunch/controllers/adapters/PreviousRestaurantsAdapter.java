@@ -8,24 +8,20 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.request.RequestOptions;
 import com.sophieopenclass.go4lunch.R;
 import com.sophieopenclass.go4lunch.base.BaseActivity;
 import com.sophieopenclass.go4lunch.databinding.WorkmatesRestaurantPreviewBinding;
 import com.sophieopenclass.go4lunch.listeners.Listeners;
-import com.sophieopenclass.go4lunch.models.User;
 import com.sophieopenclass.go4lunch.models.json_to_java.PlaceDetails;
 
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.Locale;
-import java.util.Map;
 
 public class PreviousRestaurantsAdapter extends RecyclerView.Adapter<PreviousRestaurantsAdapter.WorkmatesDetailHolder> {
     private ArrayList<PlaceDetails> placeDetailsList;

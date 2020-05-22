@@ -21,15 +21,16 @@
             android:layout_marginStart="@dimen/default_margin"
             android:layout_gravity="center"
             android:layout_width="40dp"
-            android:layout_height="40dp" />
+            android:layout_height="40dp"
+            android:contentDescription="@string/profile_picture" />
 
         <TextView
             android:id="@+id/workmate_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="10dp"
+            android:padding="@dimen/default_padding"
             android:layout_gravity="end|center"
-            android:text="Jenny"
+            tools:text="@sample/tasks.json/name"
             android:textColor="@color/colorAccent"/>
 
 
@@ -48,8 +49,8 @@
             android:id="@+id/chat_text_view_recycler_view_empty"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:text="Ce fil de discussion ne contient pour le moment aucun message&#8230;"
+            android:layout_margin="@dimen/default_margin"
+            android:text="@string/no_messages_in_chat_yet"
             android:textAlignment="center" />
 
         <!-- RECYCLER VIEW -->
@@ -72,7 +73,8 @@
         android:layout_above="@id/add_message_container"
         android:layout_margin="10dp"
         app:layout_constraintBottom_toTopOf="@+id/add_message_container"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        android:contentDescription="@string/image_preview" />
 
     <!-- ADD MESSAGE CONTAINER -->
     <LinearLayout
@@ -91,7 +93,7 @@
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
             app:srcCompat="@drawable/ic_add_black_24dp"
-            android:contentDescription="add file" />
+            android:contentDescription="@string/add_file_button" />
 
         <!-- TEXT MESSAGE EDIT TEXT -->
         <EditText
@@ -99,16 +101,17 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="Composer votre message..."
+            android:hint="@string/write_a_message"
             android:imeOptions="actionDone"
-            android:inputType="textMultiLine" />
+            android:inputType="textMultiLine"
+            android:importantForAutofill="no" />
 
         <Button
             android:id="@+id/send_message_button"
             style="@style/Widget.AppCompat.Button.Borderless.Colored"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Envoyer" />
+            android:text="@string/send_message" />
 
     </LinearLayout>
 

@@ -99,10 +99,9 @@ public class ChatActivity extends BaseActivity<MyViewModel> implements ChatViewA
 
     private void onSendMessageClick() {
         if (!TextUtils.isEmpty(binding.messageEditText.getText()) && currentUserId != null) {
-            if (chatId == null) {
-                Log.i("TAG", "onSendMessageClick: just once");
+            if (chatId == null)
                 createChatAndSendMessage();
-            } else
+             else
                 sendMessage(chatId);
         }
     }
@@ -112,7 +111,7 @@ public class ChatActivity extends BaseActivity<MyViewModel> implements ChatViewA
             if (aBoolean)
                 viewModel.getChatId(currentUserId, workmateId).observe(this, this::sendMessage);
             else
-                Toast.makeText(this, "Chat : une erreur est survenue, impossible d'envoyer le message", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, R.string.error_sending_message, Toast.LENGTH_LONG).show();
         });
     }
 
@@ -127,7 +126,7 @@ public class ChatActivity extends BaseActivity<MyViewModel> implements ChatViewA
                             updateRecyclerView(currentUser, chatId);
                         }
                         if (message == null)
-                            Toast.makeText(this, "Erreur lors de l'envoie du message", Toast.LENGTH_LONG).show();
+                            Toast.makeText(this, R.string.error_sending_message, Toast.LENGTH_LONG).show();
                     });
         } else {
             // SEND AN IMAGE + TEXT IMAGE
@@ -153,7 +152,7 @@ public class ChatActivity extends BaseActivity<MyViewModel> implements ChatViewA
                                             ChatActivity.this.updateRecyclerView(currentUser, chatId);
                                         }
                                         if (message1 == null)
-                                            Toast.makeText(ChatActivity.this, "Erreur lors de l'envoie du message", Toast.LENGTH_LONG).show();
+                                            Toast.makeText(ChatActivity.this, R.string.error_sending_message, Toast.LENGTH_LONG).show();
                                     });
                         }).addOnFailureListener(onFailureListener())).addOnFailureListener(onFailureListener());
     }
@@ -208,7 +207,7 @@ public class ChatActivity extends BaseActivity<MyViewModel> implements ChatViewA
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 chooseImageFromPhone();
             } else {
-                Snackbar.make(binding.getRoot(), "Accès aux photos refusé", BaseTransientBottomBar.LENGTH_INDEFINITE)
+                Snackbar.make(binding.getRoot(), R.string.photo_access_declined, BaseTransientBottomBar.LENGTH_INDEFINITE)
                         .setDuration(5000).show();
             }
         }

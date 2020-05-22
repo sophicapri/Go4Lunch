@@ -30,8 +30,6 @@ import com.sophieopenclass.go4lunch.models.User;
 import com.sophieopenclass.go4lunch.models.json_to_java.PlaceDetails;
 import com.sophieopenclass.go4lunch.utils.CalculateRatings;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -81,7 +79,7 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
                 if (placeId != null && !placeId.isEmpty())
                     viewModel.getPlaceDetails(placeId).observe(this, this::initUI);
                 else {
-                    Toast.makeText(this, "Erreur inconnue", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, R.string.error_unknown_error, Toast.LENGTH_SHORT).show();
                     finish();
                 }
             }
@@ -209,8 +207,8 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
         String[] daysInEnglish = getResources().getStringArray(R.array.days_in_english);
         String[] daysInFrench = getResources().getStringArray(R.array.days_in_french);
         String result = openingHour.replace(daysInEnglish[index], daysInFrench[index]);
-        if (result.contains("Closed"))
-            result = result.replace("Closed", "Fermé");
+        if (result.contains(getString(R.string.closed)))
+            result = result.replace(getString(R.string.closed), getString(R.string.closed_in_french));
         return result;
     }
 
@@ -220,7 +218,7 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
             if (currentUserPlaceId == null)
                 viewModel.updateUserPlaceId(currentUser.getUid(), placeId, User.getTodaysDate()).observe(this, placeId -> {
                     if (placeId == null) {
-                        Toast.makeText(this, "Une erreur est survenue", Toast.LENGTH_LONG).show();
+                        Toast.makeText(this, R.string.an_error_happened, Toast.LENGTH_LONG).show();
                         viewModel.updateRestaurantChosen(currentUser.getUid(), "", "");
                         binding.addRestaurant.setImageDrawable(getResources().getDrawable(R.drawable.ic_add_black_24dp));
                     }
@@ -242,16 +240,16 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
                 ActivityCompat.requestPermissions(this,
                         new String[]{Manifest.permission.CALL_PHONE}, REQUEST_CALL);
             } else {
-                String dial = "tel:" + placeDetails.getInternationalPhoneNumber();
+                String dial = getString(R.string.prefix_call) + placeDetails.getInternationalPhoneNumber();
                 new AlertDialog.Builder(this)
-                        .setMessage("Souhaitez-vous appeler le restaurant " + placeDetails.getName() + " ? ")
-                        .setPositiveButton("Appeler", (paramDialogInterface, paramInt) ->
+                        .setMessage(getString(R.string.would_you_like_to_call_place, placeDetails.getName()))
+                        .setPositiveButton(R.string.confirm_call, (paramDialogInterface, paramInt) ->
                                 startActivity(new Intent(Intent.ACTION_CALL, Uri.parse(dial))))
                         .setNegativeButton(R.string.Cancel, null)
                         .show();
             }
         } else
-            Toast.makeText(this, "N° de téléphone non renseigné", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.phone_number_not_available, Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -260,7 +258,7 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 callRestaurant();
             } else {
-                Toast.makeText(this, "Permission DENIED", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.permission_denied, Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -268,24 +266,24 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
     private void visitWebsite(String urlWebsite) {
         if (urlWebsite != null) {
             new AlertDialog.Builder(this)
-                    .setMessage("Souhaitez-vous visiter le site web de " + placeDetails.getName() + " ? ")
-                    .setPositiveButton("Ouvrir le navigateur", (paramDialogInterface, paramInt) ->
+                    .setMessage(getString(R.string.visit_website, placeDetails.getName()))
+                    .setPositiveButton(R.string.open_browser, (paramDialogInterface, paramInt) ->
                             startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(urlWebsite))))
                     .setNegativeButton(R.string.Cancel, null)
                     .show();
         } else
-            Toast.makeText(this, "Site web non renseigné", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.website_unavailable, Toast.LENGTH_LONG).show();
     }
 
     private void handleLikeRestaurantClick() {
         if (!currentUser.getFavoriteRestaurantIds().contains(placeId)) {
             viewModel.addRestaurantToFavorites(placeId, currentUser.getUid());
             binding.likeRestaurantStar.setImageDrawable(getResources().getDrawable(R.drawable.ic_star_full_24dp));
-            Toast.makeText(this, "Ajouté aux favoris", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.added_to_favorites, Toast.LENGTH_SHORT).show();
         } else {
             viewModel.deleteRestaurantFromFavorites(placeId, currentUser.getUid());
             binding.likeRestaurantStar.setImageDrawable(getResources().getDrawable(R.drawable.ic_star_border_black_24dp));
-            Toast.makeText(this, "Supprimé des favoris", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.deleted_from_fav, Toast.LENGTH_SHORT).show();
         }
     }
 

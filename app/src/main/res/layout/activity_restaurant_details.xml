@@ -97,7 +97,7 @@
                 android:layout_alignBottom="@id/details_restaurant_name"
                 android:layout_marginStart="5dp"
                 android:layout_toEndOf="@id/details_restaurant_name"
-                android:contentDescription="one star"
+                android:contentDescription="@string/star_icon_description"
                 android:visibility="gone"
                 app:layout_constraintBottom_toTopOf="@+id/details_type_of_restaurant"
                 app:layout_constraintStart_toEndOf="@+id/details_restaurant_name"
@@ -106,19 +106,19 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:contentDescription="one star"
+                    android:contentDescription="@string/star_icon_description"
                     app:srcCompat="@drawable/ic_star_yellow_24dp" />
 
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:contentDescription="two star"
+                    android:contentDescription="@string/star_icon_description"
                     app:srcCompat="@drawable/ic_star_yellow_24dp" />
 
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:contentDescription="three star"
+                    android:contentDescription="@string/star_icon_description"
                     app:srcCompat="@drawable/ic_star_yellow_24dp" />
             </LinearLayout>
 
@@ -130,7 +130,7 @@
                 android:layout_alignBottom="@id/details_restaurant_name"
                 android:layout_marginStart="5dp"
                 android:layout_toEndOf="@id/details_restaurant_name"
-                android:contentDescription="two star"
+                android:contentDescription="@string/star_icon_description"
                 android:visibility="gone"
                 app:layout_constraintBottom_toTopOf="@+id/details_type_of_restaurant"
                 app:layout_constraintStart_toEndOf="@+id/details_restaurant_name"
@@ -139,13 +139,13 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:contentDescription="one star"
+                    android:contentDescription="@string/star_icon_description"
                     app:srcCompat="@drawable/ic_star_yellow_24dp" />
 
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:contentDescription="two star"
+                    android:contentDescription="@string/star_icon_description"
                     app:layout_constraintEnd_toStartOf="@+id/one_star"
                     app:layout_constraintTop_toBottomOf="@+id/nbr_of_workmates"
                     app:srcCompat="@drawable/ic_star_yellow_24dp" />
@@ -158,7 +158,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
                 android:visibility="gone"
-                android:contentDescription="one star"
+                android:contentDescription="@string/star_icon_description"
                 app:layout_constraintBottom_toTopOf="@+id/details_type_of_restaurant"
                 app:layout_constraintStart_toEndOf="@+id/details_restaurant_name"
                 app:layout_constraintTop_toTopOf="@+id/details_restaurant_name"
@@ -216,7 +216,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:drawableTop="@drawable/ic_call_black_24dp"
-            android:text="CALL"
+            android:text="@string/call"
             android:textColor="@color/colorPrimary"
             app:layout_constraintEnd_toStartOf="@+id/like_restaurant_btn"
             app:layout_constraintStart_toStartOf="parent"
@@ -230,7 +230,8 @@
             android:layout_marginTop="15dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/constraint_layout_restau_infos">
+            app:layout_constraintTop_toBottomOf="@+id/constraint_layout_restau_infos"
+            tools:ignore="UseCompoundDrawables">
 
             <ImageView
                 android:id="@+id/like_restaurant_star"
@@ -239,12 +240,12 @@
                 android:visibility="visible"
                 android:layout_gravity="center"
                 tools:srcCompat="@drawable/ic_star_border_black_24dp"
-                android:contentDescription="like restaurant" />
+                android:contentDescription="@string/like_restaurant_icon_description" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="LIKE"
+                android:text="@string/like"
                 android:textColor="@color/colorPrimary"/>
         </LinearLayout>
 
@@ -253,7 +254,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:drawableTop="@drawable/ic_website_24dp"
-            android:text="WEBSITE"
+            android:text="@string/website"
             android:textColor="@color/colorPrimary"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/like_restaurant_btn"

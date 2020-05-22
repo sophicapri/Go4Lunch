@@ -80,8 +80,6 @@ public class ChatViewAdapter extends FirestoreRecyclerAdapter<Message, ChatViewA
                 binding.imageSent.setVisibility(View.GONE);
             }
 
-            // TODO : add onClickListener to image -> full screen
-
             //Update Message Bubble Color Background
             binding.messageContainer.setBackground(isCurrentUser ? bkgCurrentUser : bkgRemoteUser);
 

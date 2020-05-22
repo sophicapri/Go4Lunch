@@ -61,7 +61,7 @@ public class WorkmateDetailActivity extends BaseActivity<MyViewModel> {
                 .into(binding.workmateProfilePic);
 
 
-        String todaysPlaceId = user.getDatesAndPlaceIds().get(User.getTodaysDate().toString());
+        String todaysPlaceId = user.getDatesAndPlaceIds().get(User.getTodaysDate());
         if (todaysPlaceId != null) {
             displayTodaysRestaurant(todaysPlaceId);
         } else {
@@ -106,17 +106,16 @@ public class WorkmateDetailActivity extends BaseActivity<MyViewModel> {
     }
 
     private void displayStars(String placeId) {
-        viewModel.getListUsers().observe(this, users -> {
-            viewModel.getNumberOfLikesByPlaceId(placeId).observe(this, likes -> {
-                int numberOfStars = CalculateRatings.getNumberOfStarsToDisplay(users.size(), likes);
-                if (numberOfStars == 1)
-                    binding.workmateDetailLunch.detailOneStar.setVisibility(View.VISIBLE);
-                if (numberOfStars == 2)
-                    binding.workmateDetailLunch.detailTwoStars.setVisibility(View.VISIBLE);
-                if (numberOfStars == 3)
-                    binding.workmateDetailLunch.detailThreeStars.setVisibility(View.VISIBLE);
-            });
-        });
+        viewModel.getListUsers().observe(this, users -> viewModel.getNumberOfLikesByPlaceId(placeId)
+                .observe(this, likes -> {
+            int numberOfStars = CalculateRatings.getNumberOfStarsToDisplay(users.size(), likes);
+            if (numberOfStars == 1)
+                binding.workmateDetailLunch.detailOneStar.setVisibility(View.VISIBLE);
+            if (numberOfStars == 2)
+                binding.workmateDetailLunch.detailTwoStars.setVisibility(View.VISIBLE);
+            if (numberOfStars == 3)
+                binding.workmateDetailLunch.detailThreeStars.setVisibility(View.VISIBLE);
+        }));
     }
 
     private void displayPreviousRestaurants(User user) {
@@ -131,17 +130,16 @@ public class WorkmateDetailActivity extends BaseActivity<MyViewModel> {
                 viewModel.getPlaceDetails(placeId).observe(this, placeDetails -> {
                     placeDetails.setDateOfLunch(date);
                     // Add number of stars
-                    viewModel.getListUsers().observe(this, allUsers -> {
-                        viewModel.getNumberOfLikesByPlaceId(placeDetails.getPlaceId()).observe(this, likes -> {
-                            int numberOfStars = CalculateRatings.getNumberOfStarsToDisplay(allUsers.size(), likes);
-                            placeDetails.setNumberOfStars(numberOfStars);
-                            placeDetailsList.add(placeDetails);
-                            if (placeDetailsList.size() == user.getDatesAndPlaceIds().values().size() - minus) {
-                                Collections.sort(placeDetailsList, new RestaurantRecentComparator());
-                                updateRecyclerView(placeDetailsList);
-                            }
-                        });
-                    });
+                    viewModel.getListUsers().observe(this, allUsers ->
+                            viewModel.getNumberOfLikesByPlaceId(placeDetails.getPlaceId()).observe(this, likes -> {
+                        int numberOfStars = CalculateRatings.getNumberOfStarsToDisplay(allUsers.size(), likes);
+                        placeDetails.setNumberOfStars(numberOfStars);
+                        placeDetailsList.add(placeDetails);
+                        if (placeDetailsList.size() == user.getDatesAndPlaceIds().values().size() - minus) {
+                            Collections.sort(placeDetailsList, new RestaurantRecentComparator());
+                            updateRecyclerView(placeDetailsList);
+                        }
+                    }));
                 });
             } else {
                 minus++;

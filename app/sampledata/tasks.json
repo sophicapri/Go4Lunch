@@ -16,7 +16,6 @@
       "workmatesChoice": "Henry hasn't decided yet"
     }
   ],
-
   "data_restaurants": [
     {
       "restaurantName": "Le Zinc",
@@ -24,7 +23,7 @@
       "address": "12 rue du Faubourg Poissonniere",
       "openingHours": "Open until 7pm",
       "distance": "120m",
-      "nbrOfWorkmates" : "(2)"
+      "nbrOfWorkmates": "(2)"
     },
     {
       "restaurantName": "Tokyomaki",
@@ -32,7 +31,7 @@
       "address": "24 rue des Petites Ecoles",
       "openingHours": "Open until 2:30pm",
       "distance": "170m",
-      "nbrOfWorkmates" : "(3)"
+      "nbrOfWorkmates": "(3)"
     },
     {
       "restaurantName": "Casa Nostra",
@@ -40,7 +39,7 @@
       "address": "42 rue de Sicile",
       "openingHours": "Closing soon",
       "distance": "210m",
-      "nbrOfWorkmates" : ""
+      "nbrOfWorkmates": ""
     },
     {
       "restaurantName": "Le Seoul",
@@ -48,7 +47,7 @@
       "address": "18 rue de Paradis",
       "openingHours": "Open until 2:30pm",
       "distance": "243m",
-      "nbrOfWorkmates" : "(2)"
+      "nbrOfWorkmates": "(2)"
     },
     {
       "restaurantName": "Burgermania",
@@ -56,10 +55,9 @@
       "address": "31 rue de Floride",
       "openingHours": "Open 24/7",
       "distance": "290m",
-      "nbrOfWorkmates" : "(1)"
+      "nbrOfWorkmates": "(1)"
     }
   ],
-
   "data_workmates_joining": [
     {
       "workmatesJoining": "Scarlett is joining!"
@@ -76,5 +74,13 @@
     {
       "workmatesJoining": "Henry joining!"
     }
-  ]
+  ],
+
+  "name": "Jenny",
+  "date": "May 15, 2020",
+  "chat_with_user": "Chat with Jenny",
+  "timestamp_message": "10:22",
+  "full_name": "Jenna DOE",
+  "email_address": "jennadoe@mail.com"
+
 }

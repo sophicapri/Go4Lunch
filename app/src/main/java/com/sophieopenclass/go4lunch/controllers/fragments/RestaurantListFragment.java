@@ -41,7 +41,7 @@ import static com.sophieopenclass.go4lunch.controllers.fragments.MapViewFragment
 
 public class RestaurantListFragment extends Fragment {
     public static final String TAG = "restaurantListFrag";
-    public static final double AREA_LIST_AUTOCOMPLETE = 0.02;
+    private static final double AREA_LIST_AUTOCOMPLETE = 0.02;
     private MyViewModel viewModel;
     private RecyclerViewRestaurantsBinding binding;
     private BaseActivity context;
@@ -172,8 +172,8 @@ public class RestaurantListFragment extends Fragment {
 
     // Nearby Search doesn't return all the fields required in a PlaceDetails, therefore another
     // query is necessary to retrieve the missing fields (ex : openingHours)
-
-    // The viewModel calls are imbricated and not called one after the other because the variables do not get initialised
+    // -
+    // The viewModel calls are inside each other and not called one after the other because the variables do not get initialised
     // fast enough before being used for another viewModel.
     private void getFullPlaceDetails(List<PlaceDetails> placeDetailsList) {
         ArrayList<PlaceDetails> completePlaceDetailsList = new ArrayList<>();
@@ -183,22 +183,22 @@ public class RestaurantListFragment extends Fragment {
                             viewModel.getUsersByPlaceIdAndDate(placeDetails.getPlaceId(), User.getTodaysDate())
                                     .observe(getViewLifecycleOwner(), users -> {
                                         restaurant.setNbrOfWorkmates(users.size());
-                                        viewModel.getListUsers().observe(getViewLifecycleOwner(), allUsers -> {
-                                            viewModel.getNumberOfLikesByPlaceId(placeDetails.getPlaceId()).observe(getViewLifecycleOwner(), likes -> {
-                                                int numberOfStars = CalculateRatings.getNumberOfStarsToDisplay(allUsers.size(), likes);
-                                                restaurant.setNumberOfStars(numberOfStars);
-                                                completePlaceDetailsList.add(restaurant);
-                                                if (completePlaceDetailsList.size() == placeDetailsList.size()) {
-                                                    Collections.sort(completePlaceDetailsList, new NearestRestaurantComparator());
-                                                    if ((!restaurants.isEmpty()) && adapter != null) {
-                                                        int indexStart = restaurants.size() - 1;
-                                                        this.restaurants.addAll(completePlaceDetailsList);
-                                                        adapter.notifyItemRangeInserted(indexStart, completePlaceDetailsList.size());
-                                                    } else
-                                                        updateRecyclerView(completePlaceDetailsList);
-                                                }
-                                            });
-                                        });
+                                        viewModel.getListUsers().observe(getViewLifecycleOwner(), allUsers ->
+                                                viewModel.getNumberOfLikesByPlaceId(placeDetails.getPlaceId())
+                                                        .observe(getViewLifecycleOwner(), likes -> {
+                                            int numberOfStars = CalculateRatings.getNumberOfStarsToDisplay(allUsers.size(), likes);
+                                            restaurant.setNumberOfStars(numberOfStars);
+                                            completePlaceDetailsList.add(restaurant);
+                                            if (completePlaceDetailsList.size() == placeDetailsList.size()) {
+                                                Collections.sort(completePlaceDetailsList, new NearestRestaurantComparator());
+                                                if ((!restaurants.isEmpty()) && adapter != null) {
+                                                    int indexStart = restaurants.size() - 1;
+                                                    this.restaurants.addAll(completePlaceDetailsList);
+                                                    adapter.notifyItemRangeInserted(indexStart, completePlaceDetailsList.size());
+                                                } else
+                                                    updateRecyclerView(completePlaceDetailsList);
+                                            }
+                                        }));
                                     }));
         }
     }

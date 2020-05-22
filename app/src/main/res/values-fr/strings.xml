@@ -1,0 +1,82 @@
+<resources>
+    <string name="app_name">Go4Lunch</string>
+    <string name="app_logo">"Logo de l'app qui représente un bol."</string>
+
+    <!--  Map and menus -->
+    <string name="error_unknown_error">"Une erreur inconnue s'est produite…"</string>
+    <string name="navigation_drawer_close">menu latéral fermé</string>
+    <string name="connection_succeed">Connexion réussie</string>
+    <string name="error_no_internet">Problème de connexion à internet</string>
+    <string name="Cancel">Annuler</string>
+    <string name="gps_network_not_enabled">La localisation n\'est pas activée</string>
+    <string name="open_location_settings">Autoriser le partage de localisation</string>
+    <string name="loading">Chargement…</string>
+    <string name="connecting">Connexion…</string>
+    <string name="signing_out">Déconnexion…</string>
+
+    <!-- Restaurant infos-->
+    <string name="workmates_eating_at">"%1$s mange chez %2$s"</string>
+    <string name="workmate_hasnt_chosen">"%s n'a pas encore choisi de restaurant…"</string>
+    <string name="workmate_is_eating_here">"%s mange ici !"</string>
+    <string name="no_restaurant_chosen">"Pas de restaurant choisi aujourd'hui…"</string>
+    <string name="restaurant_type">"%s - "</string>
+    <string name="nbr_of_workmates">"(%d)"</string>
+    <string name="distance">"%dm"</string>
+    <string name="you_are_eating_here">Vous mangez ici !</string>
+    <string name="chat_with">Discuter avec %s</string>
+    <string name="detail_lunch_textview">DÉJEUNER DU JOUR:</string>
+    <string name="your_lunch_textview">VOTRE DÉJEUNER DU JOUR:</string>
+    <string name="no_previous_restaurant">"Pas de précédents restaurants…"</string>
+    <string name="weekdays_opening_hours_title">Horaires</string>
+    <string name="weekdays_openings">"Monday: 11:30 AM – 3:00 PM, 6:00 – 11:00 PM\nTuesday: 11:30 AM – 3:00 PM, 6:00 – 11:00 PM\nWednesday: 11:30 AM – 3:00 PM, 6:00 – 11:00 PM\nThursday: 11:30 AM – 3:00 PM, 6:00 – 11:00 PM\nFriday: 11:30 AM – 3:00 PM, 6:00 – 11:00 PM\nSaturday: 11:30 AM – 3:00 PM, 6:00 – 11:00 PM\nSunday: Closed"</string>
+    <string name="previous_restaurants">PRÉCÉDENTS DÉJEUNERS:</string>
+    <string name="open_until">"Ouvert jusqu'à %s"</string>
+    <string name="open_at">"Ouvert à partir de %s"</string>
+    <string name="open">Ouvert</string>
+    <string name="close">Fermé</string>
+    <string name="close_will_open_at">Fermé. Ouvre à</string>
+    <string name="opening_hours_unavailable">Horaires non renseignés</string>
+    <string name="restaurant_photo">Photo du restaurant</string>
+    <string name="person_icon">"Icone d'une personne"</string>
+    <string name="star_icon_description">icon étoile</string>
+    <string name="call">APPELER</string>
+    <string name="like_restaurant_icon_description">Icon étoile pour liker le restaurant</string>
+    <string name="like">LIKER</string>
+    <string name="website">SITE WEB</string>
+
+    <string name="phone_number_not_available">N° de téléphone non renseigné</string>
+    <string name="confirm_call">Appeler</string>
+    <string name="would_you_like_to_call_place">\"Souhaitez-vous appeler le restaurant %s ?\"</string>
+
+    <!-- Settings Activity Notifications -->
+    <string name="notification_message">"Vous mangez ce midi chez %1$s.\nAdresse: %2$s.\nVous serez en compagnie de %3$s."</string>
+    <string name="notification_message_solo_lunch">"Vous mangez ce midi chez %1$s.\nAdresse: %2$s."</string>
+    <string name="toast_title_no_image_chosen">"Pas d'image choisie"</string>
+    <string name="reminder_deactivated">Rappel journalier désactivé</string>
+    <string name="navigation_drawer_open">menu latéral ouvert</string>
+    <string name="and">" et "</string>
+
+
+    <!-- Chat activity -->
+    <string name="profile_picture">Photo de profil</string>
+    <string name="no_messages_in_chat_yet">Ce fil de discussion ne contient pour le moment aucun message…</string>
+    <string name="image_preview">"Aperçu de l'image choisi"</string>
+    <string name="add_file_button">Bouton pour ajouter un ficher</string>
+    <string name="write_a_message">Composer votre message…</string>
+    <string name="send_message">Envoyer</string>
+    <string name="image_sent">Image envoyée</string>
+    <string name="close_search_bar">Fermer la bar de recherche</string>
+    <string name="search_for_restaurant">Rechercher un restaurant…</string>
+    <string name="photo_access_declined">Accès aux photos refusé</string>
+    <string name="error_sending_message">Erreur lors de l\'envoie du message</string>
+    <string name="an_error_happened">Une erreur est survenue</string>
+    <string name="added_to_favorites">Ajouté aux favoris</string>
+    <string name="deleted_from_fav">Supprimé des favoris</string>
+    <string name="website_unavailable">Site web non renseigné</string>
+    <string name="open_browser">Ouvrir le navigateur</string>
+    <string name="visit_website">"Souhaitez-vous visiter le site web de %s ?"</string>
+    <string name="permission_denied">Permission refusée</string>
+    <string name="closed_in_french">Fermé</string>
+    <string name="cant_get_location">"Erreur lors de l'accès à la localisation"</string>
+    <string name="location_deactivated">Géolocalisation désactivée</string>
+</resources>

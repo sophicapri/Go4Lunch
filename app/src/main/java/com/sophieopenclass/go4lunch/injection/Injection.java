@@ -2,14 +2,12 @@ package com.sophieopenclass.go4lunch.injection;
 
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
-import com.sophieopenclass.go4lunch.MyViewModel;
-import com.sophieopenclass.go4lunch.repository.MessageDataRepository;
-import com.sophieopenclass.go4lunch.utils.ViewModelFactory;
 import com.sophieopenclass.go4lunch.api.PlaceApi;
 import com.sophieopenclass.go4lunch.api.PlaceService;
+import com.sophieopenclass.go4lunch.repository.MessageDataRepository;
 import com.sophieopenclass.go4lunch.repository.RestaurantDataRepository;
 import com.sophieopenclass.go4lunch.repository.UserDataRepository;
+import com.sophieopenclass.go4lunch.utils.ViewModelFactory;
 
 public class Injection {
     public static final String USER_COLLECTION_NAME = "users";

@@ -20,16 +20,17 @@ import java.util.ArrayList;
 
 import static android.content.Intent.EXTRA_UID;
 import static com.sophieopenclass.go4lunch.injection.Injection.USER_COLLECTION_NAME;
+import static com.sophieopenclass.go4lunch.utils.Constants.DATES_AND_PLACE_IDS_FIELD;
 import static com.sophieopenclass.go4lunch.utils.Constants.PLACE_ID;
 
 public class NotificationWorker extends Worker {
     private static final String TAG = "NotificationWorker";
     private static final int NOTIFICATION_ID = 1;
-    public static final int RC_PENDING_INTENT = 44;
+    private static final int RC_PENDING_INTENT = 44;
     private CollectionReference userCollectionRef;
     private Context context;
-    String chosenRestaurantId;
-    User currentUser;
+    private String chosenRestaurantId;
+    private User currentUser;
 
     public NotificationWorker(
             @NonNull Context context,
@@ -72,7 +73,7 @@ public class NotificationWorker extends Worker {
     }
     private void initNotificationMessage() {
         ArrayList<User> users = new ArrayList<>();
-        userCollectionRef.whereEqualTo("datesAndPlaceIds." + User.getTodaysDate(), chosenRestaurantId).get().addOnCompleteListener(task -> {
+        userCollectionRef.whereEqualTo(DATES_AND_PLACE_IDS_FIELD + User.getTodaysDate(), chosenRestaurantId).get().addOnCompleteListener(task -> {
             if (task.isSuccessful())
                 if (task.getResult() != null) {
                     users.addAll(task.getResult().toObjects(User.class));
@@ -97,7 +98,7 @@ public class NotificationWorker extends Worker {
                 if (i < workmates.size() - 2)
                     stringBuilderWorkmates.append(", ");
                 else if (i == workmates.size() - 2)
-                    stringBuilderWorkmates.append(" et ");
+                    stringBuilderWorkmates.append(context.getString(R.string.and));
             }
             notificationMessage = (context.getString(R.string.notification_message,
                     currentUser.getChosenRestaurantName(), currentUser.getChosenRestaurantAddress(), stringBuilderWorkmates.toString()));

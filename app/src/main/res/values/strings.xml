@@ -1,52 +1,91 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Go4Lunch</string>
-
+    <string name="app_logo">App logo, drawing of a bowl</string>
 
     <!-- FACEBOOK PURPOSE -->
     <string name="facebook_application_id" translatable="false">1072908349752058</string>
     <string name="facebook_login_protocol_scheme" translatable="false" tools:ignore="UnusedResources">fb1072908349752058</string>
 
-    <string name="error_unknown_error">"Une erreur inconnue s'est produite…"</string>
+    <!--  Map and menus -->
+    <string name="error_unknown_error">An unknown error happened…</string>
     <string name="navigation_drawer_open">drawer open</string>
     <string name="navigation_drawer_close">drawer close</string>
-    <string name="connection_succeed">Connexion réussie</string>
-    <string name="error_no_internet">Problème de connexion à internet</string>
-    <string name="Cancel">Annuler</string>
-    <string name="gps_network_not_enabled">La localisation n\'est pas activée</string>
-    <string name="open_location_settings">Autoriser le partage de localisation</string>
-    <string name="loading">Chargement…</string>
-    <string name="connecting">Connexion…</string>
-    <string name="signing_out">Déconnexion…</string>
+    <string name="Cancel">Cancel</string>
+    <string name="gps_network_not_enabled">Location is not enabled</string>
+    <string name="open_location_settings">Authorize shared location</string>
+    <string name="loading">Loading…</string>
+    <string name="connecting">Connecting…</string>
+    <string name="signing_out">Disconnecting…</string>
 
-    <string name="workmates_eating_at">"%1$s mange chez %2$s"</string>
-    <string name="workmate_hasnt_chosen">"%s n'a pas encore choisi de restaurant"</string>
-    <string name="workmate_is_eating_here">"%s mange ici !"</string>
-    <string name="no_restaurant_chosen">"Pas de restaurant choisi aujourd'hui…"</string>
+    <string name="an_error_happened">An error happened</string>
+
+
+    <!-- Restaurant infos-->
+    <string name="workmates_eating_at">%1$s is eating at %2$s</string>
+    <string name="workmate_hasnt_chosen">"%s hasn't chosen a restaurant yet…"</string>
+    <string name="workmate_is_eating_here">%s  is eating here !</string>
+    <string name="no_restaurant_chosen">No restaurant chosen today…</string>
     <string name="restaurant_type">"%s - "</string>
     <string name="nbr_of_workmates">"(%d)"</string>
     <string name="distance">"%dm"</string>
-    <string name="you_are_eating_here">Vous mangez ici !</string>
-    <string name="chat_with">Discuter avec %s</string>
-    <string name="detail_lunch_textview">DÉJEUNER DU JOUR:</string>
-    <string name="your_lunch_textview">VOTRE DÉJEUNER DU JOUR:</string>
-    <string name="no_previous_restaurant">"Pas de précédents restaurants…"</string>
-    <string name="weekdays_opening_hours_title">Horaires</string>
+    <string name="you_are_eating_here">"You're eating here !"</string>
+    <string name="chat_with">Chat with %s</string>
+    <string name="detail_lunch_textview">LUNCH OF THE DAY:</string>
+    <string name="your_lunch_textview">YOUR LUNCH OF THE DAY:</string>
+    <string name="no_previous_restaurant">No previous restaurants…</string>
+    <string name="weekdays_opening_hours_title">Opening hours</string>
     <string name="weekdays_openings">"Monday: 11:30 AM – 3:00 PM, 6:00 – 11:00 PM\nTuesday: 11:30 AM – 3:00 PM, 6:00 – 11:00 PM\nWednesday: 11:30 AM – 3:00 PM, 6:00 – 11:00 PM\nThursday: 11:30 AM – 3:00 PM, 6:00 – 11:00 PM\nFriday: 11:30 AM – 3:00 PM, 6:00 – 11:00 PM\nSaturday: 11:30 AM – 3:00 PM, 6:00 – 11:00 PM\nSunday: Closed"</string>
-    <string name="previous_restaurants">PRÉCÉDENTS DÉJEUNERS:</string>
-    <string name="open_until">"Ouvert jusqu'à %s"</string>
-    <string name="open_at">"Ouvert à partir de %s"</string>
+    <string name="previous_restaurants">PREVIOUS LUNCHES:</string>
+    <string name="open_until">Open until %s</string>
+    <string name="open_at">Opening at %s</string>
+    <string name="open">Open</string>
+    <string name="close">Closed</string>
+    <string name="close_will_open_at">Closed. Will open at</string>
+    <string name="opening_hours_unavailable">Opening hours unavailable</string>
+    <string name="restaurant_photo">Restaurant photo</string>
+    <string name="person_icon">Abstract icon of person</string>
+    <string name="star_icon_description">star icon</string>
+    <string name="call">CALL</string>
+    <string name="like_restaurant_icon_description">Like restaurant icon</string>
+    <string name="like">LIKE</string>
+    <string name="website">WEBSITE</string>
 
-    <string name="open">Ouvert</string>
-    <string name="close">Fermé</string>
-    <string name="close_will_open_at">"Fermé. Ouvre "</string>
+    <string name="phone_number_not_available">N° not available</string>
+    <string name="confirm_call">Call</string>
+    <string name="would_you_like_to_call_place">"Would you like to call %s ?"</string>
 
+    <!-- Settings Activity Notifications -->
+    <string name="notification_message">You\'re eating at %1$s. Address: %2$s. You will be joined by %3$s.</string>
+    <string name="notification_message_solo_lunch">You\'re eating at %1$s. Address: %2$s.</string>
+    <string name="toast_title_no_image_chosen">No image selected</string>
+    <string name="reminder_deactivated">Reminder deactivated</string>
+    <string name="connection_succeed">Connection successful</string>
+    <string name="error_no_internet">Having trouble connecting to the Internet</string>
+    <string name="and">" and "</string>
 
-    <string name="opening_hours_unavailable">Horaires non renseignés</string>
-
-    <string name="notification_message">"Vous mangez ce midi chez %1$s.\nAdresse: %2$s.\nVous serez en compagnie de %3$s."</string>
-    <string name="notification_message_solo_lunch">"Vous mangez ce midi chez %1$s.\nAdresse: %2$s."</string>
-    <string name="toast_title_no_image_chosen">"Pas d'image choisie"</string>
-    <string name="reminder_deactivated">Rappel journalier désactivé</string>
+    <!-- Chat activity -->
+    <string name="profile_picture">Profile picture</string>
+    <string name="no_messages_in_chat_yet">"This chat session doesn't have any messages yet…"</string>
+    <string name="image_preview">Image selected from phone preview</string>
+    <string name="add_file_button">Add file button</string>
+    <string name="write_a_message">"Write a message…"</string>
+    <string name="send_message">Send</string>
+    <string name="image_sent">Image sent</string>
+    <string name="close_search_bar">close search bar</string>
+    <string name="search_for_restaurant">Search for a restaurant…</string>
+    <string name="photo_access_declined">Photo access declined</string>
+    <string name="error_sending_message">Error while sending message</string>
+    <string name="added_to_favorites">Added to favorites</string>
+    <string name="deleted_from_fav">Deleted from favorites</string>
+    <string name="website_unavailable">Website unavailable</string>
+    <string name="open_browser">Open browser</string>
+    <string name="visit_website">Do you want to visit %s website ?</string>
+    <string name="permission_denied">Permission DENIED</string>
+    <string name="prefix_call" translatable="false">tel:</string>
+    <string name="closed" translatable="false">Closed</string>
+    <string name="closed_in_french">Fermé</string>
+    <string name="cant_get_location">Unable to get current location</string>
+    <string name="location_deactivated">Location deactivated</string>
 
 
 </resources>

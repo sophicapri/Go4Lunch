@@ -15,7 +15,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:contentDescription="profile_picture" />
+        android:contentDescription="@string/profile_picture" />
 
     <TextView
         android:id="@+id/workmates_choice"

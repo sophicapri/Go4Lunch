@@ -16,7 +16,7 @@
         android:id="@+id/restaurant_photo"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:contentDescription="restaurant name"
+        android:contentDescription="@string/restaurant_photo"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -71,7 +71,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        android:text="15 mai 2020"
+        tools:text="@sample/tasks.json/date"
         android:textStyle="italic"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
@@ -90,19 +90,19 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:contentDescription="one star"
+            android:contentDescription="@string/star_icon_description"
             app:srcCompat="@drawable/ic_star_yellow_24dp" />
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:contentDescription="two star"
+            android:contentDescription="@string/star_icon_description"
             app:srcCompat="@drawable/ic_star_yellow_24dp" />
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:contentDescription="three star"
+            android:contentDescription="@string/star_icon_description"
             app:srcCompat="@drawable/ic_star_yellow_24dp" />
     </LinearLayout>
 
@@ -118,7 +118,7 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:contentDescription="one star"
+            android:contentDescription="@string/star_icon_description"
             app:srcCompat="@drawable/ic_star_yellow_24dp" />
 
         <ImageView
@@ -127,14 +127,15 @@
             app:srcCompat="@drawable/ic_star_yellow_24dp"
             app:layout_constraintEnd_toStartOf="@+id/one_star"
             app:layout_constraintTop_toBottomOf="@+id/nbr_of_workmates"
-            android:contentDescription="two star" />
+            android:contentDescription="@string/star_icon_description"
+            />
     </LinearLayout>
 
         <ImageView
             android:id="@+id/detail_one_star"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:contentDescription="one star"
+            android:contentDescription="@string/star_icon_description"
             app:srcCompat="@drawable/ic_star_yellow_24dp"
             android:layout_marginTop="5dp"
             android:layout_marginStart="6dp"

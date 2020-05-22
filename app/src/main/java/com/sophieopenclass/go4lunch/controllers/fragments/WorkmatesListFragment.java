@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
 import com.sophieopenclass.go4lunch.MyViewModel;
@@ -16,14 +15,11 @@ import com.sophieopenclass.go4lunch.base.BaseActivity;
 import com.sophieopenclass.go4lunch.controllers.adapters.WorkmatesViewAdapter;
 import com.sophieopenclass.go4lunch.databinding.RecyclerViewWorkmatesBinding;
 import com.sophieopenclass.go4lunch.models.User;
-import com.sophieopenclass.go4lunch.models.json_to_java.PlaceDetails;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 public class WorkmatesListFragment extends Fragment {
-    public static final String TAG = "workmatesFrag";
     private RecyclerViewWorkmatesBinding binding;
     private MyViewModel viewModel;
     private WorkmatesViewAdapter adapter;

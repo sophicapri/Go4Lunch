@@ -20,7 +20,8 @@
             android:id="@+id/image_sent"
             android:layout_width="100dip"
             android:layout_height="100dip"
-            android:scaleType="centerCrop" />
+            android:scaleType="centerCrop"
+            android:contentDescription="@string/image_sent" />
 
     </androidx.cardview.widget.CardView>
 
@@ -59,7 +60,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/image_sent_cardview"
         android:layout_alignEnd="@id/message_container"
-        android:text="date"
+        tools:text="@sample/tasks.json/timestamp_message"
         android:textSize="@dimen/default_text_size_mini"
         android:textStyle="bold" />
 

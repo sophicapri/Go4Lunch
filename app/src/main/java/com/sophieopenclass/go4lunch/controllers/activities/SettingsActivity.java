@@ -1,31 +1,19 @@
 package com.sophieopenclass.go4lunch.controllers.activities;
 
-import android.app.Activity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 
-import androidx.core.app.NotificationCompat;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 import androidx.work.Data;
 import androidx.work.ExistingPeriodicWorkPolicy;
 import androidx.work.PeriodicWorkRequest;
-import androidx.work.WorkInfo;
 import androidx.work.WorkManager;
 
 import com.sophieopenclass.go4lunch.MyViewModel;
-import com.sophieopenclass.go4lunch.R;
 import com.sophieopenclass.go4lunch.base.BaseActivity;
 import com.sophieopenclass.go4lunch.databinding.ActivitySettingsBinding;
-import com.sophieopenclass.go4lunch.models.User;
-import com.sophieopenclass.go4lunch.utils.NotificationHelper;
 import com.sophieopenclass.go4lunch.utils.NotificationWorker;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static android.content.Intent.EXTRA_UID;
@@ -35,11 +23,6 @@ public class SettingsActivity extends BaseActivity<MyViewModel> {
     public static final String WORK_REQUEST_NAME = "Lunch reminder";
     final WorkManager workManager = WorkManager.getInstance(this);
     ActivitySettingsBinding binding;
-
-
-    public static Activity newInstance() {
-        return new SettingsActivity();
-    }
 
     @Override
     public Class getViewModelClass() {
@@ -56,10 +39,7 @@ public class SettingsActivity extends BaseActivity<MyViewModel> {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
-        binding.activateReminder.setOnClickListener(v -> {
-            activateReminder(workManager);
-        });
+        binding.activateReminder.setOnClickListener(v -> activateReminder(workManager));
         binding.cancelReminder.setOnClickListener(v -> cancelReminder(workManager));
     }
 

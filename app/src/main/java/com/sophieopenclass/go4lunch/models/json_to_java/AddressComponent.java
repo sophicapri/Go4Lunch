@@ -17,9 +17,8 @@ public class AddressComponent {
         @Expose
         private List<String> types = null;
 
-        public String getLongName() {
-            return longName;
-        }
+
+        public String getLongName() { return longName; }
 
         public void setLongName(String longName) {
             this.longName = longName;
