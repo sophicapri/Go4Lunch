@@ -91,6 +91,10 @@
     <string name="available_workmates">Available workmates</string>
     <string name="settings">Settings</string>
     <string name="change_profile_picture">Change profil picture</string>
+    <string name="french">French</string>
+    <string name="touch_to_update">Touch to update</string>
+    <string name="enable_reminder">Enable/Disable daily reminder</string>
+    <string name="language">Language</string>
 
 
 </resources>

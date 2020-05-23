@@ -84,4 +84,8 @@
     <string name="available_workmates">Collègues disponibles</string>
     <string name="settings">Paramètres</string>
     <string name="change_profile_picture">Changer de photo de profil</string>
+    <string name="french">Français</string>
+    <string name="touch_to_update">Touchez pour modifier</string>
+    <string name="enable_reminder">Activer/Désactiver le rappel journalier</string>
+    <string name="language">Langue</string>
 </resources>

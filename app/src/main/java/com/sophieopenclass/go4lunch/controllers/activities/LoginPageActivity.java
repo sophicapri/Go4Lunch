@@ -22,6 +22,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Locale;
 
@@ -40,7 +41,7 @@ public class LoginPageActivity extends BaseActivity<MyViewModel> {
         if (isCurrentUserLogged()) {
             startMainActivity();
         } else
-            startSignInActivity();
+            startSignInWithFacebook();
     }
 
     @Override
@@ -54,12 +55,27 @@ public class LoginPageActivity extends BaseActivity<MyViewModel> {
         finish();
     }
 
-    public void startSignInActivity() {
+    public void startSignInWithGoogle() {
         startActivityForResult(AuthUI.getInstance()
                 .createSignInIntentBuilder()
-                .setTheme(R.style.LoginTheme)
-                .setAvailableProviders(Arrays.asList(new AuthUI.IdpConfig.GoogleBuilder().build(), //GOOGLE
-                        new AuthUI.IdpConfig.FacebookBuilder().build()))// FACEBOOK
+                .setAvailableProviders(Collections.singletonList(new AuthUI.IdpConfig.GoogleBuilder().build())) //GOOGLE
+                .setIsSmartLockEnabled(false, true)
+                .build(), RC_SIGN_IN);
+    }
+
+    public void startSignInWithFacebook() {
+        startActivityForResult(AuthUI.getInstance()
+                .createSignInIntentBuilder()
+                .setAvailableProviders(Collections.singletonList(new AuthUI.IdpConfig.FacebookBuilder().build()))// FACEBOOK
+                .setIsSmartLockEnabled(false, true)
+                .build(), RC_SIGN_IN);
+    }
+
+    //
+    public void startSignInWithEmail() {
+        startActivityForResult(AuthUI.getInstance()
+                .createSignInIntentBuilder()
+                .setAvailableProviders(Collections.singletonList(new AuthUI.IdpConfig.FacebookBuilder().build()))// FACEBOOK
                 .setIsSmartLockEnabled(false, true)
                 .build(), RC_SIGN_IN);
     }
@@ -81,7 +97,7 @@ public class LoginPageActivity extends BaseActivity<MyViewModel> {
                 createUserInFirestore();
                 startMainActivity();
             } else { // ERRORS
-                startSignInActivity();
+                //startSignInActivity();
                 if (response != null && response.getError() != null)
                     if (response.getError().getErrorCode() == ErrorCodes.NO_NETWORK) {
                         Toast.makeText(this, getString(R.string.error_no_internet), Toast.LENGTH_SHORT).show();

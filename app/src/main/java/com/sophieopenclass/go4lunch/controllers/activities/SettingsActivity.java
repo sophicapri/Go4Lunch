@@ -1,6 +1,7 @@
 package com.sophieopenclass.go4lunch.controllers.activities;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import androidx.work.Data;
@@ -21,8 +22,9 @@ import static android.content.Intent.EXTRA_UID;
 public class SettingsActivity extends BaseActivity<MyViewModel> {
     private static final String TAG = "SettingsActivity";
     public static final String WORK_REQUEST_NAME = "Lunch reminder";
-    final WorkManager workManager = WorkManager.getInstance(this);
+    public final WorkManager workManager = WorkManager.getInstance(this);
     ActivitySettingsBinding binding;
+    public static PeriodicWorkRequest workRequest;
 
     @Override
     public Class getViewModelClass() {
@@ -38,17 +40,20 @@ public class SettingsActivity extends BaseActivity<MyViewModel> {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        binding.activateReminder.setOnClickListener(v -> activateReminder(workManager));
-        binding.cancelReminder.setOnClickListener(v -> cancelReminder(workManager));
+        binding.notificationToggle.setOnClickListener(v -> {
+            if (binding.notificationToggle.isChecked())
+                activateReminder(workManager);
+            else
+                workManager.cancelAllWork();
+        });
     }
 
     private void activateReminder(WorkManager workManager) {
         Calendar currentDate = Calendar.getInstance();
         Calendar dueDate = Calendar.getInstance();
         // Set Execution time of the reminder
-        dueDate.set(Calendar.HOUR_OF_DAY, 18);
-        dueDate.set(Calendar.MINUTE, 29);
+        dueDate.set(Calendar.HOUR_OF_DAY, 19);
+        dueDate.set(Calendar.MINUTE, 56);
         dueDate.set(Calendar.SECOND, 0);
         dueDate.set(Calendar.MILLISECOND, 0);
 
@@ -64,16 +69,12 @@ public class SettingsActivity extends BaseActivity<MyViewModel> {
                     .putString(EXTRA_UID, getCurrentUser().getUid())
                     .build();
 
-        PeriodicWorkRequest workRequest = new PeriodicWorkRequest.Builder(NotificationWorker.class, 1,
+        workRequest = new PeriodicWorkRequest.Builder(NotificationWorker.class, 1,
                 TimeUnit.DAYS)
                 .setInputData(userId)
                 .setInitialDelay(timeDiff, TimeUnit.MILLISECONDS)
                 .build();
 
         workManager.enqueueUniquePeriodicWork(WORK_REQUEST_NAME, ExistingPeriodicWorkPolicy.REPLACE, workRequest);
-    }
-
-    private void cancelReminder(WorkManager workManager) {
-        workManager.cancelAllWork();
     }
 }
