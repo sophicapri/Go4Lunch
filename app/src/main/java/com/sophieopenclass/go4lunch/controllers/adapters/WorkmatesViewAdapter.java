@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.sophieopenclass.go4lunch.listeners.Listeners.OnWorkmateClickListener;
+import static com.sophieopenclass.go4lunch.utils.Constants.NAME_RESTAURANT;
 
 public class WorkmatesViewAdapter extends RecyclerView.Adapter<WorkmatesViewAdapter.UserViewHolder> {
     private OnWorkmateClickListener onWorkmateClickListener;
@@ -74,7 +75,7 @@ public class WorkmatesViewAdapter extends RecyclerView.Adapter<WorkmatesViewAdap
 
             if (placeId != null) {
                 binding.workmatesChoice.setText(context.getResources()
-                        .getString(R.string.workmates_eating_at, model.getUsername(), model.getChosenRestaurantName()));
+                        .getString(R.string.workmates_eating_at, model.getUsername(), model.getChosenRestaurant().get(NAME_RESTAURANT)));
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     binding.workmatesChoice.setTextAppearance(R.style.TextStyleNormal);
                 }

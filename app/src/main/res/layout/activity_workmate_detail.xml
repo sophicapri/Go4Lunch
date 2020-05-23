@@ -5,6 +5,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/my_lunch_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimary"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:navigationIcon="@drawable/ic_back_arrow_white"
+        app:title="@string/my_lunch_toolbar_title"
+        app:titleTextColor="@color/quantum_white_text" />
+
     <TextView
         android:id="@+id/workmates_detail_name"
         android:layout_width="wrap_content"
@@ -104,16 +116,5 @@
         app:layout_constraintTop_toBottomOf="@+id/previous_restaurants"
         app:layout_constraintBottom_toTopOf="@id/chat_with_workmate_btn"
         tools:listitem="@layout/workmates_restaurant_preview" />
-
-    <com.google.android.material.appbar.MaterialToolbar
-        android:id="@+id/my_lunch_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:layout_gravity="bottom"
-        android:background="@color/colorPrimaryDark"
-        android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:title="Mon profil"
-        app:titleTextColor="@color/colorAccent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

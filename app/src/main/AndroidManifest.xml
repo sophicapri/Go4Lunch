@@ -21,7 +21,7 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/API_KEY" />
 
-        <activity android:name=".controllers.activities.LoginPageActivity">
+        <activity android:name=".controllers.activities.SplashScreenActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -34,6 +34,7 @@
         <activity android:name=".controllers.activities.RestaurantDetailsActivity" />
         <activity android:name=".controllers.activities.WorkmateDetailActivity" />
         <activity android:name=".controllers.activities.ChatActivity" />
+        <activity android:name=".controllers.activities.LoginPageActivity" />
     </application>
 
 </manifest>

@@ -75,20 +75,12 @@ public class User {
         this.datesAndPlaceIds = datesAndPlaceIds;
     }
 
-    public Map<String,String> getChosenRestaurant() {
+    public Map<String, String> getChosenRestaurant() {
         return chosenRestaurant;
     }
 
-    public void setChosenRestaurant(Map<String,String> chosenRestaurant) {
+    public void setChosenRestaurant(Map<String, String> chosenRestaurant) {
         this.chosenRestaurant = chosenRestaurant;
-    }
-
-    public String getChosenRestaurantName() {
-        return chosenRestaurant.get(NAME_RESTAURANT);
-    }
-
-    public String getChosenRestaurantAddress() {
-        return chosenRestaurant.get(ADDRESS_RESTAURANT);
     }
 
     public List<String> getFavoriteRestaurantIds() {

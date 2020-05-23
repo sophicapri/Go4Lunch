@@ -20,7 +20,9 @@ import java.util.ArrayList;
 
 import static android.content.Intent.EXTRA_UID;
 import static com.sophieopenclass.go4lunch.injection.Injection.USER_COLLECTION_NAME;
+import static com.sophieopenclass.go4lunch.utils.Constants.ADDRESS_RESTAURANT;
 import static com.sophieopenclass.go4lunch.utils.Constants.DATES_AND_PLACE_IDS_FIELD;
+import static com.sophieopenclass.go4lunch.utils.Constants.NAME_RESTAURANT;
 import static com.sophieopenclass.go4lunch.utils.Constants.PLACE_ID;
 
 public class NotificationWorker extends Worker {
@@ -101,10 +103,10 @@ public class NotificationWorker extends Worker {
                     stringBuilderWorkmates.append(context.getString(R.string.and));
             }
             notificationMessage = (context.getString(R.string.notification_message,
-                    currentUser.getChosenRestaurantName(), currentUser.getChosenRestaurantAddress(), stringBuilderWorkmates.toString()));
+                    currentUser.getChosenRestaurant().get(NAME_RESTAURANT), currentUser.getChosenRestaurant().get(ADDRESS_RESTAURANT), stringBuilderWorkmates.toString()));
         } else
             notificationMessage = (context.getString(R.string.notification_message_solo_lunch,
-                    currentUser.getChosenRestaurantName(), currentUser.getChosenRestaurantAddress()));
+                    currentUser.getChosenRestaurant().get(NAME_RESTAURANT), currentUser.getChosenRestaurant().get(ADDRESS_RESTAURANT)));
         displayNotification(notificationMessage);
     }
 

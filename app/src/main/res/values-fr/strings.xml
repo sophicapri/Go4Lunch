@@ -88,4 +88,9 @@
     <string name="touch_to_update">Touchez pour modifier</string>
     <string name="enable_reminder">Activer/Désactiver le rappel journalier</string>
     <string name="language">Langue</string>
+    <string name="subtitle_app_logo">Trouvez un restaurant sympa et invitez vos collègues à déjeuner!</string>
+    <string name="sign_in_with_facebook">Se connecter avec Facebook</string>
+    <string name="sign_in_with_google">Se connecter avec Google</string>
+    <string name="change_username">Changer de nom de profil</string>
+    <string name="my_lunch_toolbar_title">Mon déjeuner</string>
 </resources>

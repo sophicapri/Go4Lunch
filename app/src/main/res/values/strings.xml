@@ -95,6 +95,13 @@
     <string name="touch_to_update">Touch to update</string>
     <string name="enable_reminder">Enable/Disable daily reminder</string>
     <string name="language">Language</string>
+    <string name="subtitle_app_logo">Find a nice restaurant and invite your co-workers for lunch!</string>
+    <string name="google_logo" translatable="false">Google logo</string>
+    <string name="facebook_logo" translatable="false">Facebook logo</string>
+    <string name="sign_in_with_facebook">Sign in with Facebook</string>
+    <string name="sign_in_with_google">Sign in with Google</string>
+    <string name="change_username">Change username</string>
+    <string name="my_lunch_toolbar_title">My lunch</string>
 
 
 </resources>

@@ -2,7 +2,10 @@ package com.sophieopenclass.go4lunch.controllers.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -29,30 +32,25 @@ import java.util.Locale;
 
 public class LoginPageActivity extends BaseActivity<MyViewModel> {
     private static final int RC_SIGN_IN = 124;
+    private ActivityLoginBinding binding;
 
     @Override
     public View getFragmentLayout() {
-        return ActivityLoginBinding.inflate(getLayoutInflater()).getRoot();
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        binding = ActivityLoginBinding.inflate(getLayoutInflater());
+        return binding.getRoot();
     }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (isCurrentUserLogged()) {
-            startMainActivity();
-        } else
-            startSignInWithFacebook();
+        binding.facebookSignInBtn.setOnClickListener(v -> startSignInWithFacebook());
+        binding.googleSignInBtn.setOnClickListener(v -> startSignInWithGoogle());
     }
 
     @Override
     public Class getViewModelClass() {
         return MyViewModel.class;
-    }
-
-    private void startMainActivity() {
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
-        finish();
     }
 
     public void startSignInWithGoogle() {
@@ -71,15 +69,6 @@ public class LoginPageActivity extends BaseActivity<MyViewModel> {
                 .build(), RC_SIGN_IN);
     }
 
-    //
-    public void startSignInWithEmail() {
-        startActivityForResult(AuthUI.getInstance()
-                .createSignInIntentBuilder()
-                .setAvailableProviders(Collections.singletonList(new AuthUI.IdpConfig.FacebookBuilder().build()))// FACEBOOK
-                .setIsSmartLockEnabled(false, true)
-                .build(), RC_SIGN_IN);
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -91,13 +80,10 @@ public class LoginPageActivity extends BaseActivity<MyViewModel> {
 
     private void handleResponseAfterSignIn(int requestCode, int resultCode, Intent data) {
         IdpResponse response = IdpResponse.fromResultIntent(data);
-
         if (requestCode == RC_SIGN_IN) {
             if (resultCode == RESULT_OK) { // SUCCESS
                 createUserInFirestore();
-                startMainActivity();
             } else { // ERRORS
-                //startSignInActivity();
                 if (response != null && response.getError() != null)
                     if (response.getError().getErrorCode() == ErrorCodes.NO_NETWORK) {
                         Toast.makeText(this, getString(R.string.error_no_internet), Toast.LENGTH_SHORT).show();
@@ -117,11 +103,18 @@ public class LoginPageActivity extends BaseActivity<MyViewModel> {
             User currentUser = new User(uid, username, urlPicture, email);
 
             viewModel.createUser(currentUser);
-
             viewModel.getCreatedUserLiveData().observe(this, user -> {
                 if (user == null)
                     onFailureListener();
+                else
+                    startMainActivity();
             });
         }
+    }
+
+    private void startMainActivity() {
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+        finish();
     }
 }

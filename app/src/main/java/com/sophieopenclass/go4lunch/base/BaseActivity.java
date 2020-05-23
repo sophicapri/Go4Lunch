@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.facebook.FacebookSdk;
+import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -32,11 +33,8 @@ public abstract class BaseActivity<T extends ViewModel> extends AppCompatActivit
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        FacebookSdk.setAdvertiserIDCollectionEnabled(false);
-        FacebookSdk.setAutoLogAppEventsEnabled(false);
+        setContentView(this.getFragmentLayout());
         configureViewModel();
-
-        this.setContentView(this.getFragmentLayout());
     }
 
     @SuppressWarnings("unchecked")
