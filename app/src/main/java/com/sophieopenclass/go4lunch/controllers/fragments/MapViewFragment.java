@@ -8,6 +8,8 @@ import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -62,12 +64,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+import static android.Manifest.permission.INTERNET;
 import static com.sophieopenclass.go4lunch.utils.Constants.PLACE_ID;
 
 public class MapViewFragment extends Fragment implements OnMapReadyCallback {
     private static final String TAG = "MAIN ACTIVITY";
     private static final double AREA_MAP_AUTOCOMPLETE = 0.004;
-    public static final String CAMERA_LOCATION = "cameraLocation";
+    private static final String CAMERA_LOCATION = "cameraLocation";
     private MyViewModel viewModel;
     private GoogleMap mMap;
     private LocationManager locationManager;
@@ -99,22 +102,11 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
             locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         }
 
-        if (ActivityCompat.checkSelfPermission(context, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
-            requestPermission();
-        else {
-            if (cameraLocation == null)
-                fetchLastLocation();
-            else
-                getNearbyPlaces(currentLocation);
-        }
-        activity = ((MainActivity) getActivity());
+        if (getActivity() != null)
+            activity = ((MainActivity) getActivity());
         activity.binding.searchBarMap.closeSearchBar.setOnClickListener(v -> {
             activity.binding.searchBarMap.searchBarMap.setVisibility(View.GONE);
             activity.binding.searchBarMap.searchBarInput.getText().clear();
-            if (cameraLocation != null)
-                getNearbyPlaces(cameraLocation);
-            else
-                getNearbyPlaces(currentLocation);
             autocompleteActive = false;
         });
 
@@ -138,6 +130,32 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
         });
         binding.fab.setOnClickListener(v -> fetchLastLocation());
         return binding.getRoot();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (!isNetworkAvailable()) {
+            Log.i(TAG, "onStart: YES");
+            Toast.makeText(getContext(), "no internet connexion", Toast.LENGTH_SHORT).show();
+        }else {
+            if (ActivityCompat.checkSelfPermission(context, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
+                requestPermission();
+            else {
+                if (cameraLocation == null)
+                    fetchLastLocation();
+                else {
+                    getNearbyPlaces(currentLocation);
+                }
+            }
+        }
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
     private void displayResultsAutocomplete(String searchBarTextInput) {

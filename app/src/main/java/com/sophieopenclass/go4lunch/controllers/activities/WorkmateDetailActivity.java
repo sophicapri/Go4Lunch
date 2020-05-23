@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.view.View;
 
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.bumptech.glide.Glide;
@@ -89,7 +90,6 @@ public class WorkmateDetailActivity extends BaseActivity<MyViewModel> {
         viewModel.getPlaceDetails(todaysPlaceId).observe(this, placeDetails -> {
             binding.workmateDetailLunch.workmateDetailLunch.setVisibility(View.VISIBLE);
             binding.workmateDetailLunch.detailsRestaurantName.setText(placeDetails.getName());
-            binding.workmateDetailLunch.detailsTypeOfRestaurant.setText(getString(R.string.restaurant_type, placeDetails.getTypes().get(0)));
             binding.workmateDetailLunch.detailsRestaurantAddress.setText(placeDetails.getVicinity());
             String urlPhoto = PlaceDetails.urlPhotoFormatter(placeDetails, 0);
             Glide.with(binding.workmateDetailLunch.restaurantPhoto)
@@ -100,27 +100,25 @@ public class WorkmateDetailActivity extends BaseActivity<MyViewModel> {
             binding.workmateLunchTextview.setText(getString(R.string.detail_lunch_textview));
             if (binding.workmateDetailLunch.workmateDetailLunch.getVisibility() == View.VISIBLE)
                 binding.workmateDetailLunch.workmateDetailLunch.setOnClickListener(v -> onRestaurantClick(todaysPlaceId));
-        });
 
-        displayStars(todaysPlaceId);
+            displayStars(placeDetails.getRating());
+        });
     }
 
-    private void displayStars(String placeId) {
-        viewModel.getListUsers().observe(this, users -> viewModel.getNumberOfLikesByPlaceId(placeId)
-                .observe(this, likes -> {
-            int numberOfStars = CalculateRatings.getNumberOfStarsToDisplay(users.size(), likes);
-            if (numberOfStars == 1)
-                binding.workmateDetailLunch.detailOneStar.setVisibility(View.VISIBLE);
-            if (numberOfStars == 2)
-                binding.workmateDetailLunch.detailTwoStars.setVisibility(View.VISIBLE);
-            if (numberOfStars == 3)
-                binding.workmateDetailLunch.detailThreeStars.setVisibility(View.VISIBLE);
-        }));
+    private void displayStars(double rating) {
+        int numberOfStars = CalculateRatings.getNumberOfStarsToDisplay(rating);
+        if (numberOfStars == 1)
+            binding.workmateDetailLunch.detailOneStar.setVisibility(View.VISIBLE);
+        if (numberOfStars == 2)
+            binding.workmateDetailLunch.detailTwoStars.setVisibility(View.VISIBLE);
+        if (numberOfStars == 3)
+            binding.workmateDetailLunch.detailThreeStars.setVisibility(View.VISIBLE);
     }
 
     private void displayPreviousRestaurants(User user) {
         binding.previousRestaurantsRecyclerview.setHasFixedSize(true);
         binding.previousRestaurantsRecyclerview.setLayoutManager(new LinearLayoutManager(this));
+        binding.previousRestaurantsRecyclerview.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
         placeDetailsList = new ArrayList<>();
         String placeId;
 
@@ -129,17 +127,11 @@ public class WorkmateDetailActivity extends BaseActivity<MyViewModel> {
                 placeId = user.getDatesAndPlaceIds().get(date);
                 viewModel.getPlaceDetails(placeId).observe(this, placeDetails -> {
                     placeDetails.setDateOfLunch(date);
-                    // Add number of stars
-                    viewModel.getListUsers().observe(this, allUsers ->
-                            viewModel.getNumberOfLikesByPlaceId(placeDetails.getPlaceId()).observe(this, likes -> {
-                        int numberOfStars = CalculateRatings.getNumberOfStarsToDisplay(allUsers.size(), likes);
-                        placeDetails.setNumberOfStars(numberOfStars);
-                        placeDetailsList.add(placeDetails);
-                        if (placeDetailsList.size() == user.getDatesAndPlaceIds().values().size() - minus) {
-                            Collections.sort(placeDetailsList, new RestaurantRecentComparator());
-                            updateRecyclerView(placeDetailsList);
-                        }
-                    }));
+                    placeDetailsList.add(placeDetails);
+                    if (placeDetailsList.size() == user.getDatesAndPlaceIds().values().size() - minus) {
+                        Collections.sort(placeDetailsList, new RestaurantRecentComparator());
+                        updateRecyclerView(placeDetailsList);
+                    }
                 });
             } else {
                 minus++;

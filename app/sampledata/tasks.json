@@ -19,7 +19,6 @@
   "data_restaurants": [
     {
       "restaurantName": "Le Zinc",
-      "typeOfRestaurant": "French - ",
       "address": "12 rue du Faubourg Poissonniere",
       "openingHours": "Open until 7pm",
       "distance": "120m",
@@ -27,7 +26,6 @@
     },
     {
       "restaurantName": "Tokyomaki",
-      "typeOfRestaurant": "Japanese - ",
       "address": "24 rue des Petites Ecoles",
       "openingHours": "Open until 2:30pm",
       "distance": "170m",
@@ -35,7 +33,6 @@
     },
     {
       "restaurantName": "Casa Nostra",
-      "typeOfRestaurant": "Italian - ",
       "address": "42 rue de Sicile",
       "openingHours": "Closing soon",
       "distance": "210m",
@@ -43,7 +40,6 @@
     },
     {
       "restaurantName": "Le Seoul",
-      "typeOfRestaurant": "Korean - ",
       "address": "18 rue de Paradis",
       "openingHours": "Open until 2:30pm",
       "distance": "243m",
@@ -51,7 +47,6 @@
     },
     {
       "restaurantName": "Burgermania",
-      "typeOfRestaurant": "American - ",
       "address": "31 rue de Floride",
       "openingHours": "Open 24/7",
       "distance": "290m",

@@ -99,6 +99,7 @@ public class User {
         this.favoriteRestaurantIds = favoriteRestaurantIds;
     }
 
+
     public String getEmail() {
         return email;
     }
@@ -106,6 +107,7 @@ public class User {
     public void setEmail(String email) {
         this.email = email;
     }
+
 }
 
 

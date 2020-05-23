@@ -40,30 +40,16 @@
         tools:text="@sample/tasks.json/data_restaurants/restaurantName" />
 
     <TextView
-        android:id="@+id/details_type_of_restaurant"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/details_restaurant_name"
-        android:layout_marginTop="4dp"
-        android:layout_toEndOf="@+id/restaurant_photo"
-        app:layout_constraintStart_toStartOf="@+id/details_restaurant_name"
-        app:layout_constraintTop_toBottomOf="@+id/details_restaurant_name"
-        tools:text="@sample/tasks.json/data_restaurants/typeOfRestaurant" />
-
-    <TextView
         android:id="@+id/details_restaurant_address"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@id/details_type_of_restaurant"
-        android:layout_marginStart="5dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="5dp"
-        android:layout_toEndOf="@id/details_type_of_restaurant"
         android:ellipsize="end"
         android:maxLines="1"
-        app:layout_constraintBottom_toBottomOf="@+id/details_type_of_restaurant"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/details_type_of_restaurant"
-        app:layout_constraintTop_toTopOf="@+id/details_type_of_restaurant"
+        app:layout_constraintStart_toStartOf="@+id/details_restaurant_name"
+        app:layout_constraintTop_toBottomOf="@+id/details_restaurant_name"
         tools:text="@sample/tasks.json/data_restaurants/address" />
 
     <TextView

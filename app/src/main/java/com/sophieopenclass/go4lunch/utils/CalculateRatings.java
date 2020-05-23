@@ -2,13 +2,11 @@ package com.sophieopenclass.go4lunch.utils;
 
 public class CalculateRatings {
 
-    public static int getNumberOfStarsToDisplay(int totalUsers, int numberOfLikes) {
+    public static int getNumberOfStarsToDisplay(double rating) {
         int numberOfStars;
-        if (numberOfLikes == 0)
-            numberOfStars = 0;
-        else if (numberOfLikes == 1)
+        if (rating < 3)
             numberOfStars = 1;
-        else if (totalUsers / 2 < numberOfLikes && numberOfLikes > 1)
+        else if (rating < 4 )
             numberOfStars = 2;
         else
             numberOfStars = 3;

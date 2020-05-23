@@ -139,16 +139,15 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
     }
 
     private void displayStars() {
-        viewModel.getListUsers().observe(this, users ->
-                viewModel.getNumberOfLikesByPlaceId(placeId).observe(this, likes -> {
-                    int numberOfStars = CalculateRatings.getNumberOfStarsToDisplay(users.size(), likes);
-                    if (numberOfStars == 1)
-                        binding.oneStar.setVisibility(View.VISIBLE);
-                    if (numberOfStars == 2)
-                        binding.twoStars.setVisibility(View.VISIBLE);
-                    if (numberOfStars == 3)
-                        binding.threeStars.setVisibility(View.VISIBLE);
-                }));
+        if (placeDetails.getRating() != null) {
+            int numberOfStars = CalculateRatings.getNumberOfStarsToDisplay(placeDetails.getRating());
+            if (numberOfStars == 1)
+                binding.oneStar.setVisibility(View.VISIBLE);
+            if (numberOfStars == 2)
+                binding.twoStars.setVisibility(View.VISIBLE);
+            if (numberOfStars == 3)
+                binding.threeStars.setVisibility(View.VISIBLE);
+        }
     }
 
     private void setUpRecyclerView() {
@@ -170,7 +169,7 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
         else if (v == binding.callBtn)
             callRestaurant();
         else if (v == binding.likeRestaurantBtn)
-            handleLikeRestaurantClick();
+            viewModel.getUser(currentUser.getUid()).observe(this, this::handleLikeRestaurantClick);
         else if (v == binding.websiteBtn)
             visitWebsite(placeDetails.getWebsite());
         else if (v == binding.openingHoursTitle)
@@ -275,7 +274,7 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
             Toast.makeText(this, R.string.website_unavailable, Toast.LENGTH_LONG).show();
     }
 
-    private void handleLikeRestaurantClick() {
+    private void handleLikeRestaurantClick(User currentUser) {
         if (!currentUser.getFavoriteRestaurantIds().contains(placeId)) {
             viewModel.addRestaurantToFavorites(placeId, currentUser.getUid());
             binding.likeRestaurantStar.setImageDrawable(getResources().getDrawable(R.drawable.ic_star_full_24dp));

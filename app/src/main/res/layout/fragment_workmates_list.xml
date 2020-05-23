@@ -26,4 +26,12 @@
         app:layout_constraintStart_toEndOf="@+id/workmate_profile_pic"
         app:layout_constraintTop_toTopOf="@+id/workmate_profile_pic"
         tools:text="@sample/tasks.json/data_workmates/workmatesChoice"/>
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0.5dp"
+        android:background="@color/quantum_grey"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/workmates_choice"
+        app:layout_constraintEnd_toEndOf="parent"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

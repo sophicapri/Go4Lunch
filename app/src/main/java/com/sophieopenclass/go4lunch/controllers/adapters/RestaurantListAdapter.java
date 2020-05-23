@@ -1,6 +1,7 @@
 package com.sophieopenclass.go4lunch.controllers.adapters;
 
 import android.content.res.Resources;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import com.sophieopenclass.go4lunch.base.BaseActivity;
 import com.sophieopenclass.go4lunch.databinding.FragmentListViewBinding;
 import com.sophieopenclass.go4lunch.models.json_to_java.OpeningHours;
 import com.sophieopenclass.go4lunch.models.json_to_java.PlaceDetails;
+import com.sophieopenclass.go4lunch.utils.CalculateRatings;
 
 import java.util.Calendar;
 import java.util.List;
@@ -22,6 +24,7 @@ import java.util.List;
 import static com.sophieopenclass.go4lunch.listeners.Listeners.OnRestaurantClickListener;
 
 public class RestaurantListAdapter extends RecyclerView.Adapter<RestaurantListAdapter.PlaceViewHolder> {
+    private static final String TAG = "RESO LIST ADAPTER";
     private List<PlaceDetails> placeDetailsList;
     private OnRestaurantClickListener onRestaurantClickListener;
     private RequestManager glide;
@@ -69,17 +72,24 @@ public class RestaurantListAdapter extends RecyclerView.Adapter<RestaurantListAd
         }
 
         void bind(PlaceDetails placeDetails) {
+            binding.oneStar.setVisibility(View.GONE);
+            binding.twoStars.setVisibility(View.GONE);
+            binding.threeStars.setVisibility(View.GONE);
+
             binding.restaurantName.setText(placeDetails.getName());
-            binding.typeOfRestaurant.setText(res.getString(R.string.restaurant_type, placeDetails.getTypes().get(0)));
             binding.restaurantAddress.setText(placeDetails.getVicinity());
 
             if (placeDetails.getOpeningHours() != null) {
                 if (placeDetails.getOpeningHours().getOpenNow())
                     displayOpeningHours(placeDetails);
-                else
+                else {
                     binding.openingHours.setText(R.string.close);
-            } else
+                    binding.openingHours.setTextColor(res.getColor(R.color.quantum_googred));
+                }
+            } else {
+                binding.openingHours.setTextColor(res.getColor(R.color.quantum_grey));
                 binding.openingHours.setText(R.string.opening_hours_unavailable);
+            }
 
 
             String urlPhoto = PlaceDetails.urlPhotoFormatter(placeDetails, 0);
@@ -96,12 +106,15 @@ public class RestaurantListAdapter extends RecyclerView.Adapter<RestaurantListAd
             binding.restaurantDistance.setText(res.getString(R.string.distance, placeDetails.getDistance()));
             binding.nbrOfWorkmates.setText(res.getString(R.string.nbr_of_workmates, placeDetails.getNbrOfWorkmates()));
 
-            if (placeDetails.getNumberOfStars() == 1)
-                binding.oneStar.setVisibility(View.VISIBLE);
-            if (placeDetails.getNumberOfStars() == 2)
-                binding.twoStars.setVisibility(View.VISIBLE);
-            if (placeDetails.getNumberOfStars() == 3)
-                binding.threeStars.setVisibility(View.VISIBLE);
+            if (placeDetails.getRating() != null) {
+                int numberOfStars = CalculateRatings.getNumberOfStarsToDisplay(placeDetails.getRating());
+                if (numberOfStars == 1)
+                    binding.oneStar.setVisibility(View.VISIBLE);
+                if (numberOfStars == 2)
+                    binding.twoStars.setVisibility(View.VISIBLE);
+                if (numberOfStars == 3)
+                    binding.threeStars.setVisibility(View.VISIBLE);
+            }
         }
 
         private void displayOpeningHours(PlaceDetails placeDetails) {
@@ -111,9 +124,12 @@ public class RestaurantListAdapter extends RecyclerView.Adapter<RestaurantListAd
                     String time = placeDetails.getOpeningHours().getPeriods().get(today).getClose().getTime();
                     String finalTime = time.substring(0, 2) + "h" + time.substring(2);
                     binding.openingHours.setText(res.getString(R.string.open_until, finalTime));
+                    binding.openingHours.setTextColor(res.getColor(R.color.quantum_googgreen));
                 }
-            } else
+            } else {
                 binding.openingHours.setText(R.string.open);
+                binding.openingHours.setTextColor(res.getColor(R.color.quantum_googgreen));
+            }
         }
     }
 }

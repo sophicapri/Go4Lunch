@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -74,12 +75,12 @@ public class RestaurantListFragment extends Fragment {
     }
 
     private void initSearchBar(MainActivity activity) {
-        activity.binding.searchBarListView.closeSearchBar.setOnClickListener(v -> {
-            activity.binding.searchBarListView.searchBarListView.setVisibility(View.GONE);
+        activity.binding.searchBarRestaurantList.closeSearchBar.setOnClickListener(v -> {
+            activity.binding.searchBarRestaurantList.searchBarRestaurantList.setVisibility(View.GONE);
             autocompleteActive = false;
             observePlaces(null);
         });
-        activity.binding.searchBarListView.searchBarInput.addTextChangedListener(new TextWatcher() {
+        activity.binding.searchBarRestaurantList.searchBarInput.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -163,6 +164,7 @@ public class RestaurantListFragment extends Fragment {
             viewModel.getMoreNearbyPlaces(nextPageToken).observe(getViewLifecycleOwner()
                     , restaurantsResult -> {
                         getFullPlaceDetails(restaurantsResult.getPlaceDetails());
+                        // Check to not return the same result twice
                         if (this.nextPageToken.equals(restaurantsResult.getNextPageToken()))
                             this.nextPageToken = null;
                         else
@@ -183,22 +185,16 @@ public class RestaurantListFragment extends Fragment {
                             viewModel.getUsersByPlaceIdAndDate(placeDetails.getPlaceId(), User.getTodaysDate())
                                     .observe(getViewLifecycleOwner(), users -> {
                                         restaurant.setNbrOfWorkmates(users.size());
-                                        viewModel.getListUsers().observe(getViewLifecycleOwner(), allUsers ->
-                                                viewModel.getNumberOfLikesByPlaceId(placeDetails.getPlaceId())
-                                                        .observe(getViewLifecycleOwner(), likes -> {
-                                            int numberOfStars = CalculateRatings.getNumberOfStarsToDisplay(allUsers.size(), likes);
-                                            restaurant.setNumberOfStars(numberOfStars);
-                                            completePlaceDetailsList.add(restaurant);
-                                            if (completePlaceDetailsList.size() == placeDetailsList.size()) {
-                                                Collections.sort(completePlaceDetailsList, new NearestRestaurantComparator());
-                                                if ((!restaurants.isEmpty()) && adapter != null) {
-                                                    int indexStart = restaurants.size() - 1;
-                                                    this.restaurants.addAll(completePlaceDetailsList);
-                                                    adapter.notifyItemRangeInserted(indexStart, completePlaceDetailsList.size());
-                                                } else
-                                                    updateRecyclerView(completePlaceDetailsList);
-                                            }
-                                        }));
+                                        completePlaceDetailsList.add(restaurant);
+                                        if (completePlaceDetailsList.size() == placeDetailsList.size()) {
+                                            Collections.sort(completePlaceDetailsList, new NearestRestaurantComparator());
+                                            if ((!restaurants.isEmpty()) && adapter != null) {
+                                                int indexStart = restaurants.size() - 1;
+                                                this.restaurants.addAll(completePlaceDetailsList);
+                                                adapter.notifyItemRangeInserted(indexStart, completePlaceDetailsList.size());
+                                            } else
+                                                updateRecyclerView(completePlaceDetailsList);
+                                        }
                                     }));
         }
     }

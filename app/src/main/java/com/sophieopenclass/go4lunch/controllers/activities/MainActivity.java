@@ -215,9 +215,18 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
     private void startTransactionFragment(Fragment fragment) {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.frame_layout, fragment).commit();
+        updateUI(fragment);
+    }
 
-        binding.searchBarListView.searchBarListView.setVisibility(View.GONE);
+    private void updateUI(Fragment fragment) {
+        if (fragment instanceof WorkmatesListFragment)
+            binding.myToolbar.setTitle(R.string.available_workmates);
+        else
+            binding.myToolbar.setTitle(R.string.im_hungry);
+
+        binding.searchBarRestaurantList.searchBarRestaurantList.setVisibility(View.GONE);
         binding.searchBarMap.searchBarMap.setVisibility(View.GONE);
+        binding.searchBarWorkmates.searchBarWorkmates.setVisibility(View.GONE);
     }
 
     @Override
@@ -228,12 +237,13 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.search_bar_menu &&
-                (fragmentWorkmatesList == null || !fragmentWorkmatesList.isVisible()))
+        if (item.getItemId() == R.id.search_bar_menu)
             if (fragmentMapView.isVisible())
                 binding.searchBarMap.searchBarMap.setVisibility(View.VISIBLE);
-            else
-                binding.searchBarListView.searchBarListView.setVisibility(View.VISIBLE);
+            else if (fragmentRestaurantList != null && fragmentRestaurantList.isVisible())
+                binding.searchBarRestaurantList.searchBarRestaurantList.setVisibility(View.VISIBLE);
+            else if (fragmentWorkmatesList != null && fragmentWorkmatesList.isVisible())
+                binding.searchBarWorkmates.searchBarWorkmates.setVisibility(View.VISIBLE);
         return true;
     }
 }

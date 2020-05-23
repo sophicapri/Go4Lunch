@@ -3,7 +3,7 @@
     <item>
         <!-- drawable/circle_card_icon.xml -->
         <shape android:shape="oval">
-            <solid android:color="@color/colorAccent"/>
+            <solid android:color="@color/colorPrimaryDark"/>
             <padding android:left="5dp"/>
             <padding android:bottom="5dp"/>
             <padding android:right="5dp"/>

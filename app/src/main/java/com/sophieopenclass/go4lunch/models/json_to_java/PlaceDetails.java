@@ -322,12 +322,4 @@ public class PlaceDetails {
         this.distance = distance;
     }
 
-    public void setNumberOfStars(int numberOfStars) {
-        this.numberOfStars = numberOfStars;
-    }
-
-    public int getNumberOfStars() {
-        return numberOfStars ;
-    }
-
 }

@@ -15,6 +15,7 @@ import com.sophieopenclass.go4lunch.base.BaseActivity;
 import com.sophieopenclass.go4lunch.databinding.WorkmatesRestaurantPreviewBinding;
 import com.sophieopenclass.go4lunch.listeners.Listeners;
 import com.sophieopenclass.go4lunch.models.json_to_java.PlaceDetails;
+import com.sophieopenclass.go4lunch.utils.CalculateRatings;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -66,24 +67,23 @@ public class PreviousRestaurantsAdapter extends RecyclerView.Adapter<PreviousRes
         }
 
         void bind(PlaceDetails placeDetails) {
-            BaseActivity context = (BaseActivity) itemView.getContext();
-            Resources res = context.getResources();
-
             binding.dateOfPreviousLunch.setVisibility(View.VISIBLE);
             binding.dateOfPreviousLunch.setText(formatDate(placeDetails.getDateOfLunch()));
             binding.detailsRestaurantName.setText(placeDetails.getName());
-            binding.detailsTypeOfRestaurant.setText(res.getString(R.string.restaurant_type, placeDetails.getTypes().get(0)));
             binding.detailsRestaurantAddress.setText(placeDetails.getVicinity());
             String urlPhoto = PlaceDetails.urlPhotoFormatter(placeDetails, 0);
             glide.load(urlPhoto).apply(RequestOptions.centerCropTransform())
                     .into(binding.restaurantPhoto);
 
-            if (placeDetails.getNumberOfStars() == 1)
-                binding.detailOneStar.setVisibility(View.VISIBLE);
-            if (placeDetails.getNumberOfStars() == 2)
-                binding.detailTwoStars.setVisibility(View.VISIBLE);
-            if (placeDetails.getNumberOfStars() == 3)
-                binding.detailThreeStars.setVisibility(View.VISIBLE);
+            if (placeDetails.getRating() != null) {
+                int numberOfStars = CalculateRatings.getNumberOfStarsToDisplay(placeDetails.getRating());
+                if (numberOfStars == 1)
+                    binding.detailOneStar.setVisibility(View.VISIBLE);
+                if (numberOfStars == 2)
+                    binding.detailTwoStars.setVisibility(View.VISIBLE);
+                if (numberOfStars == 3)
+                    binding.detailThreeStars.setVisibility(View.VISIBLE);
+            }
         }
     }
 
