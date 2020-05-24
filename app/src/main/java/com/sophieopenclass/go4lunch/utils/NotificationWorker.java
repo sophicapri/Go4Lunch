@@ -51,7 +51,6 @@ public class NotificationWorker extends Worker {
         return Result.success();
     }
 
-
     private void getUserAndShowNotification(String userId) {
         final User[] user = {new User()};
         userCollectionRef.document(userId).get().addOnCompleteListener(task -> {

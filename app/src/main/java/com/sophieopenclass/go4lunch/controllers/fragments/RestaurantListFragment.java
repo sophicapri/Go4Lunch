@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.libraries.places.api.model.AutocompletePrediction;
 import com.google.android.libraries.places.api.model.AutocompleteSessionToken;
 import com.google.android.libraries.places.api.model.Place;
@@ -23,7 +24,10 @@ import com.google.android.libraries.places.api.model.RectangularBounds;
 import com.google.android.libraries.places.api.model.TypeFilter;
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest;
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse;
+import com.google.gson.Gson;
+import com.google.maps.android.SphericalUtil;
 import com.sophieopenclass.go4lunch.MyViewModel;
+import com.sophieopenclass.go4lunch.R;
 import com.sophieopenclass.go4lunch.base.BaseActivity;
 import com.sophieopenclass.go4lunch.controllers.activities.MainActivity;
 import com.sophieopenclass.go4lunch.controllers.adapters.RestaurantListAdapter;
@@ -43,6 +47,7 @@ import static com.sophieopenclass.go4lunch.controllers.fragments.MapViewFragment
 public class RestaurantListFragment extends Fragment {
     public static final String TAG = "restaurantListFrag";
     private static final double AREA_LIST_AUTOCOMPLETE = 0.02;
+    private static final double RADIUS = 500;
     private MyViewModel viewModel;
     private RecyclerViewRestaurantsBinding binding;
     private BaseActivity context;
@@ -54,6 +59,8 @@ public class RestaurantListFragment extends Fragment {
     private List<PlaceDetails> restaurants = new ArrayList<>();
     private final AutocompleteSessionToken token = AutocompleteSessionToken.newInstance();
     private MainActivity activity;
+    private static final double HEADING_NORTH_WEST = 45.0;
+    private static final double HEADING_SOUTH_WEST = 225.0;
 
     public static Fragment newInstance() {
         return new RestaurantListFragment();
@@ -74,10 +81,19 @@ public class RestaurantListFragment extends Fragment {
         return binding.getRoot();
     }
 
+    int j = 0;
+
     private void initSearchBar(MainActivity activity) {
         activity.binding.searchBarRestaurantList.closeSearchBar.setOnClickListener(v -> {
             activity.binding.searchBarRestaurantList.searchBarRestaurantList.setVisibility(View.GONE);
-            autocompleteActive = false;
+            activity.binding.searchBarRestaurantList.searchBarInput.getText().clear();
+            //To not refresh the page if the search bar has been opened but the user didn't search for a restaurant
+            if (autocompleteActive) {
+                restaurants.clear();
+                if (adapter != null)
+                    adapter.notifyDataSetChanged();
+                autocompleteActive = false;
+            }
             observePlaces(null);
         });
         activity.binding.searchBarRestaurantList.searchBarInput.addTextChangedListener(new TextWatcher() {
@@ -90,30 +106,40 @@ public class RestaurantListFragment extends Fragment {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 autocompleteActive = true;
                 restaurants.clear();
-                adapter.notifyDataSetChanged();
                 displayResultsAutocomplete(s.toString());
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-
             }
         });
     }
 
-    private void displayResultsAutocomplete(String textInput) {
-        LatLng northEast = new LatLng(BaseActivity.currentLocation.getLatitude() - AREA_LIST_AUTOCOMPLETE,
-                BaseActivity.currentLocation.getLongitude() - (AREA_LIST_AUTOCOMPLETE));
-        LatLng southWest = new LatLng(BaseActivity.currentLocation.getLatitude() + (AREA_LIST_AUTOCOMPLETE),
-                BaseActivity.currentLocation.getLongitude() + (AREA_LIST_AUTOCOMPLETE));
+    /**
+     * The "heading" params of the SphericalUtil method represent in degrees where each corner is.
+     * See visual representation here : https://i.stack.imgur.com/GkFzJ.png;
+     */
+    private RectangularBounds getRectangularBounds() {
+        double distanceFromCenterToCorner = RADIUS * Math.sqrt(2.0);
+        LatLng latLng = new LatLng(BaseActivity.currentLocation.getLatitude(), BaseActivity.currentLocation.getLongitude());
+        LatLng northEastCorner =
+                SphericalUtil.computeOffset(latLng, distanceFromCenterToCorner, HEADING_NORTH_WEST);
+        LatLng southWestCorner =
+                SphericalUtil.computeOffset(latLng, distanceFromCenterToCorner, HEADING_SOUTH_WEST);
+        return RectangularBounds.newInstance(southWestCorner, northEastCorner);
+    }
 
+    private int i = 0;
+
+    private void displayResultsAutocomplete(String textInput) {
         FindAutocompletePredictionsRequest predictionsRequest = FindAutocompletePredictionsRequest.builder()
                 .setTypeFilter(TypeFilter.ESTABLISHMENT)
                 .setSessionToken(token)
-                .setLocationRestriction(RectangularBounds.newInstance(northEast, southWest))
+                .setLocationRestriction(getRectangularBounds())
                 .setQuery(textInput)
                 .build();
 
+        Log.i(TAG, "displayResultsAutocomplete: HOW MANY TIMES HERE" + i++);
         activity.placesClient.findAutocompletePredictions(predictionsRequest).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 FindAutocompletePredictionsResponse predictionsResponse = task.getResult();
@@ -126,7 +152,6 @@ public class RestaurantListFragment extends Fragment {
                             suggestionsList.add(prediction.getPlaceId());
                         }
                     }
-
                     getPlaceDetailAutocompleteList(suggestionsList);
                 }
             } else {
@@ -148,8 +173,13 @@ public class RestaurantListFragment extends Fragment {
 
     @Override
     public void onResume() {
-        if (restaurants.isEmpty())
+        if (restaurants.isEmpty() || autocompleteActive) {
+            activity.binding.progressBar.setVisibility(View.VISIBLE);
             observePlaces(null);
+            // To delete autocomplete results
+            autocompleteActive = false;
+            activity.binding.searchBarRestaurantList.searchBarInput.getText().clear();
+        }
         super.onResume();
     }
 
@@ -191,7 +221,8 @@ public class RestaurantListFragment extends Fragment {
                                             if ((!restaurants.isEmpty()) && adapter != null) {
                                                 int indexStart = restaurants.size() - 1;
                                                 this.restaurants.addAll(completePlaceDetailsList);
-                                                adapter.notifyItemRangeInserted(indexStart, completePlaceDetailsList.size());
+                                                if (!autocompleteActive)
+                                                    adapter.notifyItemRangeInserted(indexStart, completePlaceDetailsList.size());
                                             } else
                                                 updateRecyclerView(completePlaceDetailsList);
                                         }
@@ -216,7 +247,7 @@ public class RestaurantListFragment extends Fragment {
         }
     }
 
-    private void updateRecyclerView(ArrayList<PlaceDetails> restaurants) {
+    private void updateRecyclerView(List<PlaceDetails> restaurants) {
         activity.binding.progressBar.setVisibility(View.GONE);
         linearLayoutManager = new LinearLayoutManager(getContext());
         binding.recyclerViewRestaurants.setHasFixedSize(true);

@@ -38,6 +38,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -159,17 +160,22 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
+
+
     private void displayResultsAutocomplete(String searchBarTextInput) {
-        LatLng northEast = new LatLng(cameraLocation.getLatitude() - AREA_MAP_AUTOCOMPLETE,
-                cameraLocation.getLongitude() - (AREA_MAP_AUTOCOMPLETE));
-        LatLng southWest = new LatLng(cameraLocation.getLatitude() + (AREA_MAP_AUTOCOMPLETE),
-                cameraLocation.getLongitude() + (AREA_MAP_AUTOCOMPLETE));
+        LatLngBounds bounds = mMap.getProjection().getVisibleRegion().latLngBounds;
+        double northEastLat = bounds.northeast.latitude;
+        double southWestLat = bounds.southwest.latitude;
+        double northEastLng = bounds.northeast.longitude;
+        double southWestLng = bounds.southwest.longitude;
+
+        LatLng northEast = new LatLng(northEastLat, northEastLng);
+        LatLng southWest = new LatLng(southWestLat, southWestLng);
 
         FindAutocompletePredictionsRequest predictionsRequest = FindAutocompletePredictionsRequest.builder()
                 .setTypeFilter(TypeFilter.ESTABLISHMENT)
                 .setSessionToken(token)
-                .setLocationRestriction(RectangularBounds.newInstance(northEast, southWest))
-                .setOrigin(new LatLng(cameraLocation.getLatitude(), cameraLocation.getLongitude()))
+                .setLocationRestriction(RectangularBounds.newInstance(southWest, northEast))
                 .setQuery(searchBarTextInput)
                 .build();
         activity.placesClient.findAutocompletePredictions(predictionsRequest).addOnCompleteListener(task -> {
@@ -207,7 +213,8 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        mMap.setMyLocationEnabled(true);
+        if (!locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER))
+            requestLocationActivation();
         mMap.getUiSettings().setMyLocationButtonEnabled(false);
         mMap.getUiSettings().setMapToolbarEnabled(false);
         mMap.getUiSettings().setZoomGesturesEnabled(true);
@@ -216,9 +223,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
     }
 
     private void fetchLastLocation() {
-        if (!locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER))
-            requestLocationActivation();
-
         FusedLocationProviderClient fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context);
         initMap();
         Task<Location> task = fusedLocationProviderClient.getLastLocation();
@@ -269,6 +273,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                mMap.setMyLocationEnabled(true);
                 fetchLastLocation();
             } else {
                 if (getView() != null)

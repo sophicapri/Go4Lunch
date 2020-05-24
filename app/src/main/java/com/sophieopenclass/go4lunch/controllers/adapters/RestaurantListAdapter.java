@@ -18,6 +18,7 @@ import com.sophieopenclass.go4lunch.models.json_to_java.OpeningHours;
 import com.sophieopenclass.go4lunch.models.json_to_java.PlaceDetails;
 import com.sophieopenclass.go4lunch.utils.CalculateRatings;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -95,13 +96,6 @@ public class RestaurantListAdapter extends RecyclerView.Adapter<RestaurantListAd
             String urlPhoto = PlaceDetails.urlPhotoFormatter(placeDetails, 0);
             glide.load(urlPhoto).apply(RequestOptions.centerCropTransform())
                     .into(binding.restaurantPhoto);
-
-
-            /*Location restaurantLocation = new Location(placeDetails.getName());
-            restaurantLocation.setLatitude(placeDetails.getGeometry().getLocation().getLat());
-            restaurantLocation.setLongitude(placeDetails.getGeometry().getLocation().getLng());
-            int distance = (int) restaurantLocation.distanceTo(BaseActivity.currentLocation);
-             */
 
             binding.restaurantDistance.setText(res.getString(R.string.distance, placeDetails.getDistance()));
             binding.nbrOfWorkmates.setText(res.getString(R.string.nbr_of_workmates, placeDetails.getNbrOfWorkmates()));

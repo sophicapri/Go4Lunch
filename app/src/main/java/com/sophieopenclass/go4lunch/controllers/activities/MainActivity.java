@@ -218,7 +218,12 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
     private void startTransactionFragment(Fragment fragment) {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.frame_layout, fragment).commit();
+
         updateUI(fragment);
+        //To refresh the Restaurant list when the user is already in RestaurantList fragment.
+        Fragment activeFragment = getSupportFragmentManager().findFragmentById(R.id.frame_layout);
+        if (activeFragment != null && activeFragment.getClass().equals(fragment.getClass()))
+            fragment.onResume();
     }
 
     private void updateUI(Fragment fragment) {
