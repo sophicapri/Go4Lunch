@@ -2,5 +2,5 @@
 <resources>
     <color name="colorPrimary">@color/quantum_orange800</color>
     <color name="colorPrimaryDark">@color/quantum_orange900</color>
-    <color name="colorAccent">@color/quantum_white_text</color>
+    <color name="colorAccent">@color/quantum_vanillared900</color>
 </resources>

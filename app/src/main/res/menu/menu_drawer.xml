@@ -5,17 +5,17 @@
 
         <item
             android:id="@+id/my_lunch"
-            android:title="YOUR LUNCH"
+            android:title="@string/your_lunch"
             android:icon="@drawable/ic_lunch_white_24dp"/>
 
         <item
             android:id="@+id/settings"
-            android:title="SETTINGS"
+            android:title="@string/settings_drawer"
             android:icon="@drawable/ic_settings_white_24dp"/>
 
         <item
             android:id="@+id/sign_out"
-            android:title="LOGOUT"
+            android:title="@string/logout"
             android:icon="@drawable/ic_power_settings_new_white_24dp"/>
 
 </menu>

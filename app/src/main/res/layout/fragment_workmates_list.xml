@@ -19,13 +19,15 @@
 
     <TextView
         android:id="@+id/workmates_choice"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
         app:layout_constraintBottom_toBottomOf="@+id/workmate_profile_pic"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/workmate_profile_pic"
         app:layout_constraintTop_toTopOf="@+id/workmate_profile_pic"
-        tools:text="@sample/tasks.json/data_workmates/workmatesChoice"/>
+        tools:text="@sample/tasks.json/data_workmates/workmatesChoice" />
 
     <View
         android:layout_width="0dp"

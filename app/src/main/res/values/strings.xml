@@ -102,6 +102,12 @@
     <string name="sign_in_with_google">Sign in with Google</string>
     <string name="change_username">Change username</string>
     <string name="my_lunch_toolbar_title">My lunch</string>
+    <string name="workmates">Workmates</string>
+    <string name="list">List</string>
+    <string name="map">Map</string>
+    <string name="your_lunch">YOUR LUNCH</string>
+    <string name="settings_drawer">SETTINGS</string>
+    <string name="logout">LOGOUT</string>
 
 
 </resources>

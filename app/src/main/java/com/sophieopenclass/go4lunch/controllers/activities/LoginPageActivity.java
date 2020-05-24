@@ -64,7 +64,8 @@ public class LoginPageActivity extends BaseActivity<MyViewModel> {
     public void startSignInWithFacebook() {
         startActivityForResult(AuthUI.getInstance()
                 .createSignInIntentBuilder()
-                .setAvailableProviders(Collections.singletonList(new AuthUI.IdpConfig.FacebookBuilder().build()))// FACEBOOK
+                .setAvailableProviders(Collections.singletonList(new AuthUI.IdpConfig.FacebookBuilder().build()))
+                .setTheme(R.style.com_facebook_auth_dialog)// FACEBOOK
                 .setIsSmartLockEnabled(false, true)
                 .build(), RC_SIGN_IN);
     }
@@ -94,6 +95,7 @@ public class LoginPageActivity extends BaseActivity<MyViewModel> {
         }
     }
 
+    // If the user already exists, Firestore won't create it twice
     private void createUserInFirestore() {
         if (this.getCurrentUser() != null) {
             String urlPicture = (getCurrentUser().getPhotoUrl() != null) ? getCurrentUser().getPhotoUrl().toString() : null;

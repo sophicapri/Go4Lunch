@@ -91,7 +91,6 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
     private void initUI(PlaceDetails placeDetails) {
         this.placeDetails = placeDetails;
         binding.detailsRestaurantName.setText(placeDetails.getName());
-        binding.detailsTypeOfRestaurant.setText(getString(R.string.restaurant_type, placeDetails.getTypes().get(0)));
         binding.detailsRestaurantAddress.setText(placeDetails.getVicinity());
         int layoutParam = 0;
         int nbrOfPhotos = 1;

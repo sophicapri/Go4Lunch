@@ -5,7 +5,7 @@
     android:id="@+id/workmate_detail_lunch"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="10dp"
+    android:layout_margin="16dp"
     android:layout_marginTop="8dp"
     android:visibility="visible"
     app:layout_constraintEnd_toEndOf="parent"
@@ -56,7 +56,6 @@
         android:id="@+id/date_of_previous_lunch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
         tools:text="@sample/tasks.json/date"
         android:textStyle="italic"
         android:visibility="gone"
@@ -71,7 +70,7 @@
         android:visibility="gone"
         android:layout_marginStart="6dp"
         app:layout_constraintStart_toEndOf="@+id/restaurant_photo"
-        app:layout_constraintTop_toBottomOf="@+id/details_type_of_restaurant">
+        app:layout_constraintTop_toBottomOf="@+id/details_restaurant_address">
 
         <ImageView
             android:layout_width="wrap_content"
@@ -100,7 +99,7 @@
         android:layout_marginStart="6dp"
         android:visibility="gone"
         app:layout_constraintStart_toEndOf="@+id/restaurant_photo"
-        app:layout_constraintTop_toBottomOf="@+id/details_type_of_restaurant" >
+        app:layout_constraintTop_toBottomOf="@+id/details_restaurant_address" >
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -127,5 +126,5 @@
             android:layout_marginStart="6dp"
             android:visibility="gone"
             app:layout_constraintStart_toEndOf="@+id/restaurant_photo"
-            app:layout_constraintTop_toBottomOf="@+id/details_type_of_restaurant" />
+            app:layout_constraintTop_toBottomOf="@+id/details_restaurant_address" />
 </androidx.constraintlayout.widget.ConstraintLayout>

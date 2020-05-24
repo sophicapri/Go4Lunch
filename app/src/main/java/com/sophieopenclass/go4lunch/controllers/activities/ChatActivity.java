@@ -88,6 +88,7 @@ public class ChatActivity extends BaseActivity<MyViewModel> implements ChatViewA
 
     private void initUI(User user) {
         binding.workmateName.setText(user.getUsername());
+        binding.emailAddress.setText(user.getEmail());
         Glide.with(binding.workmateProfilePic.getContext())
                 .load(user.getUrlPicture())
                 .apply(RequestOptions.circleCropTransform())

@@ -21,6 +21,10 @@
         <item name="itemIconTint">@color/quantum_white_text</item>
     </style>
 
+    <style name="MyFAB" parent="Widget.Design.FloatingActionButton">
+        <item name="colorAccent">@color/quantum_white_text</item>
+    </style>
+
     <style name="ChatButton" parent="Widget.AppCompat.Button">
         <item name="android:textAllCaps">false</item>
         <item name="android:textColor">@color/colorAccent</item>

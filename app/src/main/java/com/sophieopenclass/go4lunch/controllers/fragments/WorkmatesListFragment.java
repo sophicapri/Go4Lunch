@@ -4,7 +4,6 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +11,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.bumptech.glide.Glide;
@@ -25,8 +23,6 @@ import com.sophieopenclass.go4lunch.models.User;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.firebase.ui.auth.AuthUI.TAG;
 
 public class WorkmatesListFragment extends Fragment {
     private RecyclerViewWorkmatesBinding binding;
@@ -67,7 +63,7 @@ public class WorkmatesListFragment extends Fragment {
     public void onStart() {
         super.onStart();
         if (!isNetworkAvailable()) {
-            Toast.makeText(getContext(), "no internet connexion", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "No internet connection", Toast.LENGTH_SHORT).show();
         } else {
             setUpRecyclerView();
             updateWorkmatesList();

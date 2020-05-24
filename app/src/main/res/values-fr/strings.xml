@@ -93,4 +93,10 @@
     <string name="sign_in_with_google">Se connecter avec Google</string>
     <string name="change_username">Changer de nom de profil</string>
     <string name="my_lunch_toolbar_title">Mon déjeuner</string>
+    <string name="workmates">Collègues</string>
+    <string name="list">Liste</string>
+    <string name="map">Carte</string>
+    <string name="your_lunch">VOTRE DÉJEUNER</string>
+    <string name="settings_drawer">PARAMÈTRES</string>
+    <string name="logout">SE DÉCONNECTER</string>
 </resources>

@@ -6,7 +6,7 @@
     android:layout_height="match_parent">
 
     <androidx.appcompat.widget.Toolbar
-        android:id="@+id/my_lunch_toolbar"
+        android:id="@+id/user_lunch_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/colorPrimary"
@@ -18,26 +18,16 @@
         app:titleTextColor="@color/quantum_white_text" />
 
     <TextView
-        android:id="@+id/workmates_detail_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="10dp"
-        tools:text="@sample/tasks.json/name"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="@+id/workmate_profile_pic"
-        app:layout_constraintEnd_toStartOf="@+id/workmate_profile_pic" />
-
-    <TextView
         android:id="@+id/workmate_lunch_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:layout_marginStart="10dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="32dp"
         android:text="@string/detail_lunch_textview"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/workmates_detail_name"
+        app:layout_constraintTop_toBottomOf="@+id/user_lunch_toolbar"
         app:layout_constraintVertical_bias="0.1" />
 
 
@@ -45,7 +35,8 @@
         android:id="@+id/workmate_profile_pic"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:layout_margin="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="16dp"
         android:contentDescription="@string/profile_picture"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -59,7 +50,7 @@
         android:id="@+id/chat_with_workmate_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
+        android:layout_margin="16dp"
         android:background="@drawable/bkg_message_btn"
         android:clickable="true"
         android:focusable="true"
@@ -71,7 +62,7 @@
         app:layout_constraintBottom_toBottomOf="parent"/>
 
     <TextView
-        android:visibility="visible"
+        android:visibility="gone"
         android:id="@+id/favorite_restaurants"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -90,7 +81,7 @@
         android:id="@+id/previous_restaurants"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="10dp"
         android:text="@string/previous_restaurants"
         android:textSize="16sp"
@@ -102,7 +93,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:layout_marginStart="10dp"
+        android:layout_marginStart="16dp"
         android:textStyle="italic"
         android:text="@string/no_previous_restaurant"
         app:layout_constraintStart_toStartOf="parent"

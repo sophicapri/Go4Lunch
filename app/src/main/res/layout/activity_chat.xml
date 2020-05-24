@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/header_chat"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
@@ -18,23 +18,39 @@
 
         <ImageView
             android:id="@+id/workmate_profile_pic"
-            android:layout_marginStart="@dimen/default_margin"
-            android:layout_gravity="center"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:contentDescription="@string/profile_picture" />
+            android:layout_marginStart="@dimen/default_margin"
+            android:contentDescription="@string/profile_picture"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/workmate_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="@dimen/default_padding"
-            android:layout_gravity="end|center"
-            tools:text="@sample/tasks.json/name"
-            android:textColor="@color/colorAccent"/>
+            android:textColor="@color/quantum_white_text"
+            android:textSize="16sp"
+            android:layout_marginTop="@dimen/default_margin"
+            android:layout_marginStart="@dimen/default_margin"
+            app:layout_constraintStart_toEndOf="@+id/workmate_profile_pic"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="@sample/tasks.json/name" />
+
+        <TextView
+            android:id="@+id/email_address"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/quantum_white_text"
+            android:textSize="12sp"
+            android:textStyle="italic"
+            app:layout_constraintStart_toStartOf="@id/workmate_name"
+            app:layout_constraintTop_toBottomOf="@id/workmate_name"
+            tools:text="@sample/tasks.json/email_address" />
 
 
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <LinearLayout
         android:id="@+id/chat_recycler_view_container"
@@ -102,6 +118,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:hint="@string/write_a_message"
+            android:textCursorDrawable="@null"
             android:imeOptions="actionDone"
             android:inputType="textMultiLine"
             android:importantForAutofill="no" />

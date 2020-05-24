@@ -55,7 +55,6 @@ public class WorkmateDetailActivity extends BaseActivity<MyViewModel> {
 
     private void initUI(User user) {
         selectedUser = user;
-        binding.workmatesDetailName.setText(user.getUsername());
         Glide.with(binding.workmateProfilePic.getContext())
                 .load(user.getUrlPicture())
                 .apply(RequestOptions.circleCropTransform())
@@ -79,10 +78,10 @@ public class WorkmateDetailActivity extends BaseActivity<MyViewModel> {
         if (getCurrentUser() != null)
             if (user.getUid().equals(getCurrentUser().getUid())) {
                 binding.chatWithWorkmateBtn.setVisibility(View.GONE);
-                binding.myLunchToolbar.setVisibility(View.VISIBLE);
+                binding.userLunchToolbar.setTitle(R.string.my_lunch_toolbar_title);
             } else {
                 binding.chatWithWorkmateBtn.setText(getString(R.string.chat_with, user.getUsername()));
-                binding.myLunchToolbar.setVisibility(View.GONE);
+                binding.userLunchToolbar.setTitle(user.getUsername());
             }
     }
 
@@ -118,7 +117,6 @@ public class WorkmateDetailActivity extends BaseActivity<MyViewModel> {
     private void displayPreviousRestaurants(User user) {
         binding.previousRestaurantsRecyclerview.setHasFixedSize(true);
         binding.previousRestaurantsRecyclerview.setLayoutManager(new LinearLayoutManager(this));
-        binding.previousRestaurantsRecyclerview.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
         placeDetailsList = new ArrayList<>();
         String placeId;
 
