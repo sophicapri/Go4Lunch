@@ -70,23 +70,23 @@ public class NotificationWorker extends Worker {
         currentUser = user;
         chosenRestaurantId = user.getDatesAndPlaceIds().get(User.getTodaysDate());
         if (chosenRestaurantId != null) {
-            initNotificationMessage();
+            retrieveListOfWorkmatesEatingAtRestaurant();
         }
     }
-    private void initNotificationMessage() {
+    private void retrieveListOfWorkmatesEatingAtRestaurant() {
         ArrayList<User> users = new ArrayList<>();
         userCollectionRef.whereEqualTo(DATES_AND_PLACE_IDS_FIELD + User.getTodaysDate(), chosenRestaurantId).get().addOnCompleteListener(task -> {
             if (task.isSuccessful())
                 if (task.getResult() != null) {
                     users.addAll(task.getResult().toObjects(User.class));
-                    formatNotificationMessage(users);
+                    initNotificationMessage(users);
                 }
                 else if (task.getException() != null)
                     Log.e(TAG, "getUsersByPlaceId: " + (task.getException().getMessage()));
         });
     }
 
-    private void formatNotificationMessage(ArrayList<User> users) {
+    private void initNotificationMessage(ArrayList<User> users) {
         String notificationMessage;
         StringBuilder stringBuilderWorkmates = new StringBuilder();
         if (users.size() != 1) {
