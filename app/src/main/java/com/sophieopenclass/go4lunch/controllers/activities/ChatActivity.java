@@ -6,7 +6,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -65,14 +64,17 @@ public class ChatActivity extends BaseActivity<MyViewModel> implements ChatViewA
         super.onCreate(savedInstanceState);
         if (getIntent().getExtras() != null && getIntent().hasExtra(EXTRA_UID)) {
             workmateId = (String) getIntent().getExtras().get(EXTRA_UID);
-            viewModel.getUser(workmateId).observe(this, this::initUI);
         }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        if (getCurrentUser() != null) {
+        if (networkUnavailable()) {
+            Snackbar.make(binding.getRoot(), "No internet connection", BaseTransientBottomBar.LENGTH_INDEFINITE)
+                    .setTextColor(getResources().getColor(R.color.quantum_white_100)).setDuration(5000).show();
+        } else if (getCurrentUser() != null) {
+            viewModel.getUser(workmateId).observe(this, this::initUI);
             viewModel.getUser(getCurrentUser().getUid()).observe(this, user -> {
                 currentUser = user;
                 currentUserId = user.getUid();

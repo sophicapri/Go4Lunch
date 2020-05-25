@@ -315,7 +315,7 @@ public class PlaceDetails {
         Location restaurantLocation = new Location(this.getName());
         restaurantLocation.setLatitude(this.getGeometry().getLocation().getLat());
         restaurantLocation.setLongitude(this.getGeometry().getLocation().getLng());
-        return (int) restaurantLocation.distanceTo(BaseActivity.currentLocation);
+        return (int) restaurantLocation.distanceTo(BaseActivity.sCurrentLocation);
     }
 
     public void setDistance(int distance) {

@@ -47,6 +47,7 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
 
     @Override
     public View getFragmentLayout() {
+        checkCurrentLocale();
         return bindViews().getRoot();
     }
 
@@ -62,12 +63,10 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
             viewModel.getUser(getCurrentUser().getUid()).observe(this, user -> {
                 currentUser = user;
                 handleDrawerUI(user);
-                System.out.println(user.getUsername());
-
             });
-
         binding.bottomNavView.setOnNavigationItemSelectedListener(this::onNavigationItemSelected);
     }
+
 
     @Override
     public Class getViewModelClass() {
@@ -80,7 +79,6 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
         TextView username = drawerView.findViewById(R.id.profile_username);
         TextView email = drawerView.findViewById(R.id.profile_email);
 
-        System.out.println(user.getUsername() + " handleUI");
         if (user.getUrlPicture() != null) {
             Glide.with(profilePic.getContext())
                     .load(user.getUrlPicture())
@@ -156,6 +154,17 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
             startNewActivity(LoginPageActivity.class);
             finish();
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (SettingsActivity.localeHasChanged){
+            finish();
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+            SettingsActivity.localeHasChanged = false;
+        }
     }
 
     @Override

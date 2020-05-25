@@ -1,20 +1,29 @@
 package com.sophieopenclass.go4lunch.controllers.activities;
 
+import android.content.Intent;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.os.Bundle;
-import android.util.Log;
+import android.util.DisplayMetrics;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.work.Data;
 import androidx.work.ExistingPeriodicWorkPolicy;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.snackbar.Snackbar;
 import com.sophieopenclass.go4lunch.MyViewModel;
+import com.sophieopenclass.go4lunch.R;
 import com.sophieopenclass.go4lunch.base.BaseActivity;
 import com.sophieopenclass.go4lunch.databinding.ActivitySettingsBinding;
+import com.sophieopenclass.go4lunch.models.User;
 import com.sophieopenclass.go4lunch.utils.NotificationWorker;
 
 import java.util.Calendar;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import static android.content.Intent.EXTRA_UID;
@@ -25,6 +34,7 @@ public class SettingsActivity extends BaseActivity<MyViewModel> {
     public final WorkManager workManager = WorkManager.getInstance(this);
     ActivitySettingsBinding binding;
     public static PeriodicWorkRequest workRequest;
+    public static boolean localeHasChanged = false;
 
     @Override
     public Class getViewModelClass() {
@@ -46,6 +56,48 @@ public class SettingsActivity extends BaseActivity<MyViewModel> {
             else
                 workManager.cancelAllWork();
         });
+
+        binding.appLocale.setOnClickListener( v -> {
+            changeAppLanguage("fr");
+        });
+
+        binding.appLocaleEn.setOnClickListener( v -> {
+            changeAppLanguage("en");
+        });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (networkUnavailable()) {
+            Snackbar.make(binding.getRoot(), getString(R.string.internet_unavailable), BaseTransientBottomBar.LENGTH_INDEFINITE)
+                    .setDuration(5000).setTextColor(getResources().getColor(R.color.quantum_white_100)).show();
+        } /*else if (getCurrentUser() != null)
+            viewModel.getUser(getCurrentUser().getUid()).observe(this,this::initUI);
+        */
+    }
+
+    private void initUI(User user) {
+    }
+
+    private void changeAppLanguage(String locale) {
+        if (!locale.equals(sharedPrefs.getString(PREF_LANGUAGE, Locale.getDefault().getLanguage()))) {
+            sharedPrefs.edit().putString(PREF_LANGUAGE, locale).apply();
+            localeHasChanged = true;
+            Toast.makeText(this, "Language saved", Toast.LENGTH_SHORT).show();
+            updateLocale();
+        }
+    }
+
+    public void updateLocale() {
+        Resources res = getResources();
+        DisplayMetrics dm = res.getDisplayMetrics();
+        Configuration conf = res.getConfiguration();
+        conf.setLocale(new Locale(sharedPrefs.getString(PREF_LANGUAGE, "en")));
+        res.updateConfiguration(conf, dm);
+        finish();
+        Intent intent = new Intent(this, SettingsActivity.class);
+        startActivity(intent);
     }
 
     private void activateReminder(WorkManager workManager) {

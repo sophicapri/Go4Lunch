@@ -9,6 +9,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.snackbar.Snackbar;
 import com.sophieopenclass.go4lunch.MyViewModel;
 import com.sophieopenclass.go4lunch.R;
 import com.sophieopenclass.go4lunch.base.BaseActivity;
@@ -46,7 +48,10 @@ public class WorkmateDetailActivity extends BaseActivity<MyViewModel> {
     protected void onStart() {
         super.onStart();
         minus = 0;
-        if (getIntent().getExtras() != null && getIntent().hasExtra(EXTRA_UID)) {
+        if (networkUnavailable()) {
+            Snackbar.make(binding.getRoot(), getString(R.string.internet_unavailable), BaseTransientBottomBar.LENGTH_INDEFINITE)
+                    .setDuration(5000).setTextColor(getResources().getColor(R.color.quantum_white_100)).show();
+        } else if (getIntent().getExtras() != null && getIntent().hasExtra(EXTRA_UID)) {
             uid = (String) getIntent().getExtras().get(EXTRA_UID);
             viewModel.getUser(uid).observe(this, this::initUI);
         }

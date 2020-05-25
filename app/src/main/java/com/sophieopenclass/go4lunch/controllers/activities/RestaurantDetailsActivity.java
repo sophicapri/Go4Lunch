@@ -21,6 +21,8 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.snackbar.Snackbar;
 import com.sophieopenclass.go4lunch.MyViewModel;
 import com.sophieopenclass.go4lunch.R;
 import com.sophieopenclass.go4lunch.base.BaseActivity;
@@ -73,7 +75,10 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
         binding.twoStars.setVisibility(View.GONE);
         binding.threeStars.setVisibility(View.GONE);
 
-        if (getIntent().getExtras() != null) {
+        if (networkUnavailable()) {
+            Snackbar.make(binding.getRoot(), getString(R.string.internet_unavailable), BaseTransientBottomBar.LENGTH_INDEFINITE)
+                    .setDuration(5000).setTextColor(getResources().getColor(R.color.quantum_white_100)).show();
+        }else if (getIntent().getExtras() != null) {
             if (getIntent().hasExtra(PLACE_ID)) {
                 placeId = (String) getIntent().getExtras().get(PLACE_ID);
                 if (placeId != null && !placeId.isEmpty())
@@ -83,8 +88,8 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
                     finish();
                 }
             }
+            setUpRecyclerView();
         }
-        setUpRecyclerView();
     }
 
 

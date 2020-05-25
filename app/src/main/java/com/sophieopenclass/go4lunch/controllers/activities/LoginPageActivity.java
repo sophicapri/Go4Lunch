@@ -1,7 +1,11 @@
 package com.sophieopenclass.go4lunch.controllers.activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -11,6 +15,7 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.core.content.res.ResourcesCompat;
 
+import com.facebook.share.Share;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
@@ -37,6 +42,8 @@ public class LoginPageActivity extends BaseActivity<MyViewModel> {
     @Override
     public View getFragmentLayout() {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        // Update the locale depending on user's saved preferences
+        checkCurrentLocale();
         binding = ActivityLoginBinding.inflate(getLayoutInflater());
         return binding.getRoot();
     }

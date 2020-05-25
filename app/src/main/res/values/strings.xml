@@ -85,7 +85,7 @@
     <string name="closed" translatable="false">Closed</string>
     <string name="closed_in_french">Fermé</string>
     <string name="cant_get_location">Unable to get current location</string>
-    <string name="location_deactivated">Location deactivated</string>
+    <string name="location_unavailable">Location unavailable</string>
     <string name="im_hungry">I\'m Hungry!</string>
     <string name="search_for_a_workmate">Search workmates…</string>
     <string name="available_workmates">Available workmates</string>
@@ -109,6 +109,7 @@
     <string name="settings_drawer">SETTINGS</string>
     <string name="logout">LOGOUT</string>
     <string name="internet_unavailable">Internet connection unavailable</string>
+    <string name="english_locale">English</string>
 
 
 </resources>

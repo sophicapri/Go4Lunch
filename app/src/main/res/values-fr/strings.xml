@@ -78,7 +78,7 @@
     <string name="permission_denied">Permission refusée</string>
     <string name="closed_in_french">Fermé</string>
     <string name="cant_get_location">"Erreur lors de l'accès à la localisation"</string>
-    <string name="location_deactivated">Géolocalisation désactivée</string>
+    <string name="location_unavailable">Partage de localisation désactivé</string>
     <string name="im_hungry">J\'ai faim !</string>
     <string name="search_for_a_workmate">Rechercher un·e collègue…</string>
     <string name="available_workmates">Collègues disponibles</string>
@@ -102,4 +102,5 @@
 
 
     <string name="internet_unavailable">Connexion internet non disponible</string>
+    <string name="english_locale">Anglais</string>
 </resources>
