@@ -108,6 +108,7 @@
     <string name="your_lunch">YOUR LUNCH</string>
     <string name="settings_drawer">SETTINGS</string>
     <string name="logout">LOGOUT</string>
+    <string name="internet_unavailable">Internet connection unavailable</string>
 
 
 </resources>

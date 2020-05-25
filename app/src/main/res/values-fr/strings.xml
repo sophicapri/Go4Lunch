@@ -99,4 +99,7 @@
     <string name="your_lunch">VOTRE DÉJEUNER</string>
     <string name="settings_drawer">PARAMÈTRES</string>
     <string name="logout">SE DÉCONNECTER</string>
+
+
+    <string name="internet_unavailable">Connexion internet non disponible</string>
 </resources>

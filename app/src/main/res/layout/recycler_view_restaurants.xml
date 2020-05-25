@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.recyclerview.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/swipe_refresh_view"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/recycler_view_restaurants"
-    xmlns:tools="http://schemas.android.com/tools"
-    tools:listitem="@layout/fragment_list_view"
-    tools:itemCount="5">
-</androidx.recyclerview.widget.RecyclerView>
+    android:layout_height="match_parent">
+
+    <androidx.recyclerview.widget.RecyclerView xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/recycler_view_restaurants"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:itemCount="5"
+        tools:listitem="@layout/fragment_list_view" />
+
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

@@ -14,7 +14,10 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.bumptech.glide.Glide;
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.snackbar.Snackbar;
 import com.sophieopenclass.go4lunch.MyViewModel;
+import com.sophieopenclass.go4lunch.R;
 import com.sophieopenclass.go4lunch.base.BaseActivity;
 import com.sophieopenclass.go4lunch.controllers.activities.MainActivity;
 import com.sophieopenclass.go4lunch.controllers.adapters.WorkmatesViewAdapter;
@@ -29,6 +32,7 @@ public class WorkmatesListFragment extends Fragment {
     private MyViewModel viewModel;
     private WorkmatesViewAdapter adapter;
     private String currentUserId;
+    private MainActivity activity;
 
     public static Fragment newInstance() {
         return new WorkmatesListFragment();
@@ -39,22 +43,26 @@ public class WorkmatesListFragment extends Fragment {
         binding = RecyclerViewWorkmatesBinding.inflate(inflater, container, false);
 
         if (getActivity() != null) {
-            MainActivity activity = (MainActivity) getActivity();
+            activity = (MainActivity) getActivity();
             viewModel = ((MainActivity) getActivity()).getViewModel();
 
             if (activity.getCurrentUser() != null)
                 currentUserId = activity.getCurrentUser().getUid();
-            initSearchBar(activity);
+            initSearchBar();
         }
 
         binding.swipeRefreshView.setOnRefreshListener(() -> {
-            updateWorkmatesList();
+            if (networkUnavailable()) {
+                Snackbar.make(binding.getRoot(), "No internet connection", BaseTransientBottomBar.LENGTH_INDEFINITE)
+                        .setTextColor(getResources().getColor(R.color.quantum_white_100)).setDuration(5000).show();
+            } else
+                updateWorkmatesList();
             binding.swipeRefreshView.setRefreshing(false);
         });
         return binding.getRoot();
     }
 
-    private void initSearchBar(MainActivity activity) {
+    private void initSearchBar() {
         activity.binding.searchBarWorkmates.closeSearchBar.setOnClickListener(v ->
                 activity.binding.searchBarWorkmates.searchBarWorkmates.setVisibility(View.GONE));
     }
@@ -62,19 +70,23 @@ public class WorkmatesListFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        if (!isNetworkAvailable()) {
-            Toast.makeText(getContext(), "No internet connection", Toast.LENGTH_SHORT).show();
+        if (networkUnavailable()) {
+            Snackbar.make(binding.getRoot(), getString(R.string.internet_unavailable), BaseTransientBottomBar.LENGTH_INDEFINITE)
+                    .setTextColor(getResources().getColor(R.color.quantum_white_100)).setDuration(5000).show();
         } else {
             setUpRecyclerView();
             updateWorkmatesList();
         }
     }
 
-    private boolean isNetworkAvailable() {
+    private boolean networkUnavailable() {
         ConnectivityManager connectivityManager
-                = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+                = (ConnectivityManager) activity.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = null;
+        if (connectivityManager != null) {
+            activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        }
+        return activeNetworkInfo == null || !activeNetworkInfo.isConnected();
     }
 
     // Not using FirestoreRecyclerAdapter because it isn't possible to retrieve all the users

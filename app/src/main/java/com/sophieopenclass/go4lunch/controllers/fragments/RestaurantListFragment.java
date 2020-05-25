@@ -1,22 +1,30 @@
 package com.sophieopenclass.go4lunch.controllers.fragments;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.libraries.places.api.model.AutocompletePrediction;
 import com.google.android.libraries.places.api.model.AutocompleteSessionToken;
 import com.google.android.libraries.places.api.model.Place;
@@ -24,7 +32,8 @@ import com.google.android.libraries.places.api.model.RectangularBounds;
 import com.google.android.libraries.places.api.model.TypeFilter;
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest;
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse;
-import com.google.gson.Gson;
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.maps.android.SphericalUtil;
 import com.sophieopenclass.go4lunch.MyViewModel;
 import com.sophieopenclass.go4lunch.R;
@@ -34,7 +43,6 @@ import com.sophieopenclass.go4lunch.controllers.adapters.RestaurantListAdapter;
 import com.sophieopenclass.go4lunch.databinding.RecyclerViewRestaurantsBinding;
 import com.sophieopenclass.go4lunch.models.User;
 import com.sophieopenclass.go4lunch.models.json_to_java.PlaceDetails;
-import com.sophieopenclass.go4lunch.utils.CalculateRatings;
 import com.sophieopenclass.go4lunch.utils.EndlessRecyclerViewScrollListener;
 
 import java.util.ArrayList;
@@ -42,11 +50,16 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import pub.devrel.easypermissions.EasyPermissions;
+
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+import static com.sophieopenclass.go4lunch.controllers.fragments.MapViewFragment.LOCATION_PERMISSION_REQUEST_CODE;
+import static com.sophieopenclass.go4lunch.controllers.fragments.MapViewFragment.PERMS;
 import static com.sophieopenclass.go4lunch.controllers.fragments.MapViewFragment.getLatLngString;
+import static com.sophieopenclass.go4lunch.controllers.fragments.MapViewFragment.locationManager;
 
 public class RestaurantListFragment extends Fragment {
     public static final String TAG = "restaurantListFrag";
-    private static final double AREA_LIST_AUTOCOMPLETE = 0.02;
     private static final double RADIUS = 500;
     private MyViewModel viewModel;
     private RecyclerViewRestaurantsBinding binding;
@@ -61,6 +74,7 @@ public class RestaurantListFragment extends Fragment {
     private MainActivity activity;
     private static final double HEADING_NORTH_WEST = 45.0;
     private static final double HEADING_SOUTH_WEST = 225.0;
+
 
     public static Fragment newInstance() {
         return new RestaurantListFragment();
@@ -78,10 +92,13 @@ public class RestaurantListFragment extends Fragment {
             initSearchBar(activity);
             activity.binding.progressBar.setVisibility(View.VISIBLE);
         }
+
+        binding.swipeRefreshView.setOnRefreshListener(() -> {
+            observePlaces(nextPageToken);
+            binding.swipeRefreshView.setRefreshing(false);
+        });
         return binding.getRoot();
     }
-
-    int j = 0;
 
     private void initSearchBar(MainActivity activity) {
         activity.binding.searchBarRestaurantList.closeSearchBar.setOnClickListener(v -> {
@@ -129,7 +146,15 @@ public class RestaurantListFragment extends Fragment {
         return RectangularBounds.newInstance(southWestCorner, northEastCorner);
     }
 
-    private int i = 0;
+    private boolean networkUnavailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = null;
+        if (connectivityManager != null) {
+            activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        }
+        return activeNetworkInfo == null || !activeNetworkInfo.isConnected();
+    }
 
     private void displayResultsAutocomplete(String textInput) {
         FindAutocompletePredictionsRequest predictionsRequest = FindAutocompletePredictionsRequest.builder()
@@ -139,7 +164,6 @@ public class RestaurantListFragment extends Fragment {
                 .setQuery(textInput)
                 .build();
 
-        Log.i(TAG, "displayResultsAutocomplete: HOW MANY TIMES HERE" + i++);
         activity.placesClient.findAutocompletePredictions(predictionsRequest).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 FindAutocompletePredictionsResponse predictionsResponse = task.getResult();
@@ -184,22 +208,50 @@ public class RestaurantListFragment extends Fragment {
     }
 
     private void observePlaces(String nextPageToken) {
-        if (nextPageToken == null)
-            viewModel.getNearbyPlaces(getLatLngString(BaseActivity.currentLocation))
-                    .observe(getViewLifecycleOwner(), restaurantsResult -> {
-                        getFullPlaceDetails(restaurantsResult.getPlaceDetails());
-                        this.nextPageToken = restaurantsResult.getNextPageToken();
-                    });
-        else
-            viewModel.getMoreNearbyPlaces(nextPageToken).observe(getViewLifecycleOwner()
-                    , restaurantsResult -> {
-                        getFullPlaceDetails(restaurantsResult.getPlaceDetails());
-                        // Check to not return the same result twice
-                        if (this.nextPageToken.equals(restaurantsResult.getNextPageToken()))
-                            this.nextPageToken = null;
-                        else
-                            this.nextPageToken = restaurantsResult.getNextPageToken();
-                    });
+        if (networkUnavailable()) {
+            Snackbar.make(binding.getRoot(), getString(R.string.internet_unavailable), BaseTransientBottomBar.LENGTH_INDEFINITE)
+                    .setDuration(5000).setTextColor(getResources().getColor(R.color.quantum_white_100)).show();
+            activity.binding.progressBar.setVisibility(View.GONE);
+            return;
+        }
+
+        if (requestLocationPermission())
+            if (BaseActivity.currentLocation != null)
+                if (nextPageToken == null)
+                    viewModel.getNearbyPlaces(getLatLngString(BaseActivity.currentLocation))
+                            .observe(getViewLifecycleOwner(), restaurantsResult -> {
+                                getFullPlaceDetails(restaurantsResult.getPlaceDetails());
+                                this.nextPageToken = restaurantsResult.getNextPageToken();
+                            });
+                else
+                    viewModel.getMoreNearbyPlaces(nextPageToken).observe(getViewLifecycleOwner()
+                            , restaurantsResult -> {
+                                getFullPlaceDetails(restaurantsResult.getPlaceDetails());
+                                // Check to not return the same result twice
+                                if (this.nextPageToken.equals(restaurantsResult.getNextPageToken()))
+                                    this.nextPageToken = null;
+                                else
+                                    this.nextPageToken = restaurantsResult.getNextPageToken();
+                            });
+
+    }
+
+    private boolean requestLocationPermission() {
+        boolean locationAvailable = false;
+        if (!EasyPermissions.hasPermissions(context, PERMS)) {
+            EasyPermissions.requestPermissions(this,
+                    "Cette application a besoin de l'accès à votre localisation pour fonctionner.",
+                    LOCATION_PERMISSION_REQUEST_CODE, PERMS);
+        } else if (!locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+            new AlertDialog.Builder(context)
+                    .setMessage(R.string.gps_network_not_enabled)
+                    .setPositiveButton(R.string.open_location_settings, (paramDialogInterface, paramInt) ->
+                            context.startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)))
+                    .setNegativeButton(R.string.Cancel, null)
+                    .show();
+        } else
+            locationAvailable = true;
+        return locationAvailable;
     }
 
     // Nearby Search doesn't return all the fields required in a PlaceDetails, therefore another
@@ -245,6 +297,7 @@ public class RestaurantListFragment extends Fragment {
         public int compare(PlaceDetails left, PlaceDetails right) {
             return left.getDistance() - right.getDistance();
         }
+
     }
 
     private void updateRecyclerView(List<PlaceDetails> restaurants) {
