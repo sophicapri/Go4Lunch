@@ -15,19 +15,16 @@ import com.sophieopenclass.go4lunch.databinding.ActivitySplashScreenBinding;
 public class SplashScreenActivity extends BaseActivity<MyViewModel> {
     @Override
     public View getFragmentLayout() {
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         return ActivitySplashScreenBinding.inflate(getLayoutInflater()).getRoot();
     }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        new Handler().postDelayed(() -> {
-            if (isCurrentUserLogged()) {
-                startMainActivity();
-            } else
-                startLoginActivity();
-        }, 1000);
+        if (isCurrentUserLogged())
+            startMainActivity();
+        else
+            startLoginActivity();
     }
 
     @Override
