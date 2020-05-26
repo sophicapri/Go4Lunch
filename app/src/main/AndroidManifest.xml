@@ -28,8 +28,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".controllers.fragments.MapViewFragment"
-            android:configChanges="locale|layoutDirection">
+        <activity android:name=".controllers.fragments.MapViewFragment">
         </activity>
         <activity android:name=".controllers.activities.SettingsActivity" />
         <activity android:name=".controllers.activities.MainActivity" />

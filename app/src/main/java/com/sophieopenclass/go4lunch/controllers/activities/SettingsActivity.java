@@ -1,14 +1,19 @@
 package com.sophieopenclass.go4lunch.controllers.activities;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.work.Data;
 import androidx.work.ExistingPeriodicWorkPolicy;
 import androidx.work.PeriodicWorkRequest;
@@ -31,9 +36,11 @@ import static android.content.Intent.EXTRA_UID;
 
 public class SettingsActivity extends BaseActivity<MyViewModel> {
     private static final String TAG = "SettingsActivity";
-    private static final String WORK_REQUEST_NAME = "Lunch reminder";
     private ActivitySettingsBinding binding;
     public static boolean localeHasChanged = false;
+    public static boolean profileHasChanged = false;
+    private User currentUser;
+    private EditText usernameInput;
 
     @Override
     public Class getViewModelClass() {
@@ -60,8 +67,8 @@ public class SettingsActivity extends BaseActivity<MyViewModel> {
             }
         });
 
-        binding.appLocale.setOnClickListener( v -> changeAppLanguage("fr"));
-        binding.appLocaleEn.setOnClickListener( v -> changeAppLanguage("en"));
+        binding.appLocale.setOnClickListener(v -> changeAppLanguage("fr"));
+        binding.appLocaleEn.setOnClickListener(v -> changeAppLanguage("en"));
     }
 
     private void cancelReminder() {
@@ -77,12 +84,37 @@ public class SettingsActivity extends BaseActivity<MyViewModel> {
             Snackbar.make(binding.getRoot(), getString(R.string.internet_unavailable), BaseTransientBottomBar.LENGTH_INDEFINITE)
                     .setDuration(5000).setTextColor(getResources().getColor(R.color.quantum_white_100)).show();
         } else if (getCurrentUser() != null)
-            viewModel.getUser(getCurrentUser().getUid()).observe(this,this::initUI);
+            viewModel.getUser(getCurrentUser().getUid()).observe(this, this::initUI);
     }
 
     private void initUI(User user) {
+        currentUser = user;
         binding.settingsUsername.setText(user.getUsername());
+        binding.settingsUsername.setOnClickListener(v -> {
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+            AlertDialog alertDialog = alertDialogBuilder.setView(R.layout.alert_dialog_username)
+                    .setPositiveButton("Enregistrer", null)
+                    .create();
 
+            alertDialog.setOnDismissListener(dialog -> usernameInput.clearComposingText());
+            alertDialog.setOnShowListener(dialog -> {
+                usernameInput = alertDialog.findViewById(R.id.new_username);
+                Button button = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+                button.setOnClickListener(v1 -> saveUsername(alertDialog));
+            });
+            alertDialog.show();
+        });
+    }
+
+    private void saveUsername(AlertDialog alertDialog) {
+        String username = "";
+        if (usernameInput != null && !usernameInput.getText().toString().isEmpty()) {
+            username = usernameInput.getText().toString();
+            binding.settingsUsername.setText(username);
+            viewModel.updateUsername(username, currentUser.getUid());
+            profileHasChanged = true;
+        }
+        alertDialog.hide();
     }
 
     private void changeAppLanguage(String locale) {

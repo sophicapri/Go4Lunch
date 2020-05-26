@@ -27,6 +27,7 @@ import androidx.work.ExistingPeriodicWorkPolicy;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 
+import com.facebook.FacebookSdk;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -69,6 +70,8 @@ public abstract class BaseActivity<T extends ViewModel> extends AppCompatActivit
         super.onCreate(savedInstanceState);
         sharedPrefs = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        FacebookSdk.setAdvertiserIDCollectionEnabled(false);
+        FacebookSdk.setAutoLogAppEventsEnabled(false);
         configureViewModel();
         setContentView(this.getFragmentLayout());
     }
@@ -160,7 +163,7 @@ public abstract class BaseActivity<T extends ViewModel> extends AppCompatActivit
         Resources res = getResources();
         DisplayMetrics dm = res.getDisplayMetrics();
         Configuration conf = res.getConfiguration();
-        conf.setLocale(new Locale(sharedPrefs.getString(PREF_LANGUAGE, "en")));
+        conf.setLocale(new Locale(sharedPrefs.getString(PREF_LANGUAGE, Locale.getDefault().getLanguage())));
         res.updateConfiguration(conf, dm);
     }
 

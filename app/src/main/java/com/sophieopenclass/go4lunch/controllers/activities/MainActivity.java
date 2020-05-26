@@ -166,11 +166,13 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
     @Override
     protected void onResume() {
         super.onResume();
-        if (SettingsActivity.localeHasChanged) {
+        // Update UI
+        if (SettingsActivity.localeHasChanged || SettingsActivity.profileHasChanged) {
             finish();
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
             SettingsActivity.localeHasChanged = false;
+            SettingsActivity.profileHasChanged = false;
         }
     }
 
