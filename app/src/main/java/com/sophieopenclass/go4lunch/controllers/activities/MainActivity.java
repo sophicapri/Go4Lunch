@@ -30,8 +30,10 @@ import com.sophieopenclass.go4lunch.controllers.fragments.RestaurantListFragment
 import com.sophieopenclass.go4lunch.controllers.fragments.WorkmatesListFragment;
 import com.sophieopenclass.go4lunch.databinding.ActivityMainBinding;
 import com.sophieopenclass.go4lunch.models.User;
+import com.sophieopenclass.go4lunch.utils.Constants;
 
 import static android.content.Intent.EXTRA_UID;
+import static com.sophieopenclass.go4lunch.utils.Constants.*;
 import static com.sophieopenclass.go4lunch.utils.Constants.ACTIVITY_MY_LUNCH;
 import static com.sophieopenclass.go4lunch.utils.Constants.ACTIVITY_SETTINGS;
 import static com.sophieopenclass.go4lunch.utils.Constants.FRAGMENT_MAP_VIEW;
@@ -153,14 +155,6 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
         }
         binding.drawerLayout.closeDrawer(GravityCompat.START);
         return true;
-    }
-
-    private void signOut() {
-        AuthUI.getInstance().signOut(this).addOnSuccessListener(aVoid -> {
-            finish();
-            startNewActivity(LoginPageActivity.class);
-            workManager.cancelAllWork();
-        });
     }
 
     @Override

@@ -28,10 +28,12 @@ import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 
 import com.facebook.FacebookSdk;
+import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.sophieopenclass.go4lunch.R;
+import com.sophieopenclass.go4lunch.controllers.activities.LoginPageActivity;
 import com.sophieopenclass.go4lunch.controllers.activities.RestaurantDetailsActivity;
 import com.sophieopenclass.go4lunch.controllers.activities.WorkmateDetailActivity;
 import com.sophieopenclass.go4lunch.injection.Injection;
@@ -220,6 +222,26 @@ public abstract class BaseActivity<T extends ViewModel> extends AppCompatActivit
         Intent intent = new Intent(this, RestaurantDetailsActivity.class);
         intent.putExtra(PLACE_ID, placeId);
         startActivity(intent);
+    }
+
+    public void signOut() {
+        AuthUI.getInstance().signOut(this).addOnSuccessListener(aVoid -> backToLoginPage());
+    }
+
+    public void deleteAccount() {
+        AuthUI.getInstance().delete(this).addOnSuccessListener(v -> {
+            Log.i(TAG, "deleteAccount: HERE");
+            backToLoginPage();
+        });
+    }
+    
+
+    protected void backToLoginPage() {
+        Log.i(TAG, "backToLoginPage: here");
+        finishAffinity();
+        Intent intent = new Intent(this, LoginPageActivity.class);
+        startActivity(intent);
+        workManager.cancelAllWork();
     }
 }
 

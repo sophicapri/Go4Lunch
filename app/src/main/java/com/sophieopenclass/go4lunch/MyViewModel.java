@@ -130,4 +130,8 @@ public class MyViewModel extends ViewModel {
     public LiveData<Boolean> createChat(String currentUserId, String workmateId) {
         return messageDataSource.createChat(currentUserId, workmateId);
     }
+
+    public void deleteUserMessages(String uid) {
+        messageDataSource.deleteUserMessages(uid);
+    }
 }

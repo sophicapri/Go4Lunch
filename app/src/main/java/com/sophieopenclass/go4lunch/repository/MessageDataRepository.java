@@ -4,8 +4,11 @@ import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.sophieopenclass.go4lunch.models.Chat;
 import com.sophieopenclass.go4lunch.models.Message;
 
@@ -89,5 +92,28 @@ public class MessageDataRepository {
         });
 
         return newMessage;
+    }
+
+    public void deleteUserMessages(String uid) {
+        messageCollectionRef.whereEqualTo(PARTICIPANTS_FIELD + uid, true).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot documentSnapshots) {
+                for (DocumentSnapshot document :documentSnapshots.getDocuments()){
+                    document.getReference().collection(CONVERSATION_SUBCOLLECTION).whereEqualTo("userSenderId", uid)
+                .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    int convDeleted = 0;
+                        @Override
+                        public void onSuccess(QuerySnapshot documentSnapshots) {
+                            for (DocumentSnapshot document :documentSnapshots.getDocuments()) {
+                                document.getReference().delete();
+                                convDeleted++;
+                            }
+                            Log.i(TAG, "onSuccess: messages deleted = " + convDeleted);
+                        }
+                    });
+                }
+
+            }
+        });
     }
 }

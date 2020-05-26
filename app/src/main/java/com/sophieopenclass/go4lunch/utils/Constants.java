@@ -1,5 +1,11 @@
 package com.sophieopenclass.go4lunch.utils;
 
+import androidx.annotation.IntDef;
+
+import java.lang.annotation.Retention;
+
+import static java.lang.annotation.RetentionPolicy.SOURCE;
+
 public class Constants {
     public static final String PLACE_ID = "placeId";
     public static final String DATES_AND_PLACE_IDS_FIELD = "datesAndPlaceIds.";
@@ -15,11 +21,14 @@ public class Constants {
     public static final String DATE_CREATED = "dateCreated";
     public static final String PARTICIPANTS_FIELD = "participants.";
 
+
     public static final int ACTIVITY_MY_LUNCH = 3;
     public static final int ACTIVITY_SETTINGS = 1;
     public static final int FRAGMENT_MAP_VIEW = 10;
     public static final int FRAGMENT_RESTAURANT_LIST_VIEW = 20;
     public static final int FRAGMENT_WORKMATES_LIST = 30;
+
+
 
     public static final int MONDAY = 1;
     public static final int TUESDAY = 2;
@@ -28,4 +37,13 @@ public class Constants {
     public static final int FRIDAY = 5;
     public static final int SATURDAY = 6;
     public static final int SUNDAY = 0;
+
+
+    @Retention(SOURCE)
+    @IntDef({DELETE_ACCOUNT, KEEP_ACCOUNT})
+    public @interface SignOutMode {}
+    public static final int DELETE_ACCOUNT = 97;
+    public static final int KEEP_ACCOUNT = 96;
+
+
 }

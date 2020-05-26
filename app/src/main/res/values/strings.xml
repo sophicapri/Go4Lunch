@@ -111,6 +111,7 @@
     <string name="internet_unavailable">Internet connection unavailable</string>
     <string name="english_locale">English</string>
     <string name="locale_saved">Language saved</string>
+    <string name="delete_my_account">Delete my account</string>
 
 
 </resources>

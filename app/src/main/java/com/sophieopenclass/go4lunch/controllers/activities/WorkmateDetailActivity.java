@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -54,7 +55,14 @@ public class WorkmateDetailActivity extends BaseActivity<MyViewModel> {
                     .setDuration(5000).setTextColor(getResources().getColor(R.color.quantum_white_100)).show();
         } else if (getIntent().getExtras() != null && getIntent().hasExtra(EXTRA_UID)) {
             uid = (String) getIntent().getExtras().get(EXTRA_UID);
-            viewModel.getUser(uid).observe(this, this::initUI);
+            viewModel.getUser(uid).observe(this, user -> {
+                    if (user != null )
+                        initUI(user);
+                    else {
+                        finish();
+                        Toast.makeText(this, "Ce compte n'existe plus", Toast.LENGTH_SHORT).show();
+                    }
+            });
         }
         binding.chatWithWorkmateBtn.setOnClickListener(v -> startChatActivity(uid));
     }
@@ -120,6 +128,8 @@ public class WorkmateDetailActivity extends BaseActivity<MyViewModel> {
             binding.workmateDetailLunch.detailThreeStars.setVisibility(View.VISIBLE);
     }
 
+    // @minus = To know if the user has selected a restaurant on the current day
+    // and retrieve the number of previous restaurant accordingly
     private void displayPreviousRestaurants(User user) {
         binding.previousRestaurantsRecyclerview.setHasFixedSize(true);
         binding.previousRestaurantsRecyclerview.setLayoutManager(new LinearLayoutManager(this));

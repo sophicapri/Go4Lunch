@@ -1,12 +1,7 @@
 package com.sophieopenclass.go4lunch.controllers.activities;
 
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.os.Bundle;
-import android.provider.Settings;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -14,10 +9,6 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
-import androidx.work.Data;
-import androidx.work.ExistingPeriodicWorkPolicy;
-import androidx.work.PeriodicWorkRequest;
-import androidx.work.WorkManager;
 
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
@@ -26,13 +17,8 @@ import com.sophieopenclass.go4lunch.R;
 import com.sophieopenclass.go4lunch.base.BaseActivity;
 import com.sophieopenclass.go4lunch.databinding.ActivitySettingsBinding;
 import com.sophieopenclass.go4lunch.models.User;
-import com.sophieopenclass.go4lunch.utils.NotificationWorker;
 
-import java.util.Calendar;
 import java.util.Locale;
-import java.util.concurrent.TimeUnit;
-
-import static android.content.Intent.EXTRA_UID;
 
 public class SettingsActivity extends BaseActivity<MyViewModel> {
     private static final String TAG = "SettingsActivity";
@@ -104,6 +90,13 @@ public class SettingsActivity extends BaseActivity<MyViewModel> {
             });
             alertDialog.show();
         });
+
+        binding.deleteAccount.setOnClickListener( v -> {
+            viewModel.deleteUserMessages(currentUser.getUid());
+            viewModel.deleteUser(currentUser.getUid());
+            Toast.makeText(this, "Compte supprimé", Toast.LENGTH_SHORT).show();
+            deleteAccount();
+        });
     }
 
     private void saveUsername(AlertDialog alertDialog) {
@@ -128,39 +121,4 @@ public class SettingsActivity extends BaseActivity<MyViewModel> {
             Toast.makeText(this, R.string.locale_saved, Toast.LENGTH_SHORT).show();
         }
     }
-
-/*
-    public void activateReminder() {
-        Calendar currentDate = Calendar.getInstance();
-        Calendar dueDate = Calendar.getInstance();
-        // Set Execution time of the reminder
-        dueDate.set(Calendar.HOUR_OF_DAY, 2);
-        dueDate.set(Calendar.MINUTE, 15);
-        dueDate.set(Calendar.SECOND, 0);
-        dueDate.set(Calendar.MILLISECOND, 0);
-
-        if (dueDate.before(currentDate)) {
-            dueDate.add(Calendar.DAY_OF_MONTH, 1);
-        }
-
-        long timeDiff = dueDate.getTimeInMillis() - currentDate.getTimeInMillis();
-
-        Data userId = new Data.Builder().build();
-        if (getCurrentUser() != null)
-            userId = new Data.Builder()
-                    .putString(EXTRA_UID, getCurrentUser().getUid())
-                    .build();
-
-        PeriodicWorkRequest workRequest = new PeriodicWorkRequest.Builder(NotificationWorker.class, 1,
-                TimeUnit.DAYS)
-                .setInputData(userId)
-                .setInitialDelay(timeDiff, TimeUnit.MILLISECONDS)
-                .build();
-
-        workManager.enqueueUniquePeriodicWork(WORK_REQUEST_NAME, ExistingPeriodicWorkPolicy.REPLACE, workRequest);
-        sharedPrefs.edit().putBoolean(PREF_REMINDER, true).apply();
-    }
-
- */
-
 }
