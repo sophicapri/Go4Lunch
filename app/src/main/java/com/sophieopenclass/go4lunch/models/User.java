@@ -44,6 +44,9 @@ public class User {
 
     @Nullable
     public String getUrlPicture() {
+        if (urlPicture == null)
+            return "https://i.ibb.co/82fMHLq/nopic.png";
+        else
         return urlPicture;
     }
 

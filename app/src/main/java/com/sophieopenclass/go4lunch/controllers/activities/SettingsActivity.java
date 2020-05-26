@@ -61,13 +61,10 @@ public class SettingsActivity extends BaseActivity<MyViewModel> {
         });
 
         binding.appLocale.setOnClickListener( v -> changeAppLanguage("fr"));
-
         binding.appLocaleEn.setOnClickListener( v -> changeAppLanguage("en"));
     }
 
     private void cancelReminder() {
-        // deletes finished works, to not crash the app
-        // cancels unfinished works
         workManager.cancelAllWork();
         sharedPrefs.edit().putBoolean(PREF_REMINDER, false).apply();
         Log.i(TAG, "cancelReminder: ");
@@ -79,12 +76,14 @@ public class SettingsActivity extends BaseActivity<MyViewModel> {
         if (networkUnavailable()) {
             Snackbar.make(binding.getRoot(), getString(R.string.internet_unavailable), BaseTransientBottomBar.LENGTH_INDEFINITE)
                     .setDuration(5000).setTextColor(getResources().getColor(R.color.quantum_white_100)).show();
-        } /*else if (getCurrentUser() != null)
+        } else if (getCurrentUser() != null)
             viewModel.getUser(getCurrentUser().getUid()).observe(this,this::initUI);
-        */
     }
 
-   // private void initUI(User user) { }
+    private void initUI(User user) {
+        binding.settingsUsername.setText(user.getUsername());
+
+    }
 
     private void changeAppLanguage(String locale) {
         if (!locale.equals(sharedPrefs.getString(PREF_LANGUAGE, Locale.getDefault().getLanguage()))) {

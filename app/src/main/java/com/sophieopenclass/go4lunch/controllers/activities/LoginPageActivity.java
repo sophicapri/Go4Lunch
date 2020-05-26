@@ -90,7 +90,7 @@ public class LoginPageActivity extends BaseActivity<MyViewModel> {
         IdpResponse response = IdpResponse.fromResultIntent(data);
         if (requestCode == RC_SIGN_IN) {
             if (resultCode == RESULT_OK) { // SUCCESS
-                createUserInFirestore();
+                    checkIfUserExistInFirestore();
             } else { // ERRORS
                 if (response != null && response.getError() != null)
                     if (response.getError().getErrorCode() == ErrorCodes.NO_NETWORK) {
@@ -102,7 +102,16 @@ public class LoginPageActivity extends BaseActivity<MyViewModel> {
         }
     }
 
-    // If the user already exists, Firestore won't create it twice
+    private void checkIfUserExistInFirestore() {
+        if (getCurrentUser()!= null)
+            viewModel.getUser(getCurrentUser().getUid()).observe(this, user -> {
+                if (user == null)
+                    createUserInFirestore();
+                else
+                    startMainActivity();
+            });
+    }
+
     private void createUserInFirestore() {
         if (this.getCurrentUser() != null) {
             String urlPicture = (getCurrentUser().getPhotoUrl() != null) ? getCurrentUser().getPhotoUrl().toString() : null;
