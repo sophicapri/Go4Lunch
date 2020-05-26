@@ -16,9 +16,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.sophieopenclass.go4lunch.controllers.fragments.RestaurantListFragment.TAG;
-import static com.sophieopenclass.go4lunch.utils.Constants.CONVERSATION_SUBCOLLECTION;
+import static com.sophieopenclass.go4lunch.utils.Constants.MESSAGES_SUBCOLLECTION;
 import static com.sophieopenclass.go4lunch.utils.Constants.DATE_CREATED;
 import static com.sophieopenclass.go4lunch.utils.Constants.PARTICIPANTS_FIELD;
+import static com.sophieopenclass.go4lunch.utils.Constants.USER_SENDER_ID;
 
 public class MessageDataRepository {
     private CollectionReference messageCollectionRef;
@@ -45,7 +46,7 @@ public class MessageDataRepository {
     }
 
     public Query getMessagesQuery(String chatId) {
-        return messageCollectionRef.document(chatId).collection(CONVERSATION_SUBCOLLECTION).orderBy(DATE_CREATED).limit(50);
+        return messageCollectionRef.document(chatId).collection(MESSAGES_SUBCOLLECTION).orderBy(DATE_CREATED).limit(50);
     }
 
     // --- CREATE ---
@@ -69,7 +70,7 @@ public class MessageDataRepository {
         MutableLiveData<Message> newMessage = new MutableLiveData<>();
         Message message = new Message(textMessage, userSenderId);
 
-        messageCollectionRef.document(chatId).collection(CONVERSATION_SUBCOLLECTION).add(message).addOnCompleteListener(addMessageTask -> {
+        messageCollectionRef.document(chatId).collection(MESSAGES_SUBCOLLECTION).add(message).addOnCompleteListener(addMessageTask -> {
             if (addMessageTask.isSuccessful()) {
                 if (addMessageTask.getResult() != null) {
                     newMessage.postValue(message);
@@ -83,7 +84,7 @@ public class MessageDataRepository {
         MutableLiveData<Message> newMessage = new MutableLiveData<>();
         Message message = new Message(textMessage, urlImage, userSenderId);
 
-        messageCollectionRef.document(chatId).collection(CONVERSATION_SUBCOLLECTION).add(message).addOnCompleteListener(addMessageTask -> {
+        messageCollectionRef.document(chatId).collection(MESSAGES_SUBCOLLECTION).add(message).addOnCompleteListener(addMessageTask -> {
             if (addMessageTask.isSuccessful()) {
                 if (addMessageTask.getResult() != null) {
                     newMessage.postValue(message);
@@ -99,7 +100,7 @@ public class MessageDataRepository {
             @Override
             public void onSuccess(QuerySnapshot documentSnapshots) {
                 for (DocumentSnapshot document :documentSnapshots.getDocuments()){
-                    document.getReference().collection(CONVERSATION_SUBCOLLECTION).whereEqualTo("userSenderId", uid)
+                    document.getReference().collection(MESSAGES_SUBCOLLECTION).whereEqualTo(USER_SENDER_ID, uid)
                 .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     int convDeleted = 0;
                         @Override

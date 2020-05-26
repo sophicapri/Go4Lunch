@@ -62,6 +62,7 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
         if (!sharedPrefs.contains(PREF_REMINDER) || sharedPrefs.getBoolean(PREF_REMINDER, false))
             activateReminder();
 
+        Log.i(TAG, "onCreate: ");
         configureToolbar();
         configureDrawerLayout();
         configureNavigationView();
@@ -74,6 +75,7 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
             });
         binding.bottomNavView.setOnNavigationItemSelectedListener(this::onNavigationItemSelected);
     }
+
 
 
     @Override
@@ -96,7 +98,6 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
             username.setText(user.getUsername());
             email.setText(user.getEmail());
         }
-        binding.navigationView.setBackgroundResource(R.drawable.ic_drawer_logo);
     }
 
     private ActivityMainBinding bindViews() {
@@ -232,9 +233,10 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
                 .replace(R.id.frame_layout, fragment).commit();
 
         updateUI(fragment);
-        //To refresh the Restaurant list when the user is already in RestaurantList fragment.
+        //To refresh the Restaurant list when the user is already in RestaurantList fragment and taps
+        // on the List view.
         Fragment activeFragment = getSupportFragmentManager().findFragmentById(R.id.frame_layout);
-        if (activeFragment != null && activeFragment.getClass().equals(fragment.getClass()))
+        if (activeFragment != null && activeFragment.getClass().equals(RestaurantListFragment.class))
             fragment.onResume();
     }
 

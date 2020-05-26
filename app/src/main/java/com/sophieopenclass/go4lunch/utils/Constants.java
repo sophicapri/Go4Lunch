@@ -17,9 +17,10 @@ public class Constants {
     public static final String ADDRESS_RESTAURANT = "address";
     //
 
-    public static final String CONVERSATION_SUBCOLLECTION = "conversation";
+    public static final String MESSAGES_SUBCOLLECTION = "messages";
     public static final String DATE_CREATED = "dateCreated";
     public static final String PARTICIPANTS_FIELD = "participants.";
+    public static final String USER_SENDER_ID = "userSenderId";
 
 
     public static final int ACTIVITY_MY_LUNCH = 3;

@@ -3,17 +3,12 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimary">#EF6C00</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
         <item name="android:textColor">@color/quantum_black_100</item>
     </style>
-
-    <style name="ProgressBarColor">
-        <item name="colorAccent">@color/colorPrimaryDark</item>
-    </style>
-
 
     <style name="SplashScreenTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:windowBackground">@drawable/splash_screen_background</item>
@@ -22,9 +17,11 @@
 
     <style name="DrawerArrowStyle" parent="@style/Widget.AppCompat.DrawerArrowToggle">
         <item name="spinBars">true</item>
-        <item name="color">@android:color/white</item>
-        <item name="android:background">@color/colorPrimary</item>
-        <item name="itemIconTint">@color/quantum_white_text</item>
+        <item name="color">#ffffffff</item>
+        <item name="itemIconTint">#ffffffff</item>
+        <item name="itemTextColor">#ffffffff</item>
+        <item name="android:background">@drawable/ic_drawer_logo</item>
+       <item name="itemTextAppearance">@style/TextDrawerStyle</item>
     </style>
 
     <style name="MyFAB" parent="Widget.Design.FloatingActionButton">
@@ -39,6 +36,14 @@
     <style name="TextStyleItalic" parent="TextAppearance.AppCompat">
         <item name="android:textStyle">italic</item>
         <item name="android:textColor">@color/quantum_grey700</item>
+    </style>
+
+    <style name="TextDrawerStyle" parent="TextAppearance.AppCompat">
+        <item name="android:textStyle">bold</item>
+        <item name="android:shadowColor">#B55200</item>
+        <item name="android:shadowRadius">1</item>
+        <item name="android:shadowDx">2</item>
+        <item name="android:shadowDy">2</item>
     </style>
 
     <style name="TextStyleNormal" parent="TextAppearance.AppCompat">

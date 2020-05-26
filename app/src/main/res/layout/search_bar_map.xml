@@ -35,7 +35,7 @@
             android:textCursorDrawable="@null"
             android:hint="@string/search_for_restaurant"
             android:importantForAutofill="no"
-            android:inputType="text"
+            android:inputType="textNoSuggestions"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/close_search_bar"

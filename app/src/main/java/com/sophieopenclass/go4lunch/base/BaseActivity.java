@@ -230,14 +230,12 @@ public abstract class BaseActivity<T extends ViewModel> extends AppCompatActivit
 
     public void deleteAccount() {
         AuthUI.getInstance().delete(this).addOnSuccessListener(v -> {
-            Log.i(TAG, "deleteAccount: HERE");
             backToLoginPage();
         });
     }
     
 
     protected void backToLoginPage() {
-        Log.i(TAG, "backToLoginPage: here");
         finishAffinity();
         Intent intent = new Intent(this, LoginPageActivity.class);
         startActivity(intent);

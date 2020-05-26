@@ -60,7 +60,6 @@
             android:id="@+id/progressBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:theme="@style/ProgressBarColor"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/frame_layout"
             app:layout_constraintEnd_toEndOf="parent"
@@ -95,7 +94,6 @@
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
         app:headerLayout="@layout/nav_header"
-        app:itemTextColor="@color/quantum_white_text"
         app:menu="@menu/menu_drawer" />
 
 </androidx.drawerlayout.widget.DrawerLayout>

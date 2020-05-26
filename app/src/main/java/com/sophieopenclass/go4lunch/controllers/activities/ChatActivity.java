@@ -37,7 +37,7 @@ import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.content.Intent.EXTRA_UID;
 
 public class ChatActivity extends BaseActivity<MyViewModel> implements ChatViewAdapter.Listener {
-    public static final int RC_CHOOSE_PHOTO = 222;
+    public static final int RC_CHOOSE_PHOTO = 224;
     public static final int READ_STORAGE_RC = 333;
     private ActivityChatBinding binding;
     private FirestoreRecyclerAdapter adapter;
@@ -71,7 +71,7 @@ public class ChatActivity extends BaseActivity<MyViewModel> implements ChatViewA
     protected void onResume() {
         super.onResume();
         if (networkUnavailable()) {
-            Snackbar.make(binding.getRoot(), "No internet connection", BaseTransientBottomBar.LENGTH_INDEFINITE)
+            Snackbar.make(binding.getRoot(), R.string.internet_unavailable, BaseTransientBottomBar.LENGTH_INDEFINITE)
                     .setTextColor(getResources().getColor(R.color.quantum_white_100)).setDuration(5000).show();
         } else if (getCurrentUser() != null) {
             viewModel.getUser(workmateId).observe(this, this::initUI);
@@ -193,6 +193,7 @@ public class ChatActivity extends BaseActivity<MyViewModel> implements ChatViewA
     // --------------------
     // FILE MANAGEMENT
     // --------------------
+    //TODO : try generalise this as it is used in SettingsActivity too
 
     private void chooseImageFromPhone() {
         if (ActivityCompat.checkSelfPermission(this, READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {

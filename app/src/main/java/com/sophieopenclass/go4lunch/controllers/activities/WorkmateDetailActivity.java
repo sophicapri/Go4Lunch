@@ -74,7 +74,6 @@ public class WorkmateDetailActivity extends BaseActivity<MyViewModel> {
                 .apply(RequestOptions.circleCropTransform())
                 .into(binding.workmateProfilePic);
 
-
         String todaysPlaceId = user.getDatesAndPlaceIds().get(User.getTodaysDate());
         if (todaysPlaceId != null) {
             displayTodaysRestaurant(todaysPlaceId);

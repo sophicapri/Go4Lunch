@@ -130,14 +130,15 @@ public class UserDataRepository {
         });
     }
 
-    public void updateUrlPicture(String urlPicture, String uid) {
+    public MutableLiveData<String> updateUrlPicture(String urlPicture, String uid) {
         MutableLiveData<String> newUrlPicture = new MutableLiveData<>();
-        userCollectionRef.document(uid).update("urlPicture", urlPicture).addOnCompleteListener(updateUsername -> {
-            if (updateUsername.isSuccessful())
+        userCollectionRef.document(uid).update("urlPicture", urlPicture).addOnCompleteListener(updateUrlPicture -> {
+            if (updateUrlPicture.isSuccessful())
                 newUrlPicture.setValue(urlPicture);
-            else if (updateUsername.getException() != null)
-                Log.e(TAG, "updatePlaceId: " + (updateUsername.getException().getMessage()));
+            else if (updateUrlPicture.getException() != null)
+                Log.e(TAG, "updateUrlPicture: " + (updateUrlPicture.getException().getMessage()));
         });
+        return newUrlPicture;
     }
 
     public void deleteUser(String uid) {

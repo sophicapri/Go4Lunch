@@ -66,7 +66,7 @@ import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static com.sophieopenclass.go4lunch.utils.Constants.PLACE_ID;
 
 public class MapViewFragment extends Fragment implements OnMapReadyCallback, EasyPermissions.PermissionCallbacks {
-    private static final String TAG = "MAIN ACTIVITY";
+    private static final String TAG = "MAP FRAGMENT";
     private static final String CAMERA_LOCATION = "cameraLocation";
     static final String PERMS = ACCESS_FINE_LOCATION;
     private MyViewModel viewModel;
@@ -93,44 +93,64 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Eas
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentMapBinding.inflate(inflater, container, false);
+
         if (getActivity() != null) {
             context = (BaseActivity) getActivity();
             viewModel = (MyViewModel) context.getViewModel();
         }
 
+        Log.i(TAG, "onCreateView: ");
+
         if (getActivity() != null) {
             activity = ((MainActivity) getActivity());
             activity.binding.searchBarMap.closeSearchBar.setOnClickListener(v -> {
                 activity.binding.searchBarMap.searchBarMap.setVisibility(View.GONE);
-                activity.binding.searchBarMap.searchBarInput.getText().clear();
+                if (!activity.binding.searchBarMap.searchBarInput.getText().toString().isEmpty())
+                    activity.binding.searchBarMap.searchBarInput.clearComposingText();
                 autocompleteActive = false;
             });
         }
 
-        activity.binding.searchBarMap.searchBarInput.addTextChangedListener(new TextWatcher() {
+
+        activity.binding.searchBarMap.searchBarInput.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            public void onClick(View v) {
+                activity.binding.searchBarMap.searchBarInput.addTextChangedListener(new TextWatcher() {
 
-            }
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+                        searchBarTextInput = s.toString();
+                        autocompleteActive = true;
+                        displayResultsAutocomplete(searchBarTextInput);
+                    }
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                searchBarTextInput = s.toString();
-                autocompleteActive = true;
-                displayResultsAutocomplete(searchBarTextInput);
-            }
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-            @Override
-            public void afterTextChanged(Editable s) {
+                    }
 
+                    @Override
+                    public void afterTextChanged(Editable s) {
+
+                    }
+                });
             }
         });
+
+
         binding.fab.setOnClickListener(v -> {
             if (context.requestLocationPermission()) {
                 fetchLastLocation();
             }
         });
         return binding.getRoot();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.i(TAG, "onStart: ");
+
     }
 
     @Override
@@ -141,9 +161,21 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Eas
                     .setTextColor(getResources().getColor(R.color.quantum_white_100)).setDuration(5000).show();
         } else {
             if (context.requestLocationPermission()) {
-               // fetchLastLocation();
+                 fetchLastLocation();
             }
         }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.i(TAG, "onPause: ");
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.i(TAG, "onStop: ");
     }
 
     private void displayResultsAutocomplete(String searchBarTextInput) {

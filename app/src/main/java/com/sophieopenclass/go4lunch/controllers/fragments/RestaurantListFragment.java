@@ -90,7 +90,8 @@ public class RestaurantListFragment extends Fragment implements EasyPermissions.
     private void initSearchBar(MainActivity activity) {
         activity.binding.searchBarRestaurantList.closeSearchBar.setOnClickListener(v -> {
             activity.binding.searchBarRestaurantList.searchBarRestaurantList.setVisibility(View.GONE);
-            activity.binding.searchBarRestaurantList.searchBarInput.getText().clear();
+            if (!activity.binding.searchBarRestaurantList.searchBarInput.getText().toString().isEmpty())
+            activity.binding.searchBarRestaurantList.searchBarInput.clearComposingText();
             //To not refresh the page if the search bar has been opened but the user didn't search for a restaurant
             if (autocompleteActive) {
                 restaurants.clear();
@@ -100,6 +101,8 @@ public class RestaurantListFragment extends Fragment implements EasyPermissions.
             }
             observePlaces(null);
         });
+
+
         activity.binding.searchBarRestaurantList.searchBarInput.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
