@@ -53,7 +53,7 @@ public class WorkmatesListFragment extends Fragment {
 
         binding.swipeRefreshView.setOnRefreshListener(() -> {
             if (networkUnavailable()) {
-                Snackbar.make(binding.getRoot(), "No internet connection", BaseTransientBottomBar.LENGTH_INDEFINITE)
+                Snackbar.make(binding.getRoot(), R.string.internet_unavailable, BaseTransientBottomBar.LENGTH_INDEFINITE)
                         .setTextColor(getResources().getColor(R.color.quantum_white_100)).setDuration(5000).show();
             } else
                 updateWorkmatesList();

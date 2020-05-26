@@ -13,6 +13,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.sophieopenclass.go4lunch.controllers.fragments.RestaurantListFragment.TAG;
+import static com.sophieopenclass.go4lunch.utils.Constants.CONVERSATION_SUBCOLLECTION;
+import static com.sophieopenclass.go4lunch.utils.Constants.DATE_CREATED;
+import static com.sophieopenclass.go4lunch.utils.Constants.PARTICIPANTS_FIELD;
 
 public class MessageDataRepository {
     private CollectionReference messageCollectionRef;
@@ -25,11 +28,11 @@ public class MessageDataRepository {
 
     public MutableLiveData<String> getChatId(String currentUserId, String workmateId) {
         MutableLiveData<String> chatId = new MutableLiveData<>();
-        messageCollectionRef.whereEqualTo("participants." + currentUserId, true)
-                .whereEqualTo("participants." + workmateId, true).get().addOnCompleteListener(task -> {
+        messageCollectionRef.whereEqualTo(PARTICIPANTS_FIELD + currentUserId, true)
+                .whereEqualTo(PARTICIPANTS_FIELD + workmateId, true).get().addOnCompleteListener(task -> {
             if (task.isSuccessful())
                 if (task.getResult() != null) {
-                    Log.i(TAG, "getChatId: 1 -" + task.getResult().getDocuments().size());
+                    Log.i(TAG, "getChatId:-" + task.getResult().getDocuments().size());
                     if (task.getResult().getDocuments().size() == 1)
                         chatId.setValue(task.getResult().getDocuments().get(0).getId());
                 } else if (task.getException() != null)
@@ -39,7 +42,7 @@ public class MessageDataRepository {
     }
 
     public Query getMessagesQuery(String chatId) {
-        return messageCollectionRef.document(chatId).collection("conversation").orderBy("dateCreated").limit(50);
+        return messageCollectionRef.document(chatId).collection(CONVERSATION_SUBCOLLECTION).orderBy(DATE_CREATED).limit(50);
     }
 
     // --- CREATE ---
@@ -63,7 +66,7 @@ public class MessageDataRepository {
         MutableLiveData<Message> newMessage = new MutableLiveData<>();
         Message message = new Message(textMessage, userSenderId);
 
-        messageCollectionRef.document(chatId).collection("conversation").add(message).addOnCompleteListener(addMessageTask -> {
+        messageCollectionRef.document(chatId).collection(CONVERSATION_SUBCOLLECTION).add(message).addOnCompleteListener(addMessageTask -> {
             if (addMessageTask.isSuccessful()) {
                 if (addMessageTask.getResult() != null) {
                     newMessage.postValue(message);
@@ -77,7 +80,7 @@ public class MessageDataRepository {
         MutableLiveData<Message> newMessage = new MutableLiveData<>();
         Message message = new Message(textMessage, urlImage, userSenderId);
 
-        messageCollectionRef.document(chatId).collection("conversation").add(message).addOnCompleteListener(addMessageTask -> {
+        messageCollectionRef.document(chatId).collection(CONVERSATION_SUBCOLLECTION).add(message).addOnCompleteListener(addMessageTask -> {
             if (addMessageTask.isSuccessful()) {
                 if (addMessageTask.getResult() != null) {
                     newMessage.postValue(message);

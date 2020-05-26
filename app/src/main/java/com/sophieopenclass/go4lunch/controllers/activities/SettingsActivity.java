@@ -5,6 +5,7 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -30,10 +31,8 @@ import static android.content.Intent.EXTRA_UID;
 
 public class SettingsActivity extends BaseActivity<MyViewModel> {
     private static final String TAG = "SettingsActivity";
-    public static final String WORK_REQUEST_NAME = "Lunch reminder";
-    public final WorkManager workManager = WorkManager.getInstance(this);
-    ActivitySettingsBinding binding;
-    public static PeriodicWorkRequest workRequest;
+    private static final String WORK_REQUEST_NAME = "Lunch reminder";
+    private ActivitySettingsBinding binding;
     public static boolean localeHasChanged = false;
 
     @Override
@@ -50,20 +49,28 @@ public class SettingsActivity extends BaseActivity<MyViewModel> {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (!sharedPrefs.getBoolean(PREF_REMINDER, false))
+            binding.notificationToggle.setChecked(false);
+
         binding.notificationToggle.setOnClickListener(v -> {
             if (binding.notificationToggle.isChecked())
-                activateReminder(workManager);
-            else
-                workManager.cancelAllWork();
+                activateReminder();
+            else {
+                cancelReminder();
+            }
         });
 
-        binding.appLocale.setOnClickListener( v -> {
-            changeAppLanguage("fr");
-        });
+        binding.appLocale.setOnClickListener( v -> changeAppLanguage("fr"));
 
-        binding.appLocaleEn.setOnClickListener( v -> {
-            changeAppLanguage("en");
-        });
+        binding.appLocaleEn.setOnClickListener( v -> changeAppLanguage("en"));
+    }
+
+    private void cancelReminder() {
+        // deletes finished works, to not crash the app
+        // cancels unfinished works
+        workManager.cancelAllWork();
+        sharedPrefs.edit().putBoolean(PREF_REMINDER, false).apply();
+        Log.i(TAG, "cancelReminder: ");
     }
 
     @Override
@@ -77,35 +84,27 @@ public class SettingsActivity extends BaseActivity<MyViewModel> {
         */
     }
 
-    private void initUI(User user) {
-    }
+   // private void initUI(User user) { }
 
     private void changeAppLanguage(String locale) {
         if (!locale.equals(sharedPrefs.getString(PREF_LANGUAGE, Locale.getDefault().getLanguage()))) {
             sharedPrefs.edit().putString(PREF_LANGUAGE, locale).apply();
             localeHasChanged = true;
-            Toast.makeText(this, "Language saved", Toast.LENGTH_SHORT).show();
             updateLocale();
+            finish();
+            Intent intent = new Intent(this, SettingsActivity.class);
+            startActivity(intent);
+            Toast.makeText(this, R.string.locale_saved, Toast.LENGTH_SHORT).show();
         }
     }
 
-    public void updateLocale() {
-        Resources res = getResources();
-        DisplayMetrics dm = res.getDisplayMetrics();
-        Configuration conf = res.getConfiguration();
-        conf.setLocale(new Locale(sharedPrefs.getString(PREF_LANGUAGE, "en")));
-        res.updateConfiguration(conf, dm);
-        finish();
-        Intent intent = new Intent(this, SettingsActivity.class);
-        startActivity(intent);
-    }
-
-    private void activateReminder(WorkManager workManager) {
+/*
+    public void activateReminder() {
         Calendar currentDate = Calendar.getInstance();
         Calendar dueDate = Calendar.getInstance();
         // Set Execution time of the reminder
-        dueDate.set(Calendar.HOUR_OF_DAY, 19);
-        dueDate.set(Calendar.MINUTE, 56);
+        dueDate.set(Calendar.HOUR_OF_DAY, 2);
+        dueDate.set(Calendar.MINUTE, 15);
         dueDate.set(Calendar.SECOND, 0);
         dueDate.set(Calendar.MILLISECOND, 0);
 
@@ -121,12 +120,16 @@ public class SettingsActivity extends BaseActivity<MyViewModel> {
                     .putString(EXTRA_UID, getCurrentUser().getUid())
                     .build();
 
-        workRequest = new PeriodicWorkRequest.Builder(NotificationWorker.class, 1,
+        PeriodicWorkRequest workRequest = new PeriodicWorkRequest.Builder(NotificationWorker.class, 1,
                 TimeUnit.DAYS)
                 .setInputData(userId)
                 .setInitialDelay(timeDiff, TimeUnit.MILLISECONDS)
                 .build();
 
         workManager.enqueueUniquePeriodicWork(WORK_REQUEST_NAME, ExistingPeriodicWorkPolicy.REPLACE, workRequest);
+        sharedPrefs.edit().putBoolean(PREF_REMINDER, true).apply();
     }
+
+ */
+
 }

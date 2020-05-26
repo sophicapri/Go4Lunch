@@ -2,6 +2,7 @@ package com.sophieopenclass.go4lunch.controllers.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -54,6 +55,11 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // To activate notifications by default when first launching the app OR
+        // activate the notifications if the user signed out and
+        if (!sharedPrefs.contains(PREF_REMINDER) || sharedPrefs.getBoolean(PREF_REMINDER, false))
+            activateReminder();
+
         configureToolbar();
         configureDrawerLayout();
         configureNavigationView();
@@ -151,15 +157,16 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
 
     private void signOut() {
         AuthUI.getInstance().signOut(this).addOnSuccessListener(aVoid -> {
-            startNewActivity(LoginPageActivity.class);
             finish();
+            startNewActivity(LoginPageActivity.class);
+            workManager.cancelAllWork();
         });
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        if (SettingsActivity.localeHasChanged){
+        if (SettingsActivity.localeHasChanged) {
             finish();
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);

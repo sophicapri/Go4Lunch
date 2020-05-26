@@ -12,6 +12,7 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -21,6 +22,10 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.work.Data;
+import androidx.work.ExistingPeriodicWorkPolicy;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -30,9 +35,12 @@ import com.sophieopenclass.go4lunch.controllers.activities.RestaurantDetailsActi
 import com.sophieopenclass.go4lunch.controllers.activities.WorkmateDetailActivity;
 import com.sophieopenclass.go4lunch.injection.Injection;
 import com.sophieopenclass.go4lunch.listeners.Listeners;
+import com.sophieopenclass.go4lunch.utils.NotificationWorker;
 import com.sophieopenclass.go4lunch.utils.ViewModelFactory;
 
+import java.util.Calendar;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 import pub.devrel.easypermissions.EasyPermissions;
 
@@ -43,38 +51,26 @@ import static com.sophieopenclass.go4lunch.utils.Constants.PLACE_ID;
 public abstract class BaseActivity<T extends ViewModel> extends AppCompatActivity implements Listeners.OnWorkmateClickListener,
         Listeners.OnRestaurantClickListener {
     public static final String PREF_LANGUAGE = "pref_language";
+    public static final String PREF_REMINDER = "pref_reminder";
     public final String TAG = "MAIN";
     public T viewModel;
+    public final WorkManager workManager = WorkManager.getInstance(this);
     public static Location sCurrentLocation = null;
     public LocationManager locationManager;
     public final int LOCATION_PERMISSION_REQUEST_CODE = 123;
     public final String PERMS = ACCESS_FINE_LOCATION;
     public static final String SHARED_PREFS = "sharedPrefs";
     public static SharedPreferences sharedPrefs;
+    private static final String WORK_REQUEST_NAME = "Lunch reminder";
+    public PeriodicWorkRequest workRequest;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         sharedPrefs = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        setContentView(this.getFragmentLayout());
         configureViewModel();
-    }
-
-    public void checkCurrentLocale(){
-        String defaultLocale = Locale.getDefault().getLanguage();
-        if (!sharedPrefs.contains(PREF_LANGUAGE))
-            sharedPrefs.edit().putString(PREF_LANGUAGE, defaultLocale).apply();
-        else if (!sharedPrefs.getString(PREF_LANGUAGE, defaultLocale).equals(defaultLocale))
-            updateLocale();
-    }
-
-    public void updateLocale() {
-        Resources res = getResources();
-        DisplayMetrics dm = res.getDisplayMetrics();
-        Configuration conf = res.getConfiguration();
-        conf.setLocale(new Locale(sharedPrefs.getString(PREF_LANGUAGE, "en")));
-        res.updateConfiguration(conf, dm);
+        setContentView(this.getFragmentLayout());
     }
 
     @SuppressWarnings("unchecked")
@@ -149,6 +145,63 @@ public abstract class BaseActivity<T extends ViewModel> extends AppCompatActivit
 
     public T getViewModel() {
         return viewModel;
+    }
+
+    //Check for locale in BaseActivity as it is used in several activities
+    public void checkCurrentLocale() {
+        String defaultLocale = Locale.getDefault().getLanguage();
+        if (!sharedPrefs.contains(PREF_LANGUAGE))
+            sharedPrefs.edit().putString(PREF_LANGUAGE, defaultLocale).apply();
+        else if (!sharedPrefs.getString(PREF_LANGUAGE, defaultLocale).equals(defaultLocale))
+            updateLocale();
+    }
+
+    public void updateLocale() {
+        Resources res = getResources();
+        DisplayMetrics dm = res.getDisplayMetrics();
+        Configuration conf = res.getConfiguration();
+        conf.setLocale(new Locale(sharedPrefs.getString(PREF_LANGUAGE, "en")));
+        res.updateConfiguration(conf, dm);
+    }
+
+    //
+
+    public void activateReminder() {
+        Calendar currentDate = Calendar.getInstance();
+        Calendar dueDate = Calendar.getInstance();
+        // Set Execution time of the reminder
+        dueDate.set(Calendar.HOUR_OF_DAY, 11);
+        dueDate.set(Calendar.MINUTE, 45);
+        dueDate.set(Calendar.SECOND, 0);
+        dueDate.set(Calendar.MILLISECOND, 0);
+
+        if (dueDate.before(currentDate)) {
+            dueDate.add(Calendar.DAY_OF_MONTH, 1);
+        }
+
+        long timeDiff = dueDate.getTimeInMillis() - currentDate.getTimeInMillis();
+
+        Data userId = new Data.Builder().build();
+        if (getCurrentUser() != null)
+            userId = new Data.Builder()
+                    .putString(EXTRA_UID, getCurrentUser().getUid())
+                    .build();
+
+        workRequest = new PeriodicWorkRequest.Builder(NotificationWorker.class, 1,
+                TimeUnit.DAYS)
+                .setInputData(userId)
+                .setInitialDelay(timeDiff, TimeUnit.MILLISECONDS)
+                .build();
+
+        workManager.enqueueUniquePeriodicWork(WORK_REQUEST_NAME, ExistingPeriodicWorkPolicy.REPLACE, workRequest);
+        sharedPrefs.edit().putBoolean(PREF_REMINDER, true).apply();
+
+        workManager.getWorkInfoByIdLiveData(workRequest.getId()).observe(this, workInfo -> {
+                    if (workInfo != null)
+                        Log.i(TAG, "current workState " + workInfo.getState());
+                }
+        );
+        Log.i(TAG, "activateReminder: ");
     }
 
 

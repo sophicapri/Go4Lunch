@@ -213,11 +213,39 @@ public class RestaurantListFragment extends Fragment implements EasyPermissions.
 
     }
 
+
+    // Method to use during development. The one below demands too many requests
+    private void getFullPlaceDetails(List<PlaceDetails> placeDetailsList) {
+        ArrayList<PlaceDetails> completePlaceDetailsList = new ArrayList<>();
+        for (PlaceDetails restaurant : placeDetailsList) {
+            viewModel.getUsersByPlaceIdAndDate(restaurant.getPlaceId(), User.getTodaysDate())
+                    .observe(getViewLifecycleOwner(), users -> {
+                        restaurant.setNbrOfWorkmates(users.size());
+                        completePlaceDetailsList.add(restaurant);
+                        if (completePlaceDetailsList.size() == placeDetailsList.size()) {
+                            Collections.sort(completePlaceDetailsList, new NearestRestaurantComparator());
+                            if ((!restaurants.isEmpty()) && adapter != null) {
+                                int indexStart = restaurants.size() - 1;
+                                this.restaurants.addAll(completePlaceDetailsList);
+                                if (!autocompleteActive)
+                                    adapter.notifyItemRangeInserted(indexStart, completePlaceDetailsList.size());
+                                else
+                                    adapter.notifyDataSetChanged();
+                            } else
+                                updateRecyclerView(completePlaceDetailsList);
+                        }
+                    });
+        }
+    }
+
+
     // Nearby Search doesn't return all the fields required in a PlaceDetails, therefore another
     // query is necessary to retrieve the missing fields (ex : openingHours)
     // -
     // The viewModel calls are inside each other and not called one after the other because the variables do not get initialised
     // fast enough before being used for another viewModel.
+
+    /* Method that gets the openings hours details.
     private void getFullPlaceDetails(List<PlaceDetails> placeDetailsList) {
         ArrayList<PlaceDetails> completePlaceDetailsList = new ArrayList<>();
         for (PlaceDetails placeDetails : placeDetailsList) {
@@ -239,7 +267,7 @@ public class RestaurantListFragment extends Fragment implements EasyPermissions.
                                         }
                                     }));
         }
-    }
+        */
 
     // Clear list of restaurants so that we don't display the same results below the previous ones.
     @Override

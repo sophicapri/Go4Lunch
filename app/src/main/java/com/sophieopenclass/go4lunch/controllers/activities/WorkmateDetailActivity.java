@@ -2,6 +2,7 @@ package com.sophieopenclass.go4lunch.controllers.activities;
 
 import android.content.Intent;
 import android.os.Build;
+import android.util.Log;
 import android.view.View;
 
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -129,11 +130,14 @@ public class WorkmateDetailActivity extends BaseActivity<MyViewModel> {
             if (!date.equals(User.getTodaysDate())) {
                 placeId = user.getDatesAndPlaceIds().get(date);
                 viewModel.getPlaceDetails(placeId).observe(this, placeDetails -> {
+                    //
+                    if (placeDetails != null) {
                     placeDetails.setDateOfLunch(date);
                     placeDetailsList.add(placeDetails);
                     if (placeDetailsList.size() == user.getDatesAndPlaceIds().values().size() - minus) {
                         Collections.sort(placeDetailsList, new RestaurantRecentComparator());
                         updateRecyclerView(placeDetailsList);
+                    }
                     }
                 });
             } else {

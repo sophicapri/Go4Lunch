@@ -113,6 +113,7 @@ public class RestaurantListAdapter extends RecyclerView.Adapter<RestaurantListAd
 
         private void displayOpeningHours(PlaceDetails placeDetails) {
             int today = OpeningHours.getTodaysDay();
+
             if (today >= 0 && placeDetails.getOpeningHours().getPeriods() != null) {
                 if (placeDetails.getOpeningHours().getPeriods().size() == Calendar.DAY_OF_WEEK) {
                     String time = placeDetails.getOpeningHours().getPeriods().get(today).getClose().getTime();

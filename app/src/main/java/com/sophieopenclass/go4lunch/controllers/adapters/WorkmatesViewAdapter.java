@@ -83,7 +83,7 @@ public class WorkmatesViewAdapter extends RecyclerView.Adapter<WorkmatesViewAdap
                     binding.workmatesChoice.setTextColor(context.getResources().getColor(R.color.quantum_black_100));
             } else {
                 binding.workmatesChoice.setText(context.getResources()
-                        .getString(R.string.workmate_hasnt_chosen, model.getUsername()));
+                        .getString(R.string.workmate_hasnt_decided, model.getUsername()));
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     binding.workmatesChoice.setTextAppearance(R.style.TextStyleItalic);
                 } else

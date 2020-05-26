@@ -1,4 +1,5 @@
 package com.sophieopenclass.go4lunch.api;
+
 import com.sophieopenclass.go4lunch.BuildConfig;
 import com.sophieopenclass.go4lunch.models.json_to_java.RestaurantsResult;
 import com.sophieopenclass.go4lunch.models.json_to_java.PlaceDetailsResult;

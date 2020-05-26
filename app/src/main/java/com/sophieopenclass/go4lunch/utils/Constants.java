@@ -5,9 +5,15 @@ public class Constants {
     public static final String DATES_AND_PLACE_IDS_FIELD = "datesAndPlaceIds.";
     public static final String FAVORITE_RESTAURANTS_FIELD = "favoriteRestaurantIds";
     public static final String CHOSEN_RESTAURANT_FIELD = "chosenRestaurant";
+    //
     public static final String USERNAME_FIELD = "username";
     public static final String NAME_RESTAURANT = "name";
     public static final String ADDRESS_RESTAURANT = "address";
+    //
+
+    public static final String CONVERSATION_SUBCOLLECTION = "conversation";
+    public static final String DATE_CREATED = "dateCreated";
+    public static final String PARTICIPANTS_FIELD = "participants.";
 
     public static final int ACTIVITY_MY_LUNCH = 3;
     public static final int ACTIVITY_SETTINGS = 1;

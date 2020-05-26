@@ -22,7 +22,7 @@
 
     <!-- Restaurant infos-->
     <string name="workmates_eating_at">%1$s is eating at %2$s</string>
-    <string name="workmate_hasnt_chosen">"%s hasn't chosen a restaurant yet…"</string>
+    <string name="workmate_hasnt_decided">"%s hasn't decided yet…"</string>
     <string name="workmate_is_eating_here">%s  is eating here !</string>
     <string name="no_restaurant_chosen">No restaurant chosen today…</string>
     <string name="restaurant_type">"%s - "</string>
@@ -110,6 +110,7 @@
     <string name="logout">LOGOUT</string>
     <string name="internet_unavailable">Internet connection unavailable</string>
     <string name="english_locale">English</string>
+    <string name="locale_saved">Language saved</string>
 
 
 </resources>

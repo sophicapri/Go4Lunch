@@ -20,13 +20,13 @@ import com.sophieopenclass.go4lunch.models.User;
 
 import static com.sophieopenclass.go4lunch.listeners.Listeners.OnWorkmateClickListener;
 
-public class WorkmatesListAdapter extends FirestoreRecyclerAdapter<User, WorkmatesListAdapter.UserViewHolder> {
+public class RestaurantWorkmatesListAdapter extends FirestoreRecyclerAdapter<User, RestaurantWorkmatesListAdapter.UserViewHolder> {
     private FirebaseUser currentUser;
     private OnWorkmateClickListener onWorkmateClickListener;
     private RequestManager glide;
 
-    public WorkmatesListAdapter(@NonNull FirestoreRecyclerOptions<User> options,
-                                OnWorkmateClickListener onWorkmateClickListener, RequestManager glide) {
+    public RestaurantWorkmatesListAdapter(@NonNull FirestoreRecyclerOptions<User> options,
+                                          OnWorkmateClickListener onWorkmateClickListener, RequestManager glide) {
         super(options);
         this.onWorkmateClickListener = onWorkmateClickListener;
         this.currentUser = FirebaseAuth.getInstance().getCurrentUser();

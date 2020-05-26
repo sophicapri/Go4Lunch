@@ -26,7 +26,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.sophieopenclass.go4lunch.MyViewModel;
 import com.sophieopenclass.go4lunch.R;
 import com.sophieopenclass.go4lunch.base.BaseActivity;
-import com.sophieopenclass.go4lunch.controllers.adapters.WorkmatesListAdapter;
+import com.sophieopenclass.go4lunch.controllers.adapters.RestaurantWorkmatesListAdapter;
 import com.sophieopenclass.go4lunch.databinding.ActivityRestaurantDetailsBinding;
 import com.sophieopenclass.go4lunch.models.User;
 import com.sophieopenclass.go4lunch.models.json_to_java.PlaceDetails;
@@ -159,7 +159,7 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
                 .setQuery(viewModel.getCollectionReference()
                         .whereEqualTo(DATES_AND_PLACE_IDS_FIELD + User.getTodaysDate(), placeId), User.class)
                 .build();
-        adapter = new WorkmatesListAdapter(options, this, Glide.with(this));
+        adapter = new RestaurantWorkmatesListAdapter(options, this, Glide.with(this));
         binding.detailRecyclerViewWorkmates.setHasFixedSize(true);
         binding.detailRecyclerViewWorkmates.setLayoutManager(new LinearLayoutManager(this));
         binding.detailRecyclerViewWorkmates.setAdapter(adapter);
