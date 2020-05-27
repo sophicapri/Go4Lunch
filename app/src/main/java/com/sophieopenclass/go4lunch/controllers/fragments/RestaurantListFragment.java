@@ -73,6 +73,8 @@ public class RestaurantListFragment extends Fragment implements EasyPermissions.
         return new RestaurantListFragment();
     }
 
+
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = RecyclerViewRestaurantsBinding.inflate(inflater, container, false);
@@ -108,7 +110,6 @@ public class RestaurantListFragment extends Fragment implements EasyPermissions.
             observePlaces(null);
         });
 
-
         activity.binding.searchBarRestaurantList.searchBarInput.addTextChangedListener(new TextWatcher() {
             //to stop the TextWatcher to fire multiple times
             boolean isOnTextChanged = false;
@@ -136,7 +137,7 @@ public class RestaurantListFragment extends Fragment implements EasyPermissions.
     }
 
     /**
-     * The "heading" params of the SphericalUtil method represent in degrees where each corner is.
+     * The "heading" params of the SphericalUtil method represent where each corner is in degrees.
      * See visual representation here : https://i.stack.imgur.com/GkFzJ.png;
      */
     private RectangularBounds getRectangularBounds() {
@@ -149,7 +150,7 @@ public class RestaurantListFragment extends Fragment implements EasyPermissions.
         return RectangularBounds.newInstance(southWestCorner, northEastCorner);
     }
 
-    private void displayResultsAutocomplete(String textInput) {
+    public void displayResultsAutocomplete(String textInput) {
         FindAutocompletePredictionsRequest predictionsRequest = FindAutocompletePredictionsRequest.builder()
                 .setTypeFilter(TypeFilter.ESTABLISHMENT)
                 .setSessionToken(token)
@@ -209,7 +210,7 @@ public class RestaurantListFragment extends Fragment implements EasyPermissions.
         super.onResume();
     }
 
-    private void observePlaces(String nextPageToken) {
+    public void observePlaces(String nextPageToken) {
         if (context.networkUnavailable()) {
             Snackbar.make(binding.getRoot(), getString(R.string.internet_unavailable), BaseTransientBottomBar.LENGTH_INDEFINITE)
                     .setDuration(5000).setTextColor(getResources().getColor(R.color.quantum_white_100)).show();

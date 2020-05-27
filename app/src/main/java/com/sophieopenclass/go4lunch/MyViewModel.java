@@ -66,8 +66,8 @@ public class MyViewModel extends ViewModel {
         return userDataSource.getUsersByPlaceIdAndDate(placeId, date);
     }
 
-    public LiveData<Restaurant> updateUserChosenRestaurant(String uid, Restaurant restaurant, String date) {
-        return userDataSource.updateUserChosenRestaurant(uid, restaurant, date);
+    public LiveData<Restaurant> updateChosenRestaurant(String uid, Restaurant restaurant, String date) {
+        return userDataSource.updateChosenRestaurant(uid, restaurant, date);
     }
 
 
@@ -76,26 +76,11 @@ public class MyViewModel extends ViewModel {
     }
 
 
-   /* public void updateRestaurantChosen(String uid, String restaurantName, String address) {
-        userDataSource.updateRestaurantChosen(uid, restaurantName, address);
-    }
-
-    */
-
-    public void deletePlaceId(String uid, String date) {
-        userDataSource.deletePlaceId(uid, date);
-    }
 
     public LiveData<User> getCreatedUserLiveData() {
         return createdUserLiveData;
     }
 
-
-    /*public LiveData<Restaurant> getPlaceIdByDate(String userId, String date) {
-        return userDataSource.getPlaceIdByDate(userId, date);
-    }
-
-     */
 
     public void addRestaurantToFavorites(Restaurant restaurant, String userId) {
         userDataSource.addRestaurantToFavorites(restaurant, userId);

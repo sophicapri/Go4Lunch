@@ -13,7 +13,6 @@ public class User {
     @Nullable
     private String urlPicture;
     private Map<String, Restaurant> datesAndRestaurants = new HashMap<>();
-    private Restaurant chosenRestaurant;
     private String email;
     private Map<String, Restaurant> favoriteRestaurants = new HashMap<>();
 
@@ -65,19 +64,11 @@ public class User {
         this.datesAndRestaurants = datesAndRestaurants;
     }
 
-    public Restaurant getChosenRestaurant() {
-        return chosenRestaurant;
-    }
-
-    public void setChosenRestaurant(Restaurant chosenRestaurant) {
-        this.chosenRestaurant = chosenRestaurant;
-    }
-
     public Map<String, Restaurant> getFavoriteRestaurants() {
         return favoriteRestaurants;
     }
 
-    public void addToFavorites(Restaurant favoriteRestaurant) {
+    public void addRestaurantToFavorites(Restaurant favoriteRestaurant) {
         this.favoriteRestaurants.put(favoriteRestaurant.getPlaceId(),favoriteRestaurant);
     }
 

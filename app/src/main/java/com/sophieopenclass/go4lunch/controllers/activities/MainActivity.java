@@ -59,6 +59,7 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
         configureDrawerLayout();
         configureNavigationView();
         initPlacesApi();
+        initSearchBars();
         if (getCurrentUser() != null)
             viewModel.getUser(getCurrentUser().getUid()).observe(this, user -> {
                 currentUser = user;
@@ -134,6 +135,12 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
 
     private void configureNavigationView() {
         binding.navigationView.setNavigationItemSelectedListener(this);
+    }
+
+    private void initSearchBars() {
+
+
+
     }
 
     @Override

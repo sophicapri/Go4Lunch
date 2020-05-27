@@ -99,35 +99,40 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
 
 
     private void initUI(PlaceDetails placeDetails) {
-        this.placeDetails = placeDetails;
-        binding.detailsRestaurantName.setText(placeDetails.getName());
-        binding.detailsRestaurantAddress.setText(placeDetails.getVicinity());
-        int layoutParam = 0;
-        int nbrOfPhotos = 1;
+        if (placeDetails != null) {
+            this.placeDetails = placeDetails;
+            binding.detailsRestaurantName.setText(placeDetails.getName());
+            binding.detailsRestaurantAddress.setText(placeDetails.getVicinity());
+            int layoutParam = 0;
+            int nbrOfPhotos = 1;
 
-        // To center the image
-        if (placeDetails.getPhotos() == null || placeDetails.getPhotos().size() == 1) {
-            layoutParam = ViewGroup.LayoutParams.MATCH_PARENT;
+            // To center the image
+            if (placeDetails.getPhotos() == null || placeDetails.getPhotos().size() == 1) {
+                layoutParam = ViewGroup.LayoutParams.MATCH_PARENT;
+            }
+
+            if (placeDetails.getPhotos() != null && placeDetails.getPhotos().size() != 1) {
+                nbrOfPhotos = placeDetails.getPhotos().size();
+                layoutParam = ViewGroup.LayoutParams.WRAP_CONTENT;
+            }
+
+            // Display list of photos
+            for (int i = 0; i < nbrOfPhotos && i < MAX_PHOTOS; i++) {
+                String urlPhoto = PlaceDetails.urlPhotoFormatter(placeDetails, i);
+                ImageView newPhoto = new ImageView(this);
+                binding.restaurantPhotosGroup.addView(newPhoto, layoutParam, ViewGroup.LayoutParams.MATCH_PARENT);
+                Glide.with(newPhoto.getContext())
+                        .load(urlPhoto)
+                        .apply(RequestOptions.fitCenterTransform())
+                        .into(newPhoto);
+            }
+
+            displayStars();
+            displayButtons();
+        } else {
+            Toast.makeText(this, "Une erreur est survenue", Toast.LENGTH_SHORT).show();
+            finish();
         }
-
-        if (placeDetails.getPhotos() != null && placeDetails.getPhotos().size() != 1) {
-            nbrOfPhotos = placeDetails.getPhotos().size();
-            layoutParam = ViewGroup.LayoutParams.WRAP_CONTENT;
-        }
-
-        // Display list of photos
-        for (int i = 0; i < nbrOfPhotos && i < MAX_PHOTOS; i++) {
-            String urlPhoto = PlaceDetails.urlPhotoFormatter(placeDetails, i);
-            ImageView newPhoto = new ImageView(this);
-            binding.restaurantPhotosGroup.addView(newPhoto, layoutParam, ViewGroup.LayoutParams.MATCH_PARENT);
-            Glide.with(newPhoto.getContext())
-                    .load(urlPhoto)
-                    .apply(RequestOptions.fitCenterTransform())
-                    .into(newPhoto);
-        }
-
-        displayStars();
-        displayButtons();
     }
 
     private void displayButtons() {
@@ -230,7 +235,7 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
         if (!currentUser.restaurantIsSelected(placeId)) {
             Log.i(TAG, "handleRestaurantSelection: placeId null ");
             binding.addRestaurant.setImageDrawable(getResources().getDrawable(R.drawable.ic_check_circle_black_24dp));
-            viewModel.updateUserChosenRestaurant(currentUser.getUid(), restaurant, getTodayDateInString()).observe(this, placeId -> {
+            viewModel.updateChosenRestaurant(currentUser.getUid(), restaurant, getTodayDateInString()).observe(this, placeId -> {
                 if (placeId == null) {
                     Toast.makeText(this, R.string.an_error_happened, Toast.LENGTH_LONG).show();
                     binding.addRestaurant.setImageDrawable(getResources().getDrawable(R.drawable.ic_add_black_24dp));

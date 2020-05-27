@@ -27,7 +27,7 @@ public class UserDataRepository {
     }
 
     public CollectionReference getCollectionReference() {
-            return userCollectionRef;
+        return userCollectionRef;
     }
 
     public MutableLiveData<User> createUser(User user) {
@@ -61,7 +61,7 @@ public class UserDataRepository {
         return userData;
     }
 
-    public MutableLiveData<List<User>> getListUsers(){
+    public MutableLiveData<List<User>> getListUsers() {
         MutableLiveData<List<User>> users = new MutableLiveData<>();
         userCollectionRef.get().addOnCompleteListener(task -> {
             if (task.isSuccessful())
@@ -87,34 +87,8 @@ public class UserDataRepository {
         return users;
     }
 
-   /* public MutableLiveData<Restaurant> getPlaceIdByDate(String userId, String date) {
-        MutableLiveData<Restaurant> placeId = new MutableLiveData<>();
-        userCollectionRef.document(userId).get().addOnCompleteListener(task -> {
-            if (task.isSuccessful())
-                if (task.getResult() != null) {
-                    task.getResult().getReference().get().
-                    placeId.postValue(task.getResult().get(DATES_AND_PLACE_IDS_FIELD + date));
-                }else if (task.getException() != null)
-                    Log.e(TAG, "getPlaceId: " + (task.getException().getMessage()));
-        });
-        Log.i(TAG, "getPlaceIdByDate: ??????????" + placeId.getValue());
-        return placeId;
-    }
 
-    */
-
-    /*
-    public void addRestaurantToFavorites(String placeId, String userId){
-        userCollectionRef.document(userId).update(FAVORITE_RESTAURANTS_FIELD, FieldValue.arrayUnion(placeId))
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful())
-                        Log.i(TAG, "addToFavorites: " + (task.isSuccessful()));
-                });
-    }
-
-     */
-
-    public void addRestaurantToFavorites(Restaurant restaurant, String userId){
+    public void addRestaurantToFavorites(Restaurant restaurant, String userId) {
         userCollectionRef.document(userId).update(FAVORITE_RESTAURANTS_FIELD, FieldValue.arrayUnion(restaurant))
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful())
@@ -152,20 +126,9 @@ public class UserDataRepository {
         });
     }
 
-    public void deletePlaceId(String uid, String date) {
-        userCollectionRef.document(uid).update(DATES_AND_RESTAURANTS_FIELD + date,
-                FieldValue.delete()).addOnCompleteListener(deleteUser -> {
-            if (deleteUser.isSuccessful())
-                Log.i(TAG, "deleteUser: " + (deleteUser.isSuccessful()));
-            else if (deleteUser.getException() != null)
-                Log.e(TAG, "deleteUser: " + (deleteUser.getException().getMessage()));
-        });
-    }
-
     public void deleteChosenRestaurant(String uid, String date) {
-        MutableLiveData<Restaurant> newRestaurant = new MutableLiveData<>();
         Map<String, Object> updates = new HashMap<>();
-        updates.put((DATES_AND_RESTAURANTS_FIELD +date), FieldValue.delete());
+        updates.put((DATES_AND_RESTAURANTS_FIELD + date), FieldValue.delete());
         userCollectionRef.document(uid).get().addOnCompleteListener(uidTask -> {
             if (uidTask.isSuccessful()) {
                 if (uidTask.getResult() != null)
@@ -176,15 +139,15 @@ public class UserDataRepository {
                             Log.e(TAG, "deleteRestaurant: " + (deleteRestaurant.getException().getMessage()));
                     });
                 else if (uidTask.getException() != null)
-                    Log.e(TAG, " addPlaceId: " + uidTask.getException().getMessage());
+                    Log.e(TAG, " deleteRestaurant: " + uidTask.getException().getMessage());
             }
         });
     }
 
-    public MutableLiveData<Restaurant> updateUserChosenRestaurant(String uid, Restaurant restaurant, String date) {
+    public MutableLiveData<Restaurant> updateChosenRestaurant(String uid, Restaurant restaurant, String date) {
         MutableLiveData<Restaurant> newRestaurant = new MutableLiveData<>();
         Map<String, Object> updates = new HashMap<>();
-        updates.put((DATES_AND_RESTAURANTS_FIELD +date), restaurant);
+        updates.put((DATES_AND_RESTAURANTS_FIELD + date), restaurant);
         userCollectionRef.document(uid).get().addOnCompleteListener(uidTask -> {
             if (uidTask.isSuccessful()) {
                 if (uidTask.getResult() != null)
@@ -201,24 +164,6 @@ public class UserDataRepository {
         });
         return newRestaurant;
     }
-
-    /*
-    public void updateRestaurantChosen(String uid, String restaurantName, String address) {
-        MutableLiveData<String> newRestaurantName = new MutableLiveData<>();
-        Map<String, String> restaurant = new HashMap<>();
-        restaurant.put(NAME_RESTAURANT, restaurantName);
-        restaurant.put(ADDRESS_RESTAURANT, address);
-        userCollectionRef.document(uid).update(CHOSEN_RESTAURANT_FIELD, restaurant).addOnCompleteListener(updateRestaurant -> {
-            if(updateRestaurant.isSuccessful())
-                newRestaurantName.setValue(restaurantName);
-            else if (updateRestaurant.getException() != null){
-                Log.e(TAG, "updateRestaurant: " + (updateRestaurant.getException().getMessage()));
-            }
-        });
-    }
-
-     */
-
 
     public void deleteRestaurantFromFavorites(String placeId, String userId) {
         userCollectionRef.document(userId).update(FAVORITE_RESTAURANTS_FIELD + placeId, FieldValue.delete())

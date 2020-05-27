@@ -140,7 +140,7 @@ public class WorkmateDetailActivity extends BaseActivity<MyViewModel> {
         for (String date : user.getDatesAndRestaurants().keySet()) {
             if (!date.equals(getTodayDateInString())) {
                 if (user.getDatesAndRestaurants().get(date) != null)
-                placeId = ((Restaurant) Objects.requireNonNull(user.getDatesAndRestaurants().get(date))).getPlaceId();
+                placeId = Objects.requireNonNull(user.getDatesAndRestaurants().get(date)).getPlaceId();
                 viewModel.getPlaceDetails(placeId).observe(this, placeDetails -> {
                     //
                     if (placeDetails != null) {
