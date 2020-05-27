@@ -113,16 +113,12 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Eas
         }
 
         activity.binding.searchBarMap.searchBarInput.addTextChangedListener(new TextWatcher() {
+            //to stop the TextWatcher to fire multiple times
+            boolean isOnTextChanged = false;
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                Log.i(TAG, "onTextChanged: ");
-                if (!ORIENTATION_CHANGED) {
-                    searchBarTextInput = s.toString();
-                    autocompleteActive = true;
-                    Log.i(TAG, "onTextChanged: OK?");
-                    displayResultsAutocomplete(searchBarTextInput);
-                }
+                isOnTextChanged = true;
             }
 
             @Override
@@ -132,6 +128,12 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Eas
 
             @Override
             public void afterTextChanged(Editable s) {
+                if (!ORIENTATION_CHANGED && isOnTextChanged) {
+                    isOnTextChanged = false;
+                    searchBarTextInput = s.toString();
+                    autocompleteActive = true;
+                    displayResultsAutocomplete(searchBarTextInput);
+                }
 
             }
         });
@@ -183,6 +185,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Eas
                 .setLocationRestriction(RectangularBounds.newInstance(southWest, northEast))
                 .setQuery(searchBarTextInput)
                 .build();
+
         activity.placesClient.findAutocompletePredictions(predictionsRequest).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 FindAutocompletePredictionsResponse predictionsResponse = task.getResult();

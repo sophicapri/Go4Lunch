@@ -1,7 +1,6 @@
 package com.sophieopenclass.go4lunch.controllers.adapters;
 
 import android.content.res.Resources;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,21 +13,22 @@ import com.bumptech.glide.request.RequestOptions;
 import com.sophieopenclass.go4lunch.R;
 import com.sophieopenclass.go4lunch.base.BaseActivity;
 import com.sophieopenclass.go4lunch.databinding.FragmentListViewBinding;
+import com.sophieopenclass.go4lunch.databinding.ItemPlaceLoadingBinding;
 import com.sophieopenclass.go4lunch.models.json_to_java.OpeningHours;
 import com.sophieopenclass.go4lunch.models.json_to_java.PlaceDetails;
 import com.sophieopenclass.go4lunch.utils.CalculateRatings;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
 import static com.sophieopenclass.go4lunch.listeners.Listeners.OnRestaurantClickListener;
 
-public class RestaurantListAdapter extends RecyclerView.Adapter<RestaurantListAdapter.PlaceViewHolder> {
+public class RestaurantListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final String TAG = "RESO LIST ADAPTER";
     private List<PlaceDetails> placeDetailsList;
     private OnRestaurantClickListener onRestaurantClickListener;
     private RequestManager glide;
+    private final int VIEW_TYPE_ITEM = 0;
 
     public RestaurantListAdapter(List<PlaceDetails> placeDetailsList,
                                  OnRestaurantClickListener onRestaurantClickListener, RequestManager glide) {
@@ -39,20 +39,39 @@ public class RestaurantListAdapter extends RecyclerView.Adapter<RestaurantListAd
 
     @NonNull
     @Override
-    public PlaceViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_list_view,
-                parent, false);
-        return new PlaceViewHolder(view, onRestaurantClickListener);
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        if (viewType == VIEW_TYPE_ITEM) {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_list_view,
+                    parent, false);
+            return new PlaceViewHolder(view, onRestaurantClickListener);
+        } else {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_place_loading, parent, false);
+            return new LoadingViewHolder(view);
+        }
     }
 
     @Override
-    public void onBindViewHolder(@NonNull PlaceViewHolder holder, int position) {
-        holder.bind(placeDetailsList.get(position));
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        if (holder instanceof PlaceViewHolder)
+            ((PlaceViewHolder)holder).bind(placeDetailsList.get(position));
     }
 
     @Override
     public int getItemCount() {
-        return placeDetailsList.size();
+        return placeDetailsList == null ? 0 : placeDetailsList.size();
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        int VIEW_TYPE_LOADING = 1;
+        return placeDetailsList.get(position) == null ? VIEW_TYPE_LOADING : VIEW_TYPE_ITEM;
+    }
+
+    // Progress bar
+    static class LoadingViewHolder extends RecyclerView.ViewHolder {
+        LoadingViewHolder(View itemView) {
+            super(itemView);
+        }
     }
 
     class PlaceViewHolder extends RecyclerView.ViewHolder {

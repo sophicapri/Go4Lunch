@@ -112,6 +112,7 @@
     <string name="english_locale">English</string>
     <string name="locale_saved">Language saved</string>
     <string name="delete_my_account">Delete my account</string>
+    <string name="search_button">Search button</string>
 
 
 </resources>
