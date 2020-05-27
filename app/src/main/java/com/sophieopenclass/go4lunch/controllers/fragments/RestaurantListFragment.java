@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -42,6 +43,7 @@ import java.util.List;
 
 import pub.devrel.easypermissions.EasyPermissions;
 
+import static com.sophieopenclass.go4lunch.base.BaseActivity.ORIENTATION_CHANGED;
 import static com.sophieopenclass.go4lunch.controllers.fragments.MapViewFragment.PERMS;
 import static com.sophieopenclass.go4lunch.controllers.fragments.MapViewFragment.getLatLngString;
 
@@ -111,9 +113,11 @@ public class RestaurantListFragment extends Fragment implements EasyPermissions.
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                autocompleteActive = true;
-                restaurants.clear();
-                displayResultsAutocomplete(s.toString());
+                if (!ORIENTATION_CHANGED) {
+                    autocompleteActive = true;
+                    restaurants.clear();
+                    displayResultsAutocomplete(s.toString());
+                }
             }
 
             @Override
@@ -176,6 +180,12 @@ public class RestaurantListFragment extends Fragment implements EasyPermissions.
     }
 
     @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        ORIENTATION_CHANGED = true;
+    }
+
+    @Override
     public void onResume() {
         if (restaurants.isEmpty() || autocompleteActive) {
             activity.binding.progressBar.setVisibility(View.VISIBLE);
@@ -184,6 +194,7 @@ public class RestaurantListFragment extends Fragment implements EasyPermissions.
             autocompleteActive = false;
             activity.binding.searchBarRestaurantList.searchBarInput.getText().clear();
         }
+        ORIENTATION_CHANGED = false;
         super.onResume();
     }
 

@@ -64,6 +64,7 @@ public abstract class BaseActivity<T extends ViewModel> extends AppCompatActivit
     public final String PERMS = ACCESS_FINE_LOCATION;
     public static final String SHARED_PREFS = "sharedPrefs";
     public static SharedPreferences sharedPrefs;
+    public static boolean ORIENTATION_CHANGED = false;
     private static final String WORK_REQUEST_NAME = "Lunch reminder";
     public PeriodicWorkRequest workRequest;
 

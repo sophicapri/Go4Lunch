@@ -63,6 +63,7 @@ import java.util.Locale;
 import pub.devrel.easypermissions.EasyPermissions;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+import static com.sophieopenclass.go4lunch.base.BaseActivity.ORIENTATION_CHANGED;
 import static com.sophieopenclass.go4lunch.utils.Constants.PLACE_ID;
 
 public class MapViewFragment extends Fragment implements OnMapReadyCallback, EasyPermissions.PermissionCallbacks {
@@ -111,29 +112,27 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Eas
             });
         }
 
+        activity.binding.searchBarMap.searchBarInput.addTextChangedListener(new TextWatcher() {
 
-        activity.binding.searchBarMap.searchBarInput.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                activity.binding.searchBarMap.searchBarInput.addTextChangedListener(new TextWatcher() {
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                Log.i(TAG, "onTextChanged: ");
+                if (!ORIENTATION_CHANGED) {
+                    searchBarTextInput = s.toString();
+                    autocompleteActive = true;
+                    Log.i(TAG, "onTextChanged: OK?");
+                    displayResultsAutocomplete(searchBarTextInput);
+                }
+            }
 
-                    @Override
-                    public void onTextChanged(CharSequence s, int start, int before, int count) {
-                        searchBarTextInput = s.toString();
-                        autocompleteActive = true;
-                        displayResultsAutocomplete(searchBarTextInput);
-                    }
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-                    @Override
-                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
 
-                    }
+            @Override
+            public void afterTextChanged(Editable s) {
 
-                    @Override
-                    public void afterTextChanged(Editable s) {
-
-                    }
-                });
             }
         });
 
@@ -147,35 +146,25 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Eas
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        Log.i(TAG, "onStart: ");
-
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
+        ORIENTATION_CHANGED = false;
+        Log.i(TAG, "onResume: ");
         if (context.networkUnavailable()) {
             Snackbar.make(activity.binding.getRoot(), getString(R.string.internet_unavailable), BaseTransientBottomBar.LENGTH_INDEFINITE)
                     .setTextColor(getResources().getColor(R.color.quantum_white_100)).setDuration(5000).show();
         } else {
             if (context.requestLocationPermission()) {
-                 fetchLastLocation();
+                fetchLastLocation();
             }
         }
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
-        Log.i(TAG, "onPause: ");
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        Log.i(TAG, "onStop: ");
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        // To stop the TextWatcher from firing
+        ORIENTATION_CHANGED = true;
     }
 
     private void displayResultsAutocomplete(String searchBarTextInput) {

@@ -62,12 +62,10 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
         if (!sharedPrefs.contains(PREF_REMINDER) || sharedPrefs.getBoolean(PREF_REMINDER, false))
             activateReminder();
 
-        Log.i(TAG, "onCreate: ");
         configureToolbar();
         configureDrawerLayout();
         configureNavigationView();
         initPlacesApi();
-        showFragment(FRAGMENT_MAP_VIEW);
         if (getCurrentUser() != null)
             viewModel.getUser(getCurrentUser().getUid()).observe(this, user -> {
                 currentUser = user;
@@ -76,7 +74,12 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
         binding.bottomNavView.setOnNavigationItemSelectedListener(this::onNavigationItemSelected);
     }
 
-
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (!ORIENTATION_CHANGED)
+            showFragment(FRAGMENT_MAP_VIEW);
+    }
 
     @Override
     public Class getViewModelClass() {
@@ -112,7 +115,6 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
     private void initPlacesApi() {
         // Initialize the SDK
         Places.initialize(getApplicationContext(), BuildConfig.API_KEY);
-
         // Create a new Places client instance
         placesClient = Places.createClient(this);
     }
@@ -126,6 +128,19 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
 
     private void configureNavigationView() {
         binding.navigationView.setNavigationItemSelectedListener(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Update UI
+        if (SettingsActivity.localeHasChanged || SettingsActivity.profileHasChanged) {
+            finish();
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+            SettingsActivity.localeHasChanged = false;
+            SettingsActivity.profileHasChanged = false;
+        }
     }
 
     @Override
@@ -156,19 +171,6 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
         }
         binding.drawerLayout.closeDrawer(GravityCompat.START);
         return true;
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        // Update UI
-        if (SettingsActivity.localeHasChanged || SettingsActivity.profileHasChanged) {
-            finish();
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
-            SettingsActivity.localeHasChanged = false;
-            SettingsActivity.profileHasChanged = false;
-        }
     }
 
     @Override
@@ -233,11 +235,6 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
                 .replace(R.id.frame_layout, fragment).commit();
 
         updateUI(fragment);
-        //To refresh the Restaurant list when the user is already in RestaurantList fragment and taps
-        // on the List view.
-        Fragment activeFragment = getSupportFragmentManager().findFragmentById(R.id.frame_layout);
-        if (activeFragment != null && activeFragment.getClass().equals(RestaurantListFragment.class))
-            fragment.onResume();
     }
 
     private void updateUI(Fragment fragment) {
