@@ -114,7 +114,6 @@ public class RestaurantListFragment extends Fragment implements EasyPermissions.
 
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                adapter.notifyDataSetChanged();
             }
 
             @Override
@@ -253,7 +252,7 @@ public class RestaurantListFragment extends Fragment implements EasyPermissions.
                                 int indexStart = restaurants.size() - 1;
                                 this.restaurants.addAll(completePlaceDetailsList);
                                 if (!autocompleteActive)
-                                    adapter.notifyItemRangeInserted(indexStart, completePlaceDetailsList.size() - 1);
+                                    adapter.notifyItemRangeInserted(indexStart, completePlaceDetailsList.size());
                                 else {
                                     adapter.notifyItemRemoved(0);
                                     adapter.notifyItemRangeInserted(0, completePlaceDetailsList.size());
@@ -359,7 +358,7 @@ public class RestaurantListFragment extends Fragment implements EasyPermissions.
                     observePlaces(nextPageToken);
                     adapter.notifyDataSetChanged();
                     isLoading = false;
-                }, 3500);
+                }, 2000);
 
             }
         }

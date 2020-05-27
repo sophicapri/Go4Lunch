@@ -41,6 +41,7 @@ import static com.sophieopenclass.go4lunch.utils.Constants.FRAGMENT_RESTAURANT_L
 import static com.sophieopenclass.go4lunch.utils.Constants.FRAGMENT_WORKMATES_LIST;
 
 public class MainActivity extends BaseActivity<MyViewModel> implements NavigationView.OnNavigationItemSelectedListener {
+    private static boolean RESTART_STATE = false;
     public ActivityMainBinding binding;
     private User currentUser;
     private Fragment fragmentMapView;
@@ -62,6 +63,7 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
         if (!sharedPrefs.contains(PREF_REMINDER) || sharedPrefs.getBoolean(PREF_REMINDER, false))
             activateReminder();
 
+        Log.i(TAG, "onCreate: ");
         configureToolbar();
         configureDrawerLayout();
         configureNavigationView();
@@ -77,8 +79,16 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
     @Override
     protected void onStart() {
         super.onStart();
-        if (!ORIENTATION_CHANGED)
+        if (!ORIENTATION_CHANGED && !RESTART_STATE)
             showFragment(FRAGMENT_MAP_VIEW);
+        else if (RESTART_STATE)
+            RESTART_STATE = false;
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        RESTART_STATE = true;
     }
 
     @Override
