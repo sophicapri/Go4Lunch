@@ -38,7 +38,7 @@ import com.sophieopenclass.go4lunch.controllers.activities.RestaurantDetailsActi
 import com.sophieopenclass.go4lunch.controllers.activities.WorkmateDetailActivity;
 import com.sophieopenclass.go4lunch.injection.Injection;
 import com.sophieopenclass.go4lunch.listeners.Listeners;
-import com.sophieopenclass.go4lunch.utils.NotificationWorker;
+import com.sophieopenclass.go4lunch.notifications.NotificationWorker;
 import com.sophieopenclass.go4lunch.utils.ViewModelFactory;
 
 import java.util.Calendar;
@@ -47,7 +47,6 @@ import java.util.concurrent.TimeUnit;
 
 import pub.devrel.easypermissions.EasyPermissions;
 
-import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static android.content.Intent.EXTRA_UID;
 import static com.sophieopenclass.go4lunch.utils.Constants.LOCATION_PERMISSION_REQUEST_CODE;
 import static com.sophieopenclass.go4lunch.utils.Constants.PERMS;

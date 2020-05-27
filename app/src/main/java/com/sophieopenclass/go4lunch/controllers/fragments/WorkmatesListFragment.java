@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -124,7 +123,7 @@ public class WorkmatesListFragment extends Fragment {
             List<User> orderedList = new ArrayList<>();
             List<User> workmatesWithoutRestaurant = new ArrayList<>();
             for (User user : usersWithoutCurrentLogged) {
-                if (user.getDatesAndPlaceIds().get(getTodayDateInString()) != null)
+                if (user.getDatesAndRestaurants().get(getTodayDateInString()) != null)
                     orderedList.add(user);
                 else
                     workmatesWithoutRestaurant.add(user);

@@ -13,13 +13,14 @@ import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.request.RequestOptions;
 import com.sophieopenclass.go4lunch.R;
 import com.sophieopenclass.go4lunch.databinding.FragmentWorkmatesListBinding;
+import com.sophieopenclass.go4lunch.models.Restaurant;
 import com.sophieopenclass.go4lunch.models.User;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static com.sophieopenclass.go4lunch.listeners.Listeners.OnWorkmateClickListener;
-import static com.sophieopenclass.go4lunch.utils.Constants.NAME_RESTAURANT;
 import static com.sophieopenclass.go4lunch.utils.DateFormatting.getTodayDateInString;
 
 public class WorkmatesViewAdapter extends RecyclerView.Adapter<WorkmatesViewAdapter.UserViewHolder> {
@@ -50,7 +51,7 @@ public class WorkmatesViewAdapter extends RecyclerView.Adapter<WorkmatesViewAdap
         return workmates.size();
     }
 
-    public void updateList(List<User> workmates){
+    public void updateList(List<User> workmates) {
         this.workmates = workmates;
         notifyDataSetChanged();
     }
@@ -69,18 +70,18 @@ public class WorkmatesViewAdapter extends RecyclerView.Adapter<WorkmatesViewAdap
         }
 
         void bind(User model) {
-            String placeId = model.getDatesAndPlaceIds().get(getTodayDateInString());
+            Restaurant chosenRestaurant = model.getDatesAndRestaurants().get(getTodayDateInString());
+
             glide.load(model.getUrlPicture())
                     .apply(RequestOptions.circleCropTransform())
                     .into(binding.workmateProfilePic);
 
-            if (placeId != null) {
+            if (chosenRestaurant != null && chosenRestaurant.getPlaceId() != null) {
                 binding.workmatesChoice.setText(context.getResources()
-                        .getString(R.string.workmates_eating_at, model.getUsername(), model.getChosenRestaurant().get(NAME_RESTAURANT)));
+                        .getString(R.string.workmates_eating_at, model.getUsername(), chosenRestaurant.getName()));
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     binding.workmatesChoice.setTextAppearance(R.style.TextStyleNormal);
-                }
-                else
+                } else
                     binding.workmatesChoice.setTextColor(context.getResources().getColor(R.color.quantum_black_100));
             } else {
                 binding.workmatesChoice.setText(context.getResources()

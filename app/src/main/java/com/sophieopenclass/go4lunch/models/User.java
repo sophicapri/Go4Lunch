@@ -2,31 +2,25 @@ package com.sophieopenclass.go4lunch.models;
 
 import androidx.annotation.Nullable;
 
-import java.text.DateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
-
-import static com.sophieopenclass.go4lunch.utils.Constants.ADDRESS_RESTAURANT;
-import static com.sophieopenclass.go4lunch.utils.Constants.NAME_RESTAURANT;
 
 public class User {
     private String uid;
     private String username;
     @Nullable
     private String urlPicture;
-    private Map<String, String> datesAndPlaceIds = new HashMap<>();
-    private Map<String, String> chosenRestaurant;
+    private Map<String, Restaurant> datesAndRestaurants = new HashMap<>();
+    private Restaurant chosenRestaurant;
     private String email;
-    private List<String> favoriteRestaurantIds = new ArrayList<>();
+    private Map<String, Restaurant> favoriteRestaurants = new HashMap<>();
 
     public User() {
     }
 
-    public User(String uid, String username, @org.jetbrains.annotations.Nullable String urlPicture, String email) {
+    public User(String uid, String username, @Nullable String urlPicture, String email) {
         this.uid = uid;
         this.username = username;
         this.urlPicture = urlPicture;
@@ -63,30 +57,43 @@ public class User {
         this.urlPicture = urlPicture;
     }
 
-    public Map<String, String> getDatesAndPlaceIds() {
-        return datesAndPlaceIds;
+    public Map<String, Restaurant> getDatesAndRestaurants() {
+        return datesAndRestaurants;
     }
 
-    public void setDatesAndPlaceIds(Map<String, String> datesAndPlaceIds) {
-        this.datesAndPlaceIds = datesAndPlaceIds;
+    public void setDatesAndRestaurants(Map<String, Restaurant> datesAndRestaurants) {
+        this.datesAndRestaurants = datesAndRestaurants;
     }
 
-    public Map<String, String> getChosenRestaurant() {
+    public Restaurant getChosenRestaurant() {
         return chosenRestaurant;
     }
 
-    public void setChosenRestaurant(Map<String, String> chosenRestaurant) {
+    public void setChosenRestaurant(Restaurant chosenRestaurant) {
         this.chosenRestaurant = chosenRestaurant;
     }
 
-    public List<String> getFavoriteRestaurantIds() {
-        return favoriteRestaurantIds;
+    public Map<String, Restaurant> getFavoriteRestaurants() {
+        return favoriteRestaurants;
     }
 
-    public void setFavoriteRestaurantIds(List<String> favoriteRestaurantIds) {
-        this.favoriteRestaurantIds = favoriteRestaurantIds;
+    public void addToFavorites(Restaurant favoriteRestaurant) {
+        this.favoriteRestaurants.put(favoriteRestaurant.getPlaceId(),favoriteRestaurant);
     }
 
+    public boolean restaurantNotFavorite(String placeId) {
+        for (Restaurant restaurant : favoriteRestaurants.values())
+            if (restaurant.getPlaceId().equals(placeId))
+                return false;
+        return true;
+    }
+
+    public boolean restaurantIsSelected(String placeId) {
+        for (Restaurant restaurant : datesAndRestaurants.values())
+            if (restaurant.getPlaceId().equals(placeId))
+                return true;
+        return false;
+    }
 
     public String getEmail() {
         return email;

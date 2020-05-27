@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -28,6 +29,7 @@ import com.sophieopenclass.go4lunch.R;
 import com.sophieopenclass.go4lunch.base.BaseActivity;
 import com.sophieopenclass.go4lunch.controllers.adapters.RestaurantWorkmatesListAdapter;
 import com.sophieopenclass.go4lunch.databinding.ActivityRestaurantDetailsBinding;
+import com.sophieopenclass.go4lunch.models.Restaurant;
 import com.sophieopenclass.go4lunch.models.User;
 import com.sophieopenclass.go4lunch.models.json_to_java.PlaceDetails;
 import com.sophieopenclass.go4lunch.utils.CalculateRatings;
@@ -35,8 +37,9 @@ import com.sophieopenclass.go4lunch.utils.CalculateRatings;
 import java.util.List;
 import java.util.Locale;
 
-import static com.sophieopenclass.go4lunch.utils.Constants.DATES_AND_PLACE_IDS_FIELD;
+import static com.sophieopenclass.go4lunch.utils.Constants.DATES_AND_RESTAURANTS_FIELD;
 import static com.sophieopenclass.go4lunch.utils.Constants.PLACE_ID;
+import static com.sophieopenclass.go4lunch.utils.Constants.PLACE_ID_FIELD;
 import static com.sophieopenclass.go4lunch.utils.DateFormatting.getTodayDateInString;
 
 public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> implements View.OnClickListener {
@@ -46,6 +49,7 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
     private FirestoreRecyclerAdapter adapter;
     private String placeId;
     private PlaceDetails placeDetails;
+    private Restaurant restaurant;
     private User currentUser;
 
     @Override
@@ -79,7 +83,7 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
         if (networkUnavailable()) {
             Snackbar.make(binding.getRoot(), getString(R.string.internet_unavailable), BaseTransientBottomBar.LENGTH_INDEFINITE)
                     .setDuration(5000).setTextColor(getResources().getColor(R.color.quantum_white_100)).show();
-        }else if (getIntent().getExtras() != null) {
+        } else if (getIntent().getExtras() != null) {
             if (getIntent().hasExtra(PLACE_ID)) {
                 placeId = (String) getIntent().getExtras().get(PLACE_ID);
                 if (placeId != null && !placeId.isEmpty())
@@ -130,12 +134,12 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
         if (getCurrentUser() != null) {
             viewModel.getUser(getCurrentUser().getUid()).observe(this, user -> {
                 currentUser = user;
-                if (placeId.equals(user.getDatesAndPlaceIds().get(getTodayDateInString())))
-                    binding.addRestaurant.setImageDrawable(getResources().getDrawable(R.drawable.ic_check_circle_black_24dp));
-                else
-                    binding.addRestaurant.setImageDrawable(getResources().getDrawable(R.drawable.ic_add_black_24dp));
+                    if (user.restaurantIsSelected(placeId))
+                        binding.addRestaurant.setImageDrawable(getResources().getDrawable(R.drawable.ic_check_circle_black_24dp));
+                    else
+                        binding.addRestaurant.setImageDrawable(getResources().getDrawable(R.drawable.ic_add_black_24dp));
 
-                if (!user.getFavoriteRestaurantIds().contains(placeId))
+                if (user.restaurantNotFavorite(placeId))
                     binding.likeRestaurantStar.setImageDrawable(getResources().getDrawable(R.drawable.ic_star_border_black_24dp));
                 else
                     binding.likeRestaurantStar.setImageDrawable(getResources().getDrawable(R.drawable.ic_star_full_24dp));
@@ -144,8 +148,9 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
     }
 
     private void displayStars() {
+        int numberOfStars = 0;
         if (placeDetails.getRating() != null) {
-            int numberOfStars = CalculateRatings.getNumberOfStarsToDisplay(placeDetails.getRating());
+            numberOfStars = CalculateRatings.getNumberOfStarsToDisplay(placeDetails.getRating());
             if (numberOfStars == 1)
                 binding.oneStar.setVisibility(View.VISIBLE);
             if (numberOfStars == 2)
@@ -153,12 +158,17 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
             if (numberOfStars == 3)
                 binding.threeStars.setVisibility(View.VISIBLE);
         }
+
+        //
+        restaurant = new Restaurant(placeId, placeDetails.getName(), placeDetails.getVicinity(),
+                PlaceDetails.urlPhotoFormatter(placeDetails, 0), numberOfStars);
     }
 
     private void setUpRecyclerView() {
+        String firestorePlaceIdPath = DATES_AND_RESTAURANTS_FIELD + getTodayDateInString() + PLACE_ID_FIELD;
         FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>()
                 .setQuery(viewModel.getCollectionReference()
-                        .whereEqualTo(DATES_AND_PLACE_IDS_FIELD + getTodayDateInString(), placeId), User.class)
+                        .whereEqualTo(firestorePlaceIdPath, placeId ), User.class)
                 .build();
         adapter = new RestaurantWorkmatesListAdapter(options, this, Glide.with(this));
         binding.detailRecyclerViewWorkmates.setHasFixedSize(true);
@@ -170,7 +180,7 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
     @Override
     public void onClick(View v) {
         if (v == binding.addRestaurant)
-            viewModel.getPlaceIdByDate(currentUser.getUid(), getTodayDateInString()).observe(this, this::handleRestaurantSelection);
+            viewModel.getUser(currentUser.getUid()).observe(this, this::handleRestaurantSelection);
         else if (v == binding.callBtn)
             callRestaurant();
         else if (v == binding.likeRestaurantBtn)
@@ -216,24 +226,20 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
         return result;
     }
 
-    private void handleRestaurantSelection(String currentUserPlaceId) {
-        if (!placeId.equals(currentUserPlaceId)) {
+    private void handleRestaurantSelection(User currentUser) {
+        if (!currentUser.restaurantIsSelected(placeId)) {
+            Log.i(TAG, "handleRestaurantSelection: placeId null ");
             binding.addRestaurant.setImageDrawable(getResources().getDrawable(R.drawable.ic_check_circle_black_24dp));
-            if (currentUserPlaceId == null)
-                viewModel.updateUserPlaceId(currentUser.getUid(), placeId, getTodayDateInString()).observe(this, placeId -> {
-                    if (placeId == null) {
-                        Toast.makeText(this, R.string.an_error_happened, Toast.LENGTH_LONG).show();
-                        viewModel.updateRestaurantChosen(currentUser.getUid(), "", "");
-                        binding.addRestaurant.setImageDrawable(getResources().getDrawable(R.drawable.ic_add_black_24dp));
-                    }
-                });
-            else
-                viewModel.updateUserPlaceId(currentUser.getUid(), placeId, getTodayDateInString());
-            viewModel.updateRestaurantChosen(currentUser.getUid(), placeDetails.getName(), placeDetails.getVicinity());
+            viewModel.updateUserChosenRestaurant(currentUser.getUid(), restaurant, getTodayDateInString()).observe(this, placeId -> {
+                if (placeId == null) {
+                    Toast.makeText(this, R.string.an_error_happened, Toast.LENGTH_LONG).show();
+                    binding.addRestaurant.setImageDrawable(getResources().getDrawable(R.drawable.ic_add_black_24dp));
+                }
+            });
         } else {
+            Log.i(TAG, "handleRestaurantSelection: NO ");
             binding.addRestaurant.setImageDrawable(getResources().getDrawable(R.drawable.ic_add_black_24dp));
-            viewModel.deletePlaceId(currentUser.getUid(), getTodayDateInString());
-            viewModel.updateRestaurantChosen(currentUser.getUid(), "", "");
+            viewModel.deleteChosenRestaurant(currentUser.getUid(), getTodayDateInString());
         }
     }
 
@@ -280,8 +286,8 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
     }
 
     private void handleLikeRestaurantClick(User currentUser) {
-        if (!currentUser.getFavoriteRestaurantIds().contains(placeId)) {
-            viewModel.addRestaurantToFavorites(placeId, currentUser.getUid());
+        if (currentUser.restaurantNotFavorite(placeId)) {
+            viewModel.addRestaurantToFavorites(restaurant, currentUser.getUid());
             binding.likeRestaurantStar.setImageDrawable(getResources().getDrawable(R.drawable.ic_star_full_24dp));
             Toast.makeText(this, R.string.added_to_favorites, Toast.LENGTH_SHORT).show();
         } else {

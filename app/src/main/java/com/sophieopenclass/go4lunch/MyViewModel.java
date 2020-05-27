@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.Query;
 import com.sophieopenclass.go4lunch.models.Message;
+import com.sophieopenclass.go4lunch.models.Restaurant;
 import com.sophieopenclass.go4lunch.models.json_to_java.RestaurantsResult;
 import com.sophieopenclass.go4lunch.models.json_to_java.PlaceDetails;
 import com.sophieopenclass.go4lunch.models.User;
@@ -65,13 +66,21 @@ public class MyViewModel extends ViewModel {
         return userDataSource.getUsersByPlaceIdAndDate(placeId, date);
     }
 
-    public LiveData<String> updateUserPlaceId(String uid, String placeId, String date) {
-        return userDataSource.updateUserPlaceId(uid, placeId, date);
+    public LiveData<Restaurant> updateUserChosenRestaurant(String uid, Restaurant restaurant, String date) {
+        return userDataSource.updateUserChosenRestaurant(uid, restaurant, date);
     }
 
-    public void updateRestaurantChosen(String uid, String restaurantName, String address) {
+
+    public void deleteChosenRestaurant(String uid, String date) {
+        userDataSource.deleteChosenRestaurant(uid, date);
+    }
+
+
+   /* public void updateRestaurantChosen(String uid, String restaurantName, String address) {
         userDataSource.updateRestaurantChosen(uid, restaurantName, address);
     }
+
+    */
 
     public void deletePlaceId(String uid, String date) {
         userDataSource.deletePlaceId(uid, date);
@@ -82,20 +91,18 @@ public class MyViewModel extends ViewModel {
     }
 
 
-    public LiveData<String> getPlaceIdByDate(String userId, String date) {
+    /*public LiveData<Restaurant> getPlaceIdByDate(String userId, String date) {
         return userDataSource.getPlaceIdByDate(userId, date);
     }
 
-    public void addRestaurantToFavorites(String placeId, String userId) {
-        userDataSource.addRestaurantToFavorites(placeId, userId);
+     */
+
+    public void addRestaurantToFavorites(Restaurant restaurant, String userId) {
+        userDataSource.addRestaurantToFavorites(restaurant, userId);
     }
 
-    public void deleteRestaurantFromFavorites(String placeId, String userId) {
-        userDataSource.deleteRestaurantFromFavorites(placeId, userId);
-    }
-
-    public LiveData<Integer> getNumberOfLikesByPlaceId(String placeId) {
-        return userDataSource.getNumberOfLikesByPlaceId(placeId);
+    public void deleteRestaurantFromFavorites(String userId, String placeId) {
+        userDataSource.deleteRestaurantFromFavorites(userId, placeId);
     }
 
     public void updateUsername(String username, String uid) {

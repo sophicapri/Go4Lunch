@@ -9,9 +9,10 @@ import static java.lang.annotation.RetentionPolicy.SOURCE;
 
 public class Constants {
     public static final String PLACE_ID = "placeId";
-    public static final String DATES_AND_PLACE_IDS_FIELD = "datesAndPlaceIds.";
-    public static final String FAVORITE_RESTAURANTS_FIELD = "favoriteRestaurantIds";
-    public static final String CHOSEN_RESTAURANT_FIELD = "chosenRestaurant";
+    public static final String DATES_AND_RESTAURANTS_FIELD = "datesAndRestaurants.";
+    public static final String FAVORITE_RESTAURANTS_FIELD = "favoriteRestaurants";
+    public static final String PLACE_ID_FIELD = ".placeId";
+
     //
     public static final String USERNAME_FIELD = "username";
     public static final String NAME_RESTAURANT = "name";

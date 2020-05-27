@@ -2,11 +2,9 @@ package com.sophieopenclass.go4lunch.controllers.activities;
 
 import android.content.Intent;
 import android.os.Build;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.bumptech.glide.Glide;
@@ -18,6 +16,7 @@ import com.sophieopenclass.go4lunch.R;
 import com.sophieopenclass.go4lunch.base.BaseActivity;
 import com.sophieopenclass.go4lunch.controllers.adapters.PreviousRestaurantsAdapter;
 import com.sophieopenclass.go4lunch.databinding.ActivityWorkmateDetailBinding;
+import com.sophieopenclass.go4lunch.models.Restaurant;
 import com.sophieopenclass.go4lunch.models.User;
 import com.sophieopenclass.go4lunch.models.json_to_java.PlaceDetails;
 import com.sophieopenclass.go4lunch.utils.CalculateRatings;
@@ -25,6 +24,7 @@ import com.sophieopenclass.go4lunch.utils.CalculateRatings;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Objects;
 
 import static android.content.Intent.EXTRA_UID;
 import static com.sophieopenclass.go4lunch.utils.DateFormatting.getTodayDateInString;
@@ -57,12 +57,12 @@ public class WorkmateDetailActivity extends BaseActivity<MyViewModel> {
         } else if (getIntent().getExtras() != null && getIntent().hasExtra(EXTRA_UID)) {
             uid = (String) getIntent().getExtras().get(EXTRA_UID);
             viewModel.getUser(uid).observe(this, user -> {
-                    if (user != null )
-                        initUI(user);
-                    else {
-                        finish();
-                        Toast.makeText(this, "Ce compte n'existe plus", Toast.LENGTH_SHORT).show();
-                    }
+                if (user != null)
+                    initUI(user);
+                else {
+                    finish();
+                    Toast.makeText(this, "Ce compte n'existe plus", Toast.LENGTH_SHORT).show();
+                }
             });
         }
         binding.chatWithWorkmateBtn.setOnClickListener(v -> startChatActivity(uid));
@@ -75,9 +75,10 @@ public class WorkmateDetailActivity extends BaseActivity<MyViewModel> {
                 .apply(RequestOptions.circleCropTransform())
                 .into(binding.workmateProfilePic);
 
-        String todaysPlaceId = user.getDatesAndPlaceIds().get(getTodayDateInString());
-        if (todaysPlaceId != null) {
-            displayTodaysRestaurant(todaysPlaceId);
+        if (user.getDatesAndRestaurants().get(getTodayDateInString()) != null) {
+            String todayPlaceId = ((Restaurant) Objects.requireNonNull(user.getDatesAndRestaurants()
+                    .get(getTodayDateInString()))).getPlaceId();
+            displayTodaysRestaurant(todayPlaceId);
         } else {
             binding.workmateDetailLunch.workmateDetailLunch.setVisibility(View.GONE);
             binding.workmateLunchTextview.setText(R.string.no_restaurant_chosen);
@@ -134,20 +135,21 @@ public class WorkmateDetailActivity extends BaseActivity<MyViewModel> {
         binding.previousRestaurantsRecyclerview.setHasFixedSize(true);
         binding.previousRestaurantsRecyclerview.setLayoutManager(new LinearLayoutManager(this));
         placeDetailsList = new ArrayList<>();
-        String placeId;
+        String placeId = "";
 
-        for (String date : user.getDatesAndPlaceIds().keySet()) {
+        for (String date : user.getDatesAndRestaurants().keySet()) {
             if (!date.equals(getTodayDateInString())) {
-                placeId = user.getDatesAndPlaceIds().get(date);
+                if (user.getDatesAndRestaurants().get(date) != null)
+                placeId = ((Restaurant) Objects.requireNonNull(user.getDatesAndRestaurants().get(date))).getPlaceId();
                 viewModel.getPlaceDetails(placeId).observe(this, placeDetails -> {
                     //
                     if (placeDetails != null) {
-                    placeDetails.setDateOfLunch(date);
-                    placeDetailsList.add(placeDetails);
-                    if (placeDetailsList.size() == user.getDatesAndPlaceIds().values().size() - minus) {
-                        Collections.sort(placeDetailsList, new RestaurantRecentComparator());
-                        updateRecyclerView(placeDetailsList);
-                    }
+                        placeDetails.setDateOfLunch(date);
+                        placeDetailsList.add(placeDetails);
+                        if (placeDetailsList.size() == user.getDatesAndRestaurants().values().size() - minus) {
+                            Collections.sort(placeDetailsList, new RestaurantRecentComparator());
+                            updateRecyclerView(placeDetailsList);
+                        }
                     }
                 });
             } else {
