@@ -49,23 +49,23 @@ import pub.devrel.easypermissions.EasyPermissions;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static android.content.Intent.EXTRA_UID;
+import static com.sophieopenclass.go4lunch.utils.Constants.LOCATION_PERMISSION_REQUEST_CODE;
+import static com.sophieopenclass.go4lunch.utils.Constants.PERMS;
 import static com.sophieopenclass.go4lunch.utils.Constants.PLACE_ID;
+import static com.sophieopenclass.go4lunch.utils.Constants.PREF_LANGUAGE;
+import static com.sophieopenclass.go4lunch.utils.Constants.PREF_REMINDER;
+import static com.sophieopenclass.go4lunch.utils.Constants.SHARED_PREFS;
+import static com.sophieopenclass.go4lunch.utils.Constants.WORK_REQUEST_NAME;
 
 public abstract class BaseActivity<T extends ViewModel> extends AppCompatActivity implements Listeners.OnWorkmateClickListener,
         Listeners.OnRestaurantClickListener {
-    public static final String PREF_LANGUAGE = "pref_language";
-    public static final String PREF_REMINDER = "pref_reminder";
     public final String TAG = "MAIN";
     public T viewModel;
     public final WorkManager workManager = WorkManager.getInstance(this);
     public static Location sCurrentLocation = null;
     public LocationManager locationManager;
-    public final int LOCATION_PERMISSION_REQUEST_CODE = 123;
-    public final String PERMS = ACCESS_FINE_LOCATION;
-    public static final String SHARED_PREFS = "sharedPrefs";
     public static SharedPreferences sharedPrefs;
     public static boolean ORIENTATION_CHANGED = false;
-    private static final String WORK_REQUEST_NAME = "Lunch reminder";
     public PeriodicWorkRequest workRequest;
 
     @Override

@@ -33,6 +33,8 @@ import java.util.UUID;
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static com.sophieopenclass.go4lunch.controllers.activities.ChatActivity.RC_CHOOSE_PHOTO;
 import static com.sophieopenclass.go4lunch.controllers.activities.ChatActivity.READ_STORAGE_RC;
+import static com.sophieopenclass.go4lunch.utils.Constants.PREF_LANGUAGE;
+import static com.sophieopenclass.go4lunch.utils.Constants.PREF_REMINDER;
 
 public class SettingsActivity extends BaseActivity<MyViewModel> {
     private static final String TAG = "SettingsActivity";

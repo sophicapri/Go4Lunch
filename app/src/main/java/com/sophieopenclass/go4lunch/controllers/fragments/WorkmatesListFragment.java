@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -27,6 +28,7 @@ import com.sophieopenclass.go4lunch.models.User;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.sophieopenclass.go4lunch.base.BaseActivity.ORIENTATION_CHANGED;
 import static com.sophieopenclass.go4lunch.utils.DateFormatting.getTodayDateInString;
 
 public class WorkmatesListFragment extends Fragment {
@@ -70,6 +72,12 @@ public class WorkmatesListFragment extends Fragment {
     }
 
     @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        ORIENTATION_CHANGED = true;
+    }
+
+    @Override
     public void onStart() {
         super.onStart();
         if (networkUnavailable()) {
@@ -79,6 +87,12 @@ public class WorkmatesListFragment extends Fragment {
             setUpRecyclerView();
             updateWorkmatesList();
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        ORIENTATION_CHANGED = false;
     }
 
     private boolean networkUnavailable() {

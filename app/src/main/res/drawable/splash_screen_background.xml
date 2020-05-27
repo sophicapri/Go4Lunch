@@ -6,6 +6,7 @@
     <item android:drawable="@color/colorPrimary"/>
 
     <!-- Set the Background Image-->
+
     <item
         android:gravity="center">
         <bitmap

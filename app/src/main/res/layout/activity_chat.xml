@@ -117,9 +117,9 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:imeOptions="flagNoExtractUi|actionDone"
             android:hint="@string/write_a_message"
             android:textCursorDrawable="@null"
-            android:imeOptions="actionDone"
             android:inputType="textMultiLine"
             android:importantForAutofill="no" />
 

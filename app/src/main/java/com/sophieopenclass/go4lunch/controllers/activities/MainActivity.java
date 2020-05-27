@@ -2,7 +2,6 @@ package com.sophieopenclass.go4lunch.controllers.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,7 +16,6 @@ import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.firebase.ui.auth.AuthUI;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.material.navigation.NavigationView;
@@ -30,7 +28,6 @@ import com.sophieopenclass.go4lunch.controllers.fragments.RestaurantListFragment
 import com.sophieopenclass.go4lunch.controllers.fragments.WorkmatesListFragment;
 import com.sophieopenclass.go4lunch.databinding.ActivityMainBinding;
 import com.sophieopenclass.go4lunch.models.User;
-import com.sophieopenclass.go4lunch.utils.Constants;
 
 import static android.content.Intent.EXTRA_UID;
 import static com.sophieopenclass.go4lunch.utils.Constants.*;
@@ -58,12 +55,6 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // To activate notifications by default when first launching the app OR
-        // activate the notifications if the user signed out and
-        if (!sharedPrefs.contains(PREF_REMINDER) || sharedPrefs.getBoolean(PREF_REMINDER, false))
-            activateReminder();
-
-        Log.i(TAG, "onCreate: ");
         configureToolbar();
         configureDrawerLayout();
         configureNavigationView();
@@ -79,9 +70,14 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
     @Override
     protected void onStart() {
         super.onStart();
-        if (!ORIENTATION_CHANGED && !RESTART_STATE)
+        if (!ORIENTATION_CHANGED && !RESTART_STATE) {
             showFragment(FRAGMENT_MAP_VIEW);
-        else if (RESTART_STATE)
+            // To activate notifications by default when first launching the app OR
+            // activate the notifications if the user signed out and
+            if (!sharedPrefs.contains(PREF_REMINDER) || sharedPrefs.getBoolean(PREF_REMINDER, false))
+                activateReminder();
+        }
+        if (RESTART_STATE)
             RESTART_STATE = false;
     }
 
@@ -199,7 +195,7 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
     private void showFragment(int controllerIdentifier) {
         switch (controllerIdentifier) {
             case ACTIVITY_MY_LUNCH:
-                startNewActivity(WorkmateDetailActivity.class);
+                startNewActivity(MyLunchActivity.class);
                 break;
             case ACTIVITY_SETTINGS:
                 startNewActivity(SettingsActivity.class);
@@ -218,7 +214,7 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
 
     private void startNewActivity(Class activity) {
         Intent intent = new Intent(this, activity);
-        if (activity.equals(WorkmateDetailActivity.class))
+        if (activity.equals(MyLunchActivity.class))
             intent.putExtra(EXTRA_UID, currentUser.getUid());
         startActivity(intent);
     }
