@@ -9,7 +9,6 @@ import java.util.Locale;
 
 public class DateFormatting {
 
-
     // Always save the date as Locale.US in Firebase
     public static String getTodayDateInString() {
         Date date = new Date();
@@ -18,7 +17,7 @@ public class DateFormatting {
     }
 
     // Formatting the date saved in Firestore in Locale.US to display it in French or in English
-    // with Locale.getDefault
+    // depending on the user's default language
     public static String formatLocaleDate(String dateString) {
         SimpleDateFormat formatter = new SimpleDateFormat("MMM dd, yyyy", Locale.US);
         Date date = null;
@@ -43,6 +42,7 @@ public class DateFormatting {
         return format.format(date);
     }
 
+    // To be able to compare two dates
     public static Date getDateWithoutTime(Date date) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
