@@ -47,6 +47,7 @@ import pub.devrel.easypermissions.EasyPermissions;
 import static com.sophieopenclass.go4lunch.base.BaseActivity.ORIENTATION_CHANGED;
 import static com.sophieopenclass.go4lunch.controllers.fragments.MapViewFragment.PERMS;
 import static com.sophieopenclass.go4lunch.controllers.fragments.MapViewFragment.getLatLngString;
+import static com.sophieopenclass.go4lunch.utils.DateFormatting.getTodayDateInString;
 
 public class RestaurantListFragment extends Fragment implements EasyPermissions.PermissionCallbacks {
     public static final String TAG = "restaurantListFrag";
@@ -242,7 +243,7 @@ public class RestaurantListFragment extends Fragment implements EasyPermissions.
     private void getFullPlaceDetails(List<PlaceDetails> placeDetailsList) {
         ArrayList<PlaceDetails> completePlaceDetailsList = new ArrayList<>();
         for (PlaceDetails restaurant : placeDetailsList) {
-            viewModel.getUsersByPlaceIdAndDate(restaurant.getPlaceId(), User.getTodaysDate())
+            viewModel.getUsersByPlaceIdAndDate(restaurant.getPlaceId(), getTodayDateInString())
                     .observe(getViewLifecycleOwner(), users -> {
                         restaurant.setNbrOfWorkmates(users.size());
                         completePlaceDetailsList.add(restaurant);

@@ -27,6 +27,7 @@ import java.util.Collections;
 import java.util.Comparator;
 
 import static android.content.Intent.EXTRA_UID;
+import static com.sophieopenclass.go4lunch.utils.DateFormatting.getTodayDateInString;
 
 public class WorkmateDetailActivity extends BaseActivity<MyViewModel> {
     ActivityWorkmateDetailBinding binding;
@@ -74,7 +75,7 @@ public class WorkmateDetailActivity extends BaseActivity<MyViewModel> {
                 .apply(RequestOptions.circleCropTransform())
                 .into(binding.workmateProfilePic);
 
-        String todaysPlaceId = user.getDatesAndPlaceIds().get(User.getTodaysDate());
+        String todaysPlaceId = user.getDatesAndPlaceIds().get(getTodayDateInString());
         if (todaysPlaceId != null) {
             displayTodaysRestaurant(todaysPlaceId);
         } else {
@@ -136,7 +137,7 @@ public class WorkmateDetailActivity extends BaseActivity<MyViewModel> {
         String placeId;
 
         for (String date : user.getDatesAndPlaceIds().keySet()) {
-            if (!date.equals(User.getTodaysDate())) {
+            if (!date.equals(getTodayDateInString())) {
                 placeId = user.getDatesAndPlaceIds().get(date);
                 viewModel.getPlaceDetails(placeId).observe(this, placeDetails -> {
                     //

@@ -24,6 +24,7 @@ import static com.sophieopenclass.go4lunch.utils.Constants.ADDRESS_RESTAURANT;
 import static com.sophieopenclass.go4lunch.utils.Constants.DATES_AND_PLACE_IDS_FIELD;
 import static com.sophieopenclass.go4lunch.utils.Constants.NAME_RESTAURANT;
 import static com.sophieopenclass.go4lunch.utils.Constants.PLACE_ID;
+import static com.sophieopenclass.go4lunch.utils.DateFormatting.getTodayDateInString;
 
 public class NotificationWorker extends Worker {
     private static final String TAG = "NotificationWorker";
@@ -67,14 +68,14 @@ public class NotificationWorker extends Worker {
 
     private void checkIfUserHasChosenARestaurant(User user) {
         currentUser = user;
-        chosenRestaurantId = user.getDatesAndPlaceIds().get(User.getTodaysDate());
+        chosenRestaurantId = user.getDatesAndPlaceIds().get(getTodayDateInString());
         if (chosenRestaurantId != null) {
             retrieveListOfWorkmatesEatingAtRestaurant();
         }
     }
     private void retrieveListOfWorkmatesEatingAtRestaurant() {
         ArrayList<User> users = new ArrayList<>();
-        userCollectionRef.whereEqualTo(DATES_AND_PLACE_IDS_FIELD + User.getTodaysDate(), chosenRestaurantId).get().addOnCompleteListener(task -> {
+        userCollectionRef.whereEqualTo(DATES_AND_PLACE_IDS_FIELD + getTodayDateInString(), chosenRestaurantId).get().addOnCompleteListener(task -> {
             if (task.isSuccessful())
                 if (task.getResult() != null) {
                     users.addAll(task.getResult().toObjects(User.class));

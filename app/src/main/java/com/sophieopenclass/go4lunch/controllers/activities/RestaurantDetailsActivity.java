@@ -37,6 +37,7 @@ import java.util.Locale;
 
 import static com.sophieopenclass.go4lunch.utils.Constants.DATES_AND_PLACE_IDS_FIELD;
 import static com.sophieopenclass.go4lunch.utils.Constants.PLACE_ID;
+import static com.sophieopenclass.go4lunch.utils.DateFormatting.getTodayDateInString;
 
 public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> implements View.OnClickListener {
     public static final int REQUEST_CALL = 567;
@@ -129,7 +130,7 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
         if (getCurrentUser() != null) {
             viewModel.getUser(getCurrentUser().getUid()).observe(this, user -> {
                 currentUser = user;
-                if (placeId.equals(user.getDatesAndPlaceIds().get(User.getTodaysDate())))
+                if (placeId.equals(user.getDatesAndPlaceIds().get(getTodayDateInString())))
                     binding.addRestaurant.setImageDrawable(getResources().getDrawable(R.drawable.ic_check_circle_black_24dp));
                 else
                     binding.addRestaurant.setImageDrawable(getResources().getDrawable(R.drawable.ic_add_black_24dp));
@@ -157,7 +158,7 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
     private void setUpRecyclerView() {
         FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>()
                 .setQuery(viewModel.getCollectionReference()
-                        .whereEqualTo(DATES_AND_PLACE_IDS_FIELD + User.getTodaysDate(), placeId), User.class)
+                        .whereEqualTo(DATES_AND_PLACE_IDS_FIELD + getTodayDateInString(), placeId), User.class)
                 .build();
         adapter = new RestaurantWorkmatesListAdapter(options, this, Glide.with(this));
         binding.detailRecyclerViewWorkmates.setHasFixedSize(true);
@@ -169,7 +170,7 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
     @Override
     public void onClick(View v) {
         if (v == binding.addRestaurant)
-            viewModel.getPlaceIdByDate(currentUser.getUid(), User.getTodaysDate()).observe(this, this::handleRestaurantSelection);
+            viewModel.getPlaceIdByDate(currentUser.getUid(), getTodayDateInString()).observe(this, this::handleRestaurantSelection);
         else if (v == binding.callBtn)
             callRestaurant();
         else if (v == binding.likeRestaurantBtn)
@@ -219,7 +220,7 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
         if (!placeId.equals(currentUserPlaceId)) {
             binding.addRestaurant.setImageDrawable(getResources().getDrawable(R.drawable.ic_check_circle_black_24dp));
             if (currentUserPlaceId == null)
-                viewModel.updateUserPlaceId(currentUser.getUid(), placeId, User.getTodaysDate()).observe(this, placeId -> {
+                viewModel.updateUserPlaceId(currentUser.getUid(), placeId, getTodayDateInString()).observe(this, placeId -> {
                     if (placeId == null) {
                         Toast.makeText(this, R.string.an_error_happened, Toast.LENGTH_LONG).show();
                         viewModel.updateRestaurantChosen(currentUser.getUid(), "", "");
@@ -227,11 +228,11 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
                     }
                 });
             else
-                viewModel.updateUserPlaceId(currentUser.getUid(), placeId, User.getTodaysDate());
+                viewModel.updateUserPlaceId(currentUser.getUid(), placeId, getTodayDateInString());
             viewModel.updateRestaurantChosen(currentUser.getUid(), placeDetails.getName(), placeDetails.getVicinity());
         } else {
             binding.addRestaurant.setImageDrawable(getResources().getDrawable(R.drawable.ic_add_black_24dp));
-            viewModel.deletePlaceId(currentUser.getUid(), User.getTodaysDate());
+            viewModel.deletePlaceId(currentUser.getUid(), getTodayDateInString());
             viewModel.updateRestaurantChosen(currentUser.getUid(), "", "");
         }
     }

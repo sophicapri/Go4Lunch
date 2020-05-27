@@ -1,11 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/chat_container_root"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_alignParentTop="true"
     android:layout_alignParentBottom="true">
+
+    <!-- DATE HEADER -->
+    <TextView
+        android:id="@+id/header_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/bkg_header_date"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:paddingStart="@dimen/default_margin"
+        android:paddingEnd="@dimen/default_margin"
+        android:textColor="#FFFFFF"
+        tools:text="@sample/tasks.json/date" />
+
+    <!-- TEXT MESSAGE CONTAINER -->
+    <LinearLayout
+        android:id="@+id/message_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/header_date"
+        android:layout_marginTop="@dimen/default_margin"
+        android:background="@drawable/bkg_message_start"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/default_margin">
+
+            <!-- TEXT MESSAGE -->
+            <TextView
+                android:id="@+id/message_container_text_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textIsSelectable="true"
+                android:textSize="@dimen/default_text_size"
+                tools:text="Text example" />
+        </LinearLayout>
+
+    </LinearLayout>
 
     <!-- IMAGE SENT CONTAINER -->
     <androidx.cardview.widget.CardView
@@ -20,38 +63,10 @@
             android:id="@+id/image_sent"
             android:layout_width="100dip"
             android:layout_height="100dip"
-            android:scaleType="centerCrop"
-            android:contentDescription="@string/image_sent" />
+            android:contentDescription="@string/image_sent"
+            android:scaleType="centerCrop" />
 
     </androidx.cardview.widget.CardView>
-
-    <!-- TEXT MESSAGE CONTAINER -->
-    <LinearLayout
-        android:id="@+id/message_container"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="@dimen/default_margin"
-        android:background="@drawable/bkg_message_start"
-        android:orientation="horizontal">
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="@dimen/default_margin">
-
-            <!-- TEXT MESSAGE -->
-            <TextView
-                android:id="@+id/message_container_text_view"
-                tools:text="Text example"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textIsSelectable="true"
-                android:textSize="@dimen/default_text_size" />
-        </LinearLayout>
-
-    </LinearLayout>
 
     <!-- DATE MESSAGE -->
     <TextView
@@ -60,8 +75,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/image_sent_cardview"
         android:layout_alignEnd="@id/message_container"
-        tools:text="@sample/tasks.json/timestamp_message"
         android:textSize="@dimen/default_text_size_mini"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        tools:text="@sample/tasks.json/timestamp_message" />
 
 </RelativeLayout>

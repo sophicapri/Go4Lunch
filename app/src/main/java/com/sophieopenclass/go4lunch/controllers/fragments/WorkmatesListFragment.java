@@ -27,6 +27,8 @@ import com.sophieopenclass.go4lunch.models.User;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.sophieopenclass.go4lunch.utils.DateFormatting.getTodayDateInString;
+
 public class WorkmatesListFragment extends Fragment {
     private RecyclerViewWorkmatesBinding binding;
     private MyViewModel viewModel;
@@ -108,7 +110,7 @@ public class WorkmatesListFragment extends Fragment {
             List<User> orderedList = new ArrayList<>();
             List<User> workmatesWithoutRestaurant = new ArrayList<>();
             for (User user : usersWithoutCurrentLogged) {
-                if (user.getDatesAndPlaceIds().get(User.getTodaysDate()) != null)
+                if (user.getDatesAndPlaceIds().get(getTodayDateInString()) != null)
                     orderedList.add(user);
                 else
                     workmatesWithoutRestaurant.add(user);

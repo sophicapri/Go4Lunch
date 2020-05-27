@@ -24,6 +24,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
+import static com.sophieopenclass.go4lunch.utils.DateFormatting.formatLocaleDate;
+
 public class PreviousRestaurantsAdapter extends RecyclerView.Adapter<PreviousRestaurantsAdapter.WorkmatesDetailHolder> {
     private ArrayList<PlaceDetails> placeDetailsList;
     private Listeners.OnRestaurantClickListener onRestaurantClickListener;
@@ -68,7 +70,7 @@ public class PreviousRestaurantsAdapter extends RecyclerView.Adapter<PreviousRes
 
         void bind(PlaceDetails placeDetails) {
             binding.dateOfPreviousLunch.setVisibility(View.VISIBLE);
-            binding.dateOfPreviousLunch.setText(formatDate(placeDetails.getDateOfLunch()));
+            binding.dateOfPreviousLunch.setText(formatLocaleDate(placeDetails.getDateOfLunch()));
             binding.detailsRestaurantName.setText(placeDetails.getName());
             binding.detailsRestaurantAddress.setText(placeDetails.getVicinity());
             String urlPhoto = PlaceDetails.urlPhotoFormatter(placeDetails, 0);
@@ -87,6 +89,7 @@ public class PreviousRestaurantsAdapter extends RecyclerView.Adapter<PreviousRes
         }
     }
 
+    /*
     // Formatting the date saved in Firestore in Locale.US to display it in French or in English
     // with Locale.getDefault
     private String formatDate(String dateString) {
@@ -102,4 +105,6 @@ public class PreviousRestaurantsAdapter extends RecyclerView.Adapter<PreviousRes
             return dateFormat.format(date);
         return "";
     }
+
+     */
 }

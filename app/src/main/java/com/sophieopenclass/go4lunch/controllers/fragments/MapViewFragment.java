@@ -65,6 +65,7 @@ import pub.devrel.easypermissions.EasyPermissions;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static com.sophieopenclass.go4lunch.base.BaseActivity.ORIENTATION_CHANGED;
 import static com.sophieopenclass.go4lunch.utils.Constants.PLACE_ID;
+import static com.sophieopenclass.go4lunch.utils.DateFormatting.getTodayDateInString;
 
 public class MapViewFragment extends Fragment implements OnMapReadyCallback, EasyPermissions.PermissionCallbacks {
     private static final String TAG = "MAP FRAGMENT";
@@ -157,7 +158,8 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Eas
                     .setTextColor(getResources().getColor(R.color.quantum_white_100)).setDuration(5000).show();
         } else {
             if (context.requestLocationPermission()) {
-                fetchLastLocation();
+                //TODO : décommenter
+                //fetchLastLocation();
             }
         }
     }
@@ -289,7 +291,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Eas
 
     private void initMarkers(List<PlaceDetails> placeDetailsList) {
         for (PlaceDetails placeDetails : placeDetailsList) {
-            viewModel.getUsersByPlaceIdAndDate(placeDetails.getPlaceId(), User.getTodaysDate()).observe(getViewLifecycleOwner(), users -> {
+            viewModel.getUsersByPlaceIdAndDate(placeDetails.getPlaceId(), getTodayDateInString()).observe(getViewLifecycleOwner(), users -> {
                 int markerDrawable;
                 if (users.isEmpty())
                     markerDrawable = R.drawable.ic_marker_red;

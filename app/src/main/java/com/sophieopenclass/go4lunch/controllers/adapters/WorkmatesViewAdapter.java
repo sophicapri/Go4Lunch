@@ -20,6 +20,7 @@ import java.util.List;
 
 import static com.sophieopenclass.go4lunch.listeners.Listeners.OnWorkmateClickListener;
 import static com.sophieopenclass.go4lunch.utils.Constants.NAME_RESTAURANT;
+import static com.sophieopenclass.go4lunch.utils.DateFormatting.getTodayDateInString;
 
 public class WorkmatesViewAdapter extends RecyclerView.Adapter<WorkmatesViewAdapter.UserViewHolder> {
     private OnWorkmateClickListener onWorkmateClickListener;
@@ -68,7 +69,7 @@ public class WorkmatesViewAdapter extends RecyclerView.Adapter<WorkmatesViewAdap
         }
 
         void bind(User model) {
-            String placeId = model.getDatesAndPlaceIds().get(User.getTodaysDate());
+            String placeId = model.getDatesAndPlaceIds().get(getTodayDateInString());
             glide.load(model.getUrlPicture())
                     .apply(RequestOptions.circleCropTransform())
                     .into(binding.workmateProfilePic);

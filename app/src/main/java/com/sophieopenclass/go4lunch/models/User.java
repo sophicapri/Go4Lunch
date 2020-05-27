@@ -63,13 +63,6 @@ public class User {
         this.urlPicture = urlPicture;
     }
 
-    // Always save the date as Locale.US in Firebase
-    public static String getTodaysDate() {
-        Date date = new Date();
-        DateFormat formatter = DateFormat.getDateInstance(DateFormat.LONG, Locale.US);
-        return formatter.format(date);
-    }
-
     public Map<String, String> getDatesAndPlaceIds() {
         return datesAndPlaceIds;
     }
