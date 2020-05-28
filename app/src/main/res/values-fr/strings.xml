@@ -106,4 +106,5 @@
     <string name="locale_saved">Langue enregistrée</string>
     <string name="delete_my_account">Supprimer mon compte</string>
     <string name="search_button">Bouton rechercher</string>
+    <string name="no_restaurant_selected">Aucun restaurant selectionné…</string>
 </resources>

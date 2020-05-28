@@ -14,7 +14,7 @@ public class User {
     private String urlPicture;
     private Map<String, Restaurant> datesAndRestaurants = new HashMap<>();
     private String email;
-    private Map<String, Restaurant> favoriteRestaurants = new HashMap<>();
+    private ArrayList<Restaurant> favoriteRestaurants = new ArrayList<>();
 
     public User() {
     }
@@ -64,16 +64,16 @@ public class User {
         this.datesAndRestaurants = datesAndRestaurants;
     }
 
-    public Map<String, Restaurant> getFavoriteRestaurants() {
+    public ArrayList<Restaurant> getFavoriteRestaurants() {
         return favoriteRestaurants;
     }
 
-    public void addRestaurantToFavorites(Restaurant favoriteRestaurant) {
-        this.favoriteRestaurants.put(favoriteRestaurant.getPlaceId(),favoriteRestaurant);
+    public void setFavoriteRestaurants(ArrayList<Restaurant> favoriteRestaurants) {
+        this.favoriteRestaurants = favoriteRestaurants;
     }
 
     public boolean restaurantNotFavorite(String placeId) {
-        for (Restaurant restaurant : favoriteRestaurants.values())
+        for (Restaurant restaurant : favoriteRestaurants)
             if (restaurant.getPlaceId().equals(placeId))
                 return false;
         return true;

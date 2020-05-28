@@ -96,7 +96,7 @@ public class RestaurantListFragment extends Fragment implements EasyPermissions.
     }
 
     private void initSearchBar(MainActivity activity) {
-        activity.binding.searchBarRestaurantList.closeSearchBar.setOnClickListener(v -> {
+       /* activity.binding.searchBarRestaurantList.closeSearchBar.setOnClickListener(v -> {
             activity.binding.searchBarRestaurantList.searchBarRestaurantList.setVisibility(View.GONE);
             if (!activity.binding.searchBarRestaurantList.searchBarInput.getText().toString().isEmpty())
                 activity.binding.searchBarRestaurantList.searchBarInput.getText().clear();
@@ -134,6 +134,8 @@ public class RestaurantListFragment extends Fragment implements EasyPermissions.
                 }
             }
         });
+
+        */
     }
 
     /**

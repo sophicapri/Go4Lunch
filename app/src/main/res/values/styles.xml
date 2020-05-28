@@ -1,7 +1,7 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">#EF6C00</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
@@ -10,7 +10,7 @@
         <item name="android:textColor">@color/quantum_black_100</item>
     </style>
 
-    <style name="SplashScreenTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="SplashScreenTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="android:windowBackground">@drawable/splash_screen_background</item>
         <item name="android:windowFullscreen">true</item>
     </style>
@@ -58,4 +58,24 @@
         <!-- inactive track color (30% transparency) -->
         <item name="android:colorForeground">#42221f1f</item>
     </style>
+
+    <!-- Set title to white when DetailActivity is collapsed -->
+    <style name="collapsingToolbarLayoutTitleColor" parent="@android:style/TextAppearance.Medium">
+        <item name="android:textColor">#FFFFFF</item>
+    </style>
+
+    <style name="expandedToolbarTitleColor" parent="TextAppearance.Design.CollapsingToolbar.Expanded">
+        <item name="android:textColor">#FFFFFF</item>
+    </style>
+
+    <style name="chipTextAppearance" parent="TextAppearance.MaterialComponents.Chip">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">#FFFFFF</item>
+    </style>
+    
+    <style name="chipBackground" parent="Widget.MaterialComponents.Chip.Filter">
+        <item name="chipBackgroundColor">@color/chip_color_selected</item>
+        <item name="android:textAppearance">@style/chipTextAppearance</item>
+    </style>
+
 </resources>

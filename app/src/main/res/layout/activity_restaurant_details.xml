@@ -12,7 +12,7 @@
         android:layout_height="300dp">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
-            android:id="@+id/toolbar_name"
+            android:id="@+id/my_lunch_toolbar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:contentScrim="@color/colorPrimaryDark"

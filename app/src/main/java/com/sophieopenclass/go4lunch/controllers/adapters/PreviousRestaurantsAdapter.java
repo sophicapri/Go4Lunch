@@ -1,6 +1,5 @@
 package com.sophieopenclass.go4lunch.controllers.adapters;
 
-import android.content.res.Resources;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,29 +10,22 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.request.RequestOptions;
 import com.sophieopenclass.go4lunch.R;
-import com.sophieopenclass.go4lunch.base.BaseActivity;
 import com.sophieopenclass.go4lunch.databinding.WorkmatesRestaurantPreviewBinding;
 import com.sophieopenclass.go4lunch.listeners.Listeners;
-import com.sophieopenclass.go4lunch.models.json_to_java.PlaceDetails;
-import com.sophieopenclass.go4lunch.utils.CalculateRatings;
+import com.sophieopenclass.go4lunch.models.Restaurant;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Locale;
 
 import static com.sophieopenclass.go4lunch.utils.DateFormatting.formatLocaleDate;
 
 public class PreviousRestaurantsAdapter extends RecyclerView.Adapter<PreviousRestaurantsAdapter.WorkmatesDetailHolder> {
-    private ArrayList<PlaceDetails> placeDetailsList;
+    private ArrayList<Restaurant> restaurantList;
     private Listeners.OnRestaurantClickListener onRestaurantClickListener;
     private RequestManager glide;
 
 
-    public PreviousRestaurantsAdapter(ArrayList<PlaceDetails> placeDetailsList, Listeners.OnRestaurantClickListener onRestaurantClickListener, RequestManager glide) {
-        this.placeDetailsList = placeDetailsList;
+    public PreviousRestaurantsAdapter(ArrayList<Restaurant> restaurantList, Listeners.OnRestaurantClickListener onRestaurantClickListener, RequestManager glide) {
+        this.restaurantList = restaurantList;
         this.onRestaurantClickListener = onRestaurantClickListener;
         this.glide = glide;
     }
@@ -48,12 +40,17 @@ public class PreviousRestaurantsAdapter extends RecyclerView.Adapter<PreviousRes
 
     @Override
     public void onBindViewHolder(@NonNull WorkmatesDetailHolder holder, int position) {
-        holder.bind(placeDetailsList.get(position));
+        holder.bind(restaurantList.get(position));
     }
 
     @Override
     public int getItemCount() {
-        return placeDetailsList.size();
+        return restaurantList.size();
+    }
+
+    public void updateList(ArrayList<Restaurant> restaurantList) {
+        this.restaurantList = restaurantList;
+        notifyDataSetChanged();
     }
 
     class WorkmatesDetailHolder extends RecyclerView.ViewHolder {
@@ -65,46 +62,24 @@ public class PreviousRestaurantsAdapter extends RecyclerView.Adapter<PreviousRes
             binding = WorkmatesRestaurantPreviewBinding.bind(itemView);
             this.onRestaurantClickListener = onRestaurantClickListener;
             itemView.setOnClickListener(v -> onRestaurantClickListener
-                    .onRestaurantClick(placeDetailsList.get(getBindingAdapterPosition()).getPlaceId()));
+                    .onRestaurantClick(restaurantList.get(getBindingAdapterPosition()).getPlaceId()));
         }
 
-        void bind(PlaceDetails placeDetails) {
+        void bind(Restaurant restaurant) {
             binding.dateOfPreviousLunch.setVisibility(View.VISIBLE);
-            binding.dateOfPreviousLunch.setText(formatLocaleDate(placeDetails.getDateOfLunch()));
-            binding.detailsRestaurantName.setText(placeDetails.getName());
-            binding.detailsRestaurantAddress.setText(placeDetails.getVicinity());
-            String urlPhoto = PlaceDetails.urlPhotoFormatter(placeDetails, 0);
-            glide.load(urlPhoto).apply(RequestOptions.centerCropTransform())
+            binding.dateOfPreviousLunch.setText(formatLocaleDate(restaurant.getDateOfLunch()));
+            binding.detailsRestaurantName.setText(restaurant.getName());
+            binding.detailsRestaurantAddress.setText(restaurant.getAddress());
+            glide.load(restaurant.getUrlPhoto()).apply(RequestOptions.centerCropTransform())
                     .into(binding.restaurantPhoto);
 
-            if (placeDetails.getRating() != null) {
-                int numberOfStars = CalculateRatings.getNumberOfStarsToDisplay(placeDetails.getRating());
-                if (numberOfStars == 1)
-                    binding.detailOneStar.setVisibility(View.VISIBLE);
-                if (numberOfStars == 2)
-                    binding.detailTwoStars.setVisibility(View.VISIBLE);
-                if (numberOfStars == 3)
-                    binding.detailThreeStars.setVisibility(View.VISIBLE);
-            }
+            if (restaurant.getNumberOfStars() == 1)
+                binding.detailOneStar.setVisibility(View.VISIBLE);
+            if (restaurant.getNumberOfStars() == 2)
+                binding.detailTwoStars.setVisibility(View.VISIBLE);
+            if (restaurant.getNumberOfStars() == 3)
+                binding.detailThreeStars.setVisibility(View.VISIBLE);
+
         }
     }
-
-    /*
-    // Formatting the date saved in Firestore in Locale.US to display it in French or in English
-    // with Locale.getDefault
-    private String formatDate(String dateString) {
-        SimpleDateFormat formatter = new SimpleDateFormat("MMM dd, yyyy", Locale.US);
-        Date date = null;
-        try {
-            date = formatter.parse(dateString);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault());
-        if (date != null)
-            return dateFormat.format(date);
-        return "";
-    }
-
-     */
 }

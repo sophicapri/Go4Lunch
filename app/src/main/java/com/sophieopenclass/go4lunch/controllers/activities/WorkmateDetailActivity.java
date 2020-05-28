@@ -1,7 +1,6 @@
 package com.sophieopenclass.go4lunch.controllers.activities;
 
 import android.content.Intent;
-import android.os.Build;
 import android.view.View;
 import android.widget.Toast;
 
@@ -24,6 +23,7 @@ import com.sophieopenclass.go4lunch.utils.CalculateRatings;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Objects;
 
 import static android.content.Intent.EXTRA_UID;
@@ -32,9 +32,10 @@ import static com.sophieopenclass.go4lunch.utils.DateFormatting.getTodayDateInSt
 public class WorkmateDetailActivity extends BaseActivity<MyViewModel> {
     ActivityWorkmateDetailBinding binding;
     String uid = null;
-    ArrayList<PlaceDetails> placeDetailsList;
+    ArrayList<Restaurant> restaurantList = new ArrayList<>();
     int minus;
     User selectedUser;
+    PreviousRestaurantsAdapter adapter;
 
     @Override
     public Class getViewModelClass() {
@@ -65,56 +66,90 @@ public class WorkmateDetailActivity extends BaseActivity<MyViewModel> {
                 }
             });
         }
-        binding.chatWithWorkmateBtn.setOnClickListener(v -> startChatActivity(uid));
+        binding.fabMessageUser.setOnClickListener(v -> startChatActivity(uid));
     }
 
     private void initUI(User user) {
         selectedUser = user;
+        binding.userLunchToolbar.setTitle(user.getUsername());
         Glide.with(binding.workmateProfilePic.getContext())
                 .load(user.getUrlPicture())
                 .apply(RequestOptions.circleCropTransform())
                 .into(binding.workmateProfilePic);
 
         if (user.getDatesAndRestaurants().get(getTodayDateInString()) != null) {
-            String todayPlaceId = ((Restaurant) Objects.requireNonNull(user.getDatesAndRestaurants()
-                    .get(getTodayDateInString()))).getPlaceId();
-            displayTodaysRestaurant(todayPlaceId);
+            String todayPlaceId = Objects.requireNonNull(user.getDatesAndRestaurants()
+                    .get(getTodayDateInString())).getPlaceId();
+            displayTodayRestaurant(todayPlaceId);
         } else {
-            binding.workmateDetailLunch.workmateDetailLunch.setVisibility(View.GONE);
-            binding.workmateLunchTextview.setText(R.string.no_restaurant_chosen);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                binding.workmateLunchTextview.setTextAppearance(R.style.TextStyleItalic);
-            } else
-                binding.workmateLunchTextview.setTextColor(getResources().getColor(R.color.quantum_grey700));
+            binding.lunchOfTheDay.lunchOfTheDay.setVisibility(View.INVISIBLE);
+            binding.noRestaurantSelectedToday.setVisibility(View.VISIBLE);
         }
 
-        displayPreviousRestaurants(user);
-        //
+        configureRecyclerView();
+        displayFavoriteRestaurants(user);
+
         if (getCurrentUser() != null)
             if (user.getUid().equals(getCurrentUser().getUid())) {
-                binding.chatWithWorkmateBtn.setVisibility(View.GONE);
-                binding.userLunchToolbar.setTitle(R.string.my_lunch_toolbar_title);
+                initCurrentUserProfileView();
             } else {
-                binding.chatWithWorkmateBtn.setText(getString(R.string.chat_with, user.getUsername()));
-                binding.userLunchToolbar.setTitle(user.getUsername());
+                initWorkmateProfileView();
             }
     }
 
-    private void displayTodaysRestaurant(String todaysPlaceId) {
+    private void configureRecyclerView() {
+        binding.recyclerViewRestaurants.setHasFixedSize(true);
+        binding.recyclerViewRestaurants.setLayoutManager(new LinearLayoutManager(this));
+        adapter = new PreviousRestaurantsAdapter(restaurantList, this, Glide.with(this));
+        binding.recyclerViewRestaurants.setAdapter(adapter);
+    }
+
+    private void initCurrentUserProfileView() {
+        binding.fabMessageUser.setVisibility(View.GONE);
+        binding.userLunchToolbar.setTitle(getString(R.string.my_lunch_toolbar_title));
+        binding.textViewWorkmateFavorites.setVisibility(View.INVISIBLE);
+        binding.favoritesAndPreviousTitle.setVisibility(View.VISIBLE);
+
+        binding.chipPreviousLunches.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!binding.chipPreviousLunches.isChecked()) {
+                    displayPreviousRestaurants(selectedUser);
+                    binding.chipPreviousLunches.setChecked(true);
+                }
+            }
+        });
+
+        binding.chipFavorites.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!binding.chipFavorites.isChecked()) {
+                    displayFavoriteRestaurants(selectedUser);
+                    binding.chipFavorites.setChecked(true);
+                }
+            }
+        });
+    }
+
+    private void initWorkmateProfileView() {
+        binding.fabMessageUser.setVisibility(View.VISIBLE);
+        binding.userLunchToolbar.setTitle(selectedUser.getUsername());
+        binding.textViewWorkmateFavorites.setVisibility(View.VISIBLE);
+        binding.favoritesAndPreviousTitle.setVisibility(View.INVISIBLE);
+    }
+
+    private void displayTodayRestaurant(String todaysPlaceId) {
         viewModel.getPlaceDetails(todaysPlaceId).observe(this, placeDetails -> {
-            binding.workmateDetailLunch.workmateDetailLunch.setVisibility(View.VISIBLE);
-            binding.workmateDetailLunch.detailsRestaurantName.setText(placeDetails.getName());
-            binding.workmateDetailLunch.detailsRestaurantAddress.setText(placeDetails.getVicinity());
+            binding.lunchOfTheDay.lunchOfTheDay.setVisibility(View.VISIBLE);
+            binding.lunchOfTheDay.detailsRestaurantName.setText(placeDetails.getName());
+            binding.lunchOfTheDay.detailsRestaurantAddress.setText(placeDetails.getVicinity());
             String urlPhoto = PlaceDetails.urlPhotoFormatter(placeDetails, 0);
-            Glide.with(binding.workmateDetailLunch.restaurantPhoto)
+            Glide.with(binding.lunchOfTheDay.restaurantPhoto)
                     .load(urlPhoto)
-                    .apply(RequestOptions.centerCropTransform())
-                    .into(binding.workmateDetailLunch.restaurantPhoto);
+                    .apply(RequestOptions.circleCropTransform())
+                    .into(binding.lunchOfTheDay.restaurantPhoto);
 
-            binding.workmateLunchTextview.setText(getString(R.string.detail_lunch_textview));
-            if (binding.workmateDetailLunch.workmateDetailLunch.getVisibility() == View.VISIBLE)
-                binding.workmateDetailLunch.workmateDetailLunch.setOnClickListener(v -> onRestaurantClick(todaysPlaceId));
-
+            binding.lunchOfTheDay.lunchOfTheDay.setOnClickListener(v -> onRestaurantClick(todaysPlaceId));
             displayStars(placeDetails.getRating());
         });
     }
@@ -122,57 +157,49 @@ public class WorkmateDetailActivity extends BaseActivity<MyViewModel> {
     private void displayStars(double rating) {
         int numberOfStars = CalculateRatings.getNumberOfStarsToDisplay(rating);
         if (numberOfStars == 1)
-            binding.workmateDetailLunch.detailOneStar.setVisibility(View.VISIBLE);
+            binding.lunchOfTheDay.detailOneStar.setVisibility(View.VISIBLE);
         if (numberOfStars == 2)
-            binding.workmateDetailLunch.detailTwoStars.setVisibility(View.VISIBLE);
+            binding.lunchOfTheDay.detailTwoStars.setVisibility(View.VISIBLE);
         if (numberOfStars == 3)
-            binding.workmateDetailLunch.detailThreeStars.setVisibility(View.VISIBLE);
+            binding.lunchOfTheDay.detailThreeStars.setVisibility(View.VISIBLE);
+    }
+
+    private void displayFavoriteRestaurants(User user) {
+        //restaurantList.addAll(user.getFavoriteRestaurants());
+        updateRecyclerView(user.getFavoriteRestaurants());
     }
 
     // @minus = To know if the user has selected a restaurant on the current day
     // and retrieve the number of previous restaurant accordingly
     private void displayPreviousRestaurants(User user) {
-        binding.previousRestaurantsRecyclerview.setHasFixedSize(true);
-        binding.previousRestaurantsRecyclerview.setLayoutManager(new LinearLayoutManager(this));
-        placeDetailsList = new ArrayList<>();
-        String placeId = "";
-
         for (String date : user.getDatesAndRestaurants().keySet()) {
             if (!date.equals(getTodayDateInString())) {
-                if (user.getDatesAndRestaurants().get(date) != null)
-                placeId = Objects.requireNonNull(user.getDatesAndRestaurants().get(date)).getPlaceId();
-                viewModel.getPlaceDetails(placeId).observe(this, placeDetails -> {
-                    //
-                    if (placeDetails != null) {
-                        placeDetails.setDateOfLunch(date);
-                        placeDetailsList.add(placeDetails);
-                        if (placeDetailsList.size() == user.getDatesAndRestaurants().values().size() - minus) {
-                            Collections.sort(placeDetailsList, new RestaurantRecentComparator());
-                            updateRecyclerView(placeDetailsList);
-                        }
-                    }
-                });
-            } else {
-                minus++;
+                if (user.getDatesAndRestaurants().get(date) != null) {
+                    Objects.requireNonNull(user.getDatesAndRestaurants().get(date)).setDateOfLunch(date);
+                    //restaurantList.add(user.getDatesAndRestaurants().get(date));
+                }
             }
         }
+        Collections.sort((ArrayList)user.getDatesAndRestaurants().values(), new RestaurantRecentComparator());
+        updateRecyclerView(restaurantList);
     }
 
     /**
      * Comparator to sort places from last added to first
      */
-    public static class RestaurantRecentComparator implements Comparator<PlaceDetails> {
+    public static class RestaurantRecentComparator implements Comparator<Restaurant> {
         @Override
-        public int compare(PlaceDetails left, PlaceDetails right) {
+        public int compare(Restaurant left, Restaurant right) {
             return right.getDateOfLunch().compareTo(left.getDateOfLunch());
         }
     }
 
-    private void updateRecyclerView(ArrayList<PlaceDetails> placeDetailsList) {
+    private void updateRecyclerView(ArrayList<Restaurant> placeDetailsList) {
         if (!placeDetailsList.isEmpty())
-            binding.noPreviousRestaurants.setVisibility(View.GONE);
-        PreviousRestaurantsAdapter adapter = new PreviousRestaurantsAdapter(placeDetailsList, this, Glide.with(this));
-        binding.previousRestaurantsRecyclerview.setAdapter(adapter);
+            binding.noRestaurantSelected.setVisibility(View.INVISIBLE);
+        else
+            binding.noRestaurantSelected.setVisibility(View.VISIBLE);
+        adapter.updateList(placeDetailsList);
     }
 
     private void startChatActivity(String uid) {

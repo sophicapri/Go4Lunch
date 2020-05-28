@@ -7,6 +7,7 @@ public class Restaurant {
     private String address;
     private String urlPhoto;
     private int numberOfStars;
+    private String dateOfLunch;
 
     public Restaurant (){
         //
@@ -58,4 +59,14 @@ public class Restaurant {
     public void setNumberOfStars(int numberOfStars) {
         this.numberOfStars = numberOfStars;
     }
+
+
+    public String getDateOfLunch() {
+        return dateOfLunch;
+    }
+
+    public void setDateOfLunch(String dateOfLunch) {
+        this.dateOfLunch = dateOfLunch;
+    }
+
 }

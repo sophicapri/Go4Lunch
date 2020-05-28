@@ -1,111 +1,167 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/my_lunch_activity"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#EFEFEF">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/my_lunch_toolbar"
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBar"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/colorPrimary"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:navigationIcon="@drawable/ic_back_arrow_white"
-        app:title="@string/my_lunch_toolbar_title"
-        app:titleTextColor="@color/quantum_white_text" />
+        android:layout_height="240dp"
+        android:background="#EFEFEF">
 
-    <TextView
-        android:id="@+id/workmate_lunch_textview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="32dp"
-        android:text="@string/detail_lunch_textview"
-        android:textSize="16sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/my_lunch_toolbar"
-        app:layout_constraintVertical_bias="0.1" />
+        <com.google.android.material.appbar.CollapsingToolbarLayout
+            android:id="@+id/my_lunch_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/bkg_user_profile"
+            app:collapsedTitleTextAppearance="@style/collapsingToolbarLayoutTitleColor"
+            app:contentScrim="@color/colorPrimary"
+            app:expandedTitleTextAppearance="@style/expandedToolbarTitleColor"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            app:title="@string/my_lunch_toolbar_title">
 
+            <ImageView
+                android:id="@+id/profil_picture"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_gravity="center"
+                android:contentDescription="@string/profile_picture"
+                android:fitsSystemWindows="true"
+                android:src="@drawable/ic_profile_no_pic"
+                app:layout_collapseMode="pin" />
 
-    <ImageView
-        android:id="@+id/workmate_profile_pic"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="16dp"
-        android:contentDescription="@string/profile_picture"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:layout_collapseMode="pin"
+                app:navigationIcon="@drawable/ic_back_arrow_white" />
 
-    <include
-        android:id="@+id/workmate_detail_lunch"
-        layout="@layout/workmates_restaurant_preview">
-    </include>
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
+    </com.google.android.material.appbar.AppBarLayout>
 
-    <TextView
-        android:id="@+id/chat_with_workmate_btn"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:background="@drawable/bkg_message_btn"
-        android:clickable="true"
-        android:focusable="true"
-        android:gravity="center"
-        android:padding="10dp"
-        tools:text="@sample/tasks.json/chat_with_user"
-        android:textColor="@color/quantum_white_text"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        android:layout_height="match_parent"
+        android:layout_marginStart="@dimen/default_margin"
+        android:layout_marginEnd="@dimen/default_margin"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
-    <TextView
-        android:visibility="gone"
-        android:id="@+id/favorite_restaurants"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:background="@drawable/bkg_message_btn"
-        android:clickable="true"
-        android:focusable="true"
-        android:gravity="center"
-        android:padding="10dp"
-        android:text="Afficher mes restaurants favoris"
-        android:textColor="@color/quantum_white_text"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        <TextView
+            android:id="@+id/text_view_lunch_of_the_day"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/default_margin"
+            android:background="@drawable/bkg_profile_lunch_text_view"
+            android:paddingStart="@dimen/default_margin"
+            android:paddingTop="5dp"
+            android:paddingEnd="@dimen/default_margin"
+            android:paddingBottom="5dp"
+            android:text="DÉJEUNER DU JOUR"
+            android:textColor="@color/quantum_white_text"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/previous_restaurants"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="10dp"
-        android:text="@string/previous_restaurants"
-        android:textSize="16sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/workmate_detail_lunch" />
+        <include
+            android:id="@+id/no_restaurant_selected_today"
+            layout="@layout/no_restaurants_cardview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:layout_marginTop="@dimen/default_margin"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/text_view_lunch_of_the_day" />
 
-    <TextView
-        android:id="@+id/no_previous_restaurants"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginStart="16dp"
-        android:textStyle="italic"
-        android:text="@string/no_previous_restaurant"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/previous_restaurants" />
+        <include
+            android:id="@+id/lunch_of_the_day"
+            layout="@layout/workmates_restaurant_preview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/default_margin"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/text_view_lunch_of_the_day" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/previous_restaurants_recyclerview"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="10dp"
-        app:layout_constraintTop_toBottomOf="@+id/previous_restaurants"
-        app:layout_constraintBottom_toTopOf="@id/chat_with_workmate_btn"
-        tools:listitem="@layout/workmates_restaurant_preview" />
+        <HorizontalScrollView
+            android:id="@+id/favorites_and_previous_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fadeScrollbars="true"
+            android:scrollbarSize="1dp"
+            android:scrollbarStyle="insideInset"
+            app:layout_constraintTop_toBottomOf="@+id/lunch_of_the_day">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/favorites_and_previous_titles"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/default_margin"
+                android:orientation="horizontal">
+
+                <com.google.android.material.chip.ChipGroup
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:singleSelection="true"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/text_view_workmate_favorites"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="25sp"
+                        android:checkable="true"
+                        android:checked="true"
+                        android:text="RESTAURANTS FAVORIS"
+                        style="@style/chipBackground"
+                        android:textColor="@color/quantum_white_text"
+                        app:checkedIconVisible="false"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <com.google.android.material.chip.Chip
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="20dp"
+                        style="@style/chipBackground"
+                        android:checkable="true"
+                        android:text="DÉJEUNERS PRÉCÉDENTS"
+                        android:textColor="@color/quantum_white_text"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/text_view_workmate_favorites"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </com.google.android.material.chip.ChipGroup>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </HorizontalScrollView>
+
+
+        <include
+            android:id="@+id/no_favorite_restaurants"
+            layout="@layout/no_restaurants_cardview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:layout_marginTop="@dimen/default_margin"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/favorites_and_previous_title" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/previous_restaurants_recyclerview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/favorites_and_previous_title"
+            tools:listitem="@layout/workmates_restaurant_preview" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+

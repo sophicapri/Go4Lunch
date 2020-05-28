@@ -59,7 +59,6 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
         configureDrawerLayout();
         configureNavigationView();
         initPlacesApi();
-        initSearchBars();
         if (getCurrentUser() != null)
             viewModel.getUser(getCurrentUser().getUid()).observe(this, user -> {
                 currentUser = user;
@@ -137,12 +136,6 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
         binding.navigationView.setNavigationItemSelectedListener(this);
     }
 
-    private void initSearchBars() {
-
-
-
-    }
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -202,7 +195,7 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
     private void showFragment(int controllerIdentifier) {
         switch (controllerIdentifier) {
             case ACTIVITY_MY_LUNCH:
-                startNewActivity(MyLunchActivity.class);
+                startNewActivity(WorkmateDetailActivity.class);
                 break;
             case ACTIVITY_SETTINGS:
                 startNewActivity(SettingsActivity.class);
@@ -221,7 +214,7 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
 
     private void startNewActivity(Class activity) {
         Intent intent = new Intent(this, activity);
-        if (activity.equals(MyLunchActivity.class))
+        if (activity.equals(WorkmateDetailActivity.class))
             intent.putExtra(EXTRA_UID, currentUser.getUid());
         startActivity(intent);
     }
