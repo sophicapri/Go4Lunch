@@ -193,7 +193,6 @@ public class ChatActivity extends BaseActivity<MyViewModel> implements ChatViewA
     // --------------------
     // FILE MANAGEMENT
     // --------------------
-    //TODO : try generalise this as it is used in SettingsActivity too
 
     private void chooseImageFromPhone() {
         if (ActivityCompat.checkSelfPermission(this, READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
