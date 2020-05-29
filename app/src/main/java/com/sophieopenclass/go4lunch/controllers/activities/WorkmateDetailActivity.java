@@ -81,9 +81,7 @@ public class WorkmateDetailActivity extends BaseActivity<MyViewModel> {
                 .into(binding.workmateProfilePic);
 
         if (user.getDatesAndRestaurants().get(getTodayDateInString()) != null) {
-            String todayPlaceId = Objects.requireNonNull(user.getDatesAndRestaurants()
-                    .get(getTodayDateInString())).getPlaceId();
-            displayTodayRestaurant(todayPlaceId);
+            displayTodayRestaurant(user);
             binding.noRestaurantSelectedToday.setVisibility(View.INVISIBLE);
         } else {
             binding.lunchOfTheDay.lunchOfTheDay.setVisibility(View.INVISIBLE);
@@ -122,8 +120,8 @@ public class WorkmateDetailActivity extends BaseActivity<MyViewModel> {
                     displayFavoriteRestaurants(selectedUser);
                 else
                     updateRecyclerView(favRestaurantList);
+                binding.favoritesAndPreviousScrollview.fullScroll(View.FOCUS_LEFT);
             }
-            binding.favoritesAndPreviousScrollview.fullScroll(View.FOCUS_LEFT);
         });
 
         binding.chipPreviousLunches.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -133,38 +131,9 @@ public class WorkmateDetailActivity extends BaseActivity<MyViewModel> {
                     displayPreviousRestaurants(selectedUser);
                 else
                     updateRecyclerView(previousRestaurantList);
-            }
-            binding.favoritesAndPreviousScrollview.fullScroll(View.FOCUS_RIGHT);
-        });
-
- /*
-        binding.chipFavorites.setOnClickListener(v -> {
-            if (!binding.chipFavorites.isChecked()) {
-                Log.i(TAG, "onClick: fav");
-                isFavorite = true;
-                if (favRestaurantList.isEmpty())
-                    displayFavoriteRestaurants(selectedUser);
-                else
-                    updateRecyclerView(favRestaurantList);
-                binding.chipFavorites.setChecked(true);
+                binding.favoritesAndPreviousScrollview.fullScroll(View.FOCUS_RIGHT);
             }
         });
-*/
-
- /*
-        binding.chipPreviousLunches.setOnClickListener(v -> {
-            if (!binding.chipPreviousLunches.isChecked()) {
-                Log.i(TAG, "onClick: previous");
-                isFavorite = false;
-                if (previousRestaurantList.isEmpty())
-                    displayPreviousRestaurants(selectedUser);
-                else
-                    updateRecyclerView(previousRestaurantList);
-                binding.chipPreviousLunches.setChecked(true);
-            }
-        });
-
- */
     }
 
     private void initWorkmateProfileView() {
@@ -174,24 +143,23 @@ public class WorkmateDetailActivity extends BaseActivity<MyViewModel> {
         binding.favoritesAndPreviousScrollview.setVisibility(View.INVISIBLE);
     }
 
-    private void displayTodayRestaurant(String todaysPlaceId) {
-        viewModel.getPlaceDetails(todaysPlaceId).observe(this, placeDetails -> {
+    private void displayTodayRestaurant(User user) {
+        Restaurant selectedRestaurant = user.getDatesAndRestaurants().get(getTodayDateInString());
+        if (selectedRestaurant!= null) {
             binding.lunchOfTheDay.lunchOfTheDay.setVisibility(View.VISIBLE);
-            binding.lunchOfTheDay.detailsRestaurantName.setText(placeDetails.getName());
-            binding.lunchOfTheDay.detailsRestaurantAddress.setText(placeDetails.getVicinity());
-            String urlPhoto = PlaceDetails.urlPhotoFormatter(placeDetails, 0);
+            binding.lunchOfTheDay.detailsRestaurantName.setText(selectedRestaurant.getName());
+            binding.lunchOfTheDay.detailsRestaurantAddress.setText(selectedRestaurant.getAddress());
             Glide.with(binding.lunchOfTheDay.restaurantPhoto)
-                    .load(urlPhoto)
+                    .load(selectedRestaurant.getUrlPhoto())
                     .apply(RequestOptions.circleCropTransform())
                     .into(binding.lunchOfTheDay.restaurantPhoto);
 
-            binding.lunchOfTheDay.lunchOfTheDay.setOnClickListener(v -> onRestaurantClick(todaysPlaceId));
-            displayStars(placeDetails.getRating());
-        });
+            binding.lunchOfTheDay.lunchOfTheDay.setOnClickListener(v -> onRestaurantClick(selectedRestaurant.getPlaceId()));
+            displayStars(selectedRestaurant.getNumberOfStars());
+        }
     }
 
-    private void displayStars(double rating) {
-        int numberOfStars = CalculateRatings.getNumberOfStarsToDisplay(rating);
+    private void displayStars(double numberOfStars) {
         if (numberOfStars == 1)
             binding.lunchOfTheDay.detailOneStar.setVisibility(View.VISIBLE);
         if (numberOfStars == 2)
@@ -217,7 +185,6 @@ public class WorkmateDetailActivity extends BaseActivity<MyViewModel> {
                 }
             }
         }
-        Log.i(TAG, "displayPreviousRestaurants: ");
         isFavorite = false;
         Collections.sort(previousRestaurantList, new RestaurantRecentComparator());
         updateRecyclerView(previousRestaurantList);
@@ -246,5 +213,12 @@ public class WorkmateDetailActivity extends BaseActivity<MyViewModel> {
         Intent intent = new Intent(this, ChatActivity.class);
         intent.putExtra(EXTRA_UID, uid);
         startActivity(intent);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        previousRestaurantList.clear();
+        favRestaurantList.clear();
     }
 }

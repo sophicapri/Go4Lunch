@@ -101,8 +101,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Eas
             viewModel = (MyViewModel) context.getViewModel();
         }
 
-        Log.i(TAG, "onCreateView: ");
-
         if (getActivity() != null) {
             activity = ((MainActivity) getActivity());
             activity.binding.searchBarMap.closeSearchBar.setOnClickListener(v -> {
@@ -158,7 +156,8 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Eas
                     .setTextColor(getResources().getColor(R.color.quantum_white_100)).setDuration(5000).show();
         } else {
             if (context.requestLocationPermission()) {
-                //fetchLastLocation();
+                if (currentLocation == null)
+                    fetchLastLocation();
             }
         }
     }

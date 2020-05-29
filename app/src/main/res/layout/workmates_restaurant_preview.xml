@@ -10,7 +10,7 @@
     android:layout_marginStart="@dimen/default_margin"
     android:layout_marginEnd="@dimen/default_margin"
     app:cardCornerRadius="70dp"
-    app:cardElevation="5dp">
+    app:cardElevation="3dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/lunch_of_the_day_item"

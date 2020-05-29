@@ -30,12 +30,11 @@
     <string name="distance">"%dm"</string>
     <string name="you_are_eating_here">"You're eating here !"</string>
     <string name="chat_with">Chat with %s</string>
-    <string name="detail_lunch_textview">LUNCH OF THE DAY:</string>
-    <string name="your_lunch_textview">YOUR LUNCH OF THE DAY:</string>
+    <string name="today_lunch_text_view">LUNCH OF THE DAY:</string>
     <string name="no_previous_restaurant">No previous restaurants…</string>
     <string name="weekdays_opening_hours_title">Opening hours</string>
     <string name="weekdays_openings">"Monday: 11:30 AM – 3:00 PM, 6:00 – 11:00 PM\nTuesday: 11:30 AM – 3:00 PM, 6:00 – 11:00 PM\nWednesday: 11:30 AM – 3:00 PM, 6:00 – 11:00 PM\nThursday: 11:30 AM – 3:00 PM, 6:00 – 11:00 PM\nFriday: 11:30 AM – 3:00 PM, 6:00 – 11:00 PM\nSaturday: 11:30 AM – 3:00 PM, 6:00 – 11:00 PM\nSunday: Closed"</string>
-    <string name="previous_restaurants">PREVIOUS LUNCHES:</string>
+    <string name="previous_restaurants">PREVIOUS RESTAURANTS</string>
     <string name="open_until">Open until %s</string>
     <string name="open_at">Opening at %s</string>
     <string name="open">Open</string>
@@ -115,6 +114,7 @@
     <string name="search_button">Search button</string>
     <string name="no_restaurant_selected">No restaurant selected…</string>
     <string name="open_details_about_restaurant">Open details about restaurant</string>
+    <string name="favorite_restaurants">FAVORITE RESTAURANTS</string>
 
 
 </resources>
