@@ -164,7 +164,6 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
                 binding.threeStars.setVisibility(View.VISIBLE);
         }
 
-        //
         restaurant = new Restaurant(placeId, placeDetails.getName(), placeDetails.getVicinity(),
                 PlaceDetails.urlPhotoFormatter(placeDetails, 0), numberOfStars);
     }
@@ -233,7 +232,6 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
 
     private void handleRestaurantSelection(User currentUser) {
         if (!currentUser.restaurantIsSelected(placeId)) {
-            Log.i(TAG, "handleRestaurantSelection: placeId null ");
             binding.addRestaurant.setImageDrawable(getResources().getDrawable(R.drawable.ic_check_circle_black_24dp));
             viewModel.updateChosenRestaurant(currentUser.getUid(), restaurant, getTodayDateInString()).observe(this, placeId -> {
                 if (placeId == null) {
@@ -242,7 +240,6 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
                 }
             });
         } else {
-            Log.i(TAG, "handleRestaurantSelection: NO ");
             binding.addRestaurant.setImageDrawable(getResources().getDrawable(R.drawable.ic_add_black_24dp));
             viewModel.deleteChosenRestaurant(currentUser.getUid(), getTodayDateInString());
         }

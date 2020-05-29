@@ -54,7 +54,6 @@ public class WorkmateDetailActivity extends BaseActivity<MyViewModel> {
     @Override
     protected void onStart() {
         super.onStart();
-        minus = 0;
         if (networkUnavailable()) {
             Snackbar.make(binding.getRoot(), getString(R.string.internet_unavailable), BaseTransientBottomBar.LENGTH_INDEFINITE)
                     .setDuration(5000).setTextColor(getResources().getColor(R.color.quantum_white_100)).show();
@@ -111,8 +110,8 @@ public class WorkmateDetailActivity extends BaseActivity<MyViewModel> {
         binding.userLunchToolbar.setTitle(getString(R.string.my_lunch_toolbar_title));
         binding.textViewWorkmateFavorites.setVisibility(View.INVISIBLE);
         binding.favoritesAndPreviousScrollview.setVisibility(View.VISIBLE);
-
-
+        binding.chipFavorites.setChecked(true);
+        binding.favoritesAndPreviousScrollview.fullScroll(View.FOCUS_LEFT);
         binding.chipFavorites.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
                 isFavorite = true;
@@ -174,8 +173,6 @@ public class WorkmateDetailActivity extends BaseActivity<MyViewModel> {
         updateRecyclerView(favRestaurantList);
     }
 
-    // @minus = To know if the user has selected a restaurant on the current day
-    // and retrieve the number of previous restaurant accordingly
     private void displayPreviousRestaurants(User user) {
         for (String date : user.getDatesAndRestaurants().keySet()) {
             if (!date.equals(getTodayDateInString())) {

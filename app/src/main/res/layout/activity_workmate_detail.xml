@@ -64,7 +64,7 @@
                 android:paddingTop="5dp"
                 android:paddingEnd="@dimen/default_margin"
                 android:paddingBottom="5dp"
-                android:text="DÉJEUNER DU JOUR"
+                android:text="@string/today_lunch_text_view"
                 android:textColor="@color/quantum_white_text"
                 android:textSize="18sp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -118,10 +118,11 @@
                 android:paddingTop="5dp"
                 android:paddingEnd="@dimen/default_margin"
                 android:paddingBottom="5dp"
-                android:text="RESTAURANTS FAVORIS"
+                android:text="@string/favorite_restaurants"
                 android:textColor="@color/quantum_white_text"
                 android:textSize="18sp"
                 android:visibility="invisible"
+                app:layout_constraintBottom_toBottomOf="@+id/favorites_and_previous_scrollview"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/lunch_of_the_day" />
@@ -130,16 +131,13 @@
                 android:id="@+id/favorites_and_previous_scrollview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fadeScrollbars="true"
-                android:scrollbarSize="2dp"
-                android:scrollbarStyle="outsideInset"
+                android:scrollbars="none"
+                android:layout_marginTop="@dimen/default_margin"
                 app:layout_constraintTop_toBottomOf="@+id/lunch_of_the_day">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="@dimen/default_margin"
-                    android:orientation="horizontal">
+                    android:layout_height="match_parent">
 
                     <com.google.android.material.chip.ChipGroup
                         android:layout_width="wrap_content"
@@ -206,7 +204,6 @@
                 android:id="@+id/recycler_view_restaurants"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/default_margin"
                 app:layout_constraintTop_toBottomOf="@id/text_view_workmate_favorites"
                 tools:listitem="@layout/workmates_restaurant_preview" />
         </androidx.constraintlayout.widget.ConstraintLayout>

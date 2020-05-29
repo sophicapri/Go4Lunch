@@ -175,8 +175,8 @@ public abstract class BaseActivity<T extends ViewModel> extends AppCompatActivit
         Calendar currentDate = Calendar.getInstance();
         Calendar dueDate = Calendar.getInstance();
         // Set Execution time of the reminder
-        dueDate.set(Calendar.HOUR_OF_DAY, 11);
-        dueDate.set(Calendar.MINUTE, 45);
+        dueDate.set(Calendar.HOUR_OF_DAY, 12);
+        dueDate.set(Calendar.MINUTE, 0);
         dueDate.set(Calendar.SECOND, 0);
         dueDate.set(Calendar.MILLISECOND, 0);
 

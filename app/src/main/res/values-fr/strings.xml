@@ -105,7 +105,7 @@
     <string name="locale_saved">Langue enregistrée</string>
     <string name="delete_my_account">Supprimer mon compte</string>
     <string name="search_button">Bouton rechercher</string>
-    <string name="no_restaurant_selected">Aucun restaurant selectionné…</string>
+    <string name="no_restaurant_selected">Pas de restaurant…</string>
     <string name="open_details_about_restaurant">Ouvrir les détails du restaurant</string>
     <string name="favorite_restaurants">RESTAURANTS FAVORIS</string>
     <string name="open_24h">Ouvert 24h/7</string>

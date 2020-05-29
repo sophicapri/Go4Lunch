@@ -113,7 +113,7 @@
     <string name="locale_saved">Language saved</string>
     <string name="delete_my_account">Delete my account</string>
     <string name="search_button">Search button</string>
-    <string name="no_restaurant_selected">No restaurant selected…</string>
+    <string name="no_restaurant_selected">No restaurants…</string>
     <string name="open_details_about_restaurant">Open details about restaurant</string>
     <string name="favorite_restaurants">FAVORITE RESTAURANTS</string>
     <string name="closing_soon">Closing soon</string>
