@@ -112,33 +112,29 @@ public class WorkmateDetailActivity extends BaseActivity<MyViewModel> {
         binding.fabMessageUser.setVisibility(View.GONE);
         binding.userLunchToolbar.setTitle(getString(R.string.my_lunch_toolbar_title));
         binding.textViewWorkmateFavorites.setVisibility(View.INVISIBLE);
-        binding.favoritesAndPreviousTitle.setVisibility(View.VISIBLE);
+        binding.favoritesAndPreviousScrollview.setVisibility(View.VISIBLE);
 
 
-        binding.chipFavorites.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    Log.i(TAG, "onClick: fav");
-                    if (favRestaurantList.isEmpty())
-                        displayFavoriteRestaurants(selectedUser);
-                    else
-                        updateRecyclerView(favRestaurantList);
-                }
+        binding.chipFavorites.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                isFavorite = true;
+                if (favRestaurantList.isEmpty())
+                    displayFavoriteRestaurants(selectedUser);
+                else
+                    updateRecyclerView(favRestaurantList);
             }
+            binding.favoritesAndPreviousScrollview.fullScroll(View.FOCUS_LEFT);
         });
 
-        binding.chipPreviousLunches.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    Log.i(TAG, "onClick: previous");
-                    if (previousRestaurantList.isEmpty())
-                        displayPreviousRestaurants(selectedUser);
-                    else
-                        updateRecyclerView(previousRestaurantList);
-                }
+        binding.chipPreviousLunches.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                isFavorite = false;
+                if (previousRestaurantList.isEmpty())
+                    displayPreviousRestaurants(selectedUser);
+                else
+                    updateRecyclerView(previousRestaurantList);
             }
+            binding.favoritesAndPreviousScrollview.fullScroll(View.FOCUS_RIGHT);
         });
 
  /*
@@ -175,7 +171,7 @@ public class WorkmateDetailActivity extends BaseActivity<MyViewModel> {
         binding.fabMessageUser.setVisibility(View.VISIBLE);
         binding.userLunchToolbar.setTitle(selectedUser.getUsername());
         binding.textViewWorkmateFavorites.setVisibility(View.VISIBLE);
-        binding.favoritesAndPreviousTitle.setVisibility(View.INVISIBLE);
+        binding.favoritesAndPreviousScrollview.setVisibility(View.INVISIBLE);
     }
 
     private void displayTodayRestaurant(String todaysPlaceId) {

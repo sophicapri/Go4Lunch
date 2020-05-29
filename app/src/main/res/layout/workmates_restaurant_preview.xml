@@ -20,12 +20,12 @@
         android:layout_marginTop="8dp"
         android:visibility="visible">
 
+        <!-- RESTAURANT IMAGE -->
         <ImageView
             android:id="@+id/restaurant_photo"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:contentDescription="@string/restaurant_photo"
-            android:src="@drawable/ic_profile_no_pic"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

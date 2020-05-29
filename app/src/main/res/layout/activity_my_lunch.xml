@@ -90,7 +90,7 @@
             app:layout_constraintTop_toBottomOf="@+id/text_view_lunch_of_the_day" />
 
         <HorizontalScrollView
-            android:id="@+id/favorites_and_previous_title"
+            android:id="@+id/favorites_and_previous_scrollview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fadeScrollbars="true"
@@ -152,13 +152,13 @@
             android:layout_marginTop="@dimen/default_margin"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/favorites_and_previous_title" />
+            app:layout_constraintTop_toBottomOf="@id/favorites_and_previous_scrollview" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/previous_restaurants_recyclerview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/favorites_and_previous_title"
+            app:layout_constraintTop_toBottomOf="@id/favorites_and_previous_scrollview"
             tools:listitem="@layout/workmates_restaurant_preview" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 

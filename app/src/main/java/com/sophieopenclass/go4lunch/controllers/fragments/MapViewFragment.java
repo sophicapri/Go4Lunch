@@ -158,7 +158,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Eas
                     .setTextColor(getResources().getColor(R.color.quantum_white_100)).setDuration(5000).show();
         } else {
             if (context.requestLocationPermission()) {
-                fetchLastLocation();
+                //fetchLastLocation();
             }
         }
     }
