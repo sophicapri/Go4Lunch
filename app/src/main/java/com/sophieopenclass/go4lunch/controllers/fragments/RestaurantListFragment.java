@@ -73,8 +73,6 @@ public class RestaurantListFragment extends Fragment implements EasyPermissions.
         return new RestaurantListFragment();
     }
 
-
-
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = RecyclerViewRestaurantsBinding.inflate(inflater, container, false);
@@ -84,7 +82,6 @@ public class RestaurantListFragment extends Fragment implements EasyPermissions.
         }
         activity = ((MainActivity) getActivity());
         if (activity != null) {
-            initSearchBar(activity);
             activity.binding.progressBar.setVisibility(View.VISIBLE);
         }
 
@@ -96,7 +93,7 @@ public class RestaurantListFragment extends Fragment implements EasyPermissions.
     }
 
     private void initSearchBar(MainActivity activity) {
-       /* activity.binding.searchBarRestaurantList.closeSearchBar.setOnClickListener(v -> {
+        activity.binding.searchBarRestaurantList.closeSearchBar.setOnClickListener(v -> {
             activity.binding.searchBarRestaurantList.searchBarRestaurantList.setVisibility(View.GONE);
             if (!activity.binding.searchBarRestaurantList.searchBarInput.getText().toString().isEmpty())
                 activity.binding.searchBarRestaurantList.searchBarInput.getText().clear();
@@ -134,8 +131,6 @@ public class RestaurantListFragment extends Fragment implements EasyPermissions.
                 }
             }
         });
-
-        */
     }
 
     /**
@@ -152,7 +147,7 @@ public class RestaurantListFragment extends Fragment implements EasyPermissions.
         return RectangularBounds.newInstance(southWestCorner, northEastCorner);
     }
 
-    public void displayResultsAutocomplete(String textInput) {
+    private void displayResultsAutocomplete(String textInput) {
         FindAutocompletePredictionsRequest predictionsRequest = FindAutocompletePredictionsRequest.builder()
                 .setTypeFilter(TypeFilter.ESTABLISHMENT)
                 .setSessionToken(token)
@@ -208,11 +203,14 @@ public class RestaurantListFragment extends Fragment implements EasyPermissions.
             autocompleteActive = false;
             activity.binding.searchBarRestaurantList.searchBarInput.getText().clear();
         }
+        if (!ORIENTATION_CHANGED)
+            initSearchBar(activity);
+
         ORIENTATION_CHANGED = false;
         super.onResume();
     }
 
-    public void observePlaces(String nextPageToken) {
+    private void observePlaces(String nextPageToken) {
         if (context.networkUnavailable()) {
             Snackbar.make(binding.getRoot(), getString(R.string.internet_unavailable), BaseTransientBottomBar.LENGTH_INDEFINITE)
                     .setDuration(5000).setTextColor(getResources().getColor(R.color.quantum_white_100)).show();
@@ -243,7 +241,7 @@ public class RestaurantListFragment extends Fragment implements EasyPermissions.
 
 
     // Method to use during development. The one below demands too many requests
-    private void getFullPlaceDetails(List<PlaceDetails> placeDetailsList) {
+   /* private void getFullPlaceDetails(List<PlaceDetails> placeDetailsList) {
         ArrayList<PlaceDetails> completePlaceDetailsList = new ArrayList<>();
         for (PlaceDetails restaurant : placeDetailsList) {
             viewModel.getUsersByPlaceIdAndDate(restaurant.getPlaceId(), getTodayDateInString())
@@ -267,6 +265,7 @@ public class RestaurantListFragment extends Fragment implements EasyPermissions.
                     });
         }
     }
+    */
 
 
     // Nearby Search doesn't return all the fields required in a PlaceDetails, therefore another
@@ -275,13 +274,13 @@ public class RestaurantListFragment extends Fragment implements EasyPermissions.
     // The viewModel calls are inside each other and not called one after the other because the variables do not get initialised
     // fast enough before being used for another viewModel.
 
-    /* Method that gets the openings hours details.
+    // Method that gets the openings hours details.
     private void getFullPlaceDetails(List<PlaceDetails> placeDetailsList) {
         ArrayList<PlaceDetails> completePlaceDetailsList = new ArrayList<>();
         for (PlaceDetails placeDetails : placeDetailsList) {
             viewModel.getPlaceDetails(placeDetails.getPlaceId())
                     .observe(getViewLifecycleOwner(), restaurant ->
-                            viewModel.getUsersByPlaceIdAndDate(placeDetails.getPlaceId(), User.getTodaysDate())
+                            viewModel.getUsersByPlaceIdAndDate(placeDetails.getPlaceId(), getTodayDateInString())
                                     .observe(getViewLifecycleOwner(), users -> {
                                         restaurant.setNbrOfWorkmates(users.size());
                                         completePlaceDetailsList.add(restaurant);
@@ -292,12 +291,16 @@ public class RestaurantListFragment extends Fragment implements EasyPermissions.
                                                 this.restaurants.addAll(completePlaceDetailsList);
                                                 if (!autocompleteActive)
                                                     adapter.notifyItemRangeInserted(indexStart, completePlaceDetailsList.size());
+                                                else {
+                                                    adapter.notifyItemRemoved(0);
+                                                    adapter.notifyItemRangeInserted(0, completePlaceDetailsList.size());
+                                                }
                                             } else
                                                 updateRecyclerView(completePlaceDetailsList);
                                         }
                                     }));
         }
-        */
+    }
 
     // Clear list of restaurants so that we don't display the same results below the previous ones.
     @Override
@@ -345,7 +348,6 @@ public class RestaurantListFragment extends Fragment implements EasyPermissions.
                 }
             }
         };
-
         binding.recyclerViewRestaurants.addOnScrollListener(scrollListener);
     }
 
@@ -372,7 +374,7 @@ public class RestaurantListFragment extends Fragment implements EasyPermissions.
     @Override
     public void onPermissionsGranted(int requestCode, @NonNull List<String> perms) {
         if (EasyPermissions.hasPermissions(context, PERMS))
-            observePlaces(nextPageToken);
+            observePlaces(null);
     }
 
     @Override

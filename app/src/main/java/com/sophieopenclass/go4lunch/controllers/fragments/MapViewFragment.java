@@ -113,6 +113,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Eas
 
         activity.binding.searchBarMap.searchBarInput.addTextChangedListener(new TextWatcher() {
             //to stop the TextWatcher to fire multiple times
+            // -not working-
             boolean isOnTextChanged = false;
 
             @Override

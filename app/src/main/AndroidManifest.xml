@@ -36,7 +36,6 @@
         <activity android:name=".controllers.activities.WorkmateDetailActivity" />
         <activity android:name=".controllers.activities.ChatActivity" />
         <activity android:name=".controllers.activities.LoginPageActivity" />
-        <activity android:name=".controllers.activities.MyLunchActivity" />
     </application>
 
 </manifest>
