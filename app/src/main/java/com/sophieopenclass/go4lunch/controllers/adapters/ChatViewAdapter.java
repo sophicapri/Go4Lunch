@@ -96,7 +96,7 @@ public class ChatViewAdapter extends FirestoreRecyclerAdapter<Message, ChatViewA
 
             // Update date TextView
             if (message.getDateCreated() != null)
-                binding.messageDateTextView.setText(DateFormatting.convertDateToHour(message.getDateCreated()));
+                binding.messageDateTextView.setText(convertDateToHour(message.getDateCreated()));
 
             // Update image sent ImageView
             if (message.getUrlImage() != null) {
@@ -137,6 +137,11 @@ public class ChatViewAdapter extends FirestoreRecyclerAdapter<Message, ChatViewA
 
             binding.chatContainerRoot.requestLayout();
         }
+    }
+
+    private String convertDateToHour(Date date) {
+        DateFormat format = new SimpleDateFormat("HH:mm", Locale.getDefault());
+        return format.format(date);
     }
 
     public interface Listener {

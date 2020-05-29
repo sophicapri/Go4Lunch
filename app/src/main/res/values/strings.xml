@@ -36,10 +36,11 @@
     <string name="weekdays_openings">"Monday: 11:30 AM – 3:00 PM, 6:00 – 11:00 PM\nTuesday: 11:30 AM – 3:00 PM, 6:00 – 11:00 PM\nWednesday: 11:30 AM – 3:00 PM, 6:00 – 11:00 PM\nThursday: 11:30 AM – 3:00 PM, 6:00 – 11:00 PM\nFriday: 11:30 AM – 3:00 PM, 6:00 – 11:00 PM\nSaturday: 11:30 AM – 3:00 PM, 6:00 – 11:00 PM\nSunday: Closed"</string>
     <string name="previous_restaurants">PREVIOUS RESTAURANTS</string>
     <string name="open_until">Open until %s</string>
+    <string name="open_24h">Open 24h/7</string>
     <string name="open_at">Opening at %s</string>
     <string name="open">Open</string>
     <string name="close">Closed</string>
-    <string name="close_will_open_at">Closed. Will open at</string>
+    <string name="close_will_open_at">Closed. Will open at %s</string>
     <string name="opening_hours_unavailable">Opening hours unavailable</string>
     <string name="restaurant_photo">Restaurant photo</string>
     <string name="person_icon">Abstract icon of person</string>
@@ -115,6 +116,7 @@
     <string name="no_restaurant_selected">No restaurant selected…</string>
     <string name="open_details_about_restaurant">Open details about restaurant</string>
     <string name="favorite_restaurants">FAVORITE RESTAURANTS</string>
+    <string name="closing_soon">Closing soon</string>
 
 
 </resources>

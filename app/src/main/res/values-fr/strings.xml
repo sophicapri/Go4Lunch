@@ -33,7 +33,7 @@
     <string name="open_at">"Ouvert à partir de %s"</string>
     <string name="open">Ouvert</string>
     <string name="close">Fermé</string>
-    <string name="close_will_open_at">Fermé. Ouvre à</string>
+    <string name="close_will_open_at">Fermé. Ouvre à %s</string>
     <string name="opening_hours_unavailable">Horaires non renseignés</string>
     <string name="restaurant_photo">Photo du restaurant</string>
     <string name="person_icon">"Icone d'une personne"</string>
@@ -108,4 +108,6 @@
     <string name="no_restaurant_selected">Aucun restaurant selectionné…</string>
     <string name="open_details_about_restaurant">Ouvrir les détails du restaurant</string>
     <string name="favorite_restaurants">RESTAURANTS FAVORIS</string>
+    <string name="open_24h">Ouvert 24h/7</string>
+    <string name="closing_soon">Ferme bientôt</string>
 </resources>

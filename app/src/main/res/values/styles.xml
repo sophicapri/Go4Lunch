@@ -59,6 +59,11 @@
         <item name="android:textColor">@color/quantum_black_100</item>
     </style>
 
+    <style name="TextStyleRedBold" parent="TextAppearance.AppCompat">
+        <item name="android:textStyle">italic</item>
+        <item name="android:textColor">@color/quantum_googred</item>
+    </style>
+
     <style name="SwitchButton" parent="Widget.AppCompat.CompoundButton.Switch">
         <item name="colorControlActivated">@color/colorPrimaryDark</item>
         <!-- inactive thumb color -->

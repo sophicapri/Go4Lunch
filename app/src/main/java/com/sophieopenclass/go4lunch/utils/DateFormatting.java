@@ -37,11 +37,6 @@ public class DateFormatting {
         return formatter.format(date);
     }
 
-    public static String convertDateToHour(Date date) {
-        DateFormat format = new SimpleDateFormat("HH:mm", Locale.getDefault());
-        return format.format(date);
-    }
-
     // To be able to compare two dates
     public static Date getDateWithoutTime(Date date) {
         Calendar calendar = Calendar.getInstance();
