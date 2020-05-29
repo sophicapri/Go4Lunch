@@ -28,11 +28,11 @@ import java.util.List;
 import java.util.Locale;
 
 import static com.sophieopenclass.go4lunch.listeners.Listeners.OnRestaurantClickListener;
+import static com.sophieopenclass.go4lunch.utils.Constants.ONE_HOUR;
+import static com.sophieopenclass.go4lunch.utils.Constants.OPEN_24H;
 
 public class RestaurantListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final String TAG = "RESO LIST ADAPTER";
-    public static final String OPEN_24H = "0000";
-    public static final int ONE_HOUR = 100;
     private List<PlaceDetails> placeDetailsList;
     private OnRestaurantClickListener onRestaurantClickListener;
     private RequestManager glide;
@@ -176,7 +176,6 @@ public class RestaurantListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             }
             return openingHours;
         }
-
 
         private boolean restaurantClosingSoon(Close close) {
             int timeLeftBeforeClosing = Integer.parseInt(close.getTime()) - Integer.parseInt(convertDateToStringHour(new Date()));

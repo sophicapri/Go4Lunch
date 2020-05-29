@@ -15,8 +15,10 @@ public class Constants {
 
     //
     public static final String USERNAME_FIELD = "username";
-    public static final String NAME_RESTAURANT = "name";
-    public static final String ADDRESS_RESTAURANT = "address";
+
+
+    public static final String OPEN_24H = "0000";
+    public static final int ONE_HOUR = 60;
     //
 
     public static final String MESSAGES_SUBCOLLECTION = "messages";
