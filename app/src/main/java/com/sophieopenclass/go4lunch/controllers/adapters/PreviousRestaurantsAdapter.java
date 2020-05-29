@@ -22,6 +22,7 @@ public class PreviousRestaurantsAdapter extends RecyclerView.Adapter<PreviousRes
     private ArrayList<Restaurant> restaurantList;
     private Listeners.OnRestaurantClickListener onRestaurantClickListener;
     private RequestManager glide;
+    private boolean isFavorite;
 
 
     public PreviousRestaurantsAdapter(ArrayList<Restaurant> restaurantList, Listeners.OnRestaurantClickListener onRestaurantClickListener, RequestManager glide) {
@@ -48,7 +49,8 @@ public class PreviousRestaurantsAdapter extends RecyclerView.Adapter<PreviousRes
         return restaurantList.size();
     }
 
-    public void updateList(ArrayList<Restaurant> restaurantList) {
+    public void updateList(ArrayList<Restaurant> restaurantList, boolean isFavorite) {
+        this.isFavorite = isFavorite;
         this.restaurantList = restaurantList;
         notifyDataSetChanged();
     }
@@ -67,10 +69,13 @@ public class PreviousRestaurantsAdapter extends RecyclerView.Adapter<PreviousRes
 
         void bind(Restaurant restaurant) {
             binding.dateOfPreviousLunch.setVisibility(View.VISIBLE);
-            binding.dateOfPreviousLunch.setText(formatLocaleDate(restaurant.getDateOfLunch()));
+            if (!isFavorite)
+                binding.dateOfPreviousLunch.setText(formatLocaleDate(restaurant.getDateOfLunch()));
+            else
+                binding.dateOfPreviousLunch.setVisibility(View.GONE);
             binding.detailsRestaurantName.setText(restaurant.getName());
             binding.detailsRestaurantAddress.setText(restaurant.getAddress());
-            glide.load(restaurant.getUrlPhoto()).apply(RequestOptions.centerCropTransform())
+            glide.load(restaurant.getUrlPhoto()).apply(RequestOptions.circleCropTransform())
                     .into(binding.restaurantPhoto);
 
             if (restaurant.getNumberOfStars() == 1)

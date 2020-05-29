@@ -1,5 +1,7 @@
 package com.sophieopenclass.go4lunch.models;
 
+import com.sophieopenclass.go4lunch.utils.DateFormatting;
+
 // Local Restaurant object for users profile
 public class Restaurant {
     private String placeId;
@@ -18,6 +20,7 @@ public class Restaurant {
         this.address = address;
         this.urlPhoto = urlPhoto;
         this.numberOfStars = numberOfStars;
+        //dateOfLunch = DateFormatting.getTodayDateInString();
     }
 
     public String getPlaceId() {

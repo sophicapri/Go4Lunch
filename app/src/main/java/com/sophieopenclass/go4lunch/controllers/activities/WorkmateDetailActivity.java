@@ -1,7 +1,9 @@
 package com.sophieopenclass.go4lunch.controllers.activities;
 
 import android.content.Intent;
+import android.util.Log;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.Toast;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -23,7 +25,6 @@ import com.sophieopenclass.go4lunch.utils.CalculateRatings;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
 import java.util.Objects;
 
 import static android.content.Intent.EXTRA_UID;
@@ -32,10 +33,12 @@ import static com.sophieopenclass.go4lunch.utils.DateFormatting.getTodayDateInSt
 public class WorkmateDetailActivity extends BaseActivity<MyViewModel> {
     ActivityWorkmateDetailBinding binding;
     String uid = null;
-    ArrayList<Restaurant> restaurantList = new ArrayList<>();
+    ArrayList<Restaurant> previousRestaurantList = new ArrayList<>();
+    ArrayList<Restaurant> favRestaurantList = new ArrayList<>();
     int minus;
     User selectedUser;
     PreviousRestaurantsAdapter adapter;
+    private boolean isFavorite = true;
 
     @Override
     public Class getViewModelClass() {
@@ -81,6 +84,7 @@ public class WorkmateDetailActivity extends BaseActivity<MyViewModel> {
             String todayPlaceId = Objects.requireNonNull(user.getDatesAndRestaurants()
                     .get(getTodayDateInString())).getPlaceId();
             displayTodayRestaurant(todayPlaceId);
+            binding.noRestaurantSelectedToday.setVisibility(View.INVISIBLE);
         } else {
             binding.lunchOfTheDay.lunchOfTheDay.setVisibility(View.INVISIBLE);
             binding.noRestaurantSelectedToday.setVisibility(View.VISIBLE);
@@ -100,7 +104,7 @@ public class WorkmateDetailActivity extends BaseActivity<MyViewModel> {
     private void configureRecyclerView() {
         binding.recyclerViewRestaurants.setHasFixedSize(true);
         binding.recyclerViewRestaurants.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new PreviousRestaurantsAdapter(restaurantList, this, Glide.with(this));
+        adapter = new PreviousRestaurantsAdapter(previousRestaurantList, this, Glide.with(this));
         binding.recyclerViewRestaurants.setAdapter(adapter);
     }
 
@@ -110,25 +114,61 @@ public class WorkmateDetailActivity extends BaseActivity<MyViewModel> {
         binding.textViewWorkmateFavorites.setVisibility(View.INVISIBLE);
         binding.favoritesAndPreviousTitle.setVisibility(View.VISIBLE);
 
-        binding.chipPreviousLunches.setOnClickListener(new View.OnClickListener() {
+
+        binding.chipFavorites.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onClick(View v) {
-                if (!binding.chipPreviousLunches.isChecked()) {
-                    displayPreviousRestaurants(selectedUser);
-                    binding.chipPreviousLunches.setChecked(true);
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    Log.i(TAG, "onClick: fav");
+                    if (favRestaurantList.isEmpty())
+                        displayFavoriteRestaurants(selectedUser);
+                    else
+                        updateRecyclerView(favRestaurantList);
                 }
             }
         });
 
-        binding.chipFavorites.setOnClickListener(new View.OnClickListener() {
+        binding.chipPreviousLunches.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onClick(View v) {
-                if (!binding.chipFavorites.isChecked()) {
-                    displayFavoriteRestaurants(selectedUser);
-                    binding.chipFavorites.setChecked(true);
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    Log.i(TAG, "onClick: previous");
+                    if (previousRestaurantList.isEmpty())
+                        displayPreviousRestaurants(selectedUser);
+                    else
+                        updateRecyclerView(previousRestaurantList);
                 }
             }
         });
+
+ /*
+        binding.chipFavorites.setOnClickListener(v -> {
+            if (!binding.chipFavorites.isChecked()) {
+                Log.i(TAG, "onClick: fav");
+                isFavorite = true;
+                if (favRestaurantList.isEmpty())
+                    displayFavoriteRestaurants(selectedUser);
+                else
+                    updateRecyclerView(favRestaurantList);
+                binding.chipFavorites.setChecked(true);
+            }
+        });
+*/
+
+ /*
+        binding.chipPreviousLunches.setOnClickListener(v -> {
+            if (!binding.chipPreviousLunches.isChecked()) {
+                Log.i(TAG, "onClick: previous");
+                isFavorite = false;
+                if (previousRestaurantList.isEmpty())
+                    displayPreviousRestaurants(selectedUser);
+                else
+                    updateRecyclerView(previousRestaurantList);
+                binding.chipPreviousLunches.setChecked(true);
+            }
+        });
+
+ */
     }
 
     private void initWorkmateProfileView() {
@@ -165,8 +205,9 @@ public class WorkmateDetailActivity extends BaseActivity<MyViewModel> {
     }
 
     private void displayFavoriteRestaurants(User user) {
-        //restaurantList.addAll(user.getFavoriteRestaurants());
-        updateRecyclerView(user.getFavoriteRestaurants());
+        favRestaurantList.addAll(user.getFavoriteRestaurants().values());
+        isFavorite = true;
+        updateRecyclerView(favRestaurantList);
     }
 
     // @minus = To know if the user has selected a restaurant on the current day
@@ -176,12 +217,14 @@ public class WorkmateDetailActivity extends BaseActivity<MyViewModel> {
             if (!date.equals(getTodayDateInString())) {
                 if (user.getDatesAndRestaurants().get(date) != null) {
                     Objects.requireNonNull(user.getDatesAndRestaurants().get(date)).setDateOfLunch(date);
-                    //restaurantList.add(user.getDatesAndRestaurants().get(date));
+                    previousRestaurantList.add(user.getDatesAndRestaurants().get(date));
                 }
             }
         }
-        Collections.sort((ArrayList)user.getDatesAndRestaurants().values(), new RestaurantRecentComparator());
-        updateRecyclerView(restaurantList);
+        Log.i(TAG, "displayPreviousRestaurants: ");
+        isFavorite = false;
+        Collections.sort(previousRestaurantList, new RestaurantRecentComparator());
+        updateRecyclerView(previousRestaurantList);
     }
 
     /**
@@ -195,11 +238,12 @@ public class WorkmateDetailActivity extends BaseActivity<MyViewModel> {
     }
 
     private void updateRecyclerView(ArrayList<Restaurant> placeDetailsList) {
-        if (!placeDetailsList.isEmpty())
+        if (!placeDetailsList.isEmpty()) {
             binding.noRestaurantSelected.setVisibility(View.INVISIBLE);
-        else
+        }else{
             binding.noRestaurantSelected.setVisibility(View.VISIBLE);
-        adapter.updateList(placeDetailsList);
+        }
+        adapter.updateList(placeDetailsList, isFavorite);
     }
 
     private void startChatActivity(String uid) {

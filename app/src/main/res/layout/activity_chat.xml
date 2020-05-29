@@ -108,6 +108,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
+            android:layout_gravity="center"
             app:srcCompat="@drawable/ic_add_black_24dp"
             android:contentDescription="@string/add_file_button" />
 
@@ -123,13 +124,15 @@
             android:inputType="textMultiLine"
             android:importantForAutofill="no" />
 
-        <Button
-            android:id="@+id/send_message_button"
-            style="@style/Widget.AppCompat.Button.Borderless.Colored"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/send_message" />
-
+       <ImageButton
+           android:id="@+id/send_message_button"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           style="@style/Widget.AppCompat.Button.Borderless"
+           app:srcCompat="@drawable/ic_send_white_24dp"
+           android:contentDescription="@string/send_message"
+           android:adjustViewBounds="true"
+           android:layout_gravity="center"/>
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

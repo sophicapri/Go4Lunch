@@ -69,7 +69,7 @@
     <string name="image_preview">Image selected from phone preview</string>
     <string name="add_file_button">Add file button</string>
     <string name="write_a_message">"Write a message…"</string>
-    <string name="send_message">Send</string>
+    <string name="send_message">Send a message</string>
     <string name="image_sent">Image sent</string>
     <string name="close_search_bar">close search bar</string>
     <string name="search_for_restaurant">Search restaurants…</string>
@@ -114,6 +114,7 @@
     <string name="delete_my_account">Delete my account</string>
     <string name="search_button">Search button</string>
     <string name="no_restaurant_selected">No restaurant selected…</string>
+    <string name="open_details_about_restaurant">Open details about restaurant</string>
 
 
 </resources>

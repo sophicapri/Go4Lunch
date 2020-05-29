@@ -142,7 +142,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Eas
 
         binding.fab.setOnClickListener(v -> {
             if (context.requestLocationPermission()) {
-                fetchLastLocation();
+                //fetchLastLocation();
             }
         });
         return binding.getRoot();

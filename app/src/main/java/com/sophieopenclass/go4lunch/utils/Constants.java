@@ -10,7 +10,7 @@ import static java.lang.annotation.RetentionPolicy.SOURCE;
 public class Constants {
     public static final String PLACE_ID = "placeId";
     public static final String DATES_AND_RESTAURANTS_FIELD = "datesAndRestaurants.";
-    public static final String FAVORITE_RESTAURANTS_FIELD = "favoriteRestaurants";
+    public static final String FAVORITE_RESTAURANTS_FIELD = "favoriteRestaurants.";
     public static final String PLACE_ID_FIELD = ".placeId";
 
     //
@@ -48,13 +48,4 @@ public class Constants {
     public static final int FRIDAY = 5;
     public static final int SATURDAY = 6;
     public static final int SUNDAY = 0;
-
-
-    @Retention(SOURCE)
-    @IntDef({DELETE_ACCOUNT, KEEP_ACCOUNT})
-    public @interface SignOutMode {}
-    public static final int DELETE_ACCOUNT = 97;
-    public static final int KEEP_ACCOUNT = 96;
-
-
 }

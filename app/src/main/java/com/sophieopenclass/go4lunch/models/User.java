@@ -2,10 +2,15 @@ package com.sophieopenclass.go4lunch.models;
 
 import androidx.annotation.Nullable;
 
+import com.sophieopenclass.go4lunch.utils.DateFormatting;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+
+import static com.sophieopenclass.go4lunch.utils.DateFormatting.getTodayDateInString;
 
 public class User {
     private String uid;
@@ -14,7 +19,7 @@ public class User {
     private String urlPicture;
     private Map<String, Restaurant> datesAndRestaurants = new HashMap<>();
     private String email;
-    private ArrayList<Restaurant> favoriteRestaurants = new ArrayList<>();
+    private Map<String, Restaurant> favoriteRestaurants = new HashMap<>();
 
     public User() {
     }
@@ -64,25 +69,24 @@ public class User {
         this.datesAndRestaurants = datesAndRestaurants;
     }
 
-    public ArrayList<Restaurant> getFavoriteRestaurants() {
+    public Map<String, Restaurant> getFavoriteRestaurants() {
         return favoriteRestaurants;
     }
 
-    public void setFavoriteRestaurants(ArrayList<Restaurant> favoriteRestaurants) {
+    public void setFavoriteRestaurants(Map<String, Restaurant> favoriteRestaurants) {
         this.favoriteRestaurants = favoriteRestaurants;
     }
 
     public boolean restaurantNotFavorite(String placeId) {
-        for (Restaurant restaurant : favoriteRestaurants)
+        for (Restaurant restaurant : favoriteRestaurants.values())
             if (restaurant.getPlaceId().equals(placeId))
                 return false;
         return true;
     }
 
     public boolean restaurantIsSelected(String placeId) {
-        for (Restaurant restaurant : datesAndRestaurants.values())
-            if (restaurant.getPlaceId().equals(placeId))
-                return true;
+        if (datesAndRestaurants.get(getTodayDateInString()) != null)
+            return Objects.requireNonNull(datesAndRestaurants.get(getTodayDateInString())).getPlaceId().equals(placeId);
         return false;
     }
 

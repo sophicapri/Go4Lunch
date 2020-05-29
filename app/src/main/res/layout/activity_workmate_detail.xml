@@ -5,13 +5,13 @@
     android:id="@+id/workmate_profile"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#EFEFEF">
+    android:background="#EAE8E8">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBar"
         android:layout_width="match_parent"
         android:layout_height="240dp"
-        android:background="#EFEFEF">
+        android:background="#EAE8E8">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:id="@+id/user_lunch_toolbar"
@@ -42,7 +42,9 @@
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>
-
+<androidx.core.widget.NestedScrollView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/content_profile"
         android:layout_width="match_parent"
@@ -126,7 +128,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fadeScrollbars="true"
-            android:scrollbarSize="1dp"
             android:scrollbarStyle="insideInset"
             app:layout_constraintTop_toBottomOf="@+id/lunch_of_the_day">
 
@@ -141,7 +142,9 @@
                     android:layout_height="wrap_content"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:singleSelection="true">
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:singleSelection="true"
+                    app:checkedChip="@id/chip_favorites">
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/chip_favorites"
@@ -149,13 +152,11 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_marginStart="25sp"
-                        android:checked="true"
+                        android:focusable="true"
+                        android:checkable="true"
                         android:text="RESTAURANTS FAVORIS"
                         android:textColor="@color/quantum_white_text"
-                        app:checkedIconVisible="false"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:checkedIconVisible="false"/>
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/chip_previous_lunches"
@@ -163,11 +164,12 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="20dp"
+                        app:checkedIconVisible="false"
+                        android:focusable="true"
+                        android:checkable="true"
                         android:text="DÉJEUNERS PRÉCÉDENTS"
                         android:textColor="@color/quantum_white_text"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toEndOf="@id/chip_favorites"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        android:layout_marginEnd="25dp"/>
                 </com.google.android.material.chip.ChipGroup>
             </androidx.constraintlayout.widget.ConstraintLayout>
         </HorizontalScrollView>
@@ -179,7 +181,7 @@
             android:visibility="gone"
             app:cardCornerRadius="20dp"
             app:cardElevation="20dp"
-            android:layout_marginTop="@dimen/default_margin"
+            android:layout_marginTop="16dp"
             android:layout_marginBottom="@dimen/default_margin"
             android:layout_marginStart="@dimen/default_margin"
             android:layout_marginEnd="@dimen/default_margin"
@@ -197,7 +199,6 @@
                 android:textStyle="italic" />
         </androidx.cardview.widget.CardView>
 
-
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_view_restaurants"
             android:layout_width="match_parent"
@@ -209,13 +210,12 @@
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_message_user"
-        style="@style/MyFAB"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        app:layout_anchor="@id/recycler_view_restaurants"
-        app:layout_anchorGravity="bottom|end"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:theme="@style/MyFAB"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_textsms_black_24dp" />
+        app:srcCompat="@drawable/ic_textsms_black_24dp"
+        android:layout_gravity="bottom|end"/>
+</androidx.core.widget.NestedScrollView>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

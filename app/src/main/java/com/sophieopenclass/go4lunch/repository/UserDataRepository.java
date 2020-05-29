@@ -89,7 +89,7 @@ public class UserDataRepository {
 
 
     public void addRestaurantToFavorites(Restaurant restaurant, String userId) {
-        userCollectionRef.document(userId).update(FAVORITE_RESTAURANTS_FIELD, FieldValue.arrayUnion(restaurant))
+        userCollectionRef.document(userId).update(FAVORITE_RESTAURANTS_FIELD + restaurant.getPlaceId(), restaurant)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful())
                         Log.i(TAG, "addToFavorites: " + (task.isSuccessful()));
