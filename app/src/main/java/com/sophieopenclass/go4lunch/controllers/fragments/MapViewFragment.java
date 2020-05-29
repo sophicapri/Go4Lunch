@@ -170,7 +170,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Eas
         ORIENTATION_CHANGED = true;
     }
 
-    public void displayResultsAutocomplete(String searchBarTextInput) {
+    private void displayResultsAutocomplete(String searchBarTextInput) {
         LatLngBounds bounds = mMap.getProjection().getVisibleRegion().latLngBounds;
         double northEastLat = bounds.northeast.latitude;
         double southWestLat = bounds.southwest.latitude;

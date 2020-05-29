@@ -90,8 +90,8 @@
     <string name="search_for_a_workmate">Search workmates…</string>
     <string name="available_workmates">Available workmates</string>
     <string name="settings">Settings</string>
-    <string name="change_profile_picture">Change profil picture</string>
-    <string name="french">French</string>
+    <string name="change_profile_picture">Profile picture</string>
+    <string name="french_locale">French</string>
     <string name="touch_to_update">Touch to update</string>
     <string name="enable_reminder">Enable/Disable daily reminder</string>
     <string name="language">Language</string>
@@ -100,7 +100,7 @@
     <string name="facebook_logo" translatable="false">Facebook logo</string>
     <string name="sign_in_with_facebook">Sign in with Facebook</string>
     <string name="sign_in_with_google">Sign in with Google</string>
-    <string name="change_username">Change username</string>
+    <string name="change_username">Username</string>
     <string name="my_lunch_toolbar_title">My lunch</string>
     <string name="workmates">Workmates</string>
     <string name="list">List</string>
@@ -117,6 +117,11 @@
     <string name="open_details_about_restaurant">Open details about restaurant</string>
     <string name="favorite_restaurants">FAVORITE RESTAURANTS</string>
     <string name="closing_soon">Closing soon</string>
+    <string name="delete_account">Do you want to delete your account permanently ?</string>
+    <string name="delete">Delete</string>
+    <string name="account_deleted">Account deleted</string>
+    <string name="empty_field">Can\'t save empty field</string>
+    <string name="notifications" translatable="false">Notifications</string>
 
 
 </resources>

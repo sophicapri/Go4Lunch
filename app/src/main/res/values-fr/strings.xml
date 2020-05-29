@@ -82,15 +82,15 @@
     <string name="search_for_a_workmate">Rechercher un·e collègue…</string>
     <string name="available_workmates">Collègues disponibles</string>
     <string name="settings">Paramètres</string>
-    <string name="change_profile_picture">Changer de photo de profil</string>
-    <string name="french">Français</string>
-    <string name="touch_to_update">Touchez pour modifier</string>
+    <string name="change_profile_picture">Photo de profil</string>
+    <string name="french_locale">Français</string>
+    <string name="touch_to_update">Toucher pour modifier</string>
     <string name="enable_reminder">Activer/Désactiver le rappel journalier</string>
     <string name="language">Langue</string>
     <string name="subtitle_app_logo">Trouvez un restaurant sympa et invitez vos collègues à déjeuner!</string>
     <string name="sign_in_with_facebook">Se connecter avec Facebook</string>
     <string name="sign_in_with_google">Se connecter avec Google</string>
-    <string name="change_username">Changer de nom de profil</string>
+    <string name="change_username">Nom d\'utilisateur</string>
     <string name="my_lunch_toolbar_title">Mon déjeuner</string>
     <string name="workmates">Collègues</string>
     <string name="list">Liste</string>
@@ -110,4 +110,8 @@
     <string name="favorite_restaurants">RESTAURANTS FAVORIS</string>
     <string name="open_24h">Ouvert 24h/7</string>
     <string name="closing_soon">Ferme bientôt</string>
+    <string name="delete_account">Souhaitez vous supprimer définitivement votre compte ?</string>
+    <string name="delete">Supprimer</string>
+    <string name="account_deleted">Compte supprimé</string>
+    <string name="empty_field">Champ vide</string>
 </resources>

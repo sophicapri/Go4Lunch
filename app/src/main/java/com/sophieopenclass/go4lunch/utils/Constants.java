@@ -36,6 +36,8 @@ public class Constants {
 
     public static final String PREF_LANGUAGE = "pref_language";
     public static final String PREF_REMINDER = "pref_reminder";
+    public static final String FRENCH_LOCALE = "fr";
+    public static final String ENGLISH_LOCALE = "en";
     public static final String SHARED_PREFS = "sharedPrefs";
     public static final String WORK_REQUEST_NAME = "Lunch reminder";
 

@@ -71,6 +71,7 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
         binding.likeRestaurantBtn.setOnClickListener(this);
         binding.websiteBtn.setOnClickListener(this);
         binding.openingHoursTitle.setOnClickListener(this);
+        binding.detailRestaurantToolbar.setNavigationOnClickListener(v -> onBackPressed());
     }
 
     @Override

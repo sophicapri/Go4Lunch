@@ -96,6 +96,7 @@ public class WorkmateDetailActivity extends BaseActivity<MyViewModel> {
             } else {
                 initWorkmateProfileView();
             }
+        binding.userLunchToolbar.setNavigationOnClickListener( v -> onBackPressed());
     }
 
     private void configureRecyclerView() {
@@ -107,7 +108,7 @@ public class WorkmateDetailActivity extends BaseActivity<MyViewModel> {
 
     private void initCurrentUserProfileView() {
         binding.fabMessageUser.setVisibility(View.GONE);
-        binding.userLunchToolbar.setTitle(getString(R.string.my_lunch_toolbar_title));
+        binding.toolbarName.setTitle(getString(R.string.my_lunch_toolbar_title));
         binding.textViewWorkmateFavorites.setVisibility(View.INVISIBLE);
         binding.favoritesAndPreviousScrollview.setVisibility(View.VISIBLE);
         binding.chipFavorites.setChecked(true);
@@ -137,7 +138,7 @@ public class WorkmateDetailActivity extends BaseActivity<MyViewModel> {
 
     private void initWorkmateProfileView() {
         binding.fabMessageUser.setVisibility(View.VISIBLE);
-        binding.userLunchToolbar.setTitle(selectedUser.getUsername());
+        binding.toolbarName.setTitle(selectedUser.getUsername());
         binding.textViewWorkmateFavorites.setVisibility(View.VISIBLE);
         binding.favoritesAndPreviousScrollview.setVisibility(View.INVISIBLE);
     }

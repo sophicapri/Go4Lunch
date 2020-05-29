@@ -19,4 +19,10 @@
         <item>Samedi</item>
         <item>Dimanche</item>
     </string-array>
+
+    <string-array name="languages">
+        <item>French</item>
+        <item>English</item>
+    </string-array>
+
 </resources>
