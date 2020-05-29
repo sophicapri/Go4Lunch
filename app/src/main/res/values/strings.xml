@@ -52,7 +52,7 @@
 
     <string name="phone_number_not_available">N° not available</string>
     <string name="confirm_call">Call</string>
-    <string name="would_you_like_to_call_place">"Would you like to call %s ?"</string>
+    <string name="would_you_like_to_call_place">"Call %s ?"</string>
 
     <!-- Settings Activity Notifications -->
     <string name="notification_message">You\'re eating at %1$s. Address: %2$s. You will be joined by %3$s.</string>
@@ -79,7 +79,7 @@
     <string name="deleted_from_fav">Deleted from favorites</string>
     <string name="website_unavailable">Website unavailable</string>
     <string name="open_browser">Open browser</string>
-    <string name="visit_website">Do you want to visit %s website ?</string>
+    <string name="visit_website">Visit %s website ?</string>
     <string name="permission_denied">Permission DENIED</string>
     <string name="prefix_call" translatable="false">tel:</string>
     <string name="closed" translatable="false">Closed</string>

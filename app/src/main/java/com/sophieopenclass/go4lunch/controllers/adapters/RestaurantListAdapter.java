@@ -179,7 +179,7 @@ public class RestaurantListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
         private boolean restaurantClosingSoon(Close close) {
             int timeLeftBeforeClosing = Integer.parseInt(close.getTime()) - Integer.parseInt(convertDateToStringHour(new Date()));
-            if (timeLeftBeforeClosing < ONE_HOUR) {
+            if (timeLeftBeforeClosing > 0 && timeLeftBeforeClosing < ONE_HOUR) {
                 binding.openingHours.setText(R.string.closing_soon);
                 binding.openingHours.setTextColor(res.getColor(R.color.quantum_googred));
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {

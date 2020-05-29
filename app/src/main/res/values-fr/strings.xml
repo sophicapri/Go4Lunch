@@ -45,7 +45,7 @@
 
     <string name="phone_number_not_available">N° de téléphone non renseigné</string>
     <string name="confirm_call">Appeler</string>
-    <string name="would_you_like_to_call_place">\"Souhaitez-vous appeler le restaurant %s ?\"</string>
+    <string name="would_you_like_to_call_place">"Appeler le restaurant %s ?"</string>
 
     <!-- Settings Activity Notifications -->
     <string name="notification_message">"Vous mangez ce midi chez %1$s.\nAdresse: %2$s.\nVous serez en compagnie de %3$s."</string>
@@ -73,7 +73,7 @@
     <string name="deleted_from_fav">Supprimé des favoris</string>
     <string name="website_unavailable">Site web non renseigné</string>
     <string name="open_browser">Ouvrir le navigateur</string>
-    <string name="visit_website">"Souhaitez-vous visiter le site web de %s ?"</string>
+    <string name="visit_website">"Visiter le site web de %s ?"</string>
     <string name="permission_denied">Permission refusée</string>
     <string name="closed_in_french">Fermé</string>
     <string name="cant_get_location">"Erreur lors de l'accès à la localisation"</string>
