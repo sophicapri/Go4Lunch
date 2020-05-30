@@ -18,6 +18,10 @@
         app:title="@string/settings"
         app:titleTextColor="@color/quantum_white_text" />
 
+    <androidx.core.widget.NestedScrollView
+        android:layout_height="match_parent"
+        android:layout_width="match_parent">
+
     <!-- Setting container -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -39,7 +43,8 @@
                 android:id="@+id/update_profile_pic"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-                android:layout_margin="@dimen/default_margin"
+                android:layout_marginTop="@dimen/default_margin"
+                android:layout_marginStart="@dimen/default_margin"
                 android:contentDescription="@string/profile_picture"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -51,13 +56,11 @@
                 android:layout_marginBottom="@dimen/default_margin"
                 android:text="@string/touch_to_update"
                 android:textColor="@color/quantum_grey700"
-                android:textSize="10sp"
+                android:textSize="12sp"
                 android:textStyle="italic"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="@+id/update_profile_pic"
                 app:layout_constraintStart_toStartOf="@+id/update_profile_pic"
-                app:layout_constraintTop_toBottomOf="@id/update_profile_pic"
-                tools:ignore="SmallSp" />
+                app:layout_constraintTop_toBottomOf="@id/update_profile_pic" />
 
             <TextView
                 android:id="@+id/username_displayed"
@@ -77,10 +80,9 @@
                 android:layout_height="wrap_content"
                 android:text="@string/change_username"
                 android:textColor="@color/quantum_grey700"
-                android:textSize="10sp"
+                android:textSize="12sp"
                 app:layout_constraintStart_toStartOf="@+id/username_displayed"
-                app:layout_constraintTop_toBottomOf="@+id/username_displayed"
-                tools:ignore="SmallSp" />
+                app:layout_constraintTop_toBottomOf="@+id/username_displayed" />
 
             <ImageView
                 android:id="@+id/edit_username"
@@ -115,6 +117,7 @@
                     android:layout_marginStart="18dp"
                     android:layout_marginEnd="@dimen/default_margin"
                     android:lines="1"
+                    android:imeOptions="flagNoExtractUi"
                     android:layout_weight="1"
                     android:textSize="18sp"
                     tools:text="@sample/tasks.json/full_name" />
@@ -174,11 +177,10 @@
                 android:layout_height="wrap_content"
                 android:text="@string/enable_reminder"
                 android:textColor="@color/quantum_grey700"
-                android:textSize="10sp"
+                android:textSize="12sp"
                 android:textStyle="italic"
                 app:layout_constraintStart_toStartOf="@+id/notifications_text_view"
-                app:layout_constraintTop_toBottomOf="@+id/notifications_text_view"
-                tools:ignore="SmallSp" />
+                app:layout_constraintTop_toBottomOf="@+id/notifications_text_view" />
 
             <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/notification_toggle"
@@ -205,8 +207,6 @@
             android:layout_width="match_parent"
             android:layout_height="70dp"
             android:orientation="horizontal"
-            app:layout_constraintVertical_bias="0"
-            app:layout_constraintBottom_toTopOf="@+id/delete_account"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/container_notifications_settings">
@@ -230,11 +230,10 @@
                 android:layout_height="wrap_content"
                 android:text="@string/touch_to_update"
                 android:textColor="@color/quantum_grey700"
-                android:textSize="10sp"
+                android:textSize="12sp"
                 android:textStyle="italic"
                 app:layout_constraintStart_toStartOf="@+id/language_settings_text_view"
-                app:layout_constraintTop_toBottomOf="@+id/language_settings_text_view"
-                tools:ignore="SmallSp" />
+                app:layout_constraintTop_toBottomOf="@+id/language_settings_text_view" />
 
             <!-- Current Language Selected -->
             <TextView
@@ -243,21 +242,37 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/default_margin"
                 android:text="@string/french_locale"
-                android:textColor="@color/colorAccent"
+                android:textColor="@color/colorPrimaryDark"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <Button
+        <!-- SEPARATOR -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/quantum_grey"
+            app:layout_constraintTop_toBottomOf="@+id/container_language_settings" />
+
+        <TextView
             android:id="@+id/delete_account"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:textAppearance="?attr/textAppearanceButton"
+            android:layout_marginBottom="@dimen/default_margin"
             android:text="@string/delete_my_account"
-            android:textSize="10sp"
+            android:layout_marginStart="@dimen/default_margin"
+            android:textColor="@color/colorAccent"
+            android:textSize="12sp"
+            android:focusable="true"
+            android:clickable="true"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/container_language_settings"
+            app:layout_constraintVertical_bias="1"
             tools:ignore="SmallSp" />
 
         <!-- PROGRESS BAR -->
@@ -270,4 +285,5 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
 </LinearLayout>

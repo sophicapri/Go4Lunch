@@ -115,6 +115,7 @@ public class SettingsActivity extends BaseActivity<MyViewModel> {
             binding.editUsernameContainer.setVisibility(View.GONE);
             // Hide keyboard
             if (inputManager != null) {
+                binding.editTextUsername.setText(user.getUsername());
                 inputManager.hideSoftInputFromWindow(binding.editTextUsername.getWindowToken(), 0);
             }
         });
