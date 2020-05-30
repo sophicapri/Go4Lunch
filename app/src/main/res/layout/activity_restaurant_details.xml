@@ -247,7 +247,6 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:contentDescription="@string/like_restaurant_icon_description"
-                    android:visibility="visible"
                     tools:srcCompat="@drawable/ic_star_border_black_24dp" />
 
                 <TextView

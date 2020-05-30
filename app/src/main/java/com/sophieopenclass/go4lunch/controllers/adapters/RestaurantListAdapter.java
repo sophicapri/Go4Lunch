@@ -22,6 +22,7 @@ import com.sophieopenclass.go4lunch.utils.CalculateRatings;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -73,6 +74,11 @@ public class RestaurantListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     public int getItemViewType(int position) {
         int VIEW_TYPE_LOADING = 1;
         return placeDetailsList.get(position) == null ? VIEW_TYPE_LOADING : VIEW_TYPE_ITEM;
+    }
+
+    public void updateList(ArrayList<PlaceDetails> placeDetailsList){
+        this.placeDetailsList = placeDetailsList;
+        notifyDataSetChanged();
     }
 
     // Progress bar

@@ -104,6 +104,7 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
             this.placeDetails = placeDetails;
             binding.detailsRestaurantName.setText(placeDetails.getName());
             binding.detailsRestaurantAddress.setText(placeDetails.getVicinity());
+            displayButtons();
             int layoutParam = 0;
             int nbrOfPhotos = 1;
 
@@ -129,7 +130,6 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
             }
 
             displayStars();
-            displayButtons();
         } else {
             Toast.makeText(this, "Une erreur est survenue", Toast.LENGTH_SHORT).show();
             finish();

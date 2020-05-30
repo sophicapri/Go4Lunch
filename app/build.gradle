@@ -116,6 +116,9 @@ dependencies {
     // EasyPermissions
     implementation 'pub.devrel:easypermissions:3.0.0'
 
+    // Algolia
+    implementation 'com.algolia:algoliasearch-android:3.27.0'
+
 }
 
 apply plugin: 'com.google.gms.google-services'

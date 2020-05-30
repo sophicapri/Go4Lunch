@@ -1,5 +1,6 @@
 package com.sophieopenclass.go4lunch.controllers.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -7,6 +8,8 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
@@ -90,12 +93,24 @@ public class SettingsActivity extends BaseActivity<MyViewModel> {
 
     private void initUI(User user) {
         currentUser = user;
+        InputMethodManager inputManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         binding.usernameDisplayed.setText(user.getUsername());
         binding.editTextUsername.setText(user.getUsername());
         binding.editUsername.setOnClickListener(v -> {
             binding.editUsernameContainer.setVisibility(View.VISIBLE);
             binding.editTextUsername.requestFocus();
             binding.editTextUsername.setSelection(user.getUsername().length());
+            // show keyboard
+            if (inputManager != null)
+                inputManager.showSoftInput(binding.editTextUsername, InputMethodManager.SHOW_IMPLICIT);
+        });
+
+        binding.cancelUsernameUpdate.setOnClickListener(v -> {
+            binding.editUsernameContainer.setVisibility(View.GONE);
+            // Hide keyboard
+            if (inputManager != null) {
+                inputManager.hideSoftInputFromWindow(binding.editTextUsername.getWindowToken(), 0);
+            }
         });
 
         binding.saveUsername.setOnClickListener(v -> {
@@ -105,13 +120,15 @@ public class SettingsActivity extends BaseActivity<MyViewModel> {
                 binding.editTextUsername.setError(getString(R.string.empty_field));
         });
 
+
+
         if (currentAppLocale.equals(FRENCH_LOCALE))
         binding.currentLocale.setText(R.string.french_locale);
         else
             binding.currentLocale.setText(R.string.english_locale);
 
 
-        binding.cancelUsernameUpdate.setOnClickListener(v -> binding.editUsernameContainer.setVisibility(View.GONE));
+
 
         Glide.with(binding.updateProfilePic.getContext())
                 .load(user.getUrlPicture())

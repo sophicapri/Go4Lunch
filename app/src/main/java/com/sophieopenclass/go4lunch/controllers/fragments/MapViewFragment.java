@@ -5,10 +5,8 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
-import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -51,14 +49,11 @@ import com.sophieopenclass.go4lunch.R;
 import com.sophieopenclass.go4lunch.base.BaseActivity;
 import com.sophieopenclass.go4lunch.controllers.activities.MainActivity;
 import com.sophieopenclass.go4lunch.controllers.activities.RestaurantDetailsActivity;
-import com.sophieopenclass.go4lunch.controllers.activities.SettingsActivity;
 import com.sophieopenclass.go4lunch.databinding.FragmentMapBinding;
-import com.sophieopenclass.go4lunch.models.User;
 import com.sophieopenclass.go4lunch.models.json_to_java.PlaceDetails;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import pub.devrel.easypermissions.EasyPermissions;
 
@@ -91,11 +86,19 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Eas
         return new MapViewFragment();
     }
 
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Log.i(TAG, "onCreate: ");
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentMapBinding.inflate(inflater, container, false);
 
+        Log.i(TAG, "onCreateView: ");
         if (getActivity() != null) {
             context = (BaseActivity) getActivity();
             viewModel = (MyViewModel) context.getViewModel();
@@ -105,8 +108,8 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Eas
             activity = ((MainActivity) getActivity());
             activity.binding.searchBarMap.closeSearchBar.setOnClickListener(v -> {
                 activity.binding.searchBarMap.searchBarMap.setVisibility(View.GONE);
-                if (!activity.binding.searchBarMap.searchBarInput.getText().toString().isEmpty())
-                    activity.binding.searchBarMap.searchBarInput.clearComposingText();
+                activity.binding.searchBarMap.searchBarInput.getText().clear();
+                getNearbyPlaces(cameraLocation);
                 autocompleteActive = false;
             });
         }
@@ -119,22 +122,23 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Eas
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 isOnTextChanged = true;
+                Log.i(TAG, "onTextChanged: ");
             }
 
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
+                Log.i(TAG, "beforeTextChanged: ");
             }
 
             @Override
             public void afterTextChanged(Editable s) {
+                Log.i(TAG, "afterTextChanged: ");
                 if (!ORIENTATION_CHANGED && isOnTextChanged) {
                     isOnTextChanged = false;
                     searchBarTextInput = s.toString();
                     autocompleteActive = true;
                     displayResultsAutocomplete(searchBarTextInput);
                 }
-
             }
         });
 
@@ -157,8 +161,8 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Eas
                     .setTextColor(getResources().getColor(R.color.quantum_white_100)).setDuration(5000).show();
         } else {
             if (context.requestLocationPermission()) {
-                //if (currentLocation == null)
-                   // fetchLastLocation();
+                if (currentLocation == null)
+                    fetchLastLocation();
             }
         }
     }
@@ -332,6 +336,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Eas
     public void onDestroy() {
         super.onDestroy();
         cameraLocation = null;
+        Log.i(TAG, "onDestroy: ");
     }
 
     @Override
@@ -341,6 +346,12 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Eas
                 mMap.setMyLocationEnabled(true);
             fetchLastLocation();
         }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        Log.i(TAG, "onDestroyView: ");
     }
 
     @Override
