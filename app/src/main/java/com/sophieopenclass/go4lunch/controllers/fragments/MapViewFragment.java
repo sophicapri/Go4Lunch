@@ -1,5 +1,6 @@
 package com.sophieopenclass.go4lunch.controllers.fragments;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -13,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -109,6 +111,10 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Eas
             activity.binding.searchBarMap.closeSearchBar.setOnClickListener(v -> {
                 activity.binding.searchBarMap.searchBarMap.setVisibility(View.GONE);
                 activity.binding.searchBarMap.searchBarInput.getText().clear();
+                InputMethodManager inputManager = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+                if (inputManager != null) {
+                    inputManager.hideSoftInputFromWindow(activity.binding.searchBarMap.searchBarInput.getWindowToken(), 0);
+                }
                 getNearbyPlaces(cameraLocation);
                 autocompleteActive = false;
             });
@@ -161,8 +167,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Eas
                     .setTextColor(getResources().getColor(R.color.quantum_white_100)).setDuration(5000).show();
         } else {
             if (context.requestLocationPermission()) {
-                if (currentLocation == null)
-                    fetchLastLocation();
+                fetchLastLocation();
             }
         }
     }
@@ -266,6 +271,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Eas
         if (!autocompleteActive)
             getNearbyPlaces(currentLocation);
 
+        cameraLocation = new Location(currentLocation);
         mMap.setOnCameraMoveStartedListener(i -> {
             cameraLocation = new Location(CAMERA_LOCATION);
             cameraLocation.setLongitude(mMap.getCameraPosition().target.longitude);

@@ -17,7 +17,6 @@ android {
         resValue "string", "API_KEY", API_KEY
         buildConfigField "String", "ALGOLIA_API_KEY", ALGOLIA_API_KEY
         buildConfigField "String", "ALGOLIA_APP_ID", ALGOLIA_APP_ID
-       // resValue "string", "ALGOLIA_API_KEY", ALGOLIA_API_KEY
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -57,29 +56,26 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
-
-
-    // Firebase
-
     // FirebaseUI
     implementation 'com.firebaseui:firebase-ui-storage:6.2.1'
     implementation 'com.firebaseui:firebase-ui-auth:6.2.1'
     implementation 'com.firebaseui:firebase-ui-firestore:6.2.1'
 
-    implementation 'com.google.android.gms:play-services-auth:18.0.0'
+    // Firebase
     implementation 'com.google.firebase:firebase-auth:19.3.1'
     implementation 'com.google.firebase:firebase-firestore:21.4.3'
-
     implementation 'com.google.firebase:firebase-analytics:17.4.2'
+
+    implementation 'com.google.android.gms:play-services-auth:18.0.0'
 
 
     // Api Google Play Service : Map
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
 
-    // Add Api Google Play Service : Location
+    // Api Google Play Service : Location
     implementation 'com.google.android.gms:play-services-location:17.0.0'
 
-    // google places lib for geolocation
+    // Google Places
     implementation 'com.google.android.libraries.places:places:2.2.0'
 
     // FACEBOOK LOGIN SUPPORT
@@ -88,27 +84,33 @@ dependencies {
     // GSON
     implementation 'com.google.code.gson:gson:2.8.6'
 
-    //GLIDE
+    // GLIDE
     implementation 'com.github.bumptech.glide:glide:4.11.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
 
     // Retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.8.1'
     implementation 'com.squareup.retrofit2:converter-gson:2.7.0'
-
-
-    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
     implementation 'com.squareup.okhttp3:logging-interceptor:4.2.1'
 
+    // ViewModel
+    implementation 'androidx.lifecycle:lifecycle-viewmodel:2.2.0'
+    // LiveData
+    implementation 'androidx.lifecycle:lifecycle-livedata:2.2.0'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
+
+    // optional - Test helpers for LiveData
     androidTestImplementation 'androidx.arch.core:core-testing:2.1.0'
 
 
-    //WorkManager
+    // WorkManager
     implementation "androidx.work:work-runtime:2.3.4"
 
 
-    // fix error
+    // To fix build error :
+    // "Duplicate class com.google.common.util.concurrent.ListenableFuture found in modules
+    // jetified-guava-26.0-android.jar (com.google.guava:guava:26.0-android)
+    // and jetified-listenablefuture-1.0.jar (com.google.guava:listenablefuture:1.0)"
     implementation 'com.google.guava:guava:27.0.1-android'
 
     // To help calculate RectangularBounds

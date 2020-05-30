@@ -1,6 +1,7 @@
 package com.sophieopenclass.go4lunch.controllers.activities;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -8,10 +9,12 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.core.app.ActivityCompat;
@@ -45,6 +48,9 @@ public class SettingsActivity extends BaseActivity<MyViewModel> {
     public static boolean localeHasChanged = false;
     public static boolean profileHasChanged = false;
     private User currentUser;
+    private  Uri uriImageSelected;
+    private AlertDialog alertDialogImage;
+    private ImageView imageViewDialog;
     private String currentAppLocale = sharedPrefs.getString(PREF_LANGUAGE, Locale.getDefault().getLanguage());
 
     @Override
@@ -113,6 +119,11 @@ public class SettingsActivity extends BaseActivity<MyViewModel> {
             }
         });
 
+        Glide.with(binding.updateProfilePic.getContext())
+                .load(user.getUrlPicture())
+                .apply(RequestOptions.circleCropTransform())
+                .into(binding.updateProfilePic);
+
         binding.saveUsername.setOnClickListener(v -> {
             if (!binding.editTextUsername.getText().toString().isEmpty())
                 saveUsername(binding.editTextUsername.getText().toString());
@@ -120,22 +131,12 @@ public class SettingsActivity extends BaseActivity<MyViewModel> {
                 binding.editTextUsername.setError(getString(R.string.empty_field));
         });
 
-
-
         if (currentAppLocale.equals(FRENCH_LOCALE))
         binding.currentLocale.setText(R.string.french_locale);
         else
             binding.currentLocale.setText(R.string.english_locale);
 
-
-
-
-        Glide.with(binding.updateProfilePic.getContext())
-                .load(user.getUrlPicture())
-                .apply(RequestOptions.circleCropTransform())
-                .into(binding.updateProfilePic);
-
-        binding.updateProfilePic.setOnClickListener(v -> chooseImageFromPhone());
+        binding.updateProfilePic.setOnClickListener(v -> updateImageDialog());
 
         binding.deleteAccount.setOnClickListener(v ->
                 new AlertDialog.Builder(this)
@@ -150,6 +151,25 @@ public class SettingsActivity extends BaseActivity<MyViewModel> {
                 .show());
 
         binding.settingsToolbar.setNavigationOnClickListener( v -> onBackPressed());
+    }
+
+    private void updateImageDialog() {
+        alertDialogImage = new AlertDialog.Builder(this)
+                .setView(R.layout.alert_dialog_profile_pic)
+                .setPositiveButton("Enregistrer", (dialog, which) -> savePictureToFirestore(uriImageSelected))
+                .setNegativeButton(R.string.Cancel, null)
+                .show();
+
+        Button chooseImageBtn = alertDialogImage.findViewById(R.id.choose_image_btn);
+        if (chooseImageBtn != null) {
+            chooseImageBtn.setOnClickListener(v -> chooseImageFromPhone());
+        }
+
+        imageViewDialog = alertDialogImage.findViewById(R.id.dialog_profile_pic);
+        Glide.with(this) //SHOWING PREVIEW OF IMAGE
+                .load(currentUser.getUrlPicture())
+                .apply(RequestOptions.circleCropTransform())
+                .into(imageViewDialog);
     }
 
     private void saveUsername(String username) {
@@ -185,9 +205,8 @@ public class SettingsActivity extends BaseActivity<MyViewModel> {
         startActivityForResult(i, RC_CHOOSE_PHOTO);
     }
 
-
     @Override
-    public void onRequestPermissionsResult(int requestCode, @androidx.annotation.NonNull String[] permissions, @androidx.annotation.NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @androidx.annotation.NonNull int[] grantResults) {
         if (requestCode == READ_STORAGE_RC) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 chooseImageFromPhone();
@@ -207,20 +226,21 @@ public class SettingsActivity extends BaseActivity<MyViewModel> {
     private void handleResponse(int requestCode, int resultCode, Intent data) {
         if (requestCode == RC_CHOOSE_PHOTO) {
             if (resultCode == RESULT_OK) {
-                binding.progressBar.setVisibility(View.VISIBLE);
-                Uri uriImageSelected = data.getData();
-                Glide.with(this) //SHOWING PREVIEW OF IMAGE
-                        .load(uriImageSelected)
-                        .apply(RequestOptions.circleCropTransform())
-                        .into(binding.updateProfilePic);
-                addPictureToFirestore(uriImageSelected);
+                uriImageSelected = data.getData();
+                if (imageViewDialog != null) {
+                    Glide.with(this) //SHOWING PREVIEW OF IMAGE
+                            .load(uriImageSelected)
+                            .apply(RequestOptions.circleCropTransform())
+                            .into(imageViewDialog);
+                }
             } else {
                 Toast.makeText(this, getString(R.string.toast_title_no_image_chosen), Toast.LENGTH_SHORT).show();
             }
         }
     }
 
-    private void addPictureToFirestore(Uri uriImageSelected) {
+    private void savePictureToFirestore(Uri uriImageSelected) {
+        binding.progressBar.setVisibility(View.VISIBLE);
         String uuid = UUID.randomUUID().toString(); // GENERATE UNIQUE STRING
         StorageReference mImageRef = FirebaseStorage.getInstance().getReference(uuid);
         mImageRef.putFile(uriImageSelected)

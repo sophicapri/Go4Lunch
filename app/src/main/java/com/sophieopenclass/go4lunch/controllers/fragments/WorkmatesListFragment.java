@@ -55,7 +55,6 @@ public class WorkmatesListFragment extends Fragment {
     private Index index;
     private List<User> workmateFinalList = new ArrayList<>();
 
-
     public static Fragment newInstance() {
         return new WorkmatesListFragment();
     }
@@ -75,7 +74,6 @@ public class WorkmatesListFragment extends Fragment {
         }
 
         initSearchBar();
-
         binding.swipeRefreshView.setOnRefreshListener(() -> {
             if (networkUnavailable()) {
                 Snackbar.make(binding.getRoot(), R.string.internet_unavailable, BaseTransientBottomBar.LENGTH_INDEFINITE)

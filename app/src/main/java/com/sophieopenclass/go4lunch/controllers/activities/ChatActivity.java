@@ -98,6 +98,7 @@ public class ChatActivity extends BaseActivity<MyViewModel> implements ChatViewA
 
         binding.chatAddFileButton.setOnClickListener(v -> chooseImageFromPhone());
         binding.sendMessageButton.setOnClickListener(v -> onSendMessageClick());
+        binding.backArrow.setOnClickListener(v -> onBackPressed());
     }
 
     private void onSendMessageClick() {

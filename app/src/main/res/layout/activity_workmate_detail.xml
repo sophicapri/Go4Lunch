@@ -72,11 +72,13 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
+            <!-- LUNCH OF THE DAY -->
             <include
                 android:id="@+id/lunch_of_the_day"
                 layout="@layout/workmates_restaurant_preview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:visibility="invisible"
                 android:layout_marginStart="@dimen/default_margin"
                 android:layout_marginTop="@dimen/default_margin"
                 android:layout_marginEnd="@dimen/default_margin"
@@ -133,6 +135,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:scrollbars="none"
+                android:visibility="invisible"
                 android:layout_marginTop="@dimen/default_margin"
                 app:layout_constraintTop_toBottomOf="@+id/lunch_of_the_day">
 
