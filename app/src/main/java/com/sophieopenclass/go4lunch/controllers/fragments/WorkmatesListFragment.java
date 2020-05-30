@@ -6,19 +6,17 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import com.algolia.search.saas.AlgoliaException;
 import com.algolia.search.saas.Client;
-import com.algolia.search.saas.CompletionHandler;
 import com.algolia.search.saas.Index;
 import com.algolia.search.saas.Query;
 import com.bumptech.glide.Glide;
@@ -42,21 +40,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.sophieopenclass.go4lunch.base.BaseActivity.ORIENTATION_CHANGED;
+import static com.sophieopenclass.go4lunch.utils.Constants.HITS_ALGOLIA;
+import static com.sophieopenclass.go4lunch.utils.Constants.INDEX_WORKMATES;
+import static com.sophieopenclass.go4lunch.utils.Constants.UID_FIELD;
 import static com.sophieopenclass.go4lunch.utils.DateFormatting.getTodayDateInString;
 
 public class WorkmatesListFragment extends Fragment {
-    public static final String SEARCHABLE_ATTRIBUTES = "searchableAttributes";
-    public static final String SEARCH_WORKMATE_BY_NAME = "username";
-    public static final String INDEX_WORKMATES = "dev_WORKMATES";
+
     private RecyclerViewWorkmatesBinding binding;
     private MyViewModel viewModel;
     private WorkmatesViewAdapter adapter;
     private String currentUserId;
     private MainActivity activity;
-    private Client client;
     private Index index;
     private List<User> workmateFinalList = new ArrayList<>();
-    private CompletionHandler completionHandler;
 
 
     public static Fragment newInstance() {
@@ -77,11 +74,7 @@ public class WorkmatesListFragment extends Fragment {
                 currentUserId = activity.getCurrentUser().getUid();
         }
 
-        try {
-            initSearchBar();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        initSearchBar();
 
         binding.swipeRefreshView.setOnRefreshListener(() -> {
             if (networkUnavailable()) {
@@ -95,19 +88,20 @@ public class WorkmatesListFragment extends Fragment {
     }
 
     private void initAlgolia() {
-        client = new Client(BuildConfig.ALGOLIA_APP_ID, BuildConfig.ALGOLIA_API_KEY);
+        Client client = new Client(BuildConfig.ALGOLIA_APP_ID, BuildConfig.ALGOLIA_API_KEY);
         index = client.getIndex(INDEX_WORKMATES);
     }
 
-    private void initSearchBar() throws JSONException {
+    private void initSearchBar() {
+        InputMethodManager inputManager = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
         activity.binding.searchBarWorkmates.closeSearchBar.setOnClickListener(v -> {
             activity.binding.searchBarWorkmates.searchBarWorkmates.setVisibility(View.GONE);
             activity.binding.searchBarWorkmates.searchBarInput.getText().clear();
             adapter.updateList(workmateFinalList);
+            if (inputManager != null) {
+                inputManager.hideSoftInputFromWindow(activity.binding.searchBarWorkmates.searchBarInput.getWindowToken(), 0);
+            }
         });
-
-        JSONObject settings = new JSONObject().put(SEARCHABLE_ATTRIBUTES, SEARCH_WORKMATE_BY_NAME);
-        index.setSettingsAsync(settings, completionHandler);
 
         activity.binding.searchBarWorkmates.searchBarInput.addTextChangedListener(new TextWatcher() {
             @Override
@@ -122,19 +116,18 @@ public class WorkmatesListFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-                Query query = new Query(s.toString()).setAttributesToRetrieve("uid")
+                Query query = new Query(s.toString()).setAttributesToRetrieve(UID_FIELD)
                         .setHitsPerPage(20);
 
-                completionHandler = (jsonObject, e) -> {
+                index.searchAsync(query, (jsonObject, e) -> {
                     if (jsonObject != null)
                         try {
-                            JSONArray hits = jsonObject.getJSONArray("hits");
+                            JSONArray hits = jsonObject.getJSONArray(HITS_ALGOLIA);
                             List<User> users = new ArrayList<>();
                             for (int i = 0; i < hits.length(); i++) {
                                 for (User user : workmateFinalList) {
-                                    if (hits.getJSONObject(i).getString("uid").equals(user.getUid()))
+                                    if (hits.getJSONObject(i).getString(UID_FIELD).equals(user.getUid()))
                                         users.add(user);
-                                    Log.d("TAG", "number of loop long list " + i);
                                 }
                             }
                             adapter.updateList(users);
@@ -142,33 +135,7 @@ public class WorkmatesListFragment extends Fragment {
                             ex.printStackTrace();
                         }
 
-                };
-
-                index.searchAsync(query, completionHandler);
-                /*
-                index.searchAsync(query, new CompletionHandler() {
-                    @Override
-                    public void requestCompleted(@Nullable JSONObject jsonObject, @Nullable AlgoliaException e) {
-                        if (jsonObject != null)
-                            try {
-                                JSONArray hits = jsonObject.getJSONArray("hits");
-                                List<User> users = new ArrayList<>();
-                                for (int i = 0; i < hits.length(); i++) {
-                                    for (User user : workmateFinalList) {
-                                        if (hits.getJSONObject(i).getString("uid").equals(user.getUid()))
-                                            users.add(user);
-                                        Log.d("TAG", "number of loop long list " + i);
-                                    }
-                                }
-                                adapter.updateList(users);
-                            } catch (JSONException ex) {
-                                ex.printStackTrace();
-                            }
-
-                    }
                 });
-
-                 */
 
             }
         });
@@ -244,7 +211,6 @@ public class WorkmatesListFragment extends Fragment {
     private void populateAlgolia(User user) {
         Gson gson = new Gson();
         String jsonUser = gson.toJson(user);
-
         index.getObjectAsync(user.getUid(), (content, error) -> {
             if (content != null) {
                 try {
@@ -252,8 +218,7 @@ public class WorkmatesListFragment extends Fragment {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-            }
-            else {
+            } else {
                 try {
                     index.addObjectAsync(new JSONObject(jsonUser), user.getUid(), null);
                 } catch (JSONException e) {
@@ -267,6 +232,5 @@ public class WorkmatesListFragment extends Fragment {
     public void onPause() {
         super.onPause();
         workmateFinalList.clear();
-        Log.d("TAG", "onPause: ");
     }
 }

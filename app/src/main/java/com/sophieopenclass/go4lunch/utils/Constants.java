@@ -41,6 +41,12 @@ public class Constants {
     public static final String SHARED_PREFS = "sharedPrefs";
     public static final String WORK_REQUEST_NAME = "Lunch reminder";
 
+
+    // ALGOLIA
+    public static final String INDEX_WORKMATES = "dev_WORKMATES";
+    public static final String UID_FIELD = "uid";
+    public static final String HITS_ALGOLIA = "hits";
+
     public static final int LOCATION_PERMISSION_REQUEST_CODE = 123;
     public static final String PERMS = ACCESS_FINE_LOCATION;
 

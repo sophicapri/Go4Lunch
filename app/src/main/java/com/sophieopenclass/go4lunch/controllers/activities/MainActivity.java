@@ -1,10 +1,13 @@
 package com.sophieopenclass.go4lunch.controllers.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -260,15 +263,29 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
         return true;
     }
 
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        EditText focusedEditText = null;
+
         if (item.getItemId() == R.id.search_bar_menu)
-            if (fragmentMapView.isVisible())
+            if (fragmentMapView.isVisible()) {
                 binding.searchBarMap.searchBarMap.setVisibility(View.VISIBLE);
-            else if (fragmentRestaurantList != null && fragmentRestaurantList.isVisible())
+                focusedEditText = binding.searchBarMap.searchBarInput;
+            } else if (fragmentRestaurantList != null && fragmentRestaurantList.isVisible()) {
                 binding.searchBarRestaurantList.searchBarRestaurantList.setVisibility(View.VISIBLE);
-            else if (fragmentWorkmatesList != null && fragmentWorkmatesList.isVisible())
+                focusedEditText = binding.searchBarRestaurantList.searchBarInput;
+            } else if (fragmentWorkmatesList != null && fragmentWorkmatesList.isVisible()) {
                 binding.searchBarWorkmates.searchBarWorkmates.setVisibility(View.VISIBLE);
+                focusedEditText = binding.searchBarWorkmates.searchBarInput;
+            }
+
+        if (focusedEditText != null)
+            focusedEditText.requestFocus();
+        InputMethodManager inputManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (inputManager != null) {
+            inputManager.showSoftInput(focusedEditText, InputMethodManager.SHOW_IMPLICIT);
+        }
         return true;
     }
 }
