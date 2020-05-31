@@ -164,9 +164,12 @@ public class RestaurantListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         private void displayClosed(PlaceDetails placeDetails) {
             Period todayOpeningHours = getTodayOpeningHours(placeDetails);
             if (todayOpeningHours != null) {
-                String time = todayOpeningHours.getOpen().getTime();
-                String finalTime = time.substring(0, 2) + "h" + time.substring(2);
-                binding.openingHours.setText(res.getString(R.string.close_will_open_at, finalTime));
+                String openingHour = todayOpeningHours.getOpen().getTime();
+                if (Integer.parseInt(openingHour) > Integer.parseInt(convertDateToStringHour(new Date()))) {
+                    String finalTime = openingHour.substring(0, 2) + "h" + openingHour.substring(2);
+                    binding.openingHours.setText(res.getString(R.string.close_will_open_at, finalTime));
+                } else
+                    binding.openingHours.setText(R.string.close);
             } else
                 binding.openingHours.setText(R.string.close);
             binding.openingHours.setTextColor(res.getColor(R.color.quantum_googred));

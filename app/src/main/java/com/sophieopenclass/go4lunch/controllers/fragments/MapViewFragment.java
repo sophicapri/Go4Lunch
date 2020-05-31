@@ -349,7 +349,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Eas
     public void onDestroy() {
         super.onDestroy();
         cameraLocation = null;
-        activity.binding.progressBar.setVisibility(View.GONE);
         activity.binding.searchBarMap.searchBarInput.removeTextChangedListener(textWatcher);
     }
 

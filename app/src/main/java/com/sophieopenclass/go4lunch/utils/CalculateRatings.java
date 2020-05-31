@@ -6,7 +6,7 @@ public class CalculateRatings {
         int numberOfStars;
         if (rating < 3)
             numberOfStars = 1;
-        else if (rating < 4 )
+        else if (rating >= 3 && rating < 4 )
             numberOfStars = 2;
         else
             numberOfStars = 3;
