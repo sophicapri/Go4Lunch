@@ -81,6 +81,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Eas
     private String searchBarTextInput;
     private MainActivity activity;
     private FragmentMapBinding binding;
+    private TextWatcher textWatcher;
     private final AutocompleteSessionToken token = AutocompleteSessionToken.newInstance();
 
     public MapViewFragment() {
@@ -121,10 +122,8 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Eas
                 autocompleteActive = false;
             });
         }
-
-        activity.binding.searchBarMap.searchBarInput.addTextChangedListener(new TextWatcher() {
-            //to stop the TextWatcher foom firing multiple times
-            // -not working-
+            textWatcher = new TextWatcher() {
+            //to stop the TextWatcher from firing multiple times
             boolean isOnTextChanged = false;
 
             @Override
@@ -150,7 +149,8 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Eas
                     displayResultsAutocomplete(searchBarTextInput);
                 }
             }
-        });
+        };
+        activity.binding.searchBarMap.searchBarInput.addTextChangedListener(textWatcher);
 
         binding.fab.setOnClickListener(v -> {
             if (context.requestLocationPermission()) {
@@ -170,8 +170,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Eas
                     .setTextColor(getResources().getColor(R.color.quantum_white_100)).setDuration(5000).show();
         } else {
             if (context.requestLocationPermission()) {
-                if (currentLocation == null)
-                    fetchLastLocation();
+                fetchLastLocation();
             }
         }
     }
@@ -350,6 +349,8 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Eas
     public void onDestroy() {
         super.onDestroy();
         cameraLocation = null;
+        activity.binding.progressBar.setVisibility(View.GONE);
+        activity.binding.searchBarMap.searchBarInput.removeTextChangedListener(textWatcher);
     }
 
     @Override

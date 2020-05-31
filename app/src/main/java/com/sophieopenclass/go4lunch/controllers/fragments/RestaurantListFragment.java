@@ -1,5 +1,6 @@
 package com.sophieopenclass.go4lunch.controllers.fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
@@ -8,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -51,7 +53,7 @@ import static com.sophieopenclass.go4lunch.utils.DateFormatting.getTodayDateInSt
 
 public class RestaurantListFragment extends Fragment implements EasyPermissions.PermissionCallbacks {
     public static final String TAG = "RESTAURANT LIST";
-    private static final double RADIUS = 500;
+    private static final double RADIUS = 300;
     private MyViewModel viewModel;
     private RecyclerViewRestaurantsBinding binding;
     private BaseActivity context;
@@ -67,6 +69,7 @@ public class RestaurantListFragment extends Fragment implements EasyPermissions.
     private static final double HEADING_NORTH_WEST = 45.0;
     private static final double HEADING_SOUTH_WEST = 225.0;
     private boolean isLoading;
+    private TextWatcher textWatcher;
 
 
     public static Fragment newInstance() {
@@ -103,34 +106,43 @@ public class RestaurantListFragment extends Fragment implements EasyPermissions.
     private void initSearchBar(MainActivity activity) {
         activity.binding.searchBarRestaurantList.closeSearchBar.setOnClickListener(v -> {
             activity.binding.searchBarRestaurantList.searchBarRestaurantList.setVisibility(View.GONE);
+            InputMethodManager inputManager = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+            if (inputManager != null) {
+                inputManager.hideSoftInputFromWindow(activity.binding.searchBarMap.searchBarInput.getWindowToken(), 0);
+            }
             if (!activity.binding.searchBarRestaurantList.searchBarInput.getText().toString().isEmpty())
                 activity.binding.searchBarRestaurantList.searchBarInput.getText().clear();
-            //To not refresh the page if the search bar has been opened but the user didn't search for a restaurant
+            //To refresh the page only if the user typed something into the search bar
             if (autocompleteActive) {
                 restaurants.clear();
                 if (adapter != null)
                     adapter.updateList(restaurants);
                 autocompleteActive = false;
+                activity.binding.progressBar.setVisibility(View.VISIBLE);
+                observePlaces(null);
             }
-            observePlaces(null);
         });
 
-        activity.binding.searchBarRestaurantList.searchBarInput.addTextChangedListener(new TextWatcher() {
+        textWatcher = new TextWatcher() {
             //to stop the TextWatcher from firing multiple times
-            // - not working -
             boolean isOnTextChanged = false;
 
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                 Log.i(TAG, "beforeTextChanged: ");
-                isOnTextChanged = true;
 
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                Log.i(TAG, "onTextChanged:");
+                isOnTextChanged = true;
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                Log.i(TAG, "afterTextChanged: ");
                 if (!ORIENTATION_CHANGED && isOnTextChanged) {
-                    Log.i(TAG, "onTextChanged:");
                     isOnTextChanged = false;
                     autocompleteActive = true;
                     restaurants.clear();
@@ -139,12 +151,8 @@ public class RestaurantListFragment extends Fragment implements EasyPermissions.
                         displayResultsAutocomplete(s.toString());
                 }
             }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                Log.i(TAG, "afterTextChanged: ");
-            }
-        });
+        };
+        activity.binding.searchBarRestaurantList.searchBarInput.addTextChangedListener(textWatcher);
     }
 
     /**
@@ -251,42 +259,11 @@ public class RestaurantListFragment extends Fragment implements EasyPermissions.
 
     }
 
-
-    // Method to use during development. The one below demands too many requests
-   /* private void getFullPlaceDetails(List<PlaceDetails> placeDetailsList) {
-        ArrayList<PlaceDetails> completePlaceDetailsList = new ArrayList<>();
-        for (PlaceDetails restaurant : placeDetailsList) {
-            viewModel.getUsersByPlaceIdAndDate(restaurant.getPlaceId(), getTodayDateInString())
-                    .observe(getViewLifecycleOwner(), users -> {
-                        restaurant.setNbrOfWorkmates(users.size());
-                        completePlaceDetailsList.add(restaurant);
-                        if (completePlaceDetailsList.size() == placeDetailsList.size()) {
-                            Collections.sort(completePlaceDetailsList, new NearestRestaurantComparator());
-                            if ((!restaurants.isEmpty()) && adapter != null) {
-                                int indexStart = restaurants.size() - 1;
-                                this.restaurants.addAll(completePlaceDetailsList);
-                                if (!autocompleteActive)
-                                    adapter.notifyItemRangeInserted(indexStart, completePlaceDetailsList.size());
-                                else {
-                                    adapter.notifyItemRemoved(0);
-                                    adapter.notifyItemRangeInserted(0, completePlaceDetailsList.size());
-                                }
-                            } else
-                                updateRecyclerView(completePlaceDetailsList);
-                        }
-                    });
-        }
-    }
-    */
-
-
     // Nearby Search doesn't return all the fields required in a PlaceDetails, therefore another
     // query is necessary to retrieve the missing fields (ex : openingHours)
     // -
     // The viewModel calls are inside each other and not called one after the other because the variables do not get initialised
     // fast enough before being used for another viewModel.
-
-    // Method that gets the openings hours details.
     private void getFullPlaceDetails(List<PlaceDetails> placeDetailsList) {
         ArrayList<PlaceDetails> completePlaceDetailsList = new ArrayList<>();
         for (PlaceDetails placeDetails : placeDetailsList) {
@@ -310,6 +287,7 @@ public class RestaurantListFragment extends Fragment implements EasyPermissions.
                                                 }
                                             } else
                                                 updateRecyclerView(completePlaceDetailsList);
+                                            activity.binding.progressBar.setVisibility(View.GONE);
                                         }
                                     }));
         }
@@ -327,6 +305,7 @@ public class RestaurantListFragment extends Fragment implements EasyPermissions.
     public void onDestroy() {
         super.onDestroy();
         Log.i(TAG, "onDestroy: ");
+        activity.binding.searchBarRestaurantList.searchBarInput.removeTextChangedListener(textWatcher);
     }
 
     /**
