@@ -184,6 +184,7 @@ public class WorkmatesListFragment extends Fragment {
     }
 
     private void updateWorkmatesList() {
+        workmateFinalList.clear();
         List<User> usersWithoutCurrentLogged = new ArrayList<>();
         viewModel.getListUsers().observe(getViewLifecycleOwner(), users -> {
             for (User user : users) {

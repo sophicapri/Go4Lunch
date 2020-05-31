@@ -58,6 +58,7 @@ import static com.sophieopenclass.go4lunch.utils.Constants.WORK_REQUEST_NAME;
 
 public abstract class BaseActivity<T extends ViewModel> extends AppCompatActivity implements Listeners.OnWorkmateClickListener,
         Listeners.OnRestaurantClickListener {
+    public static final int LOCATION_REQUEST_CODE = 777;
     public final String TAG = "MAIN";
     public T viewModel;
     public final WorkManager workManager = WorkManager.getInstance(this);
@@ -121,7 +122,7 @@ public abstract class BaseActivity<T extends ViewModel> extends AppCompatActivit
             new AlertDialog.Builder(this)
                     .setMessage(R.string.gps_network_not_enabled)
                     .setPositiveButton(R.string.open_location_settings, (paramDialogInterface, paramInt) ->
-                            startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)))
+                            startActivityForResult(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS), LOCATION_REQUEST_CODE))
                     .setNegativeButton(R.string.Cancel, null)
                     .show();
         } else

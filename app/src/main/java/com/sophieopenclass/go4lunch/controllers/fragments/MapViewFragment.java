@@ -60,6 +60,8 @@ import java.util.List;
 import pub.devrel.easypermissions.EasyPermissions;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+import static android.app.Activity.RESULT_OK;
+import static com.sophieopenclass.go4lunch.base.BaseActivity.LOCATION_REQUEST_CODE;
 import static com.sophieopenclass.go4lunch.base.BaseActivity.ORIENTATION_CHANGED;
 import static com.sophieopenclass.go4lunch.utils.Constants.PLACE_ID;
 import static com.sophieopenclass.go4lunch.utils.DateFormatting.getTodayDateInString;
@@ -121,7 +123,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Eas
         }
 
         activity.binding.searchBarMap.searchBarInput.addTextChangedListener(new TextWatcher() {
-            //to stop the TextWatcher to fire multiple times
+            //to stop the TextWatcher foom firing multiple times
             // -not working-
             boolean isOnTextChanged = false;
 
@@ -140,14 +142,15 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Eas
             public void afterTextChanged(Editable s) {
                 Log.i(TAG, "afterTextChanged: ");
                 if (!ORIENTATION_CHANGED && isOnTextChanged) {
+                    mMap.clear();
                     isOnTextChanged = false;
                     searchBarTextInput = s.toString();
                     autocompleteActive = true;
+                    Log.i(TAG, "afterTextChanged: " + s.toString());
                     displayResultsAutocomplete(searchBarTextInput);
                 }
             }
         });
-
 
         binding.fab.setOnClickListener(v -> {
             if (context.requestLocationPermission()) {
@@ -167,7 +170,8 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Eas
                     .setTextColor(getResources().getColor(R.color.quantum_white_100)).setDuration(5000).show();
         } else {
             if (context.requestLocationPermission()) {
-                fetchLastLocation();
+                if (currentLocation == null)
+                    fetchLastLocation();
             }
         }
     }
@@ -208,6 +212,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Eas
                             suggestionsList.add(prediction.getPlaceId());
                         }
                     }
+                    Log.i(TAG, "displayResultsAutocomplete: " + suggestionsList.toString());
                     getPlaceDetailAutocompleteList(suggestionsList);
                 }
             } else {
@@ -218,7 +223,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Eas
 
     private void getPlaceDetailAutocompleteList(List<String> suggestionsList) {
         List<PlaceDetails> placeDetailsList = new ArrayList<>();
-        mMap.clear();
+        Log.d(TAG, "getPlaceDetailAutocompleteList: " + suggestionsList.toString());
         for (String placeId : suggestionsList)
             viewModel.getPlaceDetails(placeId).observe(context, placeDetails -> {
                 placeDetailsList.add(placeDetails);
@@ -270,16 +275,17 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Eas
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, DEFAULT_ZOOM));
         if (!autocompleteActive)
             getNearbyPlaces(currentLocation);
-
         cameraLocation = new Location(currentLocation);
+        Log.i(TAG, "configureMap: befoe");
         mMap.setOnCameraMoveStartedListener(i -> {
             cameraLocation = new Location(CAMERA_LOCATION);
             cameraLocation.setLongitude(mMap.getCameraPosition().target.longitude);
             cameraLocation.setLatitude(mMap.getCameraPosition().target.latitude);
+            Log.i(TAG, "configureMap: on camera move");
             if (!autocompleteActive)
                 getNearbyPlaces(cameraLocation);
             else
-                displayResultsAutocomplete(searchBarTextInput);
+                displayResultsAutocomplete(activity.binding.searchBarMap.searchBarInput.getText().toString());
         });
     }
 
@@ -307,9 +313,11 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Eas
                 else
                     markerDrawable = R.drawable.ic_marker_green;
 
-                mMap.addMarker(new MarkerOptions().title(placeDetails.getName()).position(
-                        new LatLng(placeDetails.getGeometry().getLocation().getLat(), placeDetails.getGeometry().getLocation().getLng()))
-                        .icon(getBitmapFromVector(markerDrawable))).setTag(placeDetails.getPlaceId());
+                Marker marker = mMap.addMarker(new MarkerOptions().title(placeDetails.getName())
+                        .position(new LatLng(placeDetails.getGeometry().getLocation().getLat(),
+                                placeDetails.getGeometry().getLocation().getLng()))
+                        .icon(getBitmapFromVector(markerDrawable)));
+                marker.setTag(placeDetails.getPlaceId());
             });
         }
     }
@@ -342,7 +350,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Eas
     public void onDestroy() {
         super.onDestroy();
         cameraLocation = null;
-        Log.i(TAG, "onDestroy: ");
     }
 
     @Override
@@ -351,24 +358,14 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Eas
             if (mMap != null)
                 mMap.setMyLocationEnabled(true);
             fetchLastLocation();
+            Log.i(TAG, "onPermissionsGranted: ");
         }
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        Log.i(TAG, "onDestroyView: ");
     }
 
     @Override
     public void onPermissionsDenied(int requestCode, @NonNull List<String> perms) {
-        if (EasyPermissions.hasPermissions(context, PERMS)) {
-            if (mMap != null)
-                mMap.setMyLocationEnabled(true);
-            fetchLastLocation();
-        } else {
-            Snackbar.make(binding.getRoot(), R.string.location_unavailable, BaseTransientBottomBar.LENGTH_INDEFINITE)
-                    .setTextColor(getResources().getColor(R.color.quantum_white_100)).setDuration(5000).show();
-        }
+        Snackbar.make(binding.getRoot(), R.string.location_unavailable, BaseTransientBottomBar.LENGTH_INDEFINITE)
+                .setTextColor(getResources().getColor(R.color.quantum_white_100)).setDuration(5000).show();
+
     }
 }

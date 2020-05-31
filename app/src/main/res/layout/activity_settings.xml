@@ -43,6 +43,7 @@
                 android:id="@+id/update_profile_pic"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
+                android:src="@drawable/ic_profile_no_pic"
                 android:layout_marginTop="@dimen/default_margin"
                 android:layout_marginStart="@dimen/default_margin"
                 android:contentDescription="@string/profile_picture"
@@ -98,27 +99,28 @@
             <!-- EDIT USERNAME-->
             <LinearLayout
                 android:id="@+id/edit_username_container"
-                android:layout_width="0dp"
-                android:visibility="gone"
+                android:layout_width="match_parent"
                 android:layout_height="?actionBarSize"
-                android:background="@color/quantum_white_text"
+                android:background="@drawable/bkg_edit_username"
                 android:orientation="horizontal"
-                app:layout_constraintHorizontal_bias="0"
+                android:visibility="gone"
+                app:layout_constraintVertical_bias="0.5"
                 app:layout_constraintBottom_toTopOf="@+id/touch_to_update_pic"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/update_profile_pic"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@id/update_profile_pic">
 
                 <EditText
                     android:id="@+id/edit_text_username"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:cursorVisible="true"
-                    android:layout_marginStart="18dp"
+                    android:layout_marginStart="10dp"
                     android:layout_marginEnd="@dimen/default_margin"
-                    android:lines="1"
-                    android:imeOptions="flagNoExtractUi"
+                    android:layout_gravity="center"
                     android:layout_weight="1"
+                    android:cursorVisible="true"
+                    android:imeOptions="flagNoExtractUi|flagNoEnterAction"
+                    android:maxLines="1"
                     android:textSize="18sp"
                     tools:text="@sample/tasks.json/full_name" />
 
@@ -127,13 +129,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    app:srcCompat="@drawable/ic_check_black_24dp"
-                    android:layout_marginEnd="@dimen/default_margin" />
+                    android:layout_marginEnd="@dimen/default_margin"
+                    app:srcCompat="@drawable/ic_check_black_24dp" />
 
                 <ImageView
                     android:id="@+id/cancel_username_update"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/default_margin"
                     android:layout_gravity="center"
                     app:srcCompat="@drawable/ic_close_black_24dp" />
 

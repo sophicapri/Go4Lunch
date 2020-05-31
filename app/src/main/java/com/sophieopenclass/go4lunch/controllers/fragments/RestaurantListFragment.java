@@ -116,18 +116,19 @@ public class RestaurantListFragment extends Fragment implements EasyPermissions.
         });
 
         activity.binding.searchBarRestaurantList.searchBarInput.addTextChangedListener(new TextWatcher() {
-            //to stop the TextWatcher to fire multiple times
+            //to stop the TextWatcher from firing multiple times
+            // - not working -
             boolean isOnTextChanged = false;
 
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                 Log.i(TAG, "beforeTextChanged: ");
+                isOnTextChanged = true;
 
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                isOnTextChanged = true;
                 if (!ORIENTATION_CHANGED && isOnTextChanged) {
                     Log.i(TAG, "onTextChanged:");
                     isOnTextChanged = false;
