@@ -2,6 +2,7 @@ package com.sophieopenclass.go4lunch.controllers.adapters;
 
 import android.content.res.Resources;
 import android.os.Build;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -63,6 +64,7 @@ public class RestaurantListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof PlaceViewHolder)
             ((PlaceViewHolder) holder).bind(placeDetailsList.get(position));
+        Log.i(TAG, "onBindViewHolder: list SIZE " + placeDetailsList.size());
     }
 
     @Override
@@ -76,9 +78,16 @@ public class RestaurantListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         return placeDetailsList.get(position) == null ? VIEW_TYPE_LOADING : VIEW_TYPE_ITEM;
     }
 
-    public void updateList(ArrayList<PlaceDetails> placeDetailsList){
+    public void clearList(){
+        placeDetailsList.clear();
+        notifyDataSetChanged();
+    }
+
+    public void updateList(ArrayList<PlaceDetails> placeDetailsList) {
         this.placeDetailsList = placeDetailsList;
         notifyDataSetChanged();
+
+        Log.i(TAG, "updateList: list size" + placeDetailsList.size());
     }
 
     // Progress bar

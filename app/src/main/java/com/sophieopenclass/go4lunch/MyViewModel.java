@@ -44,6 +44,10 @@ public class MyViewModel extends ViewModel {
         return restaurantDataSource.getPlaceDetails(placeId);
     }
 
+    public LiveData<List<PlaceDetails>> getPlaceDetailsList(List<String> placeIds) {
+        return restaurantDataSource.getPlaceDetailsList(placeIds);
+    }
+
     // USERS
 
     public void createUser(User user) {
@@ -74,7 +78,6 @@ public class MyViewModel extends ViewModel {
     public void deleteChosenRestaurant(String uid, String date) {
         userDataSource.deleteChosenRestaurant(uid, date);
     }
-
 
 
     public LiveData<User> getCreatedUserLiveData() {

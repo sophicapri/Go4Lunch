@@ -48,6 +48,8 @@ import pub.devrel.easypermissions.EasyPermissions;
 import static com.sophieopenclass.go4lunch.base.BaseActivity.ORIENTATION_CHANGED;
 import static com.sophieopenclass.go4lunch.controllers.fragments.MapViewFragment.PERMS;
 import static com.sophieopenclass.go4lunch.controllers.fragments.MapViewFragment.getLatLngString;
+import static com.sophieopenclass.go4lunch.utils.Constants.HEADING_NORTH_WEST;
+import static com.sophieopenclass.go4lunch.utils.Constants.HEADING_SOUTH_WEST;
 import static com.sophieopenclass.go4lunch.utils.DateFormatting.getTodayDateInString;
 
 public class RestaurantListFragment extends Fragment implements EasyPermissions.PermissionCallbacks {
@@ -64,9 +66,8 @@ public class RestaurantListFragment extends Fragment implements EasyPermissions.
     private ArrayList<PlaceDetails> restaurantList = new ArrayList<>();
     private final AutocompleteSessionToken token = AutocompleteSessionToken.newInstance();
     private MainActivity activity;
-    private int visibleThreshold = 2;
-    private static final double HEADING_NORTH_WEST = 45.0;
-    private static final double HEADING_SOUTH_WEST = 225.0;
+    private int visibleThreshold = 5;
+
     private boolean isLoading;
     private TextWatcher textWatcher;
 
@@ -93,29 +94,38 @@ public class RestaurantListFragment extends Fragment implements EasyPermissions.
             activity.binding.progressBar.setVisibility(View.VISIBLE);
             initSearchBar(activity);
         }
-
+        configureRecyclerView();
         binding.swipeRefreshView.setOnRefreshListener(() -> {
             observePlaces(nextPageToken);
             binding.swipeRefreshView.setRefreshing(false);
         });
-        Log.i(TAG, "onCreateView: ");
+
         return binding.getRoot();
     }
 
+    private void configureRecyclerView() {
+        linearLayoutManager = new LinearLayoutManager(getContext());
+        binding.recyclerViewRestaurants.setHasFixedSize(true);
+        binding.recyclerViewRestaurants.setLayoutManager(linearLayoutManager);
+        adapter = new RestaurantListAdapter(restaurantList, context, Glide.with(this));
+        binding.recyclerViewRestaurants.setAdapter(adapter);
+        initScrollListener();
+    }
+
     private void initSearchBar(MainActivity activity) {
+        Log.i(TAG, "initSearchBar: ");
         activity.binding.searchBarRestaurantList.closeSearchBar.setOnClickListener(v -> {
             activity.binding.searchBarRestaurantList.searchBarRestaurantList.setVisibility(View.GONE);
             InputMethodManager inputManager = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
-            if (inputManager != null) {
+            if (inputManager != null)
                 inputManager.hideSoftInputFromWindow(activity.binding.searchBarMap.searchBarInput.getWindowToken(), 0);
-            }
+
             if (!activity.binding.searchBarRestaurantList.searchBarInput.getText().toString().isEmpty())
                 activity.binding.searchBarRestaurantList.searchBarInput.getText().clear();
+
             //To refresh the page only if the user typed something into the search bar
             if (autocompleteActive) {
-                restaurantList.clear();
-                if (adapter != null)
-                    adapter.updateList(restaurantList);
+                adapter.clearList();
                 autocompleteActive = false;
                 activity.binding.progressBar.setVisibility(View.VISIBLE);
                 observePlaces(null);
@@ -129,7 +139,6 @@ public class RestaurantListFragment extends Fragment implements EasyPermissions.
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                 Log.i(TAG, "beforeTextChanged: ");
-
             }
 
             @Override
@@ -140,17 +149,18 @@ public class RestaurantListFragment extends Fragment implements EasyPermissions.
 
             @Override
             public void afterTextChanged(Editable s) {
-                Log.i(TAG, "afterTextChanged: ");
+                Log.i(TAG, "afterTextChanged: " + s.toString() + " - " + this.toString());
+                adapter.clearList();
                 if (!ORIENTATION_CHANGED && isOnTextChanged) {
                     isOnTextChanged = false;
                     autocompleteActive = true;
-                    restaurantList.clear();
-                    adapter.updateList(restaurantList);
-                    if (!s.toString().isEmpty())
-                        displayResultsAutocomplete(s.toString());
+                    if(!s.toString().isEmpty())
+                    displayResultsAutocomplete(s.toString());
                 }
             }
-        };
+        }
+
+        ;
         activity.binding.searchBarRestaurantList.searchBarInput.addTextChangedListener(textWatcher);
     }
 
@@ -199,14 +209,12 @@ public class RestaurantListFragment extends Fragment implements EasyPermissions.
     }
 
     private void getPlaceDetailAutocompleteList(List<String> suggestionsList) {
-        List<PlaceDetails> placeDetailsList = new ArrayList<>();
-        for (String placeId : suggestionsList)
-            viewModel.getPlaceDetails(placeId).observe(getViewLifecycleOwner(), placeDetails -> {
-                placeDetailsList.add(placeDetails);
-                if (placeDetailsList.size() == suggestionsList.size()) {
-                    getFullPlaceDetails(placeDetailsList);
-                }
-            });
+        viewModel.getPlaceDetailsList(suggestionsList).observe(getViewLifecycleOwner(), placeDetailsList -> {
+            if (!placeDetailsList.isEmpty()) {
+                getFullPlaceDetails(placeDetailsList);
+                Log.i(TAG, "getPlaceDetailAutocompleteList: " +placeDetailsList.isEmpty());
+            }
+        });
     }
 
     @Override
@@ -217,7 +225,7 @@ public class RestaurantListFragment extends Fragment implements EasyPermissions.
 
     @Override
     public void onResume() {
-        if (restaurantList.isEmpty() || autocompleteActive) {
+        if (restaurantList.isEmpty() && !autocompleteActive) {
             activity.binding.progressBar.setVisibility(View.VISIBLE);
             observePlaces(null);
             // To delete autocomplete results
@@ -247,16 +255,15 @@ public class RestaurantListFragment extends Fragment implements EasyPermissions.
                                 Log.i(TAG, "observePlaces: currentlocation ");
                             });
                 else
-                    viewModel.getMoreNearbyPlaces(nextPageToken).observe(getViewLifecycleOwner()
-                            , restaurantsResult -> {
-                                getFullPlaceDetails(restaurantsResult.getPlaceDetails());
-                                // Check to not return the same result twice
-                                if (nextPageToken.equals(restaurantsResult.getNextPageToken()))
-                                    this.nextPageToken = null;
-                                else
-                                    this.nextPageToken = restaurantsResult.getNextPageToken();
-                                Log.i(TAG, "observePlaces: nexttoken");
-                            });
+                    viewModel.getMoreNearbyPlaces(nextPageToken).observe(getViewLifecycleOwner(), restaurantsResult -> {
+                        getFullPlaceDetails(restaurantsResult.getPlaceDetails());
+                        // Check to not return the same result twice
+                        if (this.nextPageToken.equals(restaurantsResult.getNextPageToken()))
+                            this.nextPageToken = null;
+                        else
+                            this.nextPageToken = restaurantsResult.getNextPageToken();
+                        Log.i(TAG, "observePlaces: nexttoken");
+                    });
 
     }
 
@@ -268,27 +275,33 @@ public class RestaurantListFragment extends Fragment implements EasyPermissions.
     private void getFullPlaceDetails(List<PlaceDetails> placeDetailsList) {
         ArrayList<PlaceDetails> completePlaceDetailsList = new ArrayList<>();
         for (PlaceDetails placeDetails : placeDetailsList) {
+            Log.i(TAG, "getFullPlaceDetails: SIZE " + placeDetailsList.size());
             viewModel.getPlaceDetails(placeDetails.getPlaceId())
                     .observe(getViewLifecycleOwner(), restaurant ->
                             viewModel.getUsersByPlaceIdAndDate(placeDetails.getPlaceId(), getTodayDateInString())
                                     .observe(getViewLifecycleOwner(), users -> {
-                                        Log.i(TAG, "getFullPlaceDetails: " + restaurant);
                                         if (restaurant != null) {
                                             restaurant.setNbrOfWorkmates(users.size());
                                             completePlaceDetailsList.add(restaurant);
                                         }
+
+                                        ////
+
                                         if (completePlaceDetailsList.size() == placeDetailsList.size()) {
                                             Collections.sort(completePlaceDetailsList, new NearestRestaurantComparator());
-                                            if ((!restaurantList.isEmpty()) && adapter != null) {
-                                                int indexStart = restaurantList.size() - 1;
+                                            if (!restaurantList.isEmpty() && !autocompleteActive) {
+                                                Log.i(TAG, "getFullPlaceDetails: nextpagetoken seulement ");
                                                 this.restaurantList.addAll(completePlaceDetailsList);
-                                                if (!autocompleteActive)
-                                                    adapter.notifyItemRangeInserted(indexStart, completePlaceDetailsList.size());
-                                                else {
-                                                    adapter.notifyItemRangeInserted(0, completePlaceDetailsList.size());
-                                                }
-                                            } else
-                                                updateRecyclerView(completePlaceDetailsList);
+                                                int indexStart = restaurantList.size() - 1;
+                                                adapter.notifyItemRangeInserted(indexStart, completePlaceDetailsList.size());
+                                            } else if (!autocompleteActive) {
+                                                Log.i(TAG, "getFullPlaceDetails: seulement 1 fois");
+                                                this.restaurantList.addAll(completePlaceDetailsList);
+                                                adapter.updateList(restaurantList);
+                                            } else {
+                                                Log.i(TAG, "getFullPlaceDetails: autocomplete actif " + completePlaceDetailsList.size());
+                                                adapter.updateList(completePlaceDetailsList);
+                                            }
                                             activity.binding.progressBar.setVisibility(View.GONE);
                                         }
                                     }));
@@ -301,7 +314,6 @@ public class RestaurantListFragment extends Fragment implements EasyPermissions.
         super.onDestroy();
         Log.i(TAG, "onDestroy: ");
         activity.binding.progressBar.setVisibility(View.GONE);
-        binding.recyclerViewRestaurants.scrollToPosition(0);
         restaurantList.clear();
         activity.binding.searchBarRestaurantList.searchBarInput.removeTextChangedListener(textWatcher);
     }
@@ -317,19 +329,6 @@ public class RestaurantListFragment extends Fragment implements EasyPermissions.
 
     }
 
-    private void updateRecyclerView(ArrayList<PlaceDetails> restaurants) {
-        activity.binding.progressBar.setVisibility(View.GONE);
-        linearLayoutManager = new LinearLayoutManager(getContext());
-        binding.recyclerViewRestaurants.setHasFixedSize(true);
-        binding.recyclerViewRestaurants.setLayoutManager(linearLayoutManager);
-
-        this.restaurantList = restaurants;
-        adapter = new RestaurantListAdapter(this.restaurantList, context, Glide.with(this));
-        binding.recyclerViewRestaurants.setAdapter(adapter);
-
-        initScrollListener();
-    }
-
     private void initScrollListener() {
         RecyclerView.OnScrollListener scrollListener = new RecyclerView.OnScrollListener() {
             @Override
@@ -338,10 +337,12 @@ public class RestaurantListFragment extends Fragment implements EasyPermissions.
 
                 int lastVisibleItem = linearLayoutManager.findLastCompletelyVisibleItemPosition();
                 if (!isLoading) {
-                    if (lastVisibleItem == restaurantList.size() - 5) {
+                    if (lastVisibleItem == restaurantList.size() - visibleThreshold) {
                         loadNextDataFromApi();
                         isLoading = true;
+                        Log.i(TAG, "onScrolled: ");
                     }
+                    Log.i(TAG, "onScrolled: not equal to list - restaurant list size = " + restaurantList.size());
                 }
             }
         };

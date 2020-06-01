@@ -27,6 +27,10 @@ public class Constants {
     public static final String USER_SENDER_ID = "userSenderId";
 
 
+    // findAutocompletePredictions
+    public static final double HEADING_NORTH_WEST = 45.0;
+    public static final double HEADING_SOUTH_WEST = 225.0;
+
     public static final int ACTIVITY_MY_LUNCH = 3;
     public static final int ACTIVITY_SETTINGS = 1;
     public static final int FRAGMENT_MAP_VIEW = 10;
