@@ -28,7 +28,6 @@ import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRe
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.gson.Gson;
 import com.google.maps.android.SphericalUtil;
 import com.sophieopenclass.go4lunch.MyViewModel;
 import com.sophieopenclass.go4lunch.R;
@@ -67,7 +66,8 @@ public class RestaurantListFragment extends Fragment implements EasyPermissions.
     private final AutocompleteSessionToken token = AutocompleteSessionToken.newInstance();
     private MainActivity activity;
     private int visibleThreshold = 5;
-    private boolean listEmpty = false;
+    private boolean searchBarInputEmpty = false;
+    private int bottomProgressBarPosition;
 
     private boolean isLoading;
     private TextWatcher textWatcher;
@@ -114,7 +114,6 @@ public class RestaurantListFragment extends Fragment implements EasyPermissions.
     }
 
     private void initSearchBar(MainActivity activity) {
-        Log.i(TAG, "initSearchBar: ");
         activity.binding.searchBarRestaurantList.closeSearchBar.setOnClickListener(v -> {
             activity.binding.searchBarRestaurantList.searchBarRestaurantList.setVisibility(View.GONE);
             InputMethodManager inputManager = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -139,32 +138,27 @@ public class RestaurantListFragment extends Fragment implements EasyPermissions.
 
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                Log.i(TAG, "beforeTextChanged: ");
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                Log.i(TAG, "onTextChanged:");
                 isOnTextChanged = true;
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-                Log.i(TAG, "afterTextChanged: " + s.toString() + " - " + this.toString());
                 adapter.clearList();
                 if (!ORIENTATION_CHANGED && isOnTextChanged) {
                     isOnTextChanged = false;
                     autocompleteActive = true;
                     if(!s.toString().isEmpty()) {
                         displayResultsAutocomplete(s.toString());
-                        listEmpty = false;
+                        searchBarInputEmpty = false;
                     } else
-                        listEmpty = true;
+                        searchBarInputEmpty = true;
                 }
             }
-        }
-
-        ;
+        };
         activity.binding.searchBarRestaurantList.searchBarInput.addTextChangedListener(textWatcher);
     }
 
@@ -203,8 +197,6 @@ public class RestaurantListFragment extends Fragment implements EasyPermissions.
                         }
                     }
                     getPlaceDetailAutocompleteList(suggestionsList);
-                    Gson gson = new Gson();
-                    System.out.println("GSON" + gson.toJson(suggestionsList));
                 }
             } else {
                 Log.i(TAG, "Prediction fetching task unsuccessful");
@@ -213,11 +205,9 @@ public class RestaurantListFragment extends Fragment implements EasyPermissions.
     }
 
     private void getPlaceDetailAutocompleteList(List<String> suggestionsList) {
-        Log.i(TAG, "getPlaceDetailAutocompleteList: suggestionlist " + suggestionsList.size());
         viewModel.getPlaceDetailsList(suggestionsList).observe(getViewLifecycleOwner(), placeDetailsList -> {
             if (!placeDetailsList.isEmpty()) {
                 getFullPlaceDetails(placeDetailsList);
-                Log.i(TAG, "getPlaceDetailAutocompleteList: " +placeDetailsList.isEmpty());
             }
         });
     }
@@ -257,7 +247,6 @@ public class RestaurantListFragment extends Fragment implements EasyPermissions.
                             .observe(getViewLifecycleOwner(), restaurantsResult -> {
                                 getFullPlaceDetails(restaurantsResult.getPlaceDetails());
                                 this.nextPageToken = restaurantsResult.getNextPageToken();
-                                Log.i(TAG, "observePlaces: currentlocation ");
                             });
                 else
                     viewModel.getMoreNearbyPlaces(nextPageToken).observe(getViewLifecycleOwner(), restaurantsResult -> {
@@ -267,7 +256,6 @@ public class RestaurantListFragment extends Fragment implements EasyPermissions.
                             this.nextPageToken = null;
                         else
                             this.nextPageToken = restaurantsResult.getNextPageToken();
-                        Log.i(TAG, "observePlaces: nexttoken");
                     });
 
     }
@@ -280,7 +268,6 @@ public class RestaurantListFragment extends Fragment implements EasyPermissions.
     private void getFullPlaceDetails(List<PlaceDetails> placeDetailsList) {
         ArrayList<PlaceDetails> completePlaceDetailsList = new ArrayList<>();
         for (PlaceDetails placeDetails : placeDetailsList) {
-            Log.i(TAG, "getFullPlaceDetails: SIZE " + placeDetailsList.size());
             viewModel.getPlaceDetails(placeDetails.getPlaceId())
                     .observe(getViewLifecycleOwner(), restaurant ->
                             viewModel.getUsersByPlaceIdAndDate(placeDetails.getPlaceId(), getTodayDateInString())
@@ -289,22 +276,20 @@ public class RestaurantListFragment extends Fragment implements EasyPermissions.
                                             restaurant.setNbrOfWorkmates(users.size());
                                             completePlaceDetailsList.add(restaurant);
                                         }
-
                                         ////
 
                                         if (completePlaceDetailsList.size() == placeDetailsList.size()) {
                                             Collections.sort(completePlaceDetailsList, new NearestRestaurantComparator());
                                             if (!restaurantList.isEmpty() && !autocompleteActive) {
-                                                Log.i(TAG, "getFullPlaceDetails: nextpagetoken seulement ");
-                                                this.restaurantList.addAll(completePlaceDetailsList);
-                                                int indexStart = restaurantList.size() - 1;
-                                                adapter.notifyItemRangeInserted(indexStart, completePlaceDetailsList.size());
+                                                restaurantList.remove(bottomProgressBarPosition);
+                                                adapter.notifyItemRemoved(bottomProgressBarPosition);
+                                                restaurantList.addAll(completePlaceDetailsList);
+                                                adapter.notifyDataSetChanged();
+                                                isLoading = false;
                                             } else if (!autocompleteActive) {
-                                                Log.i(TAG, "getFullPlaceDetails: seulement 1 fois");
                                                 this.restaurantList.addAll(completePlaceDetailsList);
                                                 adapter.updateList(restaurantList);
-                                            } else if (!listEmpty){
-                                                Log.i(TAG, "getFullPlaceDetails: autocomplete actif " + completePlaceDetailsList.size());
+                                            } else if (!searchBarInputEmpty){
                                                 adapter.updateList(completePlaceDetailsList);
                                             }
                                             activity.binding.progressBar.setVisibility(View.GONE);
@@ -355,15 +340,15 @@ public class RestaurantListFragment extends Fragment implements EasyPermissions.
     private void loadNextDataFromApi() {
         if (!autocompleteActive) {
             if (nextPageToken != null) {
-                binding.recyclerViewRestaurants.postDelayed(() -> {
-                    restaurantList.add(null);
-                    adapter.notifyItemInserted(restaurantList.size() - 1);
-                    restaurantList.remove(restaurantList.size() - 1);
-                    int scrollPosition = restaurantList.size();
-                    adapter.notifyItemRemoved(scrollPosition);
+                binding.recyclerViewRestaurants.post(() -> {
+                            restaurantList.add(null);
+                            adapter.notifyItemInserted(restaurantList.size() - 1);
+                        });
+
+                Handler handler = new Handler();
+                handler.postDelayed(() -> {
+                    bottomProgressBarPosition = restaurantList.size() - 1;
                     observePlaces(nextPageToken);
-                    adapter.notifyDataSetChanged();
-                    isLoading = false;
                 }, 2000);
             }
         }

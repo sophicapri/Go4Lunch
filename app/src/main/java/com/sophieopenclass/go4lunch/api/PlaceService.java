@@ -15,7 +15,7 @@ public class PlaceService {
     private static void initLogging(){
         logging.level(HttpLoggingInterceptor.Level.BODY);
         httpClient = new OkHttpClient.Builder();
-        //httpClient.addInterceptor(logging);
+        httpClient.addInterceptor(logging);
     }
 
     public static <S> S createService(Class<S> serviceClass) {
