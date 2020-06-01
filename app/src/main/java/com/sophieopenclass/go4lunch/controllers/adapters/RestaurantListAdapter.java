@@ -80,6 +80,7 @@ public class RestaurantListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     public void clearList(){
         placeDetailsList.clear();
+        Log.i(TAG, "clearList: size " + placeDetailsList.size());
         notifyDataSetChanged();
     }
 

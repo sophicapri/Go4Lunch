@@ -67,6 +67,7 @@ public class RestaurantListFragment extends Fragment implements EasyPermissions.
     private final AutocompleteSessionToken token = AutocompleteSessionToken.newInstance();
     private MainActivity activity;
     private int visibleThreshold = 5;
+    private boolean listEmpty = false;
 
     private boolean isLoading;
     private TextWatcher textWatcher;
@@ -154,8 +155,11 @@ public class RestaurantListFragment extends Fragment implements EasyPermissions.
                 if (!ORIENTATION_CHANGED && isOnTextChanged) {
                     isOnTextChanged = false;
                     autocompleteActive = true;
-                    if(!s.toString().isEmpty())
-                    displayResultsAutocomplete(s.toString());
+                    if(!s.toString().isEmpty()) {
+                        displayResultsAutocomplete(s.toString());
+                        listEmpty = false;
+                    } else
+                        listEmpty = true;
                 }
             }
         }
@@ -209,6 +213,7 @@ public class RestaurantListFragment extends Fragment implements EasyPermissions.
     }
 
     private void getPlaceDetailAutocompleteList(List<String> suggestionsList) {
+        Log.i(TAG, "getPlaceDetailAutocompleteList: suggestionlist " + suggestionsList.size());
         viewModel.getPlaceDetailsList(suggestionsList).observe(getViewLifecycleOwner(), placeDetailsList -> {
             if (!placeDetailsList.isEmpty()) {
                 getFullPlaceDetails(placeDetailsList);
@@ -298,7 +303,7 @@ public class RestaurantListFragment extends Fragment implements EasyPermissions.
                                                 Log.i(TAG, "getFullPlaceDetails: seulement 1 fois");
                                                 this.restaurantList.addAll(completePlaceDetailsList);
                                                 adapter.updateList(restaurantList);
-                                            } else {
+                                            } else if (!listEmpty){
                                                 Log.i(TAG, "getFullPlaceDetails: autocomplete actif " + completePlaceDetailsList.size());
                                                 adapter.updateList(completePlaceDetailsList);
                                             }
@@ -340,9 +345,7 @@ public class RestaurantListFragment extends Fragment implements EasyPermissions.
                     if (lastVisibleItem == restaurantList.size() - visibleThreshold) {
                         loadNextDataFromApi();
                         isLoading = true;
-                        Log.i(TAG, "onScrolled: ");
                     }
-                    Log.i(TAG, "onScrolled: not equal to list - restaurant list size = " + restaurantList.size());
                 }
             }
         };
