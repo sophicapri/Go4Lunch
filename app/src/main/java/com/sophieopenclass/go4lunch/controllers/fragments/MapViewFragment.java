@@ -56,16 +56,17 @@ import com.sophieopenclass.go4lunch.models.json_to_java.PlaceDetails;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
-import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static com.sophieopenclass.go4lunch.base.BaseActivity.ORIENTATION_CHANGED;
+import static com.sophieopenclass.go4lunch.base.BaseActivity.sharedPrefs;
 import static com.sophieopenclass.go4lunch.utils.Constants.PLACE_ID;
+import static com.sophieopenclass.go4lunch.utils.Constants.PREF_LANGUAGE;
 import static com.sophieopenclass.go4lunch.utils.DateFormatting.getTodayDateInString;
 
-public class MapViewFragment extends Fragment implements OnMapReadyCallback{
+public class MapViewFragment extends Fragment implements OnMapReadyCallback {
     private static final String TAG = "com.sophie.MAP";
     private static final String CAMERA_LOCATION = "cameraLocation";
-    static final String PERMS = ACCESS_FINE_LOCATION;
     private MyViewModel viewModel;
     private GoogleMap mMap;
     private Location currentLocation;
@@ -77,6 +78,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback{
     private MainActivity activity;
     private FragmentMapBinding binding;
     private TextWatcher textWatcher;
+    private String currentAppLocale = sharedPrefs.getString(PREF_LANGUAGE, Locale.getDefault().getLanguage());
     private final AutocompleteSessionToken token = AutocompleteSessionToken.newInstance();
 
     public MapViewFragment() {
@@ -84,6 +86,11 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback{
 
     public static Fragment newInstance() {
         return new MapViewFragment();
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
     }
 
     @Nullable
@@ -154,7 +161,10 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback{
                     .setTextColor(getResources().getColor(R.color.quantum_white_100)).setDuration(5000).show();
         } else {
             if (activity.requestLocationAccess()) {
-                fetchLastLocation();
+                if (cameraLocation == null)
+                    fetchLastLocation();
+                else
+                    getNearbyPlaces(cameraLocation);
             }
         }
     }
@@ -208,7 +218,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback{
         List<PlaceDetails> placeDetailsList = new ArrayList<>();
         Log.d(TAG, "getPlaceDetailAutocompleteList: " + suggestionsList.toString());
         for (String placeId : suggestionsList)
-            viewModel.getPlaceDetails(placeId).observe(activity, placeDetails -> {
+            viewModel.getPlaceDetails(placeId, currentAppLocale).observe(activity, placeDetails -> {
                 placeDetailsList.add(placeDetails);
                 if (placeDetailsList.size() == suggestionsList.size()) {
                     initMarkers(placeDetailsList);
@@ -259,7 +269,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback{
         if (!autocompleteActive)
             getNearbyPlaces(currentLocation);
         cameraLocation = new Location(currentLocation);
-        Log.i(TAG, "configureMap: befoe");
         mMap.setOnCameraMoveStartedListener(i -> {
             cameraLocation = new Location(CAMERA_LOCATION);
             cameraLocation.setLongitude(mMap.getCameraPosition().target.longitude);
@@ -344,9 +353,9 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback{
     }
 
     public void onPermissionsGranted() {
-            if (mMap != null)
-                mMap.setMyLocationEnabled(true);
-            fetchLastLocation();
+        if (mMap != null)
+            mMap.setMyLocationEnabled(true);
+        fetchLastLocation();
     }
 
     public void onPermissionsDenied() {

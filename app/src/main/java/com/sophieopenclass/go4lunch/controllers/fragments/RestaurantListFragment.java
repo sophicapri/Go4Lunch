@@ -46,11 +46,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 
 import static com.sophieopenclass.go4lunch.base.BaseActivity.ORIENTATION_CHANGED;
+import static com.sophieopenclass.go4lunch.base.BaseActivity.sharedPrefs;
 import static com.sophieopenclass.go4lunch.controllers.fragments.MapViewFragment.getLatLngString;
 import static com.sophieopenclass.go4lunch.utils.Constants.HEADING_NORTH_WEST;
 import static com.sophieopenclass.go4lunch.utils.Constants.HEADING_SOUTH_WEST;
+import static com.sophieopenclass.go4lunch.utils.Constants.PREF_LANGUAGE;
 import static com.sophieopenclass.go4lunch.utils.DateFormatting.getTodayDateInString;
 
 public class RestaurantListFragment extends Fragment {
@@ -70,20 +73,13 @@ public class RestaurantListFragment extends Fragment {
     private int visibleThreshold = 5;
     private boolean searchBarInputEmpty = false;
     private int bottomProgressBarPosition;
-
     private boolean isLoading;
     private TextWatcher textWatcher;
+    private String currentAppLocale = sharedPrefs.getString(PREF_LANGUAGE, Locale.getDefault().getLanguage());
 
 
     public static Fragment newInstance() {
         return new RestaurantListFragment();
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        Log.i(TAG, "onCreate: ");
     }
 
     @Override
@@ -201,7 +197,7 @@ public class RestaurantListFragment extends Fragment {
     }
 
     private void getPlaceDetailAutocompleteList(List<String> suggestionsList) {
-        viewModel.getPlaceDetailsList(suggestionsList).observe(getViewLifecycleOwner(), placeDetailsList -> {
+        viewModel.getPlaceDetailsList(suggestionsList, currentAppLocale).observe(getViewLifecycleOwner(), placeDetailsList -> {
             if (!placeDetailsList.isEmpty()) {
                 getFullPlaceDetails(placeDetailsList);
             }
@@ -264,7 +260,7 @@ public class RestaurantListFragment extends Fragment {
     private void getFullPlaceDetails(List<PlaceDetails> placeDetailsList) {
         ArrayList<PlaceDetails> completePlaceDetailsList = new ArrayList<>();
         for (PlaceDetails placeDetails : placeDetailsList) {
-            viewModel.getPlaceDetails(placeDetails.getPlaceId())
+            viewModel.getPlaceDetails(placeDetails.getPlaceId(), currentAppLocale)
                     .observe(getViewLifecycleOwner(), restaurant ->
                             viewModel.getUsersByPlaceIdAndDate(placeDetails.getPlaceId(), getTodayDateInString())
                                     .observe(getViewLifecycleOwner(), users -> {

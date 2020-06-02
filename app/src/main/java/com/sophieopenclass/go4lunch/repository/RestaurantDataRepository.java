@@ -43,9 +43,9 @@ public class RestaurantDataRepository {
         return restaurantsData;
     }
 
-    public MutableLiveData<PlaceDetails> getPlaceDetails(String placeId) {
+    public MutableLiveData<PlaceDetails> getPlaceDetails(String placeId, String language) {
         MutableLiveData<PlaceDetails> placeDetails = new MutableLiveData<>();
-        placeApi.getPlaceDetails(placeId).enqueue(new Callback<PlaceDetailsResult>() {
+        placeApi.getPlaceDetails(placeId, language).enqueue(new Callback<PlaceDetailsResult>() {
             @Override
             public void onResponse(@NonNull Call<PlaceDetailsResult> call,
                                    @NonNull Response<PlaceDetailsResult> response) {
@@ -65,12 +65,12 @@ public class RestaurantDataRepository {
     }
 
 
-    public MutableLiveData<List<PlaceDetails>> getPlaceDetailsList(List<String> placeIds) {
+    public MutableLiveData<List<PlaceDetails>> getPlaceDetailsList(List<String> placeIds, String language) {
         MutableLiveData<List<PlaceDetails>> placeDetails = new MutableLiveData<>();
         List<PlaceDetails> result = new ArrayList<>();
 
         for (String placeId : placeIds) {
-            placeApi.getPlaceDetails(placeId).enqueue(new Callback<PlaceDetailsResult>() {
+            placeApi.getPlaceDetails(placeId, language).enqueue(new Callback<PlaceDetailsResult>() {
                 @Override
                 public void onResponse(@NonNull Call<PlaceDetailsResult> call,
                                        @NonNull Response<PlaceDetailsResult> response) {

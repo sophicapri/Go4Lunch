@@ -19,6 +19,7 @@ public interface PlaceApi {
     Call<RestaurantsResult> getMoreNearbyPlaces(@Query("pagetoken") String nextPageToken);
 
     @GET("details/json?&key=" + apiKey)
-    Call<PlaceDetailsResult> getPlaceDetails(@Query("place_id") String placeId);
+    Call<PlaceDetailsResult> getPlaceDetails(@Query("place_id") String placeId,
+                                            @Query("language") String language);
 }
 

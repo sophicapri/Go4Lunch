@@ -20,7 +20,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.work.Data;
@@ -31,8 +30,6 @@ import androidx.work.WorkManager;
 import com.facebook.FacebookSdk;
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.material.snackbar.BaseTransientBottomBar;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.sophieopenclass.go4lunch.R;
@@ -70,6 +67,7 @@ public abstract class BaseActivity<T extends ViewModel> extends AppCompatActivit
     public static final int LOCATION_REQUEST_CODE = 777;
     public final String TAG = "com.sophie.MAIN";
     public T viewModel;
+    public String currentAppLanguage;
     public final WorkManager workManager = WorkManager.getInstance(this);
     public static Location sCurrentLocation = null;
     public LocationManager locationManager;
@@ -205,6 +203,7 @@ public abstract class BaseActivity<T extends ViewModel> extends AppCompatActivit
             sharedPrefs.edit().putString(PREF_LANGUAGE, defaultLocale).apply();
         else if (!sharedPrefs.getString(PREF_LANGUAGE, defaultLocale).equals(defaultLocale))
             updateLocale();
+        currentAppLanguage = sharedPrefs.getString(PREF_LANGUAGE, Locale.getDefault().getLanguage());
     }
 
     public void updateLocale() {

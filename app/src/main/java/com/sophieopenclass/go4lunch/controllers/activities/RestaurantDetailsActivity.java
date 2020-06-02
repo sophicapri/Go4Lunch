@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -40,10 +39,12 @@ import java.util.Locale;
 import static com.sophieopenclass.go4lunch.utils.Constants.DATES_AND_RESTAURANTS_FIELD;
 import static com.sophieopenclass.go4lunch.utils.Constants.PLACE_ID;
 import static com.sophieopenclass.go4lunch.utils.Constants.PLACE_ID_FIELD;
+import static com.sophieopenclass.go4lunch.utils.Constants.PREF_LANGUAGE;
 import static com.sophieopenclass.go4lunch.utils.Constants.REQUEST_CALL;
 import static com.sophieopenclass.go4lunch.utils.DateFormatting.getTodayDateInString;
 
 public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> implements View.OnClickListener {
+    private String currentAppLocale = sharedPrefs.getString(PREF_LANGUAGE, Locale.getDefault().getLanguage());
     private ActivityRestaurantDetailsBinding binding;
     private FirestoreRecyclerAdapter adapter;
     private String placeId;
@@ -87,7 +88,7 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
             if (getIntent().hasExtra(PLACE_ID)) {
                 placeId = (String) getIntent().getExtras().get(PLACE_ID);
                 if (placeId != null && !placeId.isEmpty())
-                    viewModel.getPlaceDetails(placeId).observe(this, this::initUI);
+                    viewModel.getPlaceDetails(placeId, currentAppLocale).observe(this, this::initUI);
                 else {
                     Toast.makeText(this, R.string.error_unknown_error, Toast.LENGTH_SHORT).show();
                     finish();
@@ -96,7 +97,6 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
             setUpRecyclerView();
         }
     }
-
 
     private void initUI(PlaceDetails placeDetails) {
         if (placeDetails != null) {
@@ -139,10 +139,10 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
         if (getCurrentUser() != null) {
             viewModel.getUser(getCurrentUser().getUid()).observe(this, user -> {
                 currentUser = user;
-                    if (user.restaurantIsSelected(placeId))
-                        binding.addRestaurant.setImageDrawable(getResources().getDrawable(R.drawable.ic_check_circle_black_24dp));
-                    else
-                        binding.addRestaurant.setImageDrawable(getResources().getDrawable(R.drawable.ic_add_black_24dp));
+                if (user.restaurantIsSelected(placeId))
+                    binding.addRestaurant.setImageDrawable(getResources().getDrawable(R.drawable.ic_check_circle_black_24dp));
+                else
+                    binding.addRestaurant.setImageDrawable(getResources().getDrawable(R.drawable.ic_add_black_24dp));
 
                 if (user.restaurantNotFavorite(placeId))
                     binding.likeRestaurantStar.setImageDrawable(getResources().getDrawable(R.drawable.ic_star_border_black_24dp));
@@ -204,14 +204,9 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
                 List<String> weekdaysArray = placeDetails.getOpeningHours().getWeekdayText();
                 for (int i = 0; i < weekdaysArray.size(); i++) {
                     if (i != weekdaysArray.size() - 1)
-                        if (!Locale.getDefault().getLanguage().equals(Locale.FRANCE.getLanguage()))
-                            weekdays.append(weekdaysArray.get(i)).append("\n");
-                        else
-                            weekdays.append(getDayInFrench(weekdaysArray.get(i), i)).append("\n");
-                    else if (!Locale.getDefault().getLanguage().equals(Locale.FRANCE.getLanguage()))
-                        weekdays.append(weekdaysArray.get(i));
+                        weekdays.append(getDayWithUpperCase(weekdaysArray.get(i), i)).append("\n");
                     else
-                        weekdays.append(getDayInFrench(weekdaysArray.get(i), i));
+                        weekdays.append(weekdaysArray.get(i));
                 }
                 binding.weekdaysOpenings.setText(weekdays.toString());
             } else {
@@ -220,13 +215,10 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
         }
     }
 
-    public String getDayInFrench(String openingHour, int index) {
-        String[] daysInEnglish = getResources().getStringArray(R.array.days_in_english);
-        String[] daysInFrench = getResources().getStringArray(R.array.days_in_french);
-        String result = openingHour.replace(daysInEnglish[index], daysInFrench[index]);
-        if (result.contains(getString(R.string.closed)))
-            result = result.replace(getString(R.string.closed), getString(R.string.closed_in_french));
-        return result;
+    public String getDayWithUpperCase(String openingHour, int index) {
+        String[] daysInEnglish = getResources().getStringArray(R.array.days_lower_case);
+        String[] daysInFrench = getResources().getStringArray(R.array.days_with_upper_case);
+        return openingHour.replace(daysInEnglish[index], daysInFrench[index]);
     }
 
     private void handleRestaurantSelection(User currentUser) {

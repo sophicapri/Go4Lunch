@@ -1,7 +1,6 @@
 package com.sophieopenclass.go4lunch.controllers.activities;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -49,7 +48,6 @@ public class SettingsActivity extends BaseActivity<MyViewModel> {
     public static boolean profileHasChanged = false;
     private User currentUser;
     private  Uri uriImageSelected;
-    private AlertDialog alertDialogImage;
     private ImageView imageViewDialog;
     private String currentAppLocale = sharedPrefs.getString(PREF_LANGUAGE, Locale.getDefault().getLanguage());
 
@@ -155,7 +153,7 @@ public class SettingsActivity extends BaseActivity<MyViewModel> {
     }
 
     private void updateImageDialog() {
-        alertDialogImage = new AlertDialog.Builder(this)
+        AlertDialog alertDialogImage = new AlertDialog.Builder(this)
                 .setView(R.layout.alert_dialog_profile_pic)
                 .setPositiveButton(R.string.save, (dialog, which) -> savePictureToFirestore(uriImageSelected))
                 .setNegativeButton(R.string.Cancel, null)

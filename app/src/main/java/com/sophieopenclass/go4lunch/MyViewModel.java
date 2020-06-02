@@ -40,12 +40,12 @@ public class MyViewModel extends ViewModel {
         return restaurantDataSource.getMoreNearbyPlaces(pageToken);
     }
 
-    public LiveData<PlaceDetails> getPlaceDetails(String placeId) {
-        return restaurantDataSource.getPlaceDetails(placeId);
+    public LiveData<PlaceDetails> getPlaceDetails(String placeId, String language) {
+        return restaurantDataSource.getPlaceDetails(placeId, language);
     }
 
-    public LiveData<List<PlaceDetails>> getPlaceDetailsList(List<String> placeIds) {
-        return restaurantDataSource.getPlaceDetailsList(placeIds);
+    public LiveData<List<PlaceDetails>> getPlaceDetailsList(List<String> placeIds, String language) {
+        return restaurantDataSource.getPlaceDetailsList(placeIds, language);
     }
 
     // USERS
