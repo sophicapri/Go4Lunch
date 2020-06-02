@@ -59,7 +59,7 @@ import static com.sophieopenclass.go4lunch.utils.Constants.WORK_REQUEST_NAME;
 public abstract class BaseActivity<T extends ViewModel> extends AppCompatActivity implements Listeners.OnWorkmateClickListener,
         Listeners.OnRestaurantClickListener {
     public static final int LOCATION_REQUEST_CODE = 777;
-    public final String TAG = "MAIN";
+    public final String TAG = "com.sophie.MAIN";
     public T viewModel;
     public final WorkManager workManager = WorkManager.getInstance(this);
     public static Location sCurrentLocation = null;

@@ -52,7 +52,7 @@ import static com.sophieopenclass.go4lunch.utils.Constants.HEADING_SOUTH_WEST;
 import static com.sophieopenclass.go4lunch.utils.DateFormatting.getTodayDateInString;
 
 public class RestaurantListFragment extends Fragment implements EasyPermissions.PermissionCallbacks {
-    public static final String TAG = "RESTAURANT LIST";
+    public static final String TAG = "com.sophie.LIST_RESTO";
     private static final double RADIUS = 500;
     private MyViewModel viewModel;
     private RecyclerViewRestaurantsBinding binding;
@@ -80,6 +80,7 @@ public class RestaurantListFragment extends Fragment implements EasyPermissions.
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         Log.i(TAG, "onCreate: ");
     }
 
@@ -115,14 +116,7 @@ public class RestaurantListFragment extends Fragment implements EasyPermissions.
 
     private void initSearchBar(MainActivity activity) {
         activity.binding.searchBarRestaurantList.closeSearchBar.setOnClickListener(v -> {
-            activity.binding.searchBarRestaurantList.searchBarRestaurantList.setVisibility(View.GONE);
-            InputMethodManager inputManager = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
-            if (inputManager != null)
-                inputManager.hideSoftInputFromWindow(activity.binding.searchBarMap.searchBarInput.getWindowToken(), 0);
-
-            if (!activity.binding.searchBarRestaurantList.searchBarInput.getText().toString().isEmpty())
-                activity.binding.searchBarRestaurantList.searchBarInput.getText().clear();
-
+            closeSearchBar();
             //To refresh the page only if the user typed something into the search bar
             if (autocompleteActive) {
                 adapter.clearList();
@@ -302,7 +296,6 @@ public class RestaurantListFragment extends Fragment implements EasyPermissions.
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.i(TAG, "onDestroy: ");
         activity.binding.progressBar.setVisibility(View.GONE);
         restaurantList.clear();
         activity.binding.searchBarRestaurantList.searchBarInput.removeTextChangedListener(textWatcher);
@@ -354,6 +347,19 @@ public class RestaurantListFragment extends Fragment implements EasyPermissions.
         }
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        closeSearchBar();
+    }
+
+    private void closeSearchBar() {
+        activity.binding.searchBarRestaurantList.searchBarRestaurantList.setVisibility(View.GONE);
+        activity.binding.searchBarRestaurantList.searchBarInput.getText().clear();
+        InputMethodManager inputManager = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (inputManager != null)
+            inputManager.hideSoftInputFromWindow(activity.binding.searchBarMap.searchBarInput.getWindowToken(), 0);
+    }
 
     @Override
     public void onPermissionsGranted(int requestCode, @NonNull List<String> perms) {

@@ -64,7 +64,6 @@ public class RestaurantListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof PlaceViewHolder)
             ((PlaceViewHolder) holder).bind(placeDetailsList.get(position));
-        Log.i(TAG, "onBindViewHolder: list SIZE " + placeDetailsList.size());
     }
 
     @Override
@@ -80,15 +79,12 @@ public class RestaurantListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     public void clearList(){
         placeDetailsList.clear();
-        Log.i(TAG, "clearList: size " + placeDetailsList.size());
         notifyDataSetChanged();
     }
 
     public void updateList(ArrayList<PlaceDetails> placeDetailsList) {
         this.placeDetailsList = placeDetailsList;
         notifyDataSetChanged();
-
-        Log.i(TAG, "updateList: list size" + placeDetailsList.size());
     }
 
     // Progress bar

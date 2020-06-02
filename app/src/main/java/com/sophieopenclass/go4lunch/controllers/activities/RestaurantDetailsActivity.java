@@ -40,11 +40,10 @@ import java.util.Locale;
 import static com.sophieopenclass.go4lunch.utils.Constants.DATES_AND_RESTAURANTS_FIELD;
 import static com.sophieopenclass.go4lunch.utils.Constants.PLACE_ID;
 import static com.sophieopenclass.go4lunch.utils.Constants.PLACE_ID_FIELD;
+import static com.sophieopenclass.go4lunch.utils.Constants.REQUEST_CALL;
 import static com.sophieopenclass.go4lunch.utils.DateFormatting.getTodayDateInString;
 
 public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> implements View.OnClickListener {
-    public static final int REQUEST_CALL = 567;
-    public static final int MAX_PHOTOS = 3;
     private ActivityRestaurantDetailsBinding binding;
     private FirestoreRecyclerAdapter adapter;
     private String placeId;
@@ -119,7 +118,7 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
             }
 
             // Display list of photos
-            for (int i = 0; i < nbrOfPhotos && i < MAX_PHOTOS; i++) {
+            for (int i = 0; i < nbrOfPhotos; i++) {
                 String urlPhoto = PlaceDetails.urlPhotoFormatter(placeDetails, i);
                 ImageView newPhoto = new ImageView(this);
                 binding.restaurantPhotosGroup.addView(newPhoto, layoutParam, ViewGroup.LayoutParams.MATCH_PARENT);
@@ -164,7 +163,6 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
             if (numberOfStars == 3)
                 binding.threeStars.setVisibility(View.VISIBLE);
         }
-
         restaurant = new Restaurant(placeId, placeDetails.getName(), placeDetails.getVicinity(),
                 PlaceDetails.urlPhotoFormatter(placeDetails, 0), numberOfStars);
     }

@@ -53,6 +53,7 @@ public class Constants {
 
     public static final int LOCATION_PERMISSION_REQUEST_CODE = 123;
     public static final String PERMS = ACCESS_FINE_LOCATION;
+    public static final int REQUEST_CALL = 567;
 
 
     public static final int MONDAY = 1;

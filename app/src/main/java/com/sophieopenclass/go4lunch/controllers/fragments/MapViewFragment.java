@@ -22,6 +22,8 @@ import androidx.annotation.Nullable;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.LifecycleObserver;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -61,13 +63,14 @@ import pub.devrel.easypermissions.EasyPermissions;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static android.app.Activity.RESULT_OK;
+import static androidx.lifecycle.Lifecycle.Event.ON_PAUSE;
 import static com.sophieopenclass.go4lunch.base.BaseActivity.LOCATION_REQUEST_CODE;
 import static com.sophieopenclass.go4lunch.base.BaseActivity.ORIENTATION_CHANGED;
 import static com.sophieopenclass.go4lunch.utils.Constants.PLACE_ID;
 import static com.sophieopenclass.go4lunch.utils.DateFormatting.getTodayDateInString;
 
 public class MapViewFragment extends Fragment implements OnMapReadyCallback, EasyPermissions.PermissionCallbacks {
-    private static final String TAG = "MAP FRAGMENT";
+    private static final String TAG = "com.sophie.MAP";
     private static final String CAMERA_LOCATION = "cameraLocation";
     static final String PERMS = ACCESS_FINE_LOCATION;
     private MyViewModel viewModel;
@@ -112,40 +115,30 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Eas
         if (getActivity() != null) {
             activity = ((MainActivity) getActivity());
             activity.binding.searchBarMap.closeSearchBar.setOnClickListener(v -> {
-                activity.binding.searchBarMap.searchBarMap.setVisibility(View.GONE);
-                activity.binding.searchBarMap.searchBarInput.getText().clear();
-                InputMethodManager inputManager = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
-                if (inputManager != null) {
-                    inputManager.hideSoftInputFromWindow(activity.binding.searchBarMap.searchBarInput.getWindowToken(), 0);
-                }
+                closeSearchBar();
                 getNearbyPlaces(cameraLocation);
-                autocompleteActive = false;
             });
         }
-            textWatcher = new TextWatcher() {
+        textWatcher = new TextWatcher() {
             //to stop the TextWatcher from firing multiple times
             boolean isOnTextChanged = false;
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 isOnTextChanged = true;
-                Log.i(TAG, "onTextChanged: ");
             }
 
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                Log.i(TAG, "beforeTextChanged: ");
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-                Log.i(TAG, "afterTextChanged: ");
                 if (!ORIENTATION_CHANGED && isOnTextChanged) {
                     mMap.clear();
                     isOnTextChanged = false;
                     searchBarTextInput = s.toString();
                     autocompleteActive = true;
-                    Log.i(TAG, "afterTextChanged: " + s.toString());
                     displayResultsAutocomplete(searchBarTextInput);
                 }
             }
@@ -160,10 +153,21 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Eas
         return binding.getRoot();
     }
 
+    private void closeSearchBar() {
+        activity.binding.searchBarMap.searchBarMap.setVisibility(View.GONE);
+        activity.binding.searchBarMap.searchBarInput.getText().clear();
+        InputMethodManager inputManager = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (inputManager != null) {
+            inputManager.hideSoftInputFromWindow(activity.binding.searchBarMap.searchBarInput.getWindowToken(), 0);
+        }
+        autocompleteActive = false;
+    }
+
     @Override
     public void onResume() {
         super.onResume();
         ORIENTATION_CHANGED = false;
+
         Log.i(TAG, "onResume: ");
         if (context.networkUnavailable()) {
             Snackbar.make(activity.binding.getRoot(), getString(R.string.internet_unavailable), BaseTransientBottomBar.LENGTH_INDEFINITE)
@@ -178,7 +182,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Eas
     @Override
     public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
-        // To stop the TextWatcher from firing
+        // To stop the TextWatcher from firing on orientation change
         ORIENTATION_CHANGED = true;
     }
 
@@ -343,6 +347,13 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Eas
             drawable.draw(canvas);
         }
         return BitmapDescriptorFactory.fromBitmap(bitmap);
+    }
+
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        closeSearchBar();
     }
 
     @Override

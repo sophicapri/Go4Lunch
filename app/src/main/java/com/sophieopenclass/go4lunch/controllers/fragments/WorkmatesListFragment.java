@@ -91,14 +91,9 @@ public class WorkmatesListFragment extends Fragment {
     }
 
     private void initSearchBar() {
-        InputMethodManager inputManager = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
         activity.binding.searchBarWorkmates.closeSearchBar.setOnClickListener(v -> {
-            activity.binding.searchBarWorkmates.searchBarWorkmates.setVisibility(View.GONE);
-            activity.binding.searchBarWorkmates.searchBarInput.getText().clear();
+            closeSearchBar();
             adapter.updateList(workmateFinalList);
-            if (inputManager != null) {
-                inputManager.hideSoftInputFromWindow(activity.binding.searchBarWorkmates.searchBarInput.getWindowToken(), 0);
-            }
         });
 
         activity.binding.searchBarWorkmates.searchBarInput.addTextChangedListener(new TextWatcher() {
@@ -138,6 +133,15 @@ public class WorkmatesListFragment extends Fragment {
             }
         });
 
+    }
+
+    private void closeSearchBar() {
+        InputMethodManager inputManager = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+        activity.binding.searchBarWorkmates.searchBarWorkmates.setVisibility(View.GONE);
+        activity.binding.searchBarWorkmates.searchBarInput.getText().clear();
+        if (inputManager != null) {
+            inputManager.hideSoftInputFromWindow(activity.binding.searchBarWorkmates.searchBarInput.getWindowToken(), 0);
+        }
     }
 
     @Override
@@ -231,5 +235,6 @@ public class WorkmatesListFragment extends Fragment {
     public void onPause() {
         super.onPause();
         workmateFinalList.clear();
+        closeSearchBar();
     }
 }

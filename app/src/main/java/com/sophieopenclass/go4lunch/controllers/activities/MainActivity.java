@@ -3,6 +3,8 @@ package com.sophieopenclass.go4lunch.controllers.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.PersistableBundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,6 +18,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.core.view.GravityCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -62,31 +66,23 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
         configureDrawerLayout();
         configureNavigationView();
         initPlacesApi();
+        Log.i(TAG, "onCreate: ");
         if (getCurrentUser() != null)
             viewModel.getUser(getCurrentUser().getUid()).observe(this, user -> {
                 currentUser = user;
                 handleDrawerUI(user);
             });
         binding.bottomNavView.setOnNavigationItemSelectedListener(this::onNavigationItemSelected);
-    }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        if (!ORIENTATION_CHANGED && !RESTART_STATE) {
-            showFragment(FRAGMENT_MAP_VIEW);
-            // To activate notifications by default when first launching the app OR
-            // activate the notifications if the user signed out and
-            if (!sharedPrefs.contains(PREF_REMINDER) || sharedPrefs.getBoolean(PREF_REMINDER, false))
-                activateReminder();
-        }
-        if (RESTART_STATE)
-            RESTART_STATE = false;
+        binding.searchBarRestaurantList.searchBarRestaurantList.setVisibility(View.GONE);
+        binding.searchBarMap.searchBarMap.setVisibility(View.GONE);
+        binding.searchBarWorkmates.searchBarWorkmates.setVisibility(View.GONE);
     }
 
     @Override
     protected void onRestart() {
         super.onRestart();
+        // to display the map after the user accepted the permissions
         RESTART_STATE = true;
     }
 
@@ -142,6 +138,22 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
     @Override
     protected void onResume() {
         super.onResume();
+        Log.i(TAG, "onResume: ");
+
+        if (!ORIENTATION_CHANGED && !RESTART_STATE) {
+            showFragment(FRAGMENT_MAP_VIEW);
+            Log.i(TAG, "onStart: ");
+            // To activate notifications by default when first launching the app OR
+            // activate the notifications if the user signed out and logged back in
+            if (sharedPrefs.contains(PREF_REMINDER) || sharedPrefs.getBoolean(PREF_REMINDER, false))
+                activateReminder();
+        }
+
+        if (RESTART_STATE)
+            RESTART_STATE = false;
+
+
+
         // Update UI
         if (SettingsActivity.localeHasChanged || SettingsActivity.profileHasChanged) {
             finish();
@@ -151,6 +163,7 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
             SettingsActivity.profileHasChanged = false;
         }
     }
+
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -178,6 +191,7 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
             default:
                 break;
         }
+        //binding.bottomNavView.setSelectedItemId();
         binding.drawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
@@ -189,7 +203,7 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
             return;
         }
 
-        if (!fragmentMapView.isVisible())
+        if (fragmentMapView == null || !fragmentMapView.isVisible())
             binding.bottomNavView.setSelectedItemId(R.id.map_view);
         else
             super.onBackPressed();
@@ -241,9 +255,16 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
 
     private void startTransactionFragment(Fragment fragment) {
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.frame_layout, fragment).commit();
+                .replace(R.id.frame_layout, fragment, fragment.getClass().getSimpleName()).commit();
 
         updateUI(fragment);
+
+        Log.i(TAG, "startTransactionFragment: Name " + fragment.getClass().getSimpleName());
+        //getSupportFragmentManager().findFragmentByTag()
+
+        Log.i(TAG, ": view " + binding.frameLayout.getTag());
+       // Log.i(TAG, "onResume: find fragment " +         FragmentManager.findFragment(binding.frameLayout));
+
     }
 
     private void updateUI(Fragment fragment) {
