@@ -171,7 +171,7 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
         String firestorePlaceIdPath = DATES_AND_RESTAURANTS_FIELD + getTodayDateInString() + PLACE_ID_FIELD;
         FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>()
                 .setQuery(viewModel.getCollectionReference()
-                        .whereEqualTo(firestorePlaceIdPath, placeId ), User.class)
+                        .whereEqualTo(firestorePlaceIdPath, placeId), User.class)
                 .build();
         adapter = new RestaurantWorkmatesListAdapter(options, this, Glide.with(this));
         binding.detailRecyclerViewWorkmates.setHasFixedSize(true);

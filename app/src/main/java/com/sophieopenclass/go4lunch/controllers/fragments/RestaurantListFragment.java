@@ -1,6 +1,7 @@
 package com.sophieopenclass.go4lunch.controllers.fragments;
 
 import android.content.Context;
+import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
@@ -10,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,7 +20,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.model.AutocompletePrediction;
 import com.google.android.libraries.places.api.model.AutocompleteSessionToken;
 import com.google.android.libraries.places.api.model.Place;
@@ -42,16 +47,13 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import pub.devrel.easypermissions.EasyPermissions;
-
 import static com.sophieopenclass.go4lunch.base.BaseActivity.ORIENTATION_CHANGED;
-import static com.sophieopenclass.go4lunch.controllers.fragments.MapViewFragment.PERMS;
 import static com.sophieopenclass.go4lunch.controllers.fragments.MapViewFragment.getLatLngString;
 import static com.sophieopenclass.go4lunch.utils.Constants.HEADING_NORTH_WEST;
 import static com.sophieopenclass.go4lunch.utils.Constants.HEADING_SOUTH_WEST;
 import static com.sophieopenclass.go4lunch.utils.DateFormatting.getTodayDateInString;
 
-public class RestaurantListFragment extends Fragment implements EasyPermissions.PermissionCallbacks {
+public class RestaurantListFragment extends Fragment {
     public static final String TAG = "com.sophie.LIST_RESTO";
     private static final double RADIUS = 500;
     private MyViewModel viewModel;
@@ -145,7 +147,7 @@ public class RestaurantListFragment extends Fragment implements EasyPermissions.
                 if (!ORIENTATION_CHANGED && isOnTextChanged) {
                     isOnTextChanged = false;
                     autocompleteActive = true;
-                    if(!s.toString().isEmpty()) {
+                    if (!s.toString().isEmpty()) {
                         displayResultsAutocomplete(s.toString());
                         searchBarInputEmpty = false;
                     } else
@@ -234,7 +236,7 @@ public class RestaurantListFragment extends Fragment implements EasyPermissions.
             return;
         }
 
-        if (context.requestLocationPermission())
+        if (context.requestLocationAccess())
             if (BaseActivity.sCurrentLocation != null)
                 if (nextPageToken == null)
                     viewModel.getNearbyPlaces(getLatLngString(BaseActivity.sCurrentLocation))
@@ -283,7 +285,7 @@ public class RestaurantListFragment extends Fragment implements EasyPermissions.
                                             } else if (!autocompleteActive) {
                                                 this.restaurantList.addAll(completePlaceDetailsList);
                                                 adapter.updateList(restaurantList);
-                                            } else if (!searchBarInputEmpty){
+                                            } else if (!searchBarInputEmpty) {
                                                 adapter.updateList(completePlaceDetailsList);
                                             }
                                             activity.binding.progressBar.setVisibility(View.GONE);
@@ -334,9 +336,9 @@ public class RestaurantListFragment extends Fragment implements EasyPermissions.
         if (!autocompleteActive) {
             if (nextPageToken != null) {
                 binding.recyclerViewRestaurants.post(() -> {
-                            restaurantList.add(null);
-                            adapter.notifyItemInserted(restaurantList.size() - 1);
-                        });
+                    restaurantList.add(null);
+                    adapter.notifyItemInserted(restaurantList.size() - 1);
+                });
 
                 Handler handler = new Handler();
                 handler.postDelayed(() -> {
@@ -361,14 +363,19 @@ public class RestaurantListFragment extends Fragment implements EasyPermissions.
             inputManager.hideSoftInputFromWindow(activity.binding.searchBarMap.searchBarInput.getWindowToken(), 0);
     }
 
-    @Override
-    public void onPermissionsGranted(int requestCode, @NonNull List<String> perms) {
-        if (EasyPermissions.hasPermissions(context, PERMS))
-            observePlaces(null);
+    public void onPermissionsGranted() {
+        FusedLocationProviderClient fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(activity);
+        Task<Location> task = fusedLocationProviderClient.getLastLocation();
+        task.addOnCompleteListener(getLocationTask -> {
+            if (getLocationTask.isSuccessful()) {
+                BaseActivity.sCurrentLocation = getLocationTask.getResult();
+                observePlaces(null);
+            } else
+                Toast.makeText(getActivity(), R.string.cant_get_location, Toast.LENGTH_SHORT).show();
+        });
     }
 
-    @Override
-    public void onPermissionsDenied(int requestCode, @NonNull List<String> perms) {
+    public void onPermissionsDenied() {
         Snackbar.make(binding.getRoot(), R.string.location_unavailable, BaseTransientBottomBar.LENGTH_INDEFINITE)
                 .setTextColor(getResources().getColor(R.color.quantum_white_100)).setDuration(5000).show();
     }

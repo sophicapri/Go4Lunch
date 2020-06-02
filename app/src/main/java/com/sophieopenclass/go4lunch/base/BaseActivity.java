@@ -20,6 +20,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.work.Data;
@@ -30,34 +31,42 @@ import androidx.work.WorkManager;
 import com.facebook.FacebookSdk;
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.sophieopenclass.go4lunch.R;
 import com.sophieopenclass.go4lunch.controllers.activities.LoginPageActivity;
 import com.sophieopenclass.go4lunch.controllers.activities.RestaurantDetailsActivity;
 import com.sophieopenclass.go4lunch.controllers.activities.UserLunchDetailActivity;
+import com.sophieopenclass.go4lunch.controllers.fragments.MapViewFragment;
+import com.sophieopenclass.go4lunch.controllers.fragments.RestaurantListFragment;
 import com.sophieopenclass.go4lunch.injection.Injection;
 import com.sophieopenclass.go4lunch.listeners.Listeners;
 import com.sophieopenclass.go4lunch.notifications.NotificationWorker;
 import com.sophieopenclass.go4lunch.utils.ViewModelFactory;
 
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import pub.devrel.easypermissions.EasyPermissions;
 
 import static android.content.Intent.EXTRA_UID;
+import static com.sophieopenclass.go4lunch.utils.Constants.FRAGMENT_MAP_VIEW;
+import static com.sophieopenclass.go4lunch.utils.Constants.FRAGMENT_RESTAURANT_LIST_VIEW;
 import static com.sophieopenclass.go4lunch.utils.Constants.LOCATION_PERMISSION_REQUEST_CODE;
 import static com.sophieopenclass.go4lunch.utils.Constants.PERMS;
 import static com.sophieopenclass.go4lunch.utils.Constants.PLACE_ID;
 import static com.sophieopenclass.go4lunch.utils.Constants.PREF_LANGUAGE;
 import static com.sophieopenclass.go4lunch.utils.Constants.PREF_REMINDER;
+import static com.sophieopenclass.go4lunch.utils.Constants.RESTART_STATE;
 import static com.sophieopenclass.go4lunch.utils.Constants.SHARED_PREFS;
 import static com.sophieopenclass.go4lunch.utils.Constants.WORK_REQUEST_NAME;
 
 public abstract class BaseActivity<T extends ViewModel> extends AppCompatActivity implements Listeners.OnWorkmateClickListener,
-        Listeners.OnRestaurantClickListener {
+        Listeners.OnRestaurantClickListener, EasyPermissions.PermissionCallbacks {
     public static final int LOCATION_REQUEST_CODE = 777;
     public final String TAG = "com.sophie.MAIN";
     public T viewModel;
@@ -67,6 +76,8 @@ public abstract class BaseActivity<T extends ViewModel> extends AppCompatActivit
     public static SharedPreferences sharedPrefs;
     public static boolean ORIENTATION_CHANGED = false;
     public PeriodicWorkRequest workRequest;
+    private MapViewFragment mapFragment;
+    private RestaurantListFragment restaurantListFragment;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -99,7 +110,7 @@ public abstract class BaseActivity<T extends ViewModel> extends AppCompatActivit
     }
 
     // ---------
-    // PERMISSIONS CHECKS
+    // ACCESS TO LOCATION CHECKS
     // ---------------
 
     public boolean networkUnavailable() {
@@ -112,11 +123,15 @@ public abstract class BaseActivity<T extends ViewModel> extends AppCompatActivit
         return activeNetworkInfo == null || !activeNetworkInfo.isConnected();
     }
 
-    public boolean requestLocationPermission() {
+    public boolean requestLocationAccess() {
+        mapFragment = (MapViewFragment) getSupportFragmentManager().findFragmentByTag(FRAGMENT_MAP_VIEW);
+        restaurantListFragment = (RestaurantListFragment) getSupportFragmentManager()
+                .findFragmentByTag(FRAGMENT_RESTAURANT_LIST_VIEW);
+
         boolean locationAvailable = false;
         if (!EasyPermissions.hasPermissions(this, PERMS)) {
             EasyPermissions.requestPermissions(this,
-                    "Cette application a besoin de l'accès à votre localisation pour fonctionner.",
+                    getString(R.string.app_requires_location),
                     LOCATION_PERMISSION_REQUEST_CODE, PERMS);
         } else if (!locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
             new AlertDialog.Builder(this)
@@ -131,9 +146,39 @@ public abstract class BaseActivity<T extends ViewModel> extends AppCompatActivit
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == LOCATION_REQUEST_CODE)
+            if (resultCode == RESULT_OK) {
+                if (locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER))
+                    onLocationAccessGranted();
+            }
+    }
+
+    private void onLocationAccessGranted() {
+        RESTART_STATE = true;
+        if (mapFragment != null && mapFragment.isVisible())
+            mapFragment.onPermissionsGranted();
+        else if (restaurantListFragment != null && restaurantListFragment.isVisible())
+            restaurantListFragment.onPermissionsGranted();
+    }
+
+    @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
+    }
+
+    @Override
+    public void onPermissionsGranted(int requestCode, @NonNull List<String> perms) {
+        onLocationAccessGranted();
+    }
+
+    public void onPermissionsDenied(int requestCode, @NonNull List<String> perms) {
+        if (mapFragment != null && mapFragment.isVisible())
+            mapFragment.onPermissionsDenied();
+        else if (restaurantListFragment != null && restaurantListFragment.isVisible())
+            restaurantListFragment.onPermissionsDenied();
     }
 
     // --------------------
@@ -170,8 +215,6 @@ public abstract class BaseActivity<T extends ViewModel> extends AppCompatActivit
         res.updateConfiguration(conf, dm);
     }
 
-    //
-
     public void activateReminder() {
         Calendar currentDate = Calendar.getInstance();
         Calendar dueDate = Calendar.getInstance();
@@ -207,7 +250,6 @@ public abstract class BaseActivity<T extends ViewModel> extends AppCompatActivit
                         Log.i(TAG, "current workState " + workInfo.getState());
                 }
         );
-        Log.i(TAG, "activateReminder: ");
     }
 
 
@@ -234,7 +276,6 @@ public abstract class BaseActivity<T extends ViewModel> extends AppCompatActivit
             backToLoginPage();
         });
     }
-    
 
     protected void backToLoginPage() {
         finishAffinity();

@@ -157,7 +157,7 @@ public class SettingsActivity extends BaseActivity<MyViewModel> {
     private void updateImageDialog() {
         alertDialogImage = new AlertDialog.Builder(this)
                 .setView(R.layout.alert_dialog_profile_pic)
-                .setPositiveButton("Enregistrer", (dialog, which) -> savePictureToFirestore(uriImageSelected))
+                .setPositiveButton(R.string.save, (dialog, which) -> savePictureToFirestore(uriImageSelected))
                 .setNegativeButton(R.string.Cancel, null)
                 .show();
 
@@ -167,7 +167,7 @@ public class SettingsActivity extends BaseActivity<MyViewModel> {
         }
 
         imageViewDialog = alertDialogImage.findViewById(R.id.dialog_profile_pic);
-        Glide.with(this) //SHOWING PREVIEW OF IMAGE
+        Glide.with(this)
                 .load(currentUser.getUrlPicture())
                 .apply(RequestOptions.circleCropTransform())
                 .into(imageViewDialog);
@@ -202,8 +202,8 @@ public class SettingsActivity extends BaseActivity<MyViewModel> {
             return;
         }
 
-        Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        startActivityForResult(i, RC_CHOOSE_PHOTO);
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(intent, RC_CHOOSE_PHOTO);
     }
 
     @Override

@@ -35,14 +35,8 @@ import com.sophieopenclass.go4lunch.models.User;
 
 import static android.content.Intent.EXTRA_UID;
 import static com.sophieopenclass.go4lunch.utils.Constants.*;
-import static com.sophieopenclass.go4lunch.utils.Constants.ACTIVITY_MY_LUNCH;
-import static com.sophieopenclass.go4lunch.utils.Constants.ACTIVITY_SETTINGS;
-import static com.sophieopenclass.go4lunch.utils.Constants.FRAGMENT_MAP_VIEW;
-import static com.sophieopenclass.go4lunch.utils.Constants.FRAGMENT_RESTAURANT_LIST_VIEW;
-import static com.sophieopenclass.go4lunch.utils.Constants.FRAGMENT_WORKMATES_LIST;
 
 public class MainActivity extends BaseActivity<MyViewModel> implements NavigationView.OnNavigationItemSelectedListener {
-    private static boolean RESTART_STATE = false;
     public ActivityMainBinding binding;
     private User currentUser;
     private Fragment fragmentMapView;
@@ -79,7 +73,9 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
     @Override
     protected void onRestart() {
         super.onRestart();
-        // to display the map after the user accepted the permissions
+        Log.i(TAG, "onRestart: ");
+        // to not display the map if the user leaves the app and comes back
+        // or when permissions get granted
         RESTART_STATE = true;
     }
 
@@ -139,7 +135,6 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
 
         if (!ORIENTATION_CHANGED && !RESTART_STATE) {
             showFragment(FRAGMENT_MAP_VIEW);
-            Log.i(TAG, "onStart: ");
             // To activate notifications by default when first launching the app OR
             // activate the notifications if the user signed out and logged back in
             if (sharedPrefs.contains(PREF_REMINDER) || sharedPrefs.getBoolean(PREF_REMINDER, false))

@@ -9,7 +9,7 @@
     <string name="error_no_internet">Problème de connexion à internet</string>
     <string name="Cancel">Annuler</string>
     <string name="gps_network_not_enabled">La localisation n\'est pas activée</string>
-    <string name="open_location_settings">Autoriser le partage de localisation</string>
+    <string name="open_location_settings">Autoriser la localisation</string>
     <string name="loading">Chargement…</string>
     <string name="connecting">Connexion…</string>
     <string name="signing_out">Déconnexion…</string>
@@ -77,7 +77,7 @@
     <string name="permission_denied">Permission refusée</string>
     <string name="closed_in_french">Fermé</string>
     <string name="cant_get_location">"Erreur lors de l'accès à la localisation"</string>
-    <string name="location_unavailable">Partage de localisation désactivé</string>
+    <string name="location_unavailable">Partage de localisation inactif</string>
     <string name="im_hungry">J\'ai faim !</string>
     <string name="search_for_a_workmate">Rechercher un·e collègue…</string>
     <string name="available_workmates">Collègues disponibles</string>
@@ -114,4 +114,6 @@
     <string name="delete">Supprimer</string>
     <string name="account_deleted">Compte supprimé</string>
     <string name="empty_field">Champ vide</string>
+    <string name="save">Enregistrer</string>
+    <string name="app_requires_location">Cette application a besoin de l\'accès à votre localisation pour fonctionner.</string>
 </resources>

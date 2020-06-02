@@ -31,6 +31,9 @@ public class Constants {
     public static final double HEADING_NORTH_WEST = 45.0;
     public static final double HEADING_SOUTH_WEST = 225.0;
 
+    public static boolean RESTART_STATE = false;
+
+
     public static final String ACTIVITY_MY_LUNCH = "UserLunchDetailActivity";
     public static final String ACTIVITY_SETTINGS = "SettingsActivity";
     public static final String FRAGMENT_MAP_VIEW = "MapViewFragment";

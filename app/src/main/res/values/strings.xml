@@ -122,6 +122,8 @@
     <string name="account_deleted">Account deleted</string>
     <string name="empty_field">Can\'t save empty field</string>
     <string name="notifications" translatable="false">Notifications</string>
+    <string name="save">Save</string>
+    <string name="app_requires_location">This app requires access to your location to work properly.</string>
 
 
 </resources>

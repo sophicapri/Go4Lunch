@@ -22,8 +22,6 @@ import androidx.annotation.Nullable;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Lifecycle;
-import androidx.lifecycle.LifecycleObserver;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -59,17 +57,12 @@ import com.sophieopenclass.go4lunch.models.json_to_java.PlaceDetails;
 import java.util.ArrayList;
 import java.util.List;
 
-import pub.devrel.easypermissions.EasyPermissions;
-
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
-import static android.app.Activity.RESULT_OK;
-import static androidx.lifecycle.Lifecycle.Event.ON_PAUSE;
-import static com.sophieopenclass.go4lunch.base.BaseActivity.LOCATION_REQUEST_CODE;
 import static com.sophieopenclass.go4lunch.base.BaseActivity.ORIENTATION_CHANGED;
 import static com.sophieopenclass.go4lunch.utils.Constants.PLACE_ID;
 import static com.sophieopenclass.go4lunch.utils.DateFormatting.getTodayDateInString;
 
-public class MapViewFragment extends Fragment implements OnMapReadyCallback, EasyPermissions.PermissionCallbacks {
+public class MapViewFragment extends Fragment implements OnMapReadyCallback{
     private static final String TAG = "com.sophie.MAP";
     private static final String CAMERA_LOCATION = "cameraLocation";
     static final String PERMS = ACCESS_FINE_LOCATION;
@@ -78,7 +71,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Eas
     private Location currentLocation;
     private static final float DEFAULT_ZOOM = 17.5f;
     private boolean autocompleteActive;
-    private BaseActivity context;
     private Location cameraLocation;
     private List<AutocompletePrediction> predictionList;
     private String searchBarTextInput;
@@ -94,26 +86,14 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Eas
         return new MapViewFragment();
     }
 
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        Log.i(TAG, "onCreate: ");
-    }
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentMapBinding.inflate(inflater, container, false);
 
-        Log.i(TAG, "onCreateView: ");
-        if (getActivity() != null) {
-            context = (BaseActivity) getActivity();
-            viewModel = (MyViewModel) context.getViewModel();
-        }
-
         if (getActivity() != null) {
             activity = ((MainActivity) getActivity());
+            viewModel = activity.getViewModel();
             activity.binding.searchBarMap.closeSearchBar.setOnClickListener(v -> {
                 closeSearchBar();
                 getNearbyPlaces(cameraLocation);
@@ -146,7 +126,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Eas
         activity.binding.searchBarMap.searchBarInput.addTextChangedListener(textWatcher);
 
         binding.fab.setOnClickListener(v -> {
-            if (context.requestLocationPermission()) {
+            if (activity.requestLocationAccess()) {
                 fetchLastLocation();
             }
         });
@@ -169,11 +149,11 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Eas
         ORIENTATION_CHANGED = false;
 
         Log.i(TAG, "onResume: ");
-        if (context.networkUnavailable()) {
+        if (activity.networkUnavailable()) {
             Snackbar.make(activity.binding.getRoot(), getString(R.string.internet_unavailable), BaseTransientBottomBar.LENGTH_INDEFINITE)
                     .setTextColor(getResources().getColor(R.color.quantum_white_100)).setDuration(5000).show();
         } else {
-            if (context.requestLocationPermission()) {
+            if (activity.requestLocationAccess()) {
                 fetchLastLocation();
             }
         }
@@ -228,7 +208,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Eas
         List<PlaceDetails> placeDetailsList = new ArrayList<>();
         Log.d(TAG, "getPlaceDetailAutocompleteList: " + suggestionsList.toString());
         for (String placeId : suggestionsList)
-            viewModel.getPlaceDetails(placeId).observe(context, placeDetails -> {
+            viewModel.getPlaceDetails(placeId).observe(activity, placeDetails -> {
                 placeDetailsList.add(placeDetails);
                 if (placeDetailsList.size() == suggestionsList.size()) {
                     initMarkers(placeDetailsList);
@@ -243,17 +223,17 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Eas
         mMap.getUiSettings().setMyLocationButtonEnabled(false);
         mMap.getUiSettings().setMapToolbarEnabled(false);
         mMap.getUiSettings().setZoomGesturesEnabled(true);
-        mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(context, R.raw.map_style));
+        mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(activity, R.raw.map_style));
         mMap.setOnInfoWindowClickListener(this::startRestaurantActivity);
     }
 
     private void fetchLastLocation() {
-        FusedLocationProviderClient fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context);
+        FusedLocationProviderClient fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(activity);
         initMap();
         Task<Location> task = fusedLocationProviderClient.getLastLocation();
-        task.addOnCompleteListener(task1 -> {
-            if (task1.isSuccessful()) {
-                currentLocation = task1.getResult();
+        task.addOnCompleteListener(getLocationTask -> {
+            if (getLocationTask.isSuccessful()) {
+                currentLocation = getLocationTask.getResult();
                 if (currentLocation != null) {
                     configureMap(currentLocation);
                     cameraLocation = currentLocation;
@@ -293,11 +273,11 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Eas
     }
 
     private void getNearbyPlaces(Location currentLocation) {
-        if (context.networkUnavailable()) {
+        if (activity.networkUnavailable()) {
             if (getView() != null)
                 Snackbar.make(getView(), getString(R.string.internet_unavailable), BaseTransientBottomBar.LENGTH_INDEFINITE)
                         .setDuration(5000).show();
-        } else if (context.requestLocationPermission()) {
+        } else if (activity.requestLocationAccess()) {
             viewModel.getNearbyPlaces(getLatLngString(currentLocation))
                     .observe(getViewLifecycleOwner(), restaurantsResult -> initMarkers(restaurantsResult.getPlaceDetails()));
         }
@@ -363,20 +343,15 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Eas
         activity.binding.searchBarMap.searchBarInput.removeTextChangedListener(textWatcher);
     }
 
-    @Override
-    public void onPermissionsGranted(int requestCode, @NonNull List<String> perms) {
-        if (EasyPermissions.hasPermissions(context, PERMS)) {
+    public void onPermissionsGranted() {
             if (mMap != null)
                 mMap.setMyLocationEnabled(true);
             fetchLastLocation();
-            Log.i(TAG, "onPermissionsGranted: ");
-        }
     }
 
-    @Override
-    public void onPermissionsDenied(int requestCode, @NonNull List<String> perms) {
+    public void onPermissionsDenied() {
+        Log.i(TAG, "onPermissionsDenied: map ");
         Snackbar.make(binding.getRoot(), R.string.location_unavailable, BaseTransientBottomBar.LENGTH_INDEFINITE)
                 .setTextColor(getResources().getColor(R.color.quantum_white_100)).setDuration(5000).show();
-
     }
 }
