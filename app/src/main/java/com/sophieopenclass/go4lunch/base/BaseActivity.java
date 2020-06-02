@@ -35,7 +35,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.sophieopenclass.go4lunch.R;
 import com.sophieopenclass.go4lunch.controllers.activities.LoginPageActivity;
 import com.sophieopenclass.go4lunch.controllers.activities.RestaurantDetailsActivity;
-import com.sophieopenclass.go4lunch.controllers.activities.WorkmateDetailActivity;
+import com.sophieopenclass.go4lunch.controllers.activities.UserLunchDetailActivity;
 import com.sophieopenclass.go4lunch.injection.Injection;
 import com.sophieopenclass.go4lunch.listeners.Listeners;
 import com.sophieopenclass.go4lunch.notifications.NotificationWorker;
@@ -213,7 +213,7 @@ public abstract class BaseActivity<T extends ViewModel> extends AppCompatActivit
 
     @Override
     public void onWorkmateClick(String uid) {
-        Intent intent = new Intent(this, WorkmateDetailActivity.class);
+        Intent intent = new Intent(this, UserLunchDetailActivity.class);
         intent.putExtra(EXTRA_UID, uid);
         startActivity(intent);
     }

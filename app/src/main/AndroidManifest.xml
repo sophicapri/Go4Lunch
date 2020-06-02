@@ -34,7 +34,7 @@
         <activity android:name=".controllers.activities.SettingsActivity" />
         <activity android:name=".controllers.activities.MainActivity" />
         <activity android:name=".controllers.activities.RestaurantDetailsActivity" />
-        <activity android:name=".controllers.activities.WorkmateDetailActivity" />
+        <activity android:name=".controllers.activities.UserLunchDetailActivity" />
         <activity android:name=".controllers.activities.ChatActivity" />
         <activity android:name=".controllers.activities.LoginPageActivity" />
     </application>

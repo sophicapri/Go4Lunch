@@ -31,11 +31,11 @@ public class Constants {
     public static final double HEADING_NORTH_WEST = 45.0;
     public static final double HEADING_SOUTH_WEST = 225.0;
 
-    public static final int ACTIVITY_MY_LUNCH = 3;
-    public static final int ACTIVITY_SETTINGS = 1;
-    public static final int FRAGMENT_MAP_VIEW = 10;
-    public static final int FRAGMENT_RESTAURANT_LIST_VIEW = 20;
-    public static final int FRAGMENT_WORKMATES_LIST = 30;
+    public static final String ACTIVITY_MY_LUNCH = "UserLunchDetailActivity";
+    public static final String ACTIVITY_SETTINGS = "SettingsActivity";
+    public static final String FRAGMENT_MAP_VIEW = "MapViewFragment";
+    public static final String FRAGMENT_RESTAURANT_LIST_VIEW = "RestaurantListFragment" ;
+    public static final String FRAGMENT_WORKMATES_LIST = "WorkmatesListFragment";
 
 
     public static final String PREF_LANGUAGE = "pref_language";

@@ -3,7 +3,6 @@ package com.sophieopenclass.go4lunch.controllers.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,8 +17,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.core.view.GravityCompat;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -152,8 +149,6 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
         if (RESTART_STATE)
             RESTART_STATE = false;
 
-
-
         // Update UI
         if (SettingsActivity.localeHasChanged || SettingsActivity.profileHasChanged) {
             finish();
@@ -164,6 +159,13 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
         }
     }
 
+    @Override
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        fragmentMapView = getSupportFragmentManager().findFragmentByTag(FRAGMENT_MAP_VIEW);
+        fragmentWorkmatesList = getSupportFragmentManager().findFragmentByTag(FRAGMENT_WORKMATES_LIST);
+        fragmentRestaurantList = getSupportFragmentManager().findFragmentByTag(FRAGMENT_WORKMATES_LIST);
+    }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -191,7 +193,6 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
             default:
                 break;
         }
-        //binding.bottomNavView.setSelectedItemId();
         binding.drawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
@@ -209,10 +210,10 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
             super.onBackPressed();
     }
 
-    private void showFragment(int controllerIdentifier) {
+    private void showFragment(String controllerIdentifier) {
         switch (controllerIdentifier) {
             case ACTIVITY_MY_LUNCH:
-                startNewActivity(WorkmateDetailActivity.class);
+                startNewActivity(UserLunchDetailActivity.class);
                 break;
             case ACTIVITY_SETTINGS:
                 startNewActivity(SettingsActivity.class);
@@ -231,7 +232,7 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
 
     private void startNewActivity(Class activity) {
         Intent intent = new Intent(this, activity);
-        if (activity.equals(WorkmateDetailActivity.class))
+        if (activity.equals(UserLunchDetailActivity.class))
             intent.putExtra(EXTRA_UID, currentUser.getUid());
         startActivity(intent);
     }
@@ -258,13 +259,6 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
                 .replace(R.id.frame_layout, fragment, fragment.getClass().getSimpleName()).commit();
 
         updateUI(fragment);
-
-        Log.i(TAG, "startTransactionFragment: Name " + fragment.getClass().getSimpleName());
-        //getSupportFragmentManager().findFragmentByTag()
-
-        Log.i(TAG, ": view " + binding.frameLayout.getTag());
-       // Log.i(TAG, "onResume: find fragment " +         FragmentManager.findFragment(binding.frameLayout));
-
     }
 
     private void updateUI(Fragment fragment) {
@@ -283,7 +277,6 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
         getMenuInflater().inflate(R.menu.search_button, menu);
         return true;
     }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

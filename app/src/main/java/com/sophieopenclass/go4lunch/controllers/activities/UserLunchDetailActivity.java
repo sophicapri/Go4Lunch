@@ -30,7 +30,7 @@ import java.util.Objects;
 import static android.content.Intent.EXTRA_UID;
 import static com.sophieopenclass.go4lunch.utils.DateFormatting.getTodayDateInString;
 
-public class WorkmateDetailActivity extends BaseActivity<MyViewModel> {
+public class UserLunchDetailActivity extends BaseActivity<MyViewModel> {
     ActivityWorkmateDetailBinding binding;
     String uid = null;
     ArrayList<Restaurant> previousRestaurantList = new ArrayList<>();
