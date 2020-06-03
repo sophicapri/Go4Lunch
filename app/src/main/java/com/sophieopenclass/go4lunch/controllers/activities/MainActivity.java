@@ -276,7 +276,7 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
         EditText focusedEditText = null;
 
         if (item.getItemId() == R.id.search_bar_menu)
-            if (fragmentMapView.isVisible()) {
+            if (fragmentMapView != null && fragmentMapView.isVisible()) {
                 binding.searchBarMap.searchBarMap.setVisibility(View.VISIBLE);
                 focusedEditText = binding.searchBarMap.searchBarInput;
             } else if (fragmentRestaurantList != null && fragmentRestaurantList.isVisible()) {
