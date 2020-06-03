@@ -91,16 +91,16 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getActivity() != null) {
-            activity = ((MainActivity) getActivity());
-            viewModel = activity.getViewModel();
-        }
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentMapBinding.inflate(inflater, container, false);
+        if (getActivity() != null)
+            activity = ((MainActivity) getActivity());
+
+        viewModel = activity.getViewModel();
         textWatcher = getTextWatcher();
         activity.binding.searchBarMap.searchBarInput.addTextChangedListener(textWatcher);
         activity.binding.searchBarMap.closeSearchBar.setOnClickListener(v -> {
