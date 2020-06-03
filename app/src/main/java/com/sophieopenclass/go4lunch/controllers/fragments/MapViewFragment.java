@@ -350,7 +350,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
     }
 
     public void onPermissionsDenied() {
-        Log.i(TAG, "onPermissionsDenied: map ");
         Snackbar.make(binding.getRoot(), R.string.location_unavailable, BaseTransientBottomBar.LENGTH_INDEFINITE)
                 .setTextColor(getResources().getColor(R.color.quantum_white_100)).setDuration(5000).show();
     }

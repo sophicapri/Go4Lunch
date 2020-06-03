@@ -128,6 +128,6 @@
     <string name="reminder_disabled">Daily reminder disabled</string>
     <string name="reminder_activated">Daily reminder activated</string>
     <string name="close_current_window_icon">Close current window icon</string>
-
+    <string name="account_doesnt_exist">This account has been deleted</string>
 
 </resources>

@@ -18,7 +18,6 @@ import com.sophieopenclass.go4lunch.models.User;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import static com.sophieopenclass.go4lunch.listeners.Listeners.OnWorkmateClickListener;
 import static com.sophieopenclass.go4lunch.utils.DateFormatting.getTodayDateInString;

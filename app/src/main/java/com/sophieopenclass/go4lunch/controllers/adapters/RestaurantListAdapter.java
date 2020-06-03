@@ -2,7 +2,6 @@ package com.sophieopenclass.go4lunch.controllers.adapters;
 
 import android.content.res.Resources;
 import android.os.Build;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,7 +33,6 @@ import static com.sophieopenclass.go4lunch.utils.Constants.ONE_HOUR;
 import static com.sophieopenclass.go4lunch.utils.Constants.OPEN_24H;
 
 public class RestaurantListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private static final String TAG = "RESO LIST ADAPTER";
     private List<PlaceDetails> placeDetailsList;
     private OnRestaurantClickListener onRestaurantClickListener;
     private RequestManager glide;

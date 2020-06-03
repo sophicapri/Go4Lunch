@@ -1,7 +1,6 @@
 package com.sophieopenclass.go4lunch.controllers.adapters;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +21,6 @@ import com.sophieopenclass.go4lunch.models.User;
 import static com.sophieopenclass.go4lunch.listeners.Listeners.OnWorkmateClickListener;
 
 public class RestaurantWorkmatesListAdapter extends FirestoreRecyclerAdapter<User, RestaurantWorkmatesListAdapter.UserViewHolder> {
-    public static final String TAG = "com.sophie.Adapter";
     private FirebaseUser currentUser;
     private OnWorkmateClickListener onWorkmateClickListener;
     private RequestManager glide;

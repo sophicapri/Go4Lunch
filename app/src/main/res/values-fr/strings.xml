@@ -120,4 +120,5 @@
     <string name="reminder_disabled">Notifications désactivées</string>
     <string name="reminder_activated">Notifications activées</string>
     <string name="close_current_window_icon">Icon retour à la page précédente</string>
+    <string name="account_doesnt_exist">Ce compte n\'existe plus</string>
 </resources>

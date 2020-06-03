@@ -1,9 +1,7 @@
 package com.sophieopenclass.go4lunch.controllers.activities;
 
 import android.content.Intent;
-import android.util.Log;
 import android.view.View;
-import android.widget.CompoundButton;
 import android.widget.Toast;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -19,8 +17,6 @@ import com.sophieopenclass.go4lunch.controllers.adapters.PreviousRestaurantsAdap
 import com.sophieopenclass.go4lunch.databinding.ActivityWorkmateDetailBinding;
 import com.sophieopenclass.go4lunch.models.Restaurant;
 import com.sophieopenclass.go4lunch.models.User;
-import com.sophieopenclass.go4lunch.models.json_to_java.PlaceDetails;
-import com.sophieopenclass.go4lunch.utils.CalculateRatings;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -35,7 +31,6 @@ public class UserLunchDetailActivity extends BaseActivity<MyViewModel> {
     String uid = null;
     ArrayList<Restaurant> previousRestaurantList = new ArrayList<>();
     ArrayList<Restaurant> favRestaurantList = new ArrayList<>();
-    int minus;
     User selectedUser;
     PreviousRestaurantsAdapter adapter;
     private boolean isFavorite = true;
@@ -64,7 +59,7 @@ public class UserLunchDetailActivity extends BaseActivity<MyViewModel> {
                     initUI(user);
                 else {
                     finish();
-                    Toast.makeText(this, "Ce compte n'existe plus", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, R.string.account_doesnt_exist, Toast.LENGTH_SHORT).show();
                 }
             });
         }

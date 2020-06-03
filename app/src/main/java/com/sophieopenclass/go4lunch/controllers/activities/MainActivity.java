@@ -3,7 +3,6 @@ package com.sophieopenclass.go4lunch.controllers.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -34,7 +33,13 @@ import com.sophieopenclass.go4lunch.databinding.ActivityMainBinding;
 import com.sophieopenclass.go4lunch.models.User;
 
 import static android.content.Intent.EXTRA_UID;
-import static com.sophieopenclass.go4lunch.utils.Constants.*;
+import static com.sophieopenclass.go4lunch.utils.Constants.ACTIVITY_MY_LUNCH;
+import static com.sophieopenclass.go4lunch.utils.Constants.ACTIVITY_SETTINGS;
+import static com.sophieopenclass.go4lunch.utils.Constants.FRAGMENT_MAP_VIEW;
+import static com.sophieopenclass.go4lunch.utils.Constants.FRAGMENT_RESTAURANT_LIST_VIEW;
+import static com.sophieopenclass.go4lunch.utils.Constants.FRAGMENT_WORKMATES_LIST;
+import static com.sophieopenclass.go4lunch.utils.Constants.PREF_REMINDER;
+import static com.sophieopenclass.go4lunch.utils.Constants.RESTART_STATE;
 
 public class MainActivity extends BaseActivity<MyViewModel> implements NavigationView.OnNavigationItemSelectedListener {
     public ActivityMainBinding binding;
@@ -47,7 +52,8 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
     @Override
     public View getFragmentLayout() {
         checkCurrentLocale();
-        return bindViews().getRoot();
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        return binding.getRoot();
     }
 
     @Override
@@ -57,7 +63,6 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
         configureDrawerLayout();
         configureNavigationView();
         initPlacesApi();
-        Log.i(TAG, "onCreate: ");
         if (getCurrentUser() != null)
             viewModel.getUser(getCurrentUser().getUid()).observe(this, user -> {
                 currentUser = user;
@@ -72,7 +77,6 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
     @Override
     protected void onRestart() {
         super.onRestart();
-        Log.i(TAG, "onRestart: ");
         // to not display the map if the user leaves the app and comes back
         // or when permissions get granted
         RESTART_STATE = true;
@@ -100,19 +104,12 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
         }
     }
 
-    private ActivityMainBinding bindViews() {
-        binding = ActivityMainBinding.inflate(getLayoutInflater());
-        return binding;
-    }
-
     private void configureToolbar() {
         setSupportActionBar(binding.myToolbar);
     }
 
     private void initPlacesApi() {
-        // Initialize the SDK
         Places.initialize(getApplicationContext(), BuildConfig.API_KEY);
-        // Create a new Places client instance
         placesClient = Places.createClient(this);
     }
 
@@ -140,6 +137,13 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
         }
 
         // Update UI
+        updateUIafterChangeInSettings();
+
+        if (RESTART_STATE)
+            RESTART_STATE = false;
+    }
+
+    private void updateUIafterChangeInSettings() {
         if (SettingsActivity.localeHasChanged || SettingsActivity.profileHasChanged) {
             finish();
             Intent intent = new Intent(this, MainActivity.class);
@@ -147,9 +151,6 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
             SettingsActivity.localeHasChanged = false;
             SettingsActivity.profileHasChanged = false;
         }
-
-        if (RESTART_STATE)
-            RESTART_STATE = false;
     }
 
     @Override
@@ -251,10 +252,10 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.frame_layout, fragment, fragment.getClass().getSimpleName()).commit();
 
-        updateUI(fragment);
+        updateToolbarUI(fragment);
     }
 
-    private void updateUI(Fragment fragment) {
+    private void updateToolbarUI(Fragment fragment) {
         if (fragment instanceof WorkmatesListFragment)
             binding.myToolbar.setTitle(R.string.available_workmates);
         else
@@ -287,12 +288,16 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
                 focusedEditText = binding.searchBarWorkmates.searchBarInput;
             }
 
+        showKeyboard(focusedEditText);
+        return true;
+    }
+
+    private void showKeyboard(EditText focusedEditText) {
         if (focusedEditText != null)
             focusedEditText.requestFocus();
+
         InputMethodManager inputManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        if (inputManager != null) {
+        if (inputManager != null)
             inputManager.showSoftInput(focusedEditText, InputMethodManager.SHOW_IMPLICIT);
-        }
-        return true;
     }
 }

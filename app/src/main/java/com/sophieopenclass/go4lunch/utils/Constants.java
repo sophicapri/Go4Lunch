@@ -1,25 +1,17 @@
 package com.sophieopenclass.go4lunch.utils;
 
-import androidx.annotation.IntDef;
-
-import java.lang.annotation.Retention;
-
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
-import static java.lang.annotation.RetentionPolicy.SOURCE;
 
 public class Constants {
     public static final String PLACE_ID = "placeId";
     public static final String DATES_AND_RESTAURANTS_FIELD = "datesAndRestaurants.";
     public static final String FAVORITE_RESTAURANTS_FIELD = "favoriteRestaurants.";
     public static final String PLACE_ID_FIELD = ".placeId";
-
-    //
     public static final String USERNAME_FIELD = "username";
 
 
     public static final String OPEN_24H = "0000";
     public static final int ONE_HOUR = 60;
-    //
 
     public static final String MESSAGES_SUBCOLLECTION = "messages";
     public static final String DATE_CREATED = "dateCreated";
@@ -59,6 +51,7 @@ public class Constants {
     public static final int REQUEST_CALL = 567;
 
 
+    //
     public static final int MONDAY = 1;
     public static final int TUESDAY = 2;
     public static final int WEDNESDAY = 3;

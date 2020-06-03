@@ -6,7 +6,6 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -42,7 +41,7 @@ import static com.sophieopenclass.go4lunch.utils.Constants.PREF_LANGUAGE;
 import static com.sophieopenclass.go4lunch.utils.Constants.PREF_REMINDER;
 
 public class SettingsActivity extends BaseActivity<MyViewModel> {
-    private static final String TAG = "com.sophie.Settings";
+    //private static final String TAG = "com.sophie.Settings";
     private ActivitySettingsBinding binding;
     public static boolean localeHasChanged = false;
     public static boolean profileHasChanged = false;

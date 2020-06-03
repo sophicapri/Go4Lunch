@@ -1,7 +1,6 @@
 package com.sophieopenclass.go4lunch.controllers.adapters;
 
 import android.graphics.drawable.Drawable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,11 +13,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.RequestManager;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
-import com.firebase.ui.firestore.ObservableSnapshotArray;
 import com.sophieopenclass.go4lunch.R;
 import com.sophieopenclass.go4lunch.databinding.ChatMessageItemBinding;
 import com.sophieopenclass.go4lunch.models.Message;
-import com.sophieopenclass.go4lunch.utils.DateFormatting;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

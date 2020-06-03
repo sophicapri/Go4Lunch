@@ -197,7 +197,6 @@ public abstract class BaseActivity<T extends ViewModel> extends AppCompatActivit
         return viewModel;
     }
 
-    //Check for locale in BaseActivity as it is used in several activities
     public void checkCurrentLocale() {
         String defaultLocale = Locale.getDefault().getLanguage();
         if (!sharedPrefs.contains(PREF_LANGUAGE))
@@ -276,9 +275,7 @@ public abstract class BaseActivity<T extends ViewModel> extends AppCompatActivit
     }
 
     public void deleteAccount() {
-        AuthUI.getInstance().delete(this).addOnSuccessListener(v -> {
-            backToLoginPage();
-        });
+        AuthUI.getInstance().delete(this).addOnSuccessListener(v -> backToLoginPage());
     }
 
     protected void backToLoginPage() {
