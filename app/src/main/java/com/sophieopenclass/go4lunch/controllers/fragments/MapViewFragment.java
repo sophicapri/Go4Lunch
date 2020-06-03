@@ -91,22 +91,31 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (getActivity() != null) {
+            activity = ((MainActivity) getActivity());
+            viewModel = activity.getViewModel();
+        }
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentMapBinding.inflate(inflater, container, false);
+        textWatcher = getTextWatcher();
+        activity.binding.searchBarMap.searchBarInput.addTextChangedListener(textWatcher);
+        activity.binding.searchBarMap.closeSearchBar.setOnClickListener(v -> {
+            closeSearchBar();
+            getNearbyPlaces(cameraLocation);
+        });
+        binding.fab.setOnClickListener(v -> {
+            if (activity.requestLocationAccess())
+                fetchLastLocation();
+        });
+        return binding.getRoot();
+    }
 
-        if (getActivity() != null) {
-            activity = ((MainActivity) getActivity());
-            viewModel = activity.getViewModel();
-            activity.binding.searchBarMap.closeSearchBar.setOnClickListener(v -> {
-                closeSearchBar();
-                getNearbyPlaces(cameraLocation);
-            });
-        }
-        textWatcher = new TextWatcher() {
+    private TextWatcher getTextWatcher() {
+        return new TextWatcher() {
             //to stop the TextWatcher from firing multiple times
             boolean isOnTextChanged = false;
 
@@ -130,14 +139,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
                 }
             }
         };
-        activity.binding.searchBarMap.searchBarInput.addTextChangedListener(textWatcher);
-
-        binding.fab.setOnClickListener(v -> {
-            if (activity.requestLocationAccess()) {
-                fetchLastLocation();
-            }
-        });
-        return binding.getRoot();
     }
 
     private void closeSearchBar() {
@@ -154,8 +155,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
     public void onResume() {
         super.onResume();
         ORIENTATION_CHANGED = false;
-
-        Log.i(TAG, "onResume: ");
         if (activity.networkUnavailable()) {
             Snackbar.make(activity.binding.getRoot(), getString(R.string.internet_unavailable), BaseTransientBottomBar.LENGTH_INDEFINITE)
                     .setTextColor(getResources().getColor(R.color.quantum_white_100)).setDuration(5000).show();

@@ -76,12 +76,13 @@ public class UserDataRepository {
 
     public MutableLiveData<List<User>> getUsersByPlaceIdAndDate(String placeId, String date) {
         MutableLiveData<List<User>> users = new MutableLiveData<>();
-        userCollectionRef.whereArrayContains(DATES_AND_RESTAURANTS_FIELD + date + PLACE_ID_FIELD, placeId)
+        userCollectionRef.whereEqualTo((DATES_AND_RESTAURANTS_FIELD + date + PLACE_ID_FIELD), placeId)
                 .get().addOnCompleteListener(task -> {
             if (task.isSuccessful())
-                if (task.getResult() != null)
+                if (task.getResult() != null) {
                     users.postValue(task.getResult().toObjects(User.class));
-                else if (task.getException() != null)
+                    Log.i(TAG, "getUsersByPlaceIdAndDate: " + task.getResult().toObjects(User.class).size());
+                } else if (task.getException() != null)
                     Log.e(TAG, "getUsersByPlaceId: " + (task.getException().getMessage()));
         });
         return users;
