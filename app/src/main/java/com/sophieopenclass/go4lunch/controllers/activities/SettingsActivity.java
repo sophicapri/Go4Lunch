@@ -42,7 +42,7 @@ import static com.sophieopenclass.go4lunch.utils.Constants.PREF_LANGUAGE;
 import static com.sophieopenclass.go4lunch.utils.Constants.PREF_REMINDER;
 
 public class SettingsActivity extends BaseActivity<MyViewModel> {
-    private static final String TAG = "SettingsActivity";
+    private static final String TAG = "com.sophie.Settings";
     private ActivitySettingsBinding binding;
     public static boolean localeHasChanged = false;
     public static boolean profileHasChanged = false;
@@ -131,15 +131,17 @@ public class SettingsActivity extends BaseActivity<MyViewModel> {
                 binding.editTextUsername.setError(getString(R.string.empty_field));
         });
 
-        if (currentAppLocale.equals(FRENCH_LOCALE))
-        binding.currentLocale.setText(R.string.french_locale);
-        else
-            binding.currentLocale.setText(R.string.english_locale);
+        displayCurrentLocale();
 
         binding.updateProfilePic.setOnClickListener(v -> updateImageDialog());
 
-        binding.deleteAccount.setOnClickListener(v ->
-                new AlertDialog.Builder(this)
+        binding.deleteAccount.setOnClickListener(v -> showDeleteAccountDialog());
+
+        binding.settingsToolbar.setNavigationOnClickListener( v -> onBackPressed());
+    }
+
+    private void showDeleteAccountDialog() {
+        new AlertDialog.Builder(this)
                 .setMessage(R.string.delete_account)
                 .setPositiveButton(R.string.delete, (paramDialogInterface, paramInt) -> {
                     viewModel.deleteUserMessages(currentUser.getUid());
@@ -148,15 +150,20 @@ public class SettingsActivity extends BaseActivity<MyViewModel> {
                     deleteAccount();
                 })
                 .setNegativeButton(R.string.Cancel, null)
-                .show());
+                .show();
+    }
 
-        binding.settingsToolbar.setNavigationOnClickListener( v -> onBackPressed());
+    private void displayCurrentLocale() {
+        if (currentAppLocale.equals(FRENCH_LOCALE))
+            binding.currentLocale.setText(R.string.french_locale);
+        else
+            binding.currentLocale.setText(R.string.english_locale);
     }
 
     private void updateImageDialog() {
         AlertDialog alertDialogImage = new AlertDialog.Builder(this)
                 .setView(R.layout.alert_dialog_profile_pic)
-                .setPositiveButton(R.string.save, (dialog, which) -> savePictureToFirestore(uriImageSelected))
+                .setPositiveButton(R.string.save, (dialog, which) -> savePictureToFirestore())
                 .setNegativeButton(R.string.Cancel, null)
                 .show();
 
@@ -239,23 +246,26 @@ public class SettingsActivity extends BaseActivity<MyViewModel> {
         }
     }
 
-    private void savePictureToFirestore(Uri uriImageSelected) {
-        binding.progressBar.setVisibility(View.VISIBLE);
-        String uuid = UUID.randomUUID().toString(); // GENERATE UNIQUE STRING
-        StorageReference mImageRef = FirebaseStorage.getInstance().getReference(uuid);
-        mImageRef.putFile(uriImageSelected)
-                .addOnSuccessListener(taskSnapshot -> taskSnapshot.getStorage().getDownloadUrl()
-                        .addOnSuccessListener(uri -> {
-                            String pathImageSavedInFirebase = uri.toString();
-                            viewModel.updateUrlPicture(pathImageSavedInFirebase, currentUser.getUid())
-                                    .observe(this, urlPicture -> {
-                                        if (urlPicture != null) {
-                                            refreshActivity();
-                                            profileHasChanged = true;
-                                            binding.progressBar.setVisibility(View.GONE);
-                                        }
-                                    });
-                        }));
+    private void savePictureToFirestore() {
+        if (uriImageSelected != null) {
+            binding.progressBar.setVisibility(View.VISIBLE);
+            String uuid = UUID.randomUUID().toString(); // GENERATE UNIQUE STRING
+            StorageReference mImageRef = FirebaseStorage.getInstance().getReference(uuid);
+            mImageRef.putFile(uriImageSelected)
+                    .addOnSuccessListener(taskSnapshot -> taskSnapshot.getStorage().getDownloadUrl()
+                            .addOnSuccessListener(uri -> {
+                                String pathImageSavedInFirebase = uri.toString();
+                                viewModel.updateUrlPicture(pathImageSavedInFirebase, currentUser.getUid())
+                                        .observe(this, urlPicture -> {
+                                            if (urlPicture != null) {
+                                                refreshActivity();
+                                                profileHasChanged = true;
+                                                binding.progressBar.setVisibility(View.GONE);
+                                                uriImageSelected = null;
+                                            }
+                                        });
+                            }));
+        }
     }
 
     public void openPopupMenuLocales() {
