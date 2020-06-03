@@ -6,7 +6,7 @@ public class Chat {
     private Map<String, Boolean> participants;
 
     public Chat(){
-        //
+
     }
 
     public Chat(Map<String, Boolean> participants) {

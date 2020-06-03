@@ -23,53 +23,43 @@ public class Restaurant {
         //dateOfLunch = DateFormatting.getTodayDateInString();
     }
 
+    // --- GETTERS ---
     public String getPlaceId() {
         return placeId;
     }
-
-    public void setPlaceId(String placeId) {
-        this.placeId = placeId;
-    }
-
     public String getName() {
         return name;
     }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getAddress() {
         return address;
     }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
     public String getUrlPhoto() {
         return urlPhoto;
     }
-
-    public void setUrlPhoto(String urlPhoto) {
-        this.urlPhoto = urlPhoto;
-    }
-
     public int getNumberOfStars() {
         return numberOfStars;
     }
-
-    public void setNumberOfStars(int numberOfStars) {
-        this.numberOfStars = numberOfStars;
-    }
-
-
     public String getDateOfLunch() {
         return dateOfLunch;
     }
 
+    // --- SETTERS ---
+    public void setPlaceId(String placeId) {
+        this.placeId = placeId;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
+    public void setAddress(String address) {
+        this.address = address;
+    }
+    public void setUrlPhoto(String urlPhoto) {
+        this.urlPhoto = urlPhoto;
+    }
+    public void setNumberOfStars(int numberOfStars) {
+        this.numberOfStars = numberOfStars;
+    }
     public void setDateOfLunch(String dateOfLunch) {
         this.dateOfLunch = dateOfLunch;
     }
-
 }

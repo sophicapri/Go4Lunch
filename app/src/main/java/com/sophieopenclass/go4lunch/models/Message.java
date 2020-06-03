@@ -1,9 +1,6 @@
 package com.sophieopenclass.go4lunch.models;
 
-import com.google.firebase.firestore.ServerTimestamp;
-
 import java.util.Date;
-import java.util.Map;
 
 public class Message {
     private String message;

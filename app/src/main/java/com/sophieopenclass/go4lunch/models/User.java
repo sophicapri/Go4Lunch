@@ -35,9 +35,17 @@ public class User {
     public String getUid() {
         return uid;
     }
-
     public String getUsername() {
         return username;
+    }
+    public Map<String, Restaurant> getDatesAndRestaurants() {
+        return datesAndRestaurants;
+    }
+    public Map<String, Restaurant> getFavoriteRestaurants() {
+        return favoriteRestaurants;
+    }
+    public String getEmail() {
+        return email;
     }
 
     @Nullable
@@ -52,25 +60,17 @@ public class User {
     public void setUsername(String username) {
         this.username = username;
     }
-
     public void setUid(String uid) {
         this.uid = uid;
     }
-
+    public void setEmail(String email) {
+        this.email = email;
+    }
     public void setUrlPicture(@Nullable String urlPicture) {
         this.urlPicture = urlPicture;
     }
-
-    public Map<String, Restaurant> getDatesAndRestaurants() {
-        return datesAndRestaurants;
-    }
-
     public void setDatesAndRestaurants(Map<String, Restaurant> datesAndRestaurants) {
         this.datesAndRestaurants = datesAndRestaurants;
-    }
-
-    public Map<String, Restaurant> getFavoriteRestaurants() {
-        return favoriteRestaurants;
     }
 
     public void setFavoriteRestaurants(Map<String, Restaurant> favoriteRestaurants) {
@@ -90,13 +90,7 @@ public class User {
         return false;
     }
 
-    public String getEmail() {
-        return email;
-    }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
 
 }
 
