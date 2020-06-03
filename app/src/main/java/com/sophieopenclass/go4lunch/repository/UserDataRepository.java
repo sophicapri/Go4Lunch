@@ -155,12 +155,12 @@ public class UserDataRepository {
                         if (addPlaceIdTask.isSuccessful())
                             newRestaurant.setValue(restaurant);
                         else if (addPlaceIdTask.getException() != null)
-                            Log.e(TAG, " addPlaceId: " + addPlaceIdTask.getException().getMessage());
+                            Log.e("com.sophie.REPO", " addPlaceId: " + addPlaceIdTask.getException().getMessage());
                     });
                 else
                     newRestaurant.setValue(restaurant);
             } else if (uidTask.getException() != null)
-                Log.e(TAG, " addPlaceId: " + uidTask.getException().getMessage());
+                Log.e("com.sophie.REPO", " addPlaceId: " + uidTask.getException().getMessage());
         });
         return newRestaurant;
     }

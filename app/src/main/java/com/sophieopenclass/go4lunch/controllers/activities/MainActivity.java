@@ -64,7 +64,6 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
                 handleDrawerUI(user);
             });
         binding.bottomNavView.setOnNavigationItemSelectedListener(this::onNavigationItemSelected);
-
         binding.searchBarRestaurantList.searchBarRestaurantList.setVisibility(View.GONE);
         binding.searchBarMap.searchBarMap.setVisibility(View.GONE);
         binding.searchBarWorkmates.searchBarWorkmates.setVisibility(View.GONE);
@@ -131,18 +130,14 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
     @Override
     protected void onResume() {
         super.onResume();
-        Log.i(TAG, "onResume: ");
-
         if (!ORIENTATION_CHANGED && !RESTART_STATE) {
             showFragment(FRAGMENT_MAP_VIEW);
             // To activate notifications by default when first launching the app OR
             // activate the notifications if the user signed out and logged back in
-            if (sharedPrefs.contains(PREF_REMINDER) || sharedPrefs.getBoolean(PREF_REMINDER, false))
+            if (sharedPrefs.getBoolean(PREF_REMINDER, false)) {
                 activateReminder();
+            }
         }
-
-        if (RESTART_STATE)
-            RESTART_STATE = false;
 
         // Update UI
         if (SettingsActivity.localeHasChanged || SettingsActivity.profileHasChanged) {
@@ -152,6 +147,9 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
             SettingsActivity.localeHasChanged = false;
             SettingsActivity.profileHasChanged = false;
         }
+
+        if (RESTART_STATE)
+            RESTART_STATE = false;
     }
 
     @Override

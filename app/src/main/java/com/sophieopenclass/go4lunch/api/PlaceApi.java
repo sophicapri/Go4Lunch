@@ -11,7 +11,6 @@ import retrofit2.http.Query;
 public interface PlaceApi {
     String apiKey = BuildConfig.API_KEY;
 
-
     @GET("nearbysearch/json?&rankby=distance&type=restaurant&key=" + apiKey)
     Call<RestaurantsResult> getNearbyPlaces(@Query("location") String location);
 

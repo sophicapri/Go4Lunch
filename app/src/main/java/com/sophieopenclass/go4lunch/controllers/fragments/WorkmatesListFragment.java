@@ -179,7 +179,7 @@ public class WorkmatesListFragment extends Fragment {
     }
 
     // Not using FirestoreRecyclerAdapter because it isn't possible to retrieve all the users
-    // except one.
+    // except one
     private void setUpRecyclerView() {
         adapter = new WorkmatesViewAdapter(((BaseActivity) getActivity()), Glide.with(this));
         binding.recyclerViewWorkmates.setHasFixedSize(true);

@@ -116,4 +116,8 @@
     <string name="empty_field">Champ vide</string>
     <string name="save">Enregistrer</string>
     <string name="app_requires_location">Cette application a besoin de l\'accès à votre localisation pour fonctionner.</string>
+    <string name="time_to_eat">C\'est l\'heure de déjeuner !</string>
+    <string name="reminder_disabled">Notifications désactivées</string>
+    <string name="reminder_activated">Notifications activées</string>
+    <string name="close_current_window_icon">Icon retour à la page précédente</string>
 </resources>

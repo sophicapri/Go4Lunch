@@ -69,9 +69,10 @@ public class SettingsActivity extends BaseActivity<MyViewModel> {
             binding.notificationToggle.setChecked(false);
 
         binding.notificationToggle.setOnClickListener(v -> {
-            if (binding.notificationToggle.isChecked())
+            if (binding.notificationToggle.isChecked()) {
                 activateReminder();
-            else {
+                Toast.makeText(this, R.string.reminder_activated, Toast.LENGTH_LONG).show();
+            } else {
                 cancelReminder();
             }
         });
@@ -82,7 +83,7 @@ public class SettingsActivity extends BaseActivity<MyViewModel> {
     private void cancelReminder() {
         workManager.cancelAllWork();
         sharedPrefs.edit().putBoolean(PREF_REMINDER, false).apply();
-        Log.i(TAG, "cancelReminder: ");
+        Toast.makeText(this, R.string.reminder_disabled, Toast.LENGTH_LONG).show();
     }
 
     @Override

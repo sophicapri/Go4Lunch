@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -51,6 +52,7 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
     private PlaceDetails placeDetails;
     private Restaurant restaurant;
     private User currentUser;
+    public static final String TAG = "com.sophie.Details";
 
     @Override
     public Class getViewModelClass() {
@@ -173,8 +175,8 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
                 .setQuery(viewModel.getCollectionReference()
                         .whereEqualTo(firestorePlaceIdPath, placeId), User.class)
                 .build();
+
         adapter = new RestaurantWorkmatesListAdapter(options, this, Glide.with(this));
-        binding.detailRecyclerViewWorkmates.setHasFixedSize(true);
         binding.detailRecyclerViewWorkmates.setLayoutManager(new LinearLayoutManager(this));
         binding.detailRecyclerViewWorkmates.setAdapter(adapter);
         adapter.startListening();
@@ -224,11 +226,12 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
     private void handleRestaurantSelection(User currentUser) {
         if (!currentUser.restaurantIsSelected(placeId)) {
             binding.addRestaurant.setImageDrawable(getResources().getDrawable(R.drawable.ic_check_circle_black_24dp));
-            viewModel.updateChosenRestaurant(currentUser.getUid(), restaurant, getTodayDateInString()).observe(this, placeId -> {
-                if (placeId == null) {
+            viewModel.updateChosenRestaurant(currentUser.getUid(), restaurant, getTodayDateInString()).observe(this, restaurantAdded -> {
+                if (restaurantAdded == null) {
                     Toast.makeText(this, R.string.an_error_happened, Toast.LENGTH_LONG).show();
                     binding.addRestaurant.setImageDrawable(getResources().getDrawable(R.drawable.ic_add_black_24dp));
-                }
+                } else
+                Log.i(TAG, "handleRestaurantSelection: " + restaurantAdded.getName());
             });
         } else {
             binding.addRestaurant.setImageDrawable(getResources().getDrawable(R.drawable.ic_add_black_24dp));

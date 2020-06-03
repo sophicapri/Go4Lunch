@@ -15,7 +15,7 @@ import com.sophieopenclass.go4lunch.R;
 public class NotificationHelper extends ContextWrapper {
     public static final String channelID = "channelID";
     public static final String LUNCH_REMINDER = "Lunch reminder";
-    private NotificationManager mManager;
+    private NotificationManager manager;
 
     public NotificationHelper(Context base) {
         super(base);
@@ -31,15 +31,15 @@ public class NotificationHelper extends ContextWrapper {
     }
 
     public NotificationManager getManager() {
-        if (mManager == null) {
-            mManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        if (manager == null) {
+            manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         }
-        return mManager;
+        return manager;
     }
 
     public NotificationCompat.Builder getChannelNotification(String message, PendingIntent intent) {
         return new NotificationCompat.Builder(getApplicationContext(), channelID)
-                .setContentTitle("C'est bientôt l'heure !")
+                .setContentTitle(getString(R.string.time_to_eat))
                 .setStyle(new NotificationCompat.BigTextStyle().bigText(message))
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setCategory(NotificationCompat.CATEGORY_EVENT)

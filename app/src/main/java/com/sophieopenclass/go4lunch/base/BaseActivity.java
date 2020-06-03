@@ -81,6 +81,7 @@ public abstract class BaseActivity<T extends ViewModel> extends AppCompatActivit
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         sharedPrefs = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        initReminderPreference();
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         FacebookSdk.setAdvertiserIDCollectionEnabled(false);
         FacebookSdk.setAutoLogAppEventsEnabled(false);
@@ -206,6 +207,11 @@ public abstract class BaseActivity<T extends ViewModel> extends AppCompatActivit
         currentAppLanguage = sharedPrefs.getString(PREF_LANGUAGE, Locale.getDefault().getLanguage());
     }
 
+    private void initReminderPreference() {
+        if (!sharedPrefs.contains(PREF_REMINDER))
+            sharedPrefs.edit().putBoolean(PREF_REMINDER, true).apply();
+    }
+
     public void updateLocale() {
         Resources res = getResources();
         DisplayMetrics dm = res.getDisplayMetrics();
@@ -217,7 +223,7 @@ public abstract class BaseActivity<T extends ViewModel> extends AppCompatActivit
     public void activateReminder() {
         Calendar currentDate = Calendar.getInstance();
         Calendar dueDate = Calendar.getInstance();
-        // Set Execution time of the reminder
+        // Set execution time of the reminder
         dueDate.set(Calendar.HOUR_OF_DAY, 12);
         dueDate.set(Calendar.MINUTE, 0);
         dueDate.set(Calendar.SECOND, 0);
@@ -226,7 +232,6 @@ public abstract class BaseActivity<T extends ViewModel> extends AppCompatActivit
         if (dueDate.before(currentDate)) {
             dueDate.add(Calendar.DAY_OF_MONTH, 1);
         }
-
         long timeDiff = dueDate.getTimeInMillis() - currentDate.getTimeInMillis();
 
         Data userId = new Data.Builder().build();

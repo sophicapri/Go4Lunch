@@ -1,6 +1,7 @@
 package com.sophieopenclass.go4lunch.controllers.adapters;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,7 @@ import com.sophieopenclass.go4lunch.models.User;
 import static com.sophieopenclass.go4lunch.listeners.Listeners.OnWorkmateClickListener;
 
 public class RestaurantWorkmatesListAdapter extends FirestoreRecyclerAdapter<User, RestaurantWorkmatesListAdapter.UserViewHolder> {
+    public static final String TAG = "com.sophie.Adapter";
     private FirebaseUser currentUser;
     private OnWorkmateClickListener onWorkmateClickListener;
     private RequestManager glide;
@@ -44,7 +46,7 @@ public class RestaurantWorkmatesListAdapter extends FirestoreRecyclerAdapter<Use
 
     @Override
     protected void onBindViewHolder(@NonNull UserViewHolder holder, int position, @NonNull User model) {
-            holder.bind(model);
+        holder.bind(model);
     }
 
     class UserViewHolder extends RecyclerView.ViewHolder {
@@ -65,10 +67,10 @@ public class RestaurantWorkmatesListAdapter extends FirestoreRecyclerAdapter<Use
                     .apply(RequestOptions.circleCropTransform())
                     .into(binding.workmateProfilePic);
 
-                if (model.getUid().equals(currentUser.getUid()))
-                    binding.workmatesChoice.setText(context.getResources().getString(R.string.you_are_eating_here));
-                else
-                    binding.workmatesChoice.setText(context.getResources().getString(R.string.workmate_is_eating_here, model.getUsername()));
+            if (model.getUid().equals(currentUser.getUid()))
+                binding.workmatesChoice.setText(context.getResources().getString(R.string.you_are_eating_here));
+            else
+                binding.workmatesChoice.setText(context.getResources().getString(R.string.workmate_is_eating_here, model.getUsername()));
         }
     }
 }

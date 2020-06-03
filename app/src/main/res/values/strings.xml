@@ -124,6 +124,10 @@
     <string name="notifications" translatable="false">Notifications</string>
     <string name="save">Save</string>
     <string name="app_requires_location">This app requires access to your location to work properly.</string>
+    <string name="time_to_eat">Time to eat !</string>
+    <string name="reminder_disabled">Daily reminder disabled</string>
+    <string name="reminder_activated">Daily reminder activated</string>
+    <string name="close_current_window_icon">Close current window icon</string>
 
 
 </resources>

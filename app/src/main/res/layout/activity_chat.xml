@@ -25,7 +25,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_back_arrow_white" />
+            app:srcCompat="@drawable/ic_back_arrow_white"
+            android:contentDescription="@string/close_current_window_icon" />
 
         <ImageView
             android:id="@+id/workmate_profile_pic"
