@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.Query;
 import com.sophieopenclass.go4lunch.models.Restaurant;
 import com.sophieopenclass.go4lunch.models.User;
 
@@ -18,6 +19,7 @@ import static com.sophieopenclass.go4lunch.utils.Constants.DATES_AND_RESTAURANTS
 import static com.sophieopenclass.go4lunch.utils.Constants.FAVORITE_RESTAURANTS_FIELD;
 import static com.sophieopenclass.go4lunch.utils.Constants.PLACE_ID_FIELD;
 import static com.sophieopenclass.go4lunch.utils.Constants.USERNAME_FIELD;
+import static com.sophieopenclass.go4lunch.utils.DateFormatting.getTodayDateInString;
 
 public class UserDataRepository {
     private CollectionReference userCollectionRef;
@@ -26,8 +28,9 @@ public class UserDataRepository {
         this.userCollectionRef = userCollectionRef;
     }
 
-    public CollectionReference getCollectionReference() {
-        return userCollectionRef;
+    public Query getUsersEatingAtRestaurantQuery(String placeId) {
+        String firestorePlaceIdPath = DATES_AND_RESTAURANTS_FIELD + getTodayDateInString() + PLACE_ID_FIELD;
+        return userCollectionRef.whereEqualTo(firestorePlaceIdPath, placeId);
     }
 
     public MutableLiveData<User> createUser(User user) {
@@ -74,14 +77,13 @@ public class UserDataRepository {
     }
 
 
-    public MutableLiveData<List<User>> getUsersByPlaceIdAndDate(String placeId, String date) {
+    public MutableLiveData<List<User>> getUsersEatingAtRestaurantToday(String placeId, String date) {
         MutableLiveData<List<User>> users = new MutableLiveData<>();
         userCollectionRef.whereEqualTo((DATES_AND_RESTAURANTS_FIELD + date + PLACE_ID_FIELD), placeId)
                 .get().addOnCompleteListener(task -> {
             if (task.isSuccessful())
                 if (task.getResult() != null) {
                     users.postValue(task.getResult().toObjects(User.class));
-                    Log.i(TAG, "getUsersByPlaceIdAndDate: " + task.getResult().toObjects(User.class).size());
                 } else if (task.getException() != null)
                     Log.e(TAG, "getUsersByPlaceId: " + (task.getException().getMessage()));
         });

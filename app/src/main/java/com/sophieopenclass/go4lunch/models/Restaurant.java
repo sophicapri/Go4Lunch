@@ -1,7 +1,5 @@
 package com.sophieopenclass.go4lunch.models;
 
-import com.sophieopenclass.go4lunch.utils.DateFormatting;
-
 // Local Restaurant object for users profile
 public class Restaurant {
     private String placeId;

@@ -43,7 +43,6 @@
                 android:id="@+id/update_profile_pic"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-                android:src="@drawable/ic_profile_no_pic"
                 android:layout_marginTop="@dimen/default_margin"
                 android:layout_marginStart="@dimen/default_margin"
                 android:contentDescription="@string/profile_picture"
@@ -93,7 +92,8 @@
                 app:layout_constraintBottom_toBottomOf="@+id/username_displayed"
                 app:layout_constraintStart_toEndOf="@+id/username_displayed"
                 app:layout_constraintTop_toTopOf="@+id/username_displayed"
-                app:srcCompat="@drawable/ic_edit_24dp" />
+                app:srcCompat="@drawable/ic_edit_24dp"
+                android:contentDescription="@string/logo_edit_username" />
 
 
             <!-- EDIT USERNAME-->
@@ -122,7 +122,9 @@
                     android:imeOptions="flagNoExtractUi|flagNoEnterAction"
                     android:maxLines="1"
                     android:textSize="18sp"
-                    tools:text="@sample/tasks.json/full_name" />
+                    tools:text="@sample/tasks.json/full_name"
+                    tools:ignore="Autofill,LabelFor"
+                    android:inputType="text" />
 
                 <ImageView
                     android:id="@+id/save_username"
@@ -130,7 +132,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginEnd="@dimen/default_margin"
-                    app:srcCompat="@drawable/ic_check_black_24dp" />
+                    app:srcCompat="@drawable/ic_check_black_24dp"
+                    android:contentDescription="@string/logo_save_username" />
 
                 <ImageView
                     android:id="@+id/cancel_username_update"
@@ -138,7 +141,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/default_margin"
                     android:layout_gravity="center"
-                    app:srcCompat="@drawable/ic_close_black_24dp" />
+                    app:srcCompat="@drawable/ic_close_black_24dp"
+                    android:contentDescription="@string/cancel_username_update" />
 
             </LinearLayout>
 

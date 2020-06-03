@@ -1,7 +1,5 @@
 package com.sophieopenclass.go4lunch.repository;
 
-import android.util.Log;
-
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 

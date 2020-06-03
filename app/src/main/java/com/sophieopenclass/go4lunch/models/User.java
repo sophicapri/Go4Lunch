@@ -72,11 +72,12 @@ public class User {
     public void setDatesAndRestaurants(Map<String, Restaurant> datesAndRestaurants) {
         this.datesAndRestaurants = datesAndRestaurants;
     }
-
     public void setFavoriteRestaurants(Map<String, Restaurant> favoriteRestaurants) {
         this.favoriteRestaurants = favoriteRestaurants;
     }
 
+
+    // UTILS
     public boolean restaurantNotFavorite(String placeId) {
         for (Restaurant restaurant : favoriteRestaurants.values())
             if (restaurant.getPlaceId().equals(placeId))
@@ -89,9 +90,6 @@ public class User {
             return Objects.requireNonNull(datesAndRestaurants.get(getTodayDateInString())).getPlaceId().equals(placeId);
         return false;
     }
-
-
-
 }
 
 

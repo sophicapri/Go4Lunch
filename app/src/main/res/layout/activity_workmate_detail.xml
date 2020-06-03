@@ -21,8 +21,7 @@
             app:collapsedTitleTextAppearance="@style/collapsingToolbarLayoutTitleColor"
             app:contentScrim="@color/colorPrimary"
             app:expandedTitleTextAppearance="@style/expandedToolbarTitleColor"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed"
-            app:title="Jenna">
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
             <ImageView
                 android:id="@+id/workmate_profile_pic"

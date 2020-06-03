@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.Query;
 import com.sophieopenclass.go4lunch.models.Message;
 import com.sophieopenclass.go4lunch.models.Restaurant;
@@ -31,7 +30,7 @@ public class MyViewModel extends ViewModel {
     }
 
     // RESTAURANTS
-
+                // -- PLACES API
     public LiveData<RestaurantsResult> getNearbyPlaces(String location) {
         return restaurantDataSource.getNearbyPlaces(location);
     }
@@ -48,42 +47,14 @@ public class MyViewModel extends ViewModel {
         return restaurantDataSource.getPlaceDetailsList(placeIds, language);
     }
 
-    // USERS
-
-    public void createUser(User user) {
-        createdUserLiveData = userDataSource.createUser(user);
-    }
-
-    public LiveData<User> getUser(String uid) {
-        return userDataSource.getUser(uid);
-    }
-
-    public CollectionReference getCollectionReference() {
-        return userDataSource.getCollectionReference();
-    }
-
-    public LiveData<List<User>> getListUsers() {
-        return userDataSource.getListUsers();
-    }
-
-    public LiveData<List<User>> getUsersByPlaceIdAndDate(String placeId, String date) {
-        return userDataSource.getUsersByPlaceIdAndDate(placeId, date);
-    }
-
+                // -- FIREBASE
     public LiveData<Restaurant> updateChosenRestaurant(String uid, Restaurant restaurant, String date) {
         return userDataSource.updateChosenRestaurant(uid, restaurant, date);
     }
 
-
     public void deleteChosenRestaurant(String uid, String date) {
         userDataSource.deleteChosenRestaurant(uid, date);
     }
-
-
-    public LiveData<User> getCreatedUserLiveData() {
-        return createdUserLiveData;
-    }
-
 
     public void addRestaurantToFavorites(Restaurant restaurant, String userId) {
         userDataSource.addRestaurantToFavorites(restaurant, userId);
@@ -91,6 +62,32 @@ public class MyViewModel extends ViewModel {
 
     public void deleteRestaurantFromFavorites(String userId, String placeId) {
         userDataSource.deleteRestaurantFromFavorites(userId, placeId);
+    }
+
+
+    // USERS
+    public void createUser(User user) {
+        createdUserLiveData = userDataSource.createUser(user);
+    }
+
+    public LiveData<User> getCreatedUserLiveData() {
+        return createdUserLiveData;
+    }
+
+    public LiveData<User> getUser(String uid) {
+        return userDataSource.getUser(uid);
+    }
+
+    public Query getUsersEatingAtRestaurantQuery(String placeId) {
+        return userDataSource.getUsersEatingAtRestaurantQuery(placeId);
+    }
+
+    public LiveData<List<User>> getListUsers() {
+        return userDataSource.getListUsers();
+    }
+
+    public LiveData<List<User>> getUsersEatingAtRestaurantToday(String placeId, String date) {
+        return userDataSource.getUsersEatingAtRestaurantToday(placeId, date);
     }
 
     public void updateUsername(String username, String uid) {
@@ -103,7 +100,6 @@ public class MyViewModel extends ViewModel {
 
 
     // CHAT
-
     public LiveData<Message> createMessageForChat(String textMessage, String userSenderId, String chatId) {
         return messageDataSource.createMessageForChat(textMessage, userSenderId, chatId);
     }

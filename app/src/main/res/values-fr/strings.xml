@@ -42,7 +42,18 @@
     <string name="like_restaurant_icon_description">Icon étoile pour liker le restaurant</string>
     <string name="like">LIKER</string>
     <string name="website">SITE WEB</string>
-
+    <string name="added_to_favorites">Ajouté aux favoris</string>
+    <string name="deleted_from_fav">Supprimé des favoris</string>
+    <string name="website_unavailable">Site web non renseigné</string>
+    <string name="open_browser">Ouvrir le navigateur</string>
+    <string name="visit_website">"Visiter le site web de %s ?"</string>
+    <string name="no_restaurant_selected">Pas de restaurant…</string>
+    <string name="open_details_about_restaurant">Ouvrir les détails du restaurant</string>
+    <string name="favorite_restaurants">RESTAURANTS FAVORIS</string>
+    <string name="open_24h">Ouvert 24h/7</string>
+    <string name="closing_soon">Ferme bientôt</string>
+    <string name="close_search_bar">Fermer la bar de recherche</string>
+    <string name="search_for_restaurant">Rechercher un restaurant…</string>
     <string name="phone_number_not_available">N° de téléphone non renseigné</string>
     <string name="confirm_call">Appeler</string>
     <string name="would_you_like_to_call_place">"Appeler le restaurant %s ?"</string>
@@ -54,7 +65,29 @@
     <string name="reminder_deactivated">Rappel journalier désactivé</string>
     <string name="navigation_drawer_open">menu latéral ouvert</string>
     <string name="and">" et "</string>
-
+    <string name="account_doesnt_exist">Ce compte n\'existe plus</string>
+    <string name="logo_edit_username">logo modifier nom d\'utilisateur</string>
+    <string name="logo_save_username">logo enregistrer nom d\'utilisateur</string>
+    <string name="cancel_username_update">logo annuler la mise à jour du nom d\'utilisateur</string>
+    <string name="choose_profile_picture">Choisir une photo</string>
+    <string name="delete_account">Souhaitez vous supprimer définitivement votre compte ?</string>
+    <string name="delete">Supprimer</string>
+    <string name="account_deleted">Compte supprimé</string>
+    <string name="empty_field">Champ vide</string>
+    <string name="save">Enregistrer</string>
+    <string name="settings">Paramètres</string>
+    <string name="change_profile_picture">Photo de profil</string>
+    <string name="french_locale">Français</string>
+    <string name="touch_to_update">Toucher pour modifier</string>
+    <string name="enable_reminder">Activer/Désactiver le rappel journalier</string>
+    <string name="language">Langue</string>
+    <string name="time_to_eat">C\'est l\'heure de déjeuner !</string>
+    <string name="reminder_disabled">Notifications désactivées</string>
+    <string name="reminder_activated">Notifications activées</string>
+    <string name="change_username">Nom d\'utilisateur</string>
+    <string name="english_locale">Anglais</string>
+    <string name="locale_saved">Langue enregistrée</string>
+    <string name="delete_my_account">Supprimer mon compte</string>
 
     <!-- Chat activity -->
     <string name="profile_picture">Photo de profil</string>
@@ -64,33 +97,22 @@
     <string name="write_a_message">Composer votre message…</string>
     <string name="send_message">Envoyer le message</string>
     <string name="image_sent">Image envoyée</string>
-    <string name="close_search_bar">Fermer la bar de recherche</string>
-    <string name="search_for_restaurant">Rechercher un restaurant…</string>
     <string name="photo_access_declined">Accès aux photos refusé</string>
     <string name="error_sending_message">Erreur lors de l\'envoie du message</string>
     <string name="an_error_happened">Une erreur est survenue</string>
-    <string name="added_to_favorites">Ajouté aux favoris</string>
-    <string name="deleted_from_fav">Supprimé des favoris</string>
-    <string name="website_unavailable">Site web non renseigné</string>
-    <string name="open_browser">Ouvrir le navigateur</string>
-    <string name="visit_website">"Visiter le site web de %s ?"</string>
     <string name="permission_denied">Permission refusée</string>
     <string name="closed_in_french">Fermé</string>
+
+    <!-- UI and content descriptions -->
     <string name="cant_get_location">"Erreur lors de l'accès à la localisation"</string>
     <string name="location_unavailable">Partage de localisation inactif</string>
     <string name="im_hungry">J\'ai faim !</string>
     <string name="search_for_a_workmate">Rechercher un·e collègue…</string>
     <string name="available_workmates">Collègues disponibles</string>
-    <string name="settings">Paramètres</string>
-    <string name="change_profile_picture">Photo de profil</string>
-    <string name="french_locale">Français</string>
-    <string name="touch_to_update">Toucher pour modifier</string>
-    <string name="enable_reminder">Activer/Désactiver le rappel journalier</string>
-    <string name="language">Langue</string>
-    <string name="subtitle_app_logo">Trouvez un restaurant sympa et invitez vos collègues à déjeuner!</string>
-    <string name="sign_in_with_facebook">Se connecter avec Facebook</string>
-    <string name="sign_in_with_google">Se connecter avec Google</string>
-    <string name="change_username">Nom d\'utilisateur</string>
+    <string name="search_bar_button">Bouton : bar de rechercher</string>
+    <string name="close_current_window_icon">Icon retour à la page précédente</string>
+    <string name="search_button">Bouton rechercher</string>
+    <string name="app_requires_location">Cette application a besoin de l\'accès à votre localisation pour fonctionner.</string>
     <string name="my_lunch_toolbar_title">Mon déjeuner</string>
     <string name="workmates">Collègues</string>
     <string name="list">Liste</string>
@@ -98,27 +120,10 @@
     <string name="your_lunch">VOTRE DÉJEUNER</string>
     <string name="settings_drawer">PARAMÈTRES</string>
     <string name="logout">SE DÉCONNECTER</string>
+    <string name="internet_unavailable">Connection internet indisponible</string>
 
-
-    <string name="internet_unavailable">Connexion internet non disponible</string>
-    <string name="english_locale">Anglais</string>
-    <string name="locale_saved">Langue enregistrée</string>
-    <string name="delete_my_account">Supprimer mon compte</string>
-    <string name="search_button">Bouton rechercher</string>
-    <string name="no_restaurant_selected">Pas de restaurant…</string>
-    <string name="open_details_about_restaurant">Ouvrir les détails du restaurant</string>
-    <string name="favorite_restaurants">RESTAURANTS FAVORIS</string>
-    <string name="open_24h">Ouvert 24h/7</string>
-    <string name="closing_soon">Ferme bientôt</string>
-    <string name="delete_account">Souhaitez vous supprimer définitivement votre compte ?</string>
-    <string name="delete">Supprimer</string>
-    <string name="account_deleted">Compte supprimé</string>
-    <string name="empty_field">Champ vide</string>
-    <string name="save">Enregistrer</string>
-    <string name="app_requires_location">Cette application a besoin de l\'accès à votre localisation pour fonctionner.</string>
-    <string name="time_to_eat">C\'est l\'heure de déjeuner !</string>
-    <string name="reminder_disabled">Notifications désactivées</string>
-    <string name="reminder_activated">Notifications activées</string>
-    <string name="close_current_window_icon">Icon retour à la page précédente</string>
-    <string name="account_doesnt_exist">Ce compte n\'existe plus</string>
+    <!-- LOGIN -->
+    <string name="subtitle_app_logo">Trouvez un restaurant sympa et invitez vos collègues à déjeuner!</string>
+    <string name="sign_in_with_facebook">Se connecter avec Facebook</string>
+    <string name="sign_in_with_google">Se connecter avec Google</string>
 </resources>

@@ -37,9 +37,7 @@ import com.sophieopenclass.go4lunch.utils.CalculateRatings;
 import java.util.List;
 import java.util.Locale;
 
-import static com.sophieopenclass.go4lunch.utils.Constants.DATES_AND_RESTAURANTS_FIELD;
 import static com.sophieopenclass.go4lunch.utils.Constants.PLACE_ID;
-import static com.sophieopenclass.go4lunch.utils.Constants.PLACE_ID_FIELD;
 import static com.sophieopenclass.go4lunch.utils.Constants.PREF_LANGUAGE;
 import static com.sophieopenclass.go4lunch.utils.Constants.REQUEST_CALL;
 import static com.sophieopenclass.go4lunch.utils.DateFormatting.getTodayDateInString;
@@ -170,10 +168,8 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
     }
 
     private void setUpRecyclerView() {
-        String firestorePlaceIdPath = DATES_AND_RESTAURANTS_FIELD + getTodayDateInString() + PLACE_ID_FIELD;
         FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>()
-                .setQuery(viewModel.getCollectionReference()
-                        .whereEqualTo(firestorePlaceIdPath, placeId), User.class)
+                .setQuery(viewModel.getUsersEatingAtRestaurantQuery(placeId), User.class)
                 .build();
 
         adapter = new RestaurantWorkmatesListAdapter(options, this, Glide.with(this));

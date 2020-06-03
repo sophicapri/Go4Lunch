@@ -262,7 +262,7 @@ public class RestaurantListFragment extends Fragment {
         for (PlaceDetails placeDetails : placeDetailsList) {
             viewModel.getPlaceDetails(placeDetails.getPlaceId(), currentAppLocale)
                     .observe(getViewLifecycleOwner(), restaurant ->
-                            viewModel.getUsersByPlaceIdAndDate(placeDetails.getPlaceId(), getTodayDateInString())
+                            viewModel.getUsersEatingAtRestaurantToday(placeDetails.getPlaceId(), getTodayDateInString())
                                     .observe(getViewLifecycleOwner(), users -> {
                                         if (restaurant != null) {
                                             restaurant.setNbrOfWorkmates(users.size());

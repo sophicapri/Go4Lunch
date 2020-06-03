@@ -5,6 +5,6 @@
         android:id="@+id/search_bar_menu"
         android:icon="@drawable/ic_search_white_24dp"
         app:showAsAction="ifRoom"
-        android:title="Search bar">
+        android:title="@string/search_bar_button">
     </item>
 </menu>
