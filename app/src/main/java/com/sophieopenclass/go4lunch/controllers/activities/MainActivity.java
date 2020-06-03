@@ -157,7 +157,7 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
         super.onRestoreInstanceState(savedInstanceState);
         fragmentMapView = getSupportFragmentManager().findFragmentByTag(FRAGMENT_MAP_VIEW);
         fragmentWorkmatesList = getSupportFragmentManager().findFragmentByTag(FRAGMENT_WORKMATES_LIST);
-        fragmentRestaurantList = getSupportFragmentManager().findFragmentByTag(FRAGMENT_WORKMATES_LIST);
+        fragmentRestaurantList = getSupportFragmentManager().findFragmentByTag(FRAGMENT_RESTAURANT_LIST_VIEW);
     }
 
     @Override

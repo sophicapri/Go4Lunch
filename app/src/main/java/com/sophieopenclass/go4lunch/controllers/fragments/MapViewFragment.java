@@ -88,11 +88,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
         return new MapViewFragment();
     }
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -204,7 +199,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
                             suggestionsList.add(prediction.getPlaceId());
                         }
                     }
-                    Log.i(TAG, "displayResultsAutocomplete: " + suggestionsList.toString());
                     getPlaceDetailAutocompleteList(suggestionsList);
                 }
             } else {
@@ -215,7 +209,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
 
     private void getPlaceDetailAutocompleteList(List<String> suggestionsList) {
         List<PlaceDetails> placeDetailsList = new ArrayList<>();
-        Log.d(TAG, "getPlaceDetailAutocompleteList: " + suggestionsList.toString());
         for (String placeId : suggestionsList)
             viewModel.getPlaceDetails(placeId, currentAppLocale).observe(activity, placeDetails -> {
                 placeDetailsList.add(placeDetails);
@@ -272,7 +265,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
             cameraLocation = new Location(CAMERA_LOCATION);
             cameraLocation.setLongitude(mMap.getCameraPosition().target.longitude);
             cameraLocation.setLatitude(mMap.getCameraPosition().target.latitude);
-            Log.i(TAG, "configureMap: on camera move");
             if (!autocompleteActive)
                 getNearbyPlaces(cameraLocation);
             else
