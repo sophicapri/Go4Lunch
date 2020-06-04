@@ -117,6 +117,9 @@ dependencies {
     // Algolia
     implementation 'com.algolia:algoliasearch-android:3.27.0'
 
+    // Mockito
+    testImplementation "org.mockito:mockito-core:2.28.2"
+
 }
 
 apply plugin: 'com.google.gms.google-services'
