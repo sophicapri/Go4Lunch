@@ -32,7 +32,6 @@ import com.sophieopenclass.go4lunch.databinding.ActivityRestaurantDetailsBinding
 import com.sophieopenclass.go4lunch.models.Restaurant;
 import com.sophieopenclass.go4lunch.models.User;
 import com.sophieopenclass.go4lunch.models.json_to_java.PlaceDetails;
-import com.sophieopenclass.go4lunch.utils.CalculateRatings;
 
 import java.util.List;
 import java.util.Locale;
@@ -155,7 +154,7 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
     private void displayStars() {
         int numberOfStars = 0;
         if (placeDetails.getRating() != null) {
-            numberOfStars = CalculateRatings.getNumberOfStarsToDisplay(placeDetails.getRating());
+            numberOfStars = PlaceDetails.getNumberOfStarsToDisplay(placeDetails.getRating());
             if (numberOfStars == 1)
                 binding.oneStar.setVisibility(View.VISIBLE);
             if (numberOfStars == 2)

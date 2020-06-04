@@ -18,7 +18,6 @@ import com.sophieopenclass.go4lunch.models.json_to_java.Close;
 import com.sophieopenclass.go4lunch.models.json_to_java.OpeningHours;
 import com.sophieopenclass.go4lunch.models.json_to_java.Period;
 import com.sophieopenclass.go4lunch.models.json_to_java.PlaceDetails;
-import com.sophieopenclass.go4lunch.utils.CalculateRatings;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -137,7 +136,7 @@ public class RestaurantListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             binding.nbrOfWorkmates.setText(res.getString(R.string.nbr_of_workmates, placeDetails.getNbrOfWorkmates()));
 
             if (placeDetails.getRating() != null) {
-                int numberOfStars = CalculateRatings.getNumberOfStarsToDisplay(placeDetails.getRating());
+                int numberOfStars = PlaceDetails.getNumberOfStarsToDisplay(placeDetails.getRating());
                 if (numberOfStars == 1)
                     binding.oneStar.setVisibility(View.VISIBLE);
                 if (numberOfStars == 2)

@@ -24,6 +24,7 @@ import java.util.Comparator;
 import java.util.Objects;
 
 import static android.content.Intent.EXTRA_UID;
+import static com.sophieopenclass.go4lunch.utils.DateFormatting.getStringToDate;
 import static com.sophieopenclass.go4lunch.utils.DateFormatting.getTodayDateInString;
 
 public class UserLunchDetailActivity extends BaseActivity<MyViewModel> {
@@ -189,7 +190,7 @@ public class UserLunchDetailActivity extends BaseActivity<MyViewModel> {
     public static class RestaurantRecentComparator implements Comparator<Restaurant> {
         @Override
         public int compare(Restaurant left, Restaurant right) {
-            return right.getDateOfLunch().compareTo(left.getDateOfLunch());
+            return getStringToDate(right.getDateOfLunch()).compareTo(getStringToDate(left.getDateOfLunch()));
         }
     }
 

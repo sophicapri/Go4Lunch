@@ -262,4 +262,15 @@ public class PlaceDetails {
         }
         return "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ffishtankclub.com%2Fwp-content%2Fuploads%2F2016%2F09%2FimgUnavailable.png&f=1&nofb=1";
     }
+
+    public static int getNumberOfStarsToDisplay(double rating) {
+        int numberOfStars;
+        if (rating < 3)
+            numberOfStars = 1;
+        else if (rating >= 3 && rating < 4 )
+            numberOfStars = 2;
+        else
+            numberOfStars = 3;
+        return numberOfStars;
+    }
 }

@@ -37,6 +37,17 @@ public class DateFormatting {
         return formatter.format(date);
     }
 
+    public static Date getStringToDate(String dateString){
+        SimpleDateFormat formatter = new SimpleDateFormat("MMM dd, yyyy", Locale.US);
+        Date date = null;
+        try {
+            date = formatter.parse(dateString);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return date;
+    }
+
     // To be able to compare two dates
     public static Date getDateWithoutTime(Date date) {
         Calendar calendar = Calendar.getInstance();
