@@ -18,7 +18,6 @@ public class Restaurant {
         this.address = address;
         this.urlPhoto = urlPhoto;
         this.numberOfStars = numberOfStars;
-        //dateOfLunch = DateFormatting.getTodayDateInString();
     }
 
     // --- GETTERS ---
@@ -48,6 +47,9 @@ public class Restaurant {
     public void setName(String name) {
         this.name = name;
     }
+    public void setDateOfLunch(String dateOfLunch) {
+        this.dateOfLunch = dateOfLunch;
+    }
     public void setAddress(String address) {
         this.address = address;
     }
@@ -56,8 +58,5 @@ public class Restaurant {
     }
     public void setNumberOfStars(int numberOfStars) {
         this.numberOfStars = numberOfStars;
-    }
-    public void setDateOfLunch(String dateOfLunch) {
-        this.dateOfLunch = dateOfLunch;
     }
 }

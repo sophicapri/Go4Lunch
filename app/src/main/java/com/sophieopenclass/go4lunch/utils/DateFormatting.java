@@ -32,11 +32,13 @@ public class DateFormatting {
         return "";
     }
 
+    // To display the date in the chats
     public static String formatDateToString(Date date) {
         DateFormat formatter = DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault());
         return formatter.format(date);
     }
 
+    // To order the list of previous restaurants
     public static Date getStringToDate(String dateString){
         SimpleDateFormat formatter = new SimpleDateFormat("MMM dd, yyyy", Locale.US);
         Date date = null;
