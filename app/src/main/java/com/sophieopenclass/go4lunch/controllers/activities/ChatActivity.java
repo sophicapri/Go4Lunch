@@ -111,8 +111,8 @@ public class ChatActivity extends BaseActivity<MyViewModel> implements ChatViewA
     }
 
     private void createChatAndSendMessage() {
-        viewModel.createChat(currentUserId, workmateId).observe(this, aBoolean -> {
-            if (aBoolean)
+        viewModel.createChat(currentUserId, workmateId).observe(this, chatCreationSuccessful -> {
+            if (chatCreationSuccessful)
                 viewModel.getChatId(currentUserId, workmateId).observe(this, this::sendMessage);
             else
                 Toast.makeText(this, R.string.error_sending_message, Toast.LENGTH_LONG).show();
