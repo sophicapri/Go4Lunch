@@ -33,7 +33,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.sophieopenclass.go4lunch.R;
-import com.sophieopenclass.go4lunch.controllers.activities.LoginPageActivity;
+import com.sophieopenclass.go4lunch.controllers.activities.LoginActivity;
 import com.sophieopenclass.go4lunch.controllers.activities.RestaurantDetailsActivity;
 import com.sophieopenclass.go4lunch.controllers.activities.UserLunchDetailActivity;
 import com.sophieopenclass.go4lunch.controllers.fragments.MapViewFragment;
@@ -270,17 +270,9 @@ public abstract class BaseActivity<T extends ViewModel> extends AppCompatActivit
         startActivity(intent);
     }
 
-    public void signOut() {
-        AuthUI.getInstance().signOut(this).addOnSuccessListener(aVoid -> backToLoginPage());
-    }
-
-    public void deleteAccount() {
-        AuthUI.getInstance().delete(this).addOnSuccessListener(v -> backToLoginPage());
-    }
-
     protected void backToLoginPage() {
         finishAffinity();
-        Intent intent = new Intent(this, LoginPageActivity.class);
+        Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
         workManager.cancelAllWork();
     }

@@ -20,7 +20,7 @@ import com.sophieopenclass.go4lunch.models.User;
 import java.util.Collections;
 
 
-public class LoginPageActivity extends BaseActivity<MyViewModel> {
+public class LoginActivity extends BaseActivity<MyViewModel> {
     private static final int RC_SIGN_IN = 124;
     private ActivityLoginBinding binding;
 

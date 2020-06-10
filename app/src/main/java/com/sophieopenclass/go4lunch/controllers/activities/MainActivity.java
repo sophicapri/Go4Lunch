@@ -19,6 +19,7 @@ import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.firebase.ui.auth.AuthUI;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.material.navigation.NavigationView;
@@ -264,6 +265,10 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
         binding.searchBarRestaurantList.searchBarRestaurantList.setVisibility(View.GONE);
         binding.searchBarMap.searchBarMap.setVisibility(View.GONE);
         binding.searchBarWorkmates.searchBarWorkmates.setVisibility(View.GONE);
+    }
+
+    public void signOut() {
+        AuthUI.getInstance().signOut(this).addOnSuccessListener(aVoid -> backToLoginPage());
     }
 
     @Override

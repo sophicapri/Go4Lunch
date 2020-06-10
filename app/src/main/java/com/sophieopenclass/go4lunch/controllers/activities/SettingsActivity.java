@@ -19,6 +19,7 @@ import androidx.core.app.ActivityCompat;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.firebase.ui.auth.AuthUI;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.storage.FirebaseStorage;
@@ -152,6 +153,10 @@ public class SettingsActivity extends BaseActivity<MyViewModel> {
                 .show();
     }
 
+    public void deleteAccount() {
+        AuthUI.getInstance().delete(this).addOnSuccessListener(v -> backToLoginPage());
+    }
+
     private void displayCurrentLocale() {
         if (currentAppLocale.equals(FRENCH_LOCALE))
             binding.currentLocale.setText(R.string.french_locale);
@@ -196,9 +201,9 @@ public class SettingsActivity extends BaseActivity<MyViewModel> {
     }
 
     private void refreshActivity() {
-        finish();
         Intent intent = new Intent(this, SettingsActivity.class);
         startActivity(intent);
+        finish();
     }
 
     private void chooseImageFromPhone() {

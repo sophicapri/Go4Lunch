@@ -31,7 +31,7 @@ public class SplashScreenActivity extends BaseActivity<MyViewModel> {
     }
 
     private void startLoginActivity() {
-        Intent intent = new Intent(this, LoginPageActivity.class);
+        Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
         finish();
     }

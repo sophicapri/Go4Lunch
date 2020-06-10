@@ -203,7 +203,7 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
                     if (i != weekdaysArray.size() - 1)
                         weekdays.append(getDayWithUpperCase(weekdaysArray.get(i), i)).append("\n");
                     else
-                        weekdays.append(weekdaysArray.get(i));
+                        weekdays.append(getDayWithUpperCase(weekdaysArray.get(i), i));
                 }
                 binding.weekdaysOpenings.setText(weekdays.toString());
             } else {
@@ -213,9 +213,9 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
     }
 
     public String getDayWithUpperCase(String openingHour, int index) {
-        String[] daysInEnglish = getResources().getStringArray(R.array.days_lower_case);
-        String[] daysInFrench = getResources().getStringArray(R.array.days_with_upper_case);
-        return openingHour.replace(daysInEnglish[index], daysInFrench[index]);
+        String[] daysLowerCase = getResources().getStringArray(R.array.days_lower_case);
+        String[] daysUpperCase = getResources().getStringArray(R.array.days_with_upper_case);
+        return openingHour.replace(daysLowerCase[index], daysUpperCase[index]);
     }
 
     private void handleRestaurantSelection(User currentUser) {
@@ -225,8 +225,7 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
                 if (restaurantAdded == null) {
                     Toast.makeText(this, R.string.an_error_happened, Toast.LENGTH_LONG).show();
                     binding.addRestaurant.setImageDrawable(getResources().getDrawable(R.drawable.ic_add_black_24dp));
-                } else
-                Log.i(TAG, "handleRestaurantSelection: " + restaurantAdded.getName());
+                }
             });
         } else {
             binding.addRestaurant.setImageDrawable(getResources().getDrawable(R.drawable.ic_add_black_24dp));

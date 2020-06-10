@@ -36,7 +36,7 @@
         <activity android:name=".controllers.activities.RestaurantDetailsActivity" />
         <activity android:name=".controllers.activities.UserLunchDetailActivity" />
         <activity android:name=".controllers.activities.ChatActivity" />
-        <activity android:name=".controllers.activities.LoginPageActivity" />
+        <activity android:name=".controllers.activities.LoginActivity" />
     </application>
 
 </manifest>

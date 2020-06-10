@@ -12,8 +12,9 @@ public class PlaceService {
     public static final String PHOTO_URL = "photo?maxwidth=400&&photoreference=";
 
     private static void initLogging(){
-        logging.level(HttpLoggingInterceptor.Level.BODY);
         httpClient = new OkHttpClient.Builder();
+
+        logging.level(HttpLoggingInterceptor.Level.BODY);
         //httpClient.addInterceptor(logging);
     }
 
@@ -27,5 +28,4 @@ public class PlaceService {
 
         return retrofit.create(serviceClass);
     }
-
 }
