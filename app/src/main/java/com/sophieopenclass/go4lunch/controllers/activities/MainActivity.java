@@ -42,7 +42,7 @@ import static com.sophieopenclass.go4lunch.utils.Constants.FRAGMENT_WORKMATES_LI
 import static com.sophieopenclass.go4lunch.utils.Constants.PREF_REMINDER;
 import static com.sophieopenclass.go4lunch.utils.Constants.RESTART_STATE;
 
-public class MainActivity extends BaseActivity<MyViewModel> implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends BaseActivity<MyViewModel, ActivityMainBinding> implements NavigationView.OnNavigationItemSelectedListener {
     public ActivityMainBinding binding;
     private User currentUser;
     private Fragment fragmentMapView;
@@ -51,10 +51,9 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
     public PlacesClient placesClient;
 
     @Override
-    public View getFragmentLayout() {
+    public int getLayout() {
         checkCurrentLocale();
-        binding = ActivityMainBinding.inflate(getLayoutInflater());
-        return binding.getRoot();
+        return R.layout.activity_main;
     }
 
     @Override
@@ -208,7 +207,7 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
     private void showFragment(String controllerIdentifier) {
         switch (controllerIdentifier) {
             case ACTIVITY_MY_LUNCH:
-                startNewActivity(UserLunchDetailActivity.class);
+                startNewActivity(UserDetailActivity.class);
                 break;
             case ACTIVITY_SETTINGS:
                 startNewActivity(SettingsActivity.class);
@@ -227,7 +226,7 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
 
     private void startNewActivity(Class activity) {
         Intent intent = new Intent(this, activity);
-        if (activity.equals(UserLunchDetailActivity.class))
+        if (activity.equals(UserDetailActivity.class))
             intent.putExtra(EXTRA_UID, currentUser.getUid());
         startActivity(intent);
     }

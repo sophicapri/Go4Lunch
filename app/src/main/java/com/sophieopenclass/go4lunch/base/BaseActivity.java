@@ -13,8 +13,10 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.View;
 import android.widget.Toast;
+
+import androidx.databinding.DataBindingUtil;
+import androidx.databinding.ViewDataBinding;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -28,14 +30,13 @@ import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 
 import com.facebook.FacebookSdk;
-import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.sophieopenclass.go4lunch.R;
 import com.sophieopenclass.go4lunch.controllers.activities.LoginActivity;
 import com.sophieopenclass.go4lunch.controllers.activities.RestaurantDetailsActivity;
-import com.sophieopenclass.go4lunch.controllers.activities.UserLunchDetailActivity;
+import com.sophieopenclass.go4lunch.controllers.activities.UserDetailActivity;
 import com.sophieopenclass.go4lunch.controllers.fragments.MapViewFragment;
 import com.sophieopenclass.go4lunch.controllers.fragments.RestaurantListFragment;
 import com.sophieopenclass.go4lunch.injection.Injection;
@@ -62,14 +63,14 @@ import static com.sophieopenclass.go4lunch.utils.Constants.RESTART_STATE;
 import static com.sophieopenclass.go4lunch.utils.Constants.SHARED_PREFS;
 import static com.sophieopenclass.go4lunch.utils.Constants.WORK_REQUEST_NAME;
 
-public abstract class BaseActivity<T extends ViewModel> extends AppCompatActivity implements Listeners.OnWorkmateClickListener,
+public abstract class BaseActivity<T extends ViewModel, B extends ViewDataBinding> extends AppCompatActivity implements Listeners.OnWorkmateClickListener,
         Listeners.OnRestaurantClickListener, EasyPermissions.PermissionCallbacks {
     public static final int LOCATION_REQUEST_CODE = 777;
     public final String TAG = "com.sophie.MAIN";
     public T viewModel;
+    public B binding;
     public String currentAppLanguage;
     public final WorkManager workManager = WorkManager.getInstance(this);
-    public static Location sCurrentLocation = null;
     public LocationManager locationManager;
     public static SharedPreferences sharedPrefs;
     public static boolean ORIENTATION_CHANGED = false;
@@ -86,7 +87,8 @@ public abstract class BaseActivity<T extends ViewModel> extends AppCompatActivit
         FacebookSdk.setAdvertiserIDCollectionEnabled(false);
         FacebookSdk.setAutoLogAppEventsEnabled(false);
         configureViewModel();
-        setContentView(this.getFragmentLayout());
+        configureViewBinding();
+        setContentView(this.getLayout());
     }
 
     @SuppressWarnings("unchecked")
@@ -97,7 +99,11 @@ public abstract class BaseActivity<T extends ViewModel> extends AppCompatActivit
 
     public abstract Class getViewModelClass();
 
-    protected abstract View getFragmentLayout();
+    private void configureViewBinding() {
+        binding = DataBindingUtil.setContentView(this, getLayout());
+    }
+
+    protected abstract int getLayout();
 
 
     // --------------------
@@ -258,7 +264,7 @@ public abstract class BaseActivity<T extends ViewModel> extends AppCompatActivit
 
     @Override
     public void onWorkmateClick(String uid) {
-        Intent intent = new Intent(this, UserLunchDetailActivity.class);
+        Intent intent = new Intent(this, UserDetailActivity.class);
         intent.putExtra(EXTRA_UID, uid);
         startActivity(intent);
     }

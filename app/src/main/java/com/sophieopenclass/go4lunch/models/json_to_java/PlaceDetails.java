@@ -5,6 +5,7 @@ import android.location.Location;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.sophieopenclass.go4lunch.AppController;
 import com.sophieopenclass.go4lunch.BuildConfig;
 import com.sophieopenclass.go4lunch.base.BaseActivity;
 
@@ -133,7 +134,7 @@ public class PlaceDetails {
         Location restaurantLocation = new Location(this.getName());
         restaurantLocation.setLatitude(this.getGeometry().getLocation().getLat());
         restaurantLocation.setLongitude(this.getGeometry().getLocation().getLng());
-        return (int) restaurantLocation.distanceTo(BaseActivity.sCurrentLocation);
+        return (int) restaurantLocation.distanceTo(AppController.getInstance().getCurrentLocation());
     }
 
     public PlusCode getPlusCode() {

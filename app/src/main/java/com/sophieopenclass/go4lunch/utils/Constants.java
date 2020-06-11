@@ -26,7 +26,7 @@ public class Constants {
     public static boolean RESTART_STATE = false;
 
 
-    public static final String ACTIVITY_MY_LUNCH = "UserLunchDetailActivity";
+    public static final String ACTIVITY_MY_LUNCH = "UserDetailActivity";
     public static final String ACTIVITY_SETTINGS = "SettingsActivity";
     public static final String FRAGMENT_MAP_VIEW = "MapViewFragment";
     public static final String FRAGMENT_RESTAURANT_LIST_VIEW = "RestaurantListFragment" ;

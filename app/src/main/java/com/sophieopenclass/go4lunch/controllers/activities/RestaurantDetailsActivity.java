@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -41,9 +40,8 @@ import static com.sophieopenclass.go4lunch.utils.Constants.PREF_LANGUAGE;
 import static com.sophieopenclass.go4lunch.utils.Constants.REQUEST_CALL;
 import static com.sophieopenclass.go4lunch.utils.DateFormatting.getTodayDateInString;
 
-public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> implements View.OnClickListener {
+public class RestaurantDetailsActivity extends BaseActivity<MyViewModel, ActivityRestaurantDetailsBinding> implements View.OnClickListener {
     private String currentAppLocale = sharedPrefs.getString(PREF_LANGUAGE, Locale.getDefault().getLanguage());
-    private ActivityRestaurantDetailsBinding binding;
     private FirestoreRecyclerAdapter adapter;
     private String placeId;
     private PlaceDetails placeDetails;
@@ -57,9 +55,8 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
     }
 
     @Override
-    protected View getFragmentLayout() {
-        binding = ActivityRestaurantDetailsBinding.inflate(getLayoutInflater());
-        return binding.getRoot();
+    protected int getLayout() {
+        return R.layout.activity_restaurant_details;
     }
 
     @Override

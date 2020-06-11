@@ -2,18 +2,18 @@ package com.sophieopenclass.go4lunch.controllers.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 
 import androidx.annotation.Nullable;
 
 import com.sophieopenclass.go4lunch.MyViewModel;
+import com.sophieopenclass.go4lunch.R;
 import com.sophieopenclass.go4lunch.base.BaseActivity;
 import com.sophieopenclass.go4lunch.databinding.ActivitySplashScreenBinding;
 
-public class SplashScreenActivity extends BaseActivity<MyViewModel> {
+public class SplashScreenActivity extends BaseActivity<MyViewModel, ActivitySplashScreenBinding> {
     @Override
-    public View getFragmentLayout() {
-        return ActivitySplashScreenBinding.inflate(getLayoutInflater()).getRoot();
+    public int getLayout() {
+        return R.layout.activity_splash_screen;
     }
 
     @Override

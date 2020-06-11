@@ -14,7 +14,7 @@ import com.sophieopenclass.go4lunch.MyViewModel;
 import com.sophieopenclass.go4lunch.R;
 import com.sophieopenclass.go4lunch.base.BaseActivity;
 import com.sophieopenclass.go4lunch.controllers.adapters.PreviousRestaurantsAdapter;
-import com.sophieopenclass.go4lunch.databinding.ActivityWorkmateDetailBinding;
+import com.sophieopenclass.go4lunch.databinding.ActivityUserDetailBinding;
 import com.sophieopenclass.go4lunch.models.Restaurant;
 import com.sophieopenclass.go4lunch.models.User;
 
@@ -27,8 +27,7 @@ import static android.content.Intent.EXTRA_UID;
 import static com.sophieopenclass.go4lunch.utils.DateFormatting.getStringToDate;
 import static com.sophieopenclass.go4lunch.utils.DateFormatting.getTodayDateInString;
 
-public class UserLunchDetailActivity extends BaseActivity<MyViewModel> {
-    ActivityWorkmateDetailBinding binding;
+public class UserDetailActivity extends BaseActivity<MyViewModel, ActivityUserDetailBinding> {
     String uid = null;
     ArrayList<Restaurant> previousRestaurantList = new ArrayList<>();
     ArrayList<Restaurant> favRestaurantList = new ArrayList<>();
@@ -42,9 +41,8 @@ public class UserLunchDetailActivity extends BaseActivity<MyViewModel> {
     }
 
     @Override
-    protected View getFragmentLayout() {
-        binding = ActivityWorkmateDetailBinding.inflate(getLayoutInflater());
-        return binding.getRoot();
+    protected int getLayout() {
+        return R.layout.activity_user_detail;
     }
 
     @Override

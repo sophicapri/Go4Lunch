@@ -20,22 +20,20 @@ import com.sophieopenclass.go4lunch.models.User;
 import java.util.Collections;
 
 
-public class LoginActivity extends BaseActivity<MyViewModel> {
+public class LoginActivity extends BaseActivity<MyViewModel, ActivityLoginBinding> {
     private static final int RC_SIGN_IN = 124;
-    private ActivityLoginBinding binding;
 
     @Override
-    public View getFragmentLayout() {
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+    public int getLayout() {
         // Update the locale depending on user's saved preferences
         checkCurrentLocale();
-        binding = ActivityLoginBinding.inflate(getLayoutInflater());
-        return binding.getRoot();
+        return R.layout.activity_login;
     }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         binding.facebookSignInBtn.setOnClickListener(v -> startSignInWithFacebook());
         binding.googleSignInBtn.setOnClickListener(v -> startSignInWithGoogle());
     }

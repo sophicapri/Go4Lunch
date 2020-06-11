@@ -41,9 +41,8 @@ import static com.sophieopenclass.go4lunch.utils.Constants.FRENCH_LOCALE;
 import static com.sophieopenclass.go4lunch.utils.Constants.PREF_LANGUAGE;
 import static com.sophieopenclass.go4lunch.utils.Constants.PREF_REMINDER;
 
-public class SettingsActivity extends BaseActivity<MyViewModel> {
+public class SettingsActivity extends BaseActivity<MyViewModel, ActivitySettingsBinding> {
     //private static final String TAG = "com.sophie.Settings";
-    private ActivitySettingsBinding binding;
     public static boolean localeHasChanged = false;
     public static boolean profileHasChanged = false;
     private User currentUser;
@@ -57,9 +56,8 @@ public class SettingsActivity extends BaseActivity<MyViewModel> {
     }
 
     @Override
-    public View getFragmentLayout() {
-        binding = ActivitySettingsBinding.inflate(getLayoutInflater());
-        return binding.getRoot();
+    public int getLayout() {
+        return R.layout.activity_settings;
     }
 
     @Override

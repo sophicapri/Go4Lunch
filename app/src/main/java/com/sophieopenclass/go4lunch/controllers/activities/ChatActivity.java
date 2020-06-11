@@ -36,10 +36,9 @@ import java.util.UUID;
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.content.Intent.EXTRA_UID;
 
-public class ChatActivity extends BaseActivity<MyViewModel> implements ChatViewAdapter.Listener {
+public class ChatActivity extends BaseActivity<MyViewModel, ActivityChatBinding> implements ChatViewAdapter.Listener {
     public static final int RC_CHOOSE_PHOTO = 224;
     public static final int READ_STORAGE_RC = 333;
-    private ActivityChatBinding binding;
     private FirestoreRecyclerAdapter adapter;
     private String currentUserId;
     private String workmateId;
@@ -54,9 +53,8 @@ public class ChatActivity extends BaseActivity<MyViewModel> implements ChatViewA
     }
 
     @Override
-    protected View getFragmentLayout() {
-        binding = ActivityChatBinding.inflate(getLayoutInflater());
-        return binding.getRoot();
+    protected int getLayout() {
+        return R.layout.activity_chat;
     }
 
     @Override

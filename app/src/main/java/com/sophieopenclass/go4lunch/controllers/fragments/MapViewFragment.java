@@ -46,6 +46,7 @@ import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRe
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
+import com.sophieopenclass.go4lunch.AppController;
 import com.sophieopenclass.go4lunch.MyViewModel;
 import com.sophieopenclass.go4lunch.R;
 import com.sophieopenclass.go4lunch.base.BaseActivity;
@@ -240,7 +241,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
                     configureMap(currentLocation);
                     cameraLocation = currentLocation;
                     //Init the current location for the entire app
-                    BaseActivity.sCurrentLocation = currentLocation;
+                    AppController.getInstance().setCurrentLocation(currentLocation);
                 }
             } else {
                 Toast.makeText(getActivity(), R.string.cant_get_location, Toast.LENGTH_SHORT).show();
@@ -290,8 +291,9 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
     private void initMarkers(List<PlaceDetails> placeDetailsList) {
         for (PlaceDetails placeDetails : placeDetailsList) {
             viewModel.getUsersEatingAtRestaurantToday(placeDetails.getPlaceId(), getTodayDateInString()).observe(getViewLifecycleOwner(), users -> {
-                int markerDrawable;
-                if (users.isEmpty())
+                int markerDrawable = R.drawable.ic_marker_red;
+                if (activity.getCurrentUser() != null)
+                if (users.isEmpty() || (users.size() == 1 && users.get(0).getUid().equals(activity.getCurrentUser().getUid())))
                     markerDrawable = R.drawable.ic_marker_red;
                 else
                     markerDrawable = R.drawable.ic_marker_green;

@@ -34,6 +34,7 @@ import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRe
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.maps.android.SphericalUtil;
+import com.sophieopenclass.go4lunch.AppController;
 import com.sophieopenclass.go4lunch.MyViewModel;
 import com.sophieopenclass.go4lunch.R;
 import com.sophieopenclass.go4lunch.base.BaseActivity;
@@ -160,7 +161,8 @@ public class RestaurantListFragment extends Fragment {
      */
     private RectangularBounds getRectangularBounds() {
         double distanceFromCenterToCorner = RADIUS * Math.sqrt(2.0);
-        LatLng latLng = new LatLng(BaseActivity.sCurrentLocation.getLatitude(), BaseActivity.sCurrentLocation.getLongitude());
+        Location currentLocation = AppController.getInstance().getCurrentLocation();
+        LatLng latLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
         LatLng northEastCorner =
                 SphericalUtil.computeOffset(latLng, distanceFromCenterToCorner, HEADING_NORTH_WEST);
         LatLng southWestCorner =
@@ -233,9 +235,9 @@ public class RestaurantListFragment extends Fragment {
         }
 
         if (context.requestLocationAccess())
-            if (BaseActivity.sCurrentLocation != null)
+            if (AppController.getInstance().getCurrentLocation() != null)
                 if (nextPageToken == null)
-                    viewModel.getNearbyPlaces(getLatLngString(BaseActivity.sCurrentLocation))
+                    viewModel.getNearbyPlaces(getLatLngString(AppController.getInstance().getCurrentLocation()))
                             .observe(getViewLifecycleOwner(), restaurantsResult -> {
                                 getFullPlaceDetails(restaurantsResult.getPlaceDetails());
                                 this.nextPageToken = restaurantsResult.getNextPageToken();
@@ -364,7 +366,7 @@ public class RestaurantListFragment extends Fragment {
         Task<Location> task = fusedLocationProviderClient.getLastLocation();
         task.addOnCompleteListener(getLocationTask -> {
             if (getLocationTask.isSuccessful()) {
-                BaseActivity.sCurrentLocation = getLocationTask.getResult();
+                AppController.getInstance().setCurrentLocation(getLocationTask.getResult());
                 observePlaces(null);
             } else
                 Toast.makeText(getActivity(), R.string.cant_get_location, Toast.LENGTH_SHORT).show();
