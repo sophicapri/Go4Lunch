@@ -2,12 +2,15 @@ package com.sophieopenclass.go4lunch.base;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -27,6 +30,7 @@ import com.facebook.FacebookSdk;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.sophieopenclass.go4lunch.AppController;
 import com.sophieopenclass.go4lunch.R;
 import com.sophieopenclass.go4lunch.controllers.activities.LoginActivity;
 import com.sophieopenclass.go4lunch.controllers.activities.RestaurantDetailsActivity;
@@ -41,6 +45,7 @@ import com.sophieopenclass.go4lunch.utils.ViewModelFactory;
 
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import pub.devrel.easypermissions.EasyPermissions;
@@ -71,6 +76,7 @@ public abstract class BaseActivity<T extends ViewModel> extends AppCompatActivit
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        AppController.getInstance().checkCurrentLocale(this);
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         FacebookSdk.setAdvertiserIDCollectionEnabled(false);
         FacebookSdk.setAutoLogAppEventsEnabled(false);

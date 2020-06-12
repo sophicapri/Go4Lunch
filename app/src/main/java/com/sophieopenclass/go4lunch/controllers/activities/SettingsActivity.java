@@ -190,19 +190,17 @@ public class SettingsActivity extends BaseActivity<MyViewModel> {
     }
 
     private void changeAppLanguage(String locale) {
-        if (!locale.equals(PreferenceHelper.getCurrentLocale())) {
             PreferenceHelper.setCurrentLocale(locale);
             localeHasChanged = true;
-            AppController.getInstance().updateLocale();
+            AppController.getInstance().updateLocale(this);
             refreshActivity();
             Toast.makeText(this, R.string.locale_saved, Toast.LENGTH_SHORT).show();
-        }
     }
 
     private void refreshActivity() {
         Intent intent = new Intent(this, SettingsActivity.class);
-        startActivity(intent);
         finish();
+        startActivity(intent);
     }
 
     private void chooseImageFromPhone() {
