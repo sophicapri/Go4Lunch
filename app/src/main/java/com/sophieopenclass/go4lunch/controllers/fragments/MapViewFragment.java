@@ -258,6 +258,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, DEFAULT_ZOOM));
         if (!autocompleteActive)
             getNearbyPlaces(currentLocation);
+
         cameraLocation = new Location(currentLocation);
         mMap.setOnCameraMoveStartedListener(i -> {
             cameraLocation = new Location(CAMERA_LOCATION);

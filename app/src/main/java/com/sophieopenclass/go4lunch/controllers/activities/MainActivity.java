@@ -75,14 +75,6 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
     }
 
     @Override
-    protected void onRestart() {
-        super.onRestart();
-        // to not display the map if the user leaves the app and comes back
-        // or when permissions get granted
-        RESTART_STATE = true;
-    }
-
-    @Override
     public Class getViewModelClass() {
         return MyViewModel.class;
     }
@@ -125,10 +117,19 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
     }
 
     @Override
+    protected void onRestart() {
+        super.onRestart();
+        // to not display the map if the user leaves the app and comes back
+        // or when permissions get granted
+        RESTART_STATE = true;
+    }
+    
+    @Override
     protected void onResume() {
         super.onResume();
+        // In order to not show mapFragment every time the activity gets recreated
         if (!ORIENTATION_CHANGED && !RESTART_STATE) {
-            showFragment(FRAGMENT_MAP_VIEW);
+            showFragmentOrActivity(FRAGMENT_MAP_VIEW);
             // To activate notifications by default when first launching the app OR
             // activate the notifications if the user signed out and logged back in
             if (PreferenceHelper.getReminderPreference()) {
@@ -138,15 +139,14 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
 
         // Update UI
         updateUIafterChangeInSettings();
-
         if (RESTART_STATE)
             RESTART_STATE = false;
     }
 
     private void updateUIafterChangeInSettings() {
         if (SettingsActivity.localeHasChanged || SettingsActivity.profileHasChanged) {
-            finish();
             Intent intent = new Intent(this, MainActivity.class);
+            finish();
             startActivity(intent);
             SettingsActivity.localeHasChanged = false;
             SettingsActivity.profileHasChanged = false;
@@ -167,22 +167,22 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
 
         switch (id) {
             case R.id.my_lunch:
-                showFragment(ACTIVITY_MY_LUNCH);
+                showFragmentOrActivity(ACTIVITY_MY_LUNCH);
                 break;
             case R.id.settings:
-                showFragment(ACTIVITY_SETTINGS);
+                showFragmentOrActivity(ACTIVITY_SETTINGS);
                 break;
             case R.id.sign_out:
                 signOut();
                 break;
             case R.id.map_view:
-                showFragment(FRAGMENT_MAP_VIEW);
+                showFragmentOrActivity(FRAGMENT_MAP_VIEW);
                 break;
             case R.id.list_view:
-                showFragment(FRAGMENT_RESTAURANT_LIST_VIEW);
+                showFragmentOrActivity(FRAGMENT_RESTAURANT_LIST_VIEW);
                 break;
             case R.id.workmates_view:
-                showFragment(FRAGMENT_WORKMATES_LIST);
+                showFragmentOrActivity(FRAGMENT_WORKMATES_LIST);
                 break;
             default:
                 break;
@@ -204,7 +204,7 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
             super.onBackPressed();
     }
 
-    private void showFragment(String controllerIdentifier) {
+    private void showFragmentOrActivity(String controllerIdentifier) {
         switch (controllerIdentifier) {
             case ACTIVITY_MY_LUNCH:
                 startNewActivity(UserDetailActivity.class);
