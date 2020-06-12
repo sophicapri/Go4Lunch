@@ -1,6 +1,7 @@
 package com.sophieopenclass.go4lunch.utils;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 
 public class Constants {
     public static final String PLACE_ID = "placeId";
@@ -47,8 +48,8 @@ public class Constants {
     public static final String HITS_ALGOLIA = "hits";
 
     public static final int LOCATION_PERMISSION_REQUEST_CODE = 123;
-    public static final String PERMS = ACCESS_FINE_LOCATION;
     public static final int REQUEST_CALL = 567;
+    public static final String STORAGE_PERMS = READ_EXTERNAL_STORAGE;
 
 
     //

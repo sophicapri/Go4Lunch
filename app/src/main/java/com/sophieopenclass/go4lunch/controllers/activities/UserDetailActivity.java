@@ -1,9 +1,11 @@
 package com.sophieopenclass.go4lunch.controllers.activities;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.bumptech.glide.Glide;
@@ -27,12 +29,13 @@ import static android.content.Intent.EXTRA_UID;
 import static com.sophieopenclass.go4lunch.utils.DateFormatting.getStringToDate;
 import static com.sophieopenclass.go4lunch.utils.DateFormatting.getTodayDateInString;
 
-public class UserDetailActivity extends BaseActivity<MyViewModel, ActivityUserDetailBinding> {
-    String uid = null;
-    ArrayList<Restaurant> previousRestaurantList = new ArrayList<>();
-    ArrayList<Restaurant> favRestaurantList = new ArrayList<>();
-    User selectedUser;
-    PreviousRestaurantsAdapter adapter;
+public class UserDetailActivity extends BaseActivity<MyViewModel> {
+    private String uid = null;
+    private ArrayList<Restaurant> previousRestaurantList = new ArrayList<>();
+    private ArrayList<Restaurant> favRestaurantList = new ArrayList<>();
+    private User selectedUser;
+    private PreviousRestaurantsAdapter adapter;
+    private ActivityUserDetailBinding binding;
     private boolean isFavorite = true;
 
     @Override
@@ -41,8 +44,9 @@ public class UserDetailActivity extends BaseActivity<MyViewModel, ActivityUserDe
     }
 
     @Override
-    protected int getLayout() {
-        return R.layout.activity_user_detail;
+    protected View getLayout() {
+        binding = ActivityUserDetailBinding.inflate(getLayoutInflater());
+        return binding.getRoot();
     }
 
     @Override

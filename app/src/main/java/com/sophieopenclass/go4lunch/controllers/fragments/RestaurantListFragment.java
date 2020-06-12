@@ -42,19 +42,17 @@ import com.sophieopenclass.go4lunch.controllers.activities.MainActivity;
 import com.sophieopenclass.go4lunch.controllers.adapters.RestaurantListAdapter;
 import com.sophieopenclass.go4lunch.databinding.RecyclerViewRestaurantsBinding;
 import com.sophieopenclass.go4lunch.models.json_to_java.PlaceDetails;
+import com.sophieopenclass.go4lunch.utils.PreferenceHelper;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Locale;
 
 import static com.sophieopenclass.go4lunch.base.BaseActivity.ORIENTATION_CHANGED;
-import static com.sophieopenclass.go4lunch.base.BaseActivity.sharedPrefs;
 import static com.sophieopenclass.go4lunch.controllers.fragments.MapViewFragment.getLatLngString;
 import static com.sophieopenclass.go4lunch.utils.Constants.HEADING_NORTH_WEST;
 import static com.sophieopenclass.go4lunch.utils.Constants.HEADING_SOUTH_WEST;
-import static com.sophieopenclass.go4lunch.utils.Constants.PREF_LANGUAGE;
 import static com.sophieopenclass.go4lunch.utils.DateFormatting.getTodayDateInString;
 
 public class RestaurantListFragment extends Fragment {
@@ -76,7 +74,7 @@ public class RestaurantListFragment extends Fragment {
     private int bottomProgressBarPosition;
     private boolean isLoading;
     private TextWatcher textWatcher;
-    private String currentAppLocale = sharedPrefs.getString(PREF_LANGUAGE, Locale.getDefault().getLanguage());
+    private String currentAppLocale = PreferenceHelper.getCurrentLocale();
 
 
     public static Fragment newInstance() {

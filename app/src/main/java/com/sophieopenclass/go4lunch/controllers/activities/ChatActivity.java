@@ -1,7 +1,6 @@
 package com.sophieopenclass.go4lunch.controllers.activities;
 
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -31,20 +30,23 @@ import com.sophieopenclass.go4lunch.databinding.ActivityChatBinding;
 import com.sophieopenclass.go4lunch.models.Message;
 import com.sophieopenclass.go4lunch.models.User;
 
+import java.util.List;
 import java.util.UUID;
+
+import pub.devrel.easypermissions.EasyPermissions;
 
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.content.Intent.EXTRA_UID;
+import static com.sophieopenclass.go4lunch.utils.Constants.STORAGE_PERMS;
 
-public class ChatActivity extends BaseActivity<MyViewModel, ActivityChatBinding> implements ChatViewAdapter.Listener {
-    public static final int RC_CHOOSE_PHOTO = 224;
-    public static final int READ_STORAGE_RC = 333;
+public class ChatActivity extends BaseActivity<MyViewModel> implements ChatViewAdapter.Listener  {
     private FirestoreRecyclerAdapter adapter;
     private String currentUserId;
     private String workmateId;
     private String chatId;
     private User currentUser;
     private Uri uriImageSelected;
+    private ActivityChatBinding binding;
 
 
     @Override
@@ -53,8 +55,9 @@ public class ChatActivity extends BaseActivity<MyViewModel, ActivityChatBinding>
     }
 
     @Override
-    protected int getLayout() {
-        return R.layout.activity_chat;
+    protected View getLayout() {
+        binding = ActivityChatBinding.inflate(getLayoutInflater());
+        return binding.getRoot();
     }
 
     @Override
@@ -194,7 +197,7 @@ public class ChatActivity extends BaseActivity<MyViewModel, ActivityChatBinding>
     // --------------------
 
     private void chooseImageFromPhone() {
-        if (ActivityCompat.checkSelfPermission(this, READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+        if (!EasyPermissions.hasPermissions(this, STORAGE_PERMS)) {
             ActivityCompat.requestPermissions(this, new String[]{READ_EXTERNAL_STORAGE}, READ_STORAGE_RC);
             return;
         }
@@ -205,14 +208,8 @@ public class ChatActivity extends BaseActivity<MyViewModel, ActivityChatBinding>
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @androidx.annotation.NonNull String[] permissions, @androidx.annotation.NonNull int[] grantResults) {
-        if (requestCode == READ_STORAGE_RC) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                chooseImageFromPhone();
-            } else {
-                Snackbar.make(binding.getRoot(), R.string.photo_access_declined, BaseTransientBottomBar.LENGTH_INDEFINITE)
-                        .setDuration(5000).show();
-            }
-        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
     }
 
     @Override
@@ -233,5 +230,19 @@ public class ChatActivity extends BaseActivity<MyViewModel, ActivityChatBinding>
                 Toast.makeText(this, getString(R.string.toast_title_no_image_chosen), Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    @Override
+    public void onPermissionsGranted(int requestCode, @NonNull List<String> perms) {
+        super.onPermissionsGranted(requestCode, perms);
+        if (requestCode == READ_STORAGE_RC)
+                chooseImageFromPhone();
+    }
+
+    @Override
+    public void onPermissionsDenied(int requestCode, @NonNull List<String> perms) {
+        super.onPermissionsDenied(requestCode, perms);
+        Snackbar.make(binding.getRoot(), R.string.photo_access_declined, BaseTransientBottomBar.LENGTH_INDEFINITE)
+                .setDuration(5000).show();
     }
 }

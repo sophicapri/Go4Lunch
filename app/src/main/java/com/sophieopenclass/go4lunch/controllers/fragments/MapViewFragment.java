@@ -49,20 +49,17 @@ import com.google.android.material.snackbar.Snackbar;
 import com.sophieopenclass.go4lunch.AppController;
 import com.sophieopenclass.go4lunch.MyViewModel;
 import com.sophieopenclass.go4lunch.R;
-import com.sophieopenclass.go4lunch.base.BaseActivity;
 import com.sophieopenclass.go4lunch.controllers.activities.MainActivity;
 import com.sophieopenclass.go4lunch.controllers.activities.RestaurantDetailsActivity;
 import com.sophieopenclass.go4lunch.databinding.FragmentMapBinding;
 import com.sophieopenclass.go4lunch.models.json_to_java.PlaceDetails;
+import com.sophieopenclass.go4lunch.utils.PreferenceHelper;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import static com.sophieopenclass.go4lunch.base.BaseActivity.ORIENTATION_CHANGED;
-import static com.sophieopenclass.go4lunch.base.BaseActivity.sharedPrefs;
 import static com.sophieopenclass.go4lunch.utils.Constants.PLACE_ID;
-import static com.sophieopenclass.go4lunch.utils.Constants.PREF_LANGUAGE;
 import static com.sophieopenclass.go4lunch.utils.DateFormatting.getTodayDateInString;
 
 public class MapViewFragment extends Fragment implements OnMapReadyCallback {
@@ -79,7 +76,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
     private MainActivity activity;
     private FragmentMapBinding binding;
     private TextWatcher textWatcher;
-    private String currentAppLocale = sharedPrefs.getString(PREF_LANGUAGE, Locale.getDefault().getLanguage());
+    private String currentAppLocale = PreferenceHelper.getCurrentLocale();
     private final AutocompleteSessionToken token = AutocompleteSessionToken.newInstance();
 
     public MapViewFragment() {

@@ -5,8 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/no_restaurants_cardview"
     app:cardCornerRadius="20dp"
-    app:cardElevation="20dp"
-   >
+    app:cardElevation="20dp">
 
    <TextView
        android:layout_width="wrap_content"

@@ -32,6 +32,7 @@ import com.sophieopenclass.go4lunch.controllers.fragments.RestaurantListFragment
 import com.sophieopenclass.go4lunch.controllers.fragments.WorkmatesListFragment;
 import com.sophieopenclass.go4lunch.databinding.ActivityMainBinding;
 import com.sophieopenclass.go4lunch.models.User;
+import com.sophieopenclass.go4lunch.utils.PreferenceHelper;
 
 import static android.content.Intent.EXTRA_UID;
 import static com.sophieopenclass.go4lunch.utils.Constants.ACTIVITY_MY_LUNCH;
@@ -39,21 +40,20 @@ import static com.sophieopenclass.go4lunch.utils.Constants.ACTIVITY_SETTINGS;
 import static com.sophieopenclass.go4lunch.utils.Constants.FRAGMENT_MAP_VIEW;
 import static com.sophieopenclass.go4lunch.utils.Constants.FRAGMENT_RESTAURANT_LIST_VIEW;
 import static com.sophieopenclass.go4lunch.utils.Constants.FRAGMENT_WORKMATES_LIST;
-import static com.sophieopenclass.go4lunch.utils.Constants.PREF_REMINDER;
 import static com.sophieopenclass.go4lunch.utils.Constants.RESTART_STATE;
 
-public class MainActivity extends BaseActivity<MyViewModel, ActivityMainBinding> implements NavigationView.OnNavigationItemSelectedListener {
-    public ActivityMainBinding binding;
+public class MainActivity extends BaseActivity<MyViewModel> implements NavigationView.OnNavigationItemSelectedListener {
     private User currentUser;
     private Fragment fragmentMapView;
     private Fragment fragmentRestaurantList;
     private Fragment fragmentWorkmatesList;
     public PlacesClient placesClient;
+    public ActivityMainBinding binding;
 
     @Override
-    public int getLayout() {
-        checkCurrentLocale();
-        return R.layout.activity_main;
+    public View getLayout() {
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        return binding.getRoot();
     }
 
     @Override
@@ -131,7 +131,7 @@ public class MainActivity extends BaseActivity<MyViewModel, ActivityMainBinding>
             showFragment(FRAGMENT_MAP_VIEW);
             // To activate notifications by default when first launching the app OR
             // activate the notifications if the user signed out and logged back in
-            if (sharedPrefs.getBoolean(PREF_REMINDER, false)) {
+            if (PreferenceHelper.getReminderPreference()) {
                 activateReminder();
             }
         }

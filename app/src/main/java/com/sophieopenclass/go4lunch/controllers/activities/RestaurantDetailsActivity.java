@@ -31,22 +31,23 @@ import com.sophieopenclass.go4lunch.databinding.ActivityRestaurantDetailsBinding
 import com.sophieopenclass.go4lunch.models.Restaurant;
 import com.sophieopenclass.go4lunch.models.User;
 import com.sophieopenclass.go4lunch.models.json_to_java.PlaceDetails;
+import com.sophieopenclass.go4lunch.utils.PreferenceHelper;
 
 import java.util.List;
-import java.util.Locale;
 
+import static com.sophieopenclass.go4lunch.utils.Constants.FRENCH_LOCALE;
 import static com.sophieopenclass.go4lunch.utils.Constants.PLACE_ID;
-import static com.sophieopenclass.go4lunch.utils.Constants.PREF_LANGUAGE;
 import static com.sophieopenclass.go4lunch.utils.Constants.REQUEST_CALL;
 import static com.sophieopenclass.go4lunch.utils.DateFormatting.getTodayDateInString;
 
-public class RestaurantDetailsActivity extends BaseActivity<MyViewModel, ActivityRestaurantDetailsBinding> implements View.OnClickListener {
-    private String currentAppLocale = sharedPrefs.getString(PREF_LANGUAGE, Locale.getDefault().getLanguage());
+public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> implements View.OnClickListener {
+    private String currentAppLocale = PreferenceHelper.getCurrentLocale();
     private FirestoreRecyclerAdapter adapter;
     private String placeId;
     private PlaceDetails placeDetails;
     private Restaurant restaurant;
     private User currentUser;
+    private ActivityRestaurantDetailsBinding binding;
     public static final String TAG = "com.sophie.Details";
 
     @Override
@@ -55,8 +56,9 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel, Activit
     }
 
     @Override
-    protected int getLayout() {
-        return R.layout.activity_restaurant_details;
+    protected View getLayout() {
+        binding = ActivityRestaurantDetailsBinding.inflate(getLayoutInflater());
+        return binding.getRoot();
     }
 
     @Override
@@ -198,9 +200,14 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel, Activit
                 List<String> weekdaysArray = placeDetails.getOpeningHours().getWeekdayText();
                 for (int i = 0; i < weekdaysArray.size(); i++) {
                     if (i != weekdaysArray.size() - 1)
-                        weekdays.append(getDayWithUpperCase(weekdaysArray.get(i), i)).append("\n");
-                    else
+                        if (PreferenceHelper.getCurrentLocale().equals(FRENCH_LOCALE))
+                            weekdays.append(getDayWithUpperCase(weekdaysArray.get(i), i)).append("\n");
+                        else
+                            weekdays.append(weekdaysArray.get(i)).append("\n");
+                    else if (PreferenceHelper.getCurrentLocale().equals(FRENCH_LOCALE))
                         weekdays.append(getDayWithUpperCase(weekdaysArray.get(i), i));
+                    else
+                        weekdays.append(weekdaysArray.get(i));
                 }
                 binding.weekdaysOpenings.setText(weekdays.toString());
             } else {

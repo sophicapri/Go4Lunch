@@ -20,14 +20,14 @@ import com.sophieopenclass.go4lunch.models.User;
 import java.util.Collections;
 
 
-public class LoginActivity extends BaseActivity<MyViewModel, ActivityLoginBinding> {
+public class LoginActivity extends BaseActivity<MyViewModel> {
     private static final int RC_SIGN_IN = 124;
+    private ActivityLoginBinding binding;
 
     @Override
-    public int getLayout() {
-        // Update the locale depending on user's saved preferences
-        checkCurrentLocale();
-        return R.layout.activity_login;
+    public View getLayout() {
+        binding = ActivityLoginBinding.inflate(getLayoutInflater());
+        return binding.getRoot();
     }
 
     @Override

@@ -1,7 +1,16 @@
 package com.sophieopenclass.go4lunch;
 
 import android.app.Application;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.location.Location;
+import android.util.DisplayMetrics;
+
+import com.sophieopenclass.go4lunch.utils.PreferenceHelper;
+
+import java.util.Locale;
+
+import static com.sophieopenclass.go4lunch.utils.Constants.PREF_LANGUAGE;
 
 public class AppController extends Application {
     private static AppController instance;
@@ -11,6 +20,9 @@ public class AppController extends Application {
     public void onCreate() {
         super.onCreate();
         instance = this;
+        PreferenceHelper.initPreferenceHelper(this);
+        PreferenceHelper.initReminderPreference();
+        checkCurrentLocale();
     }
 
     public static AppController getInstance() {
@@ -24,5 +36,23 @@ public class AppController extends Application {
     public void setCurrentLocation(Location currentLocation) {
         this.currentLocation = currentLocation;
     }
+
+
+    public void checkCurrentLocale() {
+        String defaultLocale = Locale.getDefault().getLanguage();
+        if (!PreferenceHelper.getSharedPrefs().contains(PREF_LANGUAGE))
+            PreferenceHelper.setCurrentLocale(defaultLocale);
+        else if (!PreferenceHelper.getCurrentLocale().equals(defaultLocale))
+            updateLocale();
+    }
+
+    public void updateLocale() {
+        Resources res = getResources();
+        DisplayMetrics dm = res.getDisplayMetrics();
+        Configuration conf = res.getConfiguration();
+        conf.setLocale(new Locale(PreferenceHelper.getCurrentLocale()));
+        res.updateConfiguration(conf, dm);
+    }
+
 
 }

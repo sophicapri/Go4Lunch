@@ -138,5 +138,6 @@
     <string name="facebook_logo" translatable="false">Facebook logo</string>
     <string name="sign_in_with_facebook">Sign in with Facebook</string>
     <string name="sign_in_with_google">Sign in with Google</string>
+    <string name="photo_permission_rationale">Allow Go4Lunch to access the pictures, medias and files on your device ?</string>
 
 </resources>

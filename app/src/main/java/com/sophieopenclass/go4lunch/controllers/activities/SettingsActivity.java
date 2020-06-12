@@ -24,31 +24,32 @@ import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.sophieopenclass.go4lunch.AppController;
 import com.sophieopenclass.go4lunch.MyViewModel;
 import com.sophieopenclass.go4lunch.R;
 import com.sophieopenclass.go4lunch.base.BaseActivity;
 import com.sophieopenclass.go4lunch.databinding.ActivitySettingsBinding;
 import com.sophieopenclass.go4lunch.models.User;
+import com.sophieopenclass.go4lunch.utils.PreferenceHelper;
 
-import java.util.Locale;
+import java.util.List;
 import java.util.UUID;
 
+import pub.devrel.easypermissions.EasyPermissions;
+
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
-import static com.sophieopenclass.go4lunch.controllers.activities.ChatActivity.RC_CHOOSE_PHOTO;
-import static com.sophieopenclass.go4lunch.controllers.activities.ChatActivity.READ_STORAGE_RC;
 import static com.sophieopenclass.go4lunch.utils.Constants.ENGLISH_LOCALE;
 import static com.sophieopenclass.go4lunch.utils.Constants.FRENCH_LOCALE;
-import static com.sophieopenclass.go4lunch.utils.Constants.PREF_LANGUAGE;
-import static com.sophieopenclass.go4lunch.utils.Constants.PREF_REMINDER;
+import static com.sophieopenclass.go4lunch.utils.Constants.STORAGE_PERMS;
 
-public class SettingsActivity extends BaseActivity<MyViewModel, ActivitySettingsBinding> {
-    //private static final String TAG = "com.sophie.Settings";
+public class SettingsActivity extends BaseActivity<MyViewModel> {
     public static boolean localeHasChanged = false;
     public static boolean profileHasChanged = false;
     private User currentUser;
-    private  Uri uriImageSelected;
+    private Uri uriImageSelected;
     private ImageView imageViewDialog;
-    private String currentAppLocale = sharedPrefs.getString(PREF_LANGUAGE, Locale.getDefault().getLanguage());
+    private ActivitySettingsBinding binding;
+    private String currentAppLocale = PreferenceHelper.getCurrentLocale();
 
     @Override
     public Class getViewModelClass() {
@@ -56,14 +57,15 @@ public class SettingsActivity extends BaseActivity<MyViewModel, ActivitySettings
     }
 
     @Override
-    public int getLayout() {
-        return R.layout.activity_settings;
+    public View getLayout() {
+        binding = ActivitySettingsBinding.inflate(getLayoutInflater());
+        return binding.getRoot();
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (!sharedPrefs.getBoolean(PREF_REMINDER, false))
+        if (!PreferenceHelper.getReminderPreference())
             binding.notificationToggle.setChecked(false);
 
         binding.notificationToggle.setOnClickListener(v -> {
@@ -80,7 +82,7 @@ public class SettingsActivity extends BaseActivity<MyViewModel, ActivitySettings
 
     private void cancelReminder() {
         workManager.cancelAllWork();
-        sharedPrefs.edit().putBoolean(PREF_REMINDER, false).apply();
+        PreferenceHelper.setReminderPreference(false);
         Toast.makeText(this, R.string.reminder_disabled, Toast.LENGTH_LONG).show();
     }
 
@@ -135,7 +137,7 @@ public class SettingsActivity extends BaseActivity<MyViewModel, ActivitySettings
 
         binding.deleteAccount.setOnClickListener(v -> showDeleteAccountDialog());
 
-        binding.settingsToolbar.setNavigationOnClickListener( v -> onBackPressed());
+        binding.settingsToolbar.setNavigationOnClickListener(v -> onBackPressed());
     }
 
     private void showDeleteAccountDialog() {
@@ -189,10 +191,10 @@ public class SettingsActivity extends BaseActivity<MyViewModel, ActivitySettings
     }
 
     private void changeAppLanguage(String locale) {
-        if (!locale.equals(sharedPrefs.getString(PREF_LANGUAGE, Locale.getDefault().getLanguage()))) {
-            sharedPrefs.edit().putString(PREF_LANGUAGE, locale).apply();
+        if (!locale.equals(PreferenceHelper.getCurrentLocale())) {
+            PreferenceHelper.setCurrentLocale(locale);
             localeHasChanged = true;
-            updateLocale();
+            AppController.getInstance().updateLocale();
             refreshActivity();
             Toast.makeText(this, R.string.locale_saved, Toast.LENGTH_SHORT).show();
         }
@@ -205,31 +207,38 @@ public class SettingsActivity extends BaseActivity<MyViewModel, ActivitySettings
     }
 
     private void chooseImageFromPhone() {
-        if (ActivityCompat.checkSelfPermission(this, READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+        if (!EasyPermissions.hasPermissions(this, STORAGE_PERMS)) {
             ActivityCompat.requestPermissions(this, new String[]{READ_EXTERNAL_STORAGE}, READ_STORAGE_RC);
             return;
         }
-
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(intent, RC_CHOOSE_PHOTO);
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @androidx.annotation.NonNull int[] grantResults) {
-        if (requestCode == READ_STORAGE_RC) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                chooseImageFromPhone();
-            } else {
-                Snackbar.make(binding.getRoot(), R.string.photo_access_declined, BaseTransientBottomBar.LENGTH_INDEFINITE)
-                        .setDuration(5000).show();
-            }
-        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         handleResponse(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void onPermissionsGranted(int requestCode, @NonNull List<String> perms) {
+        super.onPermissionsGranted(requestCode, perms);
+        if (requestCode == READ_STORAGE_RC)
+            chooseImageFromPhone();
+    }
+
+    @Override
+    public void onPermissionsDenied(int requestCode, @NonNull List<String> perms) {
+        super.onPermissionsDenied(requestCode, perms);
+        Snackbar.make(binding.getRoot(), R.string.photo_access_declined, BaseTransientBottomBar.LENGTH_INDEFINITE)
+                .setDuration(5000).show();
     }
 
     private void handleResponse(int requestCode, int resultCode, Intent data) {
