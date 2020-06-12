@@ -1,4 +1,4 @@
-package com.sophieopenclass.go4lunch.view_models;
+package com.sophieopenclass.go4lunch;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;

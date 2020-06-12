@@ -4,7 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.sophieopenclass.go4lunch.view_models.MyViewModel;
+import com.sophieopenclass.go4lunch.MyViewModel;
 import com.sophieopenclass.go4lunch.repository.MessageDataRepository;
 import com.sophieopenclass.go4lunch.repository.RestaurantDataRepository;
 import com.sophieopenclass.go4lunch.repository.UserDataRepository;

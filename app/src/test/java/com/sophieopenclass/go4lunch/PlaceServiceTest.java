@@ -10,7 +10,6 @@ import com.sophieopenclass.go4lunch.models.json_to_java.RestaurantsResult;
 import com.sophieopenclass.go4lunch.repository.MessageDataRepository;
 import com.sophieopenclass.go4lunch.repository.RestaurantDataRepository;
 import com.sophieopenclass.go4lunch.repository.UserDataRepository;
-import com.sophieopenclass.go4lunch.view_models.MyViewModel;
 
 import org.junit.Before;
 import org.junit.Rule;
