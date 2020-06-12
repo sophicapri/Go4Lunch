@@ -4,15 +4,17 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.sophieopenclass.go4lunch.MyViewModel;
+import com.sophieopenclass.go4lunch.view_models.MyViewModel;
 import com.sophieopenclass.go4lunch.repository.MessageDataRepository;
 import com.sophieopenclass.go4lunch.repository.RestaurantDataRepository;
 import com.sophieopenclass.go4lunch.repository.UserDataRepository;
 
 public class ViewModelFactory implements ViewModelProvider.Factory {
-    private final RestaurantDataRepository restaurantDataSource;
-    private final UserDataRepository userDataSource;
+    private RestaurantDataRepository restaurantDataSource;
+    private UserDataRepository userDataSource;
     private MessageDataRepository messageDataSource;
+
+    public ViewModelFactory() {}
 
     public ViewModelFactory(RestaurantDataRepository restaurantDataSource,
                             UserDataRepository userDataSource, MessageDataRepository messageDataSource) {

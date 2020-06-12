@@ -23,7 +23,7 @@ import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
-import com.sophieopenclass.go4lunch.MyViewModel;
+import com.sophieopenclass.go4lunch.view_models.MyViewModel;
 import com.sophieopenclass.go4lunch.R;
 import com.sophieopenclass.go4lunch.base.BaseActivity;
 import com.sophieopenclass.go4lunch.controllers.adapters.RestaurantWorkmatesListAdapter;

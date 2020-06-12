@@ -47,7 +47,7 @@ import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRe
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.sophieopenclass.go4lunch.AppController;
-import com.sophieopenclass.go4lunch.MyViewModel;
+import com.sophieopenclass.go4lunch.view_models.MyViewModel;
 import com.sophieopenclass.go4lunch.R;
 import com.sophieopenclass.go4lunch.controllers.activities.MainActivity;
 import com.sophieopenclass.go4lunch.controllers.activities.RestaurantDetailsActivity;
@@ -276,13 +276,9 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
                 Snackbar.make(getView(), getString(R.string.internet_unavailable), BaseTransientBottomBar.LENGTH_INDEFINITE)
                         .setDuration(5000).show();
         } else if (activity.requestLocationAccess()) {
-            viewModel.getNearbyPlaces(getLatLngString(currentLocation))
+            viewModel.getNearbyPlaces(AppController.getInstance().getLatLngString(currentLocation))
                     .observe(getViewLifecycleOwner(), restaurantsResult -> initMarkers(restaurantsResult.getPlaceDetails()));
         }
-    }
-
-    static String getLatLngString(Location currentLocation) {
-        return currentLocation.getLatitude() + "," + currentLocation.getLongitude();
     }
 
     private void initMarkers(List<PlaceDetails> placeDetailsList) {

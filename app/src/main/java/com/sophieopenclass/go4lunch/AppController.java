@@ -54,5 +54,12 @@ public class AppController extends Application {
         res.updateConfiguration(conf, dm);
     }
 
+    // Used when the user moves the camera on the map
+    public String getLatLngString(Location currentLocation) {
+        return currentLocation.getLatitude() + "," + currentLocation.getLongitude();
+    }
 
+    public String getLatLngString() {
+        return currentLocation.getLatitude() + "," + currentLocation.getLongitude();
+    }
 }

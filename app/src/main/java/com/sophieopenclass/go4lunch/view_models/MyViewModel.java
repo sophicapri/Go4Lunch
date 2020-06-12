@@ -1,4 +1,4 @@
-package com.sophieopenclass.go4lunch;
+package com.sophieopenclass.go4lunch.view_models;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -63,7 +63,6 @@ public class MyViewModel extends ViewModel {
     public void deleteRestaurantFromFavorites(String userId, String placeId) {
         userDataSource.deleteRestaurantFromFavorites(userId, placeId);
     }
-
 
     // USERS
     public void createUser(User user) {

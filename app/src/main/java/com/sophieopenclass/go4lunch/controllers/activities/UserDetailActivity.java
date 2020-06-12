@@ -1,18 +1,16 @@
 package com.sophieopenclass.go4lunch.controllers.activities;
 
 import android.content.Intent;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
-import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
-import com.sophieopenclass.go4lunch.MyViewModel;
+import com.sophieopenclass.go4lunch.view_models.MyViewModel;
 import com.sophieopenclass.go4lunch.R;
 import com.sophieopenclass.go4lunch.base.BaseActivity;
 import com.sophieopenclass.go4lunch.controllers.adapters.PreviousRestaurantsAdapter;

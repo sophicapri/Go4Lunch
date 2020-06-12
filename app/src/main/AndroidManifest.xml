@@ -39,5 +39,4 @@
         <activity android:name=".controllers.activities.ChatActivity" />
         <activity android:name=".controllers.activities.LoginActivity" />
     </application>
-
 </manifest>

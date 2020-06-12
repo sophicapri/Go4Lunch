@@ -13,7 +13,7 @@ public class Injection {
     public static final String USER_COLLECTION_NAME = "users";
     private static final String CHAT_COLLECTION_NAME = "conversations";
 
-    private static RestaurantDataRepository provideRestaurantDataSource(){
+    private static RestaurantDataRepository provideRestaurantDataSource() {
         PlaceApi placeApi = PlaceService.createService(PlaceApi.class);
         return new RestaurantDataRepository(placeApi);
     }

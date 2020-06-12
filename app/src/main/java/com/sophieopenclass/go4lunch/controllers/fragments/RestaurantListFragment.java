@@ -35,7 +35,7 @@ import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.maps.android.SphericalUtil;
 import com.sophieopenclass.go4lunch.AppController;
-import com.sophieopenclass.go4lunch.MyViewModel;
+import com.sophieopenclass.go4lunch.view_models.MyViewModel;
 import com.sophieopenclass.go4lunch.R;
 import com.sophieopenclass.go4lunch.base.BaseActivity;
 import com.sophieopenclass.go4lunch.controllers.activities.MainActivity;
@@ -50,7 +50,6 @@ import java.util.Comparator;
 import java.util.List;
 
 import static com.sophieopenclass.go4lunch.base.BaseActivity.ORIENTATION_CHANGED;
-import static com.sophieopenclass.go4lunch.controllers.fragments.MapViewFragment.getLatLngString;
 import static com.sophieopenclass.go4lunch.utils.Constants.HEADING_NORTH_WEST;
 import static com.sophieopenclass.go4lunch.utils.Constants.HEADING_SOUTH_WEST;
 import static com.sophieopenclass.go4lunch.utils.DateFormatting.getTodayDateInString;
@@ -235,7 +234,7 @@ public class RestaurantListFragment extends Fragment {
         if (context.requestLocationAccess())
             if (AppController.getInstance().getCurrentLocation() != null)
                 if (nextPageToken == null)
-                    viewModel.getNearbyPlaces(getLatLngString(AppController.getInstance().getCurrentLocation()))
+                    viewModel.getNearbyPlaces(AppController.getInstance().getLatLngString())
                             .observe(getViewLifecycleOwner(), restaurantsResult -> {
                                 getFullPlaceDetails(restaurantsResult.getPlaceDetails());
                                 this.nextPageToken = restaurantsResult.getNextPageToken();

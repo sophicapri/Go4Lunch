@@ -2,6 +2,7 @@ package com.sophieopenclass.go4lunch.base;
 
 import android.content.Context;
 import android.content.Intent;
+import android.location.Location;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -83,7 +84,7 @@ public abstract class BaseActivity<T extends ViewModel> extends AppCompatActivit
         viewModel = (T) new ViewModelProvider(this, viewModelFactory).get(getViewModelClass());
     }
 
-    public abstract Class getViewModelClass();
+    protected abstract Class getViewModelClass();
 
     protected abstract View getLayout();
 
@@ -222,7 +223,6 @@ public abstract class BaseActivity<T extends ViewModel> extends AppCompatActivit
                 }
         );
     }
-
 
     @Override
     public void onWorkmateClick(String uid) {

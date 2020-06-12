@@ -6,7 +6,7 @@ import android.view.View;
 
 import androidx.annotation.Nullable;
 
-import com.sophieopenclass.go4lunch.MyViewModel;
+import com.sophieopenclass.go4lunch.view_models.MyViewModel;
 import com.sophieopenclass.go4lunch.base.BaseActivity;
 import com.sophieopenclass.go4lunch.databinding.ActivitySplashScreenBinding;
 
