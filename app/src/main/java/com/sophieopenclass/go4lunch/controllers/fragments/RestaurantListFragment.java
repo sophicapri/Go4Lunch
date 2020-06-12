@@ -37,7 +37,6 @@ import com.google.maps.android.SphericalUtil;
 import com.sophieopenclass.go4lunch.AppController;
 import com.sophieopenclass.go4lunch.view_models.MyViewModel;
 import com.sophieopenclass.go4lunch.R;
-import com.sophieopenclass.go4lunch.base.BaseActivity;
 import com.sophieopenclass.go4lunch.controllers.activities.MainActivity;
 import com.sophieopenclass.go4lunch.controllers.adapters.RestaurantListAdapter;
 import com.sophieopenclass.go4lunch.databinding.RecyclerViewRestaurantsBinding;
@@ -59,7 +58,6 @@ public class RestaurantListFragment extends Fragment {
     private static final double RADIUS = 500;
     private MyViewModel viewModel;
     private RecyclerViewRestaurantsBinding binding;
-    private BaseActivity context;
     private List<AutocompletePrediction> predictionList;
     private LinearLayoutManager linearLayoutManager;
     private boolean autocompleteActive = false;
@@ -67,7 +65,7 @@ public class RestaurantListFragment extends Fragment {
     private RestaurantListAdapter adapter;
     private ArrayList<PlaceDetails> restaurantList = new ArrayList<>();
     private final AutocompleteSessionToken token = AutocompleteSessionToken.newInstance();
-    private MainActivity activity;
+    private MainActivity context;
     private int visibleThreshold = 5;
     private boolean searchBarInputEmpty = false;
     private int bottomProgressBarPosition;
@@ -84,20 +82,16 @@ public class RestaurantListFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = RecyclerViewRestaurantsBinding.inflate(inflater, container, false);
         if (getActivity() != null) {
-            context = (BaseActivity) getActivity();
-            viewModel = (MyViewModel) ((BaseActivity) getActivity()).getViewModel();
+            context = (MainActivity) getActivity();
+            viewModel = context.getViewModel();
         }
-        activity = ((MainActivity) getActivity());
-        if (activity != null) {
-            activity.binding.progressBar.setVisibility(View.VISIBLE);
-            initSearchBar(activity);
-        }
+        context.binding.progressBar.setVisibility(View.VISIBLE);
+        initSearchBar(context);
         configureRecyclerView();
         binding.swipeRefreshView.setOnRefreshListener(() -> {
             observePlaces(nextPageToken);
             binding.swipeRefreshView.setRefreshing(false);
         });
-
         return binding.getRoot();
     }
 
@@ -175,7 +169,7 @@ public class RestaurantListFragment extends Fragment {
                 .setQuery(textInput)
                 .build();
 
-        activity.placesClient.findAutocompletePredictions(predictionsRequest).addOnCompleteListener(task -> {
+        context.placesClient.findAutocompletePredictions(predictionsRequest).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 FindAutocompletePredictionsResponse predictionsResponse = task.getResult();
                 if (predictionsResponse != null) {
@@ -212,11 +206,9 @@ public class RestaurantListFragment extends Fragment {
     @Override
     public void onResume() {
         if (restaurantList.isEmpty() && !autocompleteActive) {
-            activity.binding.progressBar.setVisibility(View.VISIBLE);
+            context.binding.progressBar.setVisibility(View.VISIBLE);
             observePlaces(null);
-            // To delete autocomplete results
-            autocompleteActive = false;
-            activity.binding.searchBarRestaurantList.searchBarInput.getText().clear();
+            context.binding.searchBarRestaurantList.searchBarInput.getText().clear();
         }
 
         ORIENTATION_CHANGED = false;
@@ -227,7 +219,7 @@ public class RestaurantListFragment extends Fragment {
         if (context.networkUnavailable()) {
             Snackbar.make(binding.getRoot(), getString(R.string.internet_unavailable), BaseTransientBottomBar.LENGTH_INDEFINITE)
                     .setDuration(5000).setTextColor(getResources().getColor(R.color.quantum_white_100)).show();
-            activity.binding.progressBar.setVisibility(View.GONE);
+            context.binding.progressBar.setVisibility(View.GONE);
             return;
         }
 
@@ -252,7 +244,7 @@ public class RestaurantListFragment extends Fragment {
     }
 
     // Nearby Search doesn't return all the fields required in a PlaceDetails, therefore another
-    // query is necessary to retrieve the missing fields (ex : openingHours)
+    // query is necessary to retrieve the missing field (-> openingHours)
     // -
     // The viewModel calls are inside each other and not called one after the other because the variables do not get initialised
     // fast enough before being used for another viewModel.
@@ -268,7 +260,6 @@ public class RestaurantListFragment extends Fragment {
                                             completePlaceDetailsList.add(restaurant);
                                         }
                                         ////
-
                                         if (completePlaceDetailsList.size() == placeDetailsList.size()) {
                                             Collections.sort(completePlaceDetailsList, new NearestRestaurantComparator());
                                             if (!restaurantList.isEmpty() && !autocompleteActive) {
@@ -283,7 +274,7 @@ public class RestaurantListFragment extends Fragment {
                                             } else if (!searchBarInputEmpty) {
                                                 adapter.updateList(completePlaceDetailsList);
                                             }
-                                            activity.binding.progressBar.setVisibility(View.GONE);
+                                            context.binding.progressBar.setVisibility(View.GONE);
                                         }
                                     }));
         }
@@ -293,9 +284,9 @@ public class RestaurantListFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        activity.binding.progressBar.setVisibility(View.GONE);
+        context.binding.progressBar.setVisibility(View.GONE);
         restaurantList.clear();
-        activity.binding.searchBarRestaurantList.searchBarInput.removeTextChangedListener(textWatcher);
+        context.binding.searchBarRestaurantList.searchBarInput.removeTextChangedListener(textWatcher);
     }
 
     /**
@@ -351,15 +342,15 @@ public class RestaurantListFragment extends Fragment {
     }
 
     private void closeSearchBar() {
-        activity.binding.searchBarRestaurantList.searchBarRestaurantList.setVisibility(View.GONE);
-        activity.binding.searchBarRestaurantList.searchBarInput.getText().clear();
-        InputMethodManager inputManager = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+        context.binding.searchBarRestaurantList.searchBarRestaurantList.setVisibility(View.GONE);
+        context.binding.searchBarRestaurantList.searchBarInput.getText().clear();
+        InputMethodManager inputManager = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
         if (inputManager != null)
-            inputManager.hideSoftInputFromWindow(activity.binding.searchBarMap.searchBarInput.getWindowToken(), 0);
+            inputManager.hideSoftInputFromWindow(context.binding.searchBarMap.searchBarInput.getWindowToken(), 0);
     }
 
     public void onPermissionsGranted() {
-        FusedLocationProviderClient fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(activity);
+        FusedLocationProviderClient fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context);
         Task<Location> task = fusedLocationProviderClient.getLastLocation();
         task.addOnCompleteListener(getLocationTask -> {
             if (getLocationTask.isSuccessful()) {

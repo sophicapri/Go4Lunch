@@ -67,16 +67,17 @@ public class SettingsActivity extends BaseActivity<MyViewModel> {
         if (!PreferenceHelper.getReminderPreference())
             binding.notificationToggle.setChecked(false);
 
-        binding.notificationToggle.setOnClickListener(v -> {
-            if (binding.notificationToggle.isChecked()) {
-                activateReminder();
-                Toast.makeText(this, R.string.reminder_activated, Toast.LENGTH_LONG).show();
-            } else {
-                cancelReminder();
-            }
-        });
-
+        binding.notificationToggle.setOnClickListener(v -> initNotificationToggleListener());
         binding.containerLanguageSettings.setOnClickListener(v -> openPopupMenuLocales());
+    }
+
+    private void initNotificationToggleListener() {
+        if (binding.notificationToggle.isChecked()) {
+            activateReminder();
+            Toast.makeText(this, R.string.reminder_activated, Toast.LENGTH_LONG).show();
+        } else {
+            cancelReminder();
+        }
     }
 
     private void cancelReminder() {
@@ -97,46 +98,45 @@ public class SettingsActivity extends BaseActivity<MyViewModel> {
 
     private void initUI(User user) {
         currentUser = user;
-        InputMethodManager inputManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        binding.usernameDisplayed.setText(user.getUsername());
-        binding.editTextUsername.setText(user.getUsername());
-        binding.editUsername.setOnClickListener(v -> {
-            binding.editUsernameContainer.setVisibility(View.VISIBLE);
-            binding.editTextUsername.requestFocus();
-            binding.editTextUsername.setSelection(user.getUsername().length());
-            // show keyboard
-            if (inputManager != null)
-                inputManager.showSoftInput(binding.editTextUsername, InputMethodManager.SHOW_IMPLICIT);
-        });
-
-        binding.cancelUsernameUpdate.setOnClickListener(v -> {
-            binding.editUsernameContainer.setVisibility(View.GONE);
-            // Hide keyboard
-            if (inputManager != null) {
-                binding.editTextUsername.setText(user.getUsername());
-                inputManager.hideSoftInputFromWindow(binding.editTextUsername.getWindowToken(), 0);
-            }
-        });
-
         Glide.with(binding.updateProfilePic.getContext())
                 .load(user.getUrlPicture())
                 .apply(RequestOptions.circleCropTransform())
                 .into(binding.updateProfilePic);
-
-        binding.saveUsername.setOnClickListener(v -> {
-            if (!binding.editTextUsername.getText().toString().isEmpty())
-                saveUsername(binding.editTextUsername.getText().toString());
-            else
-                binding.editTextUsername.setError(getString(R.string.empty_field));
-        });
-
-        displayCurrentLocale();
-
+        InputMethodManager inputManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        binding.usernameDisplayed.setText(user.getUsername());
+        binding.editTextUsername.setText(user.getUsername());
+        binding.editUsername.setOnClickListener(v -> initEditUsernameListener(user, inputManager));
+        binding.cancelUsernameUpdate.setOnClickListener(v -> initCancelUsernameUpdateListener(user, inputManager));
+        binding.saveUsername.setOnClickListener(v -> initSaveUsernameListener());
         binding.updateProfilePic.setOnClickListener(v -> updateImageDialog());
-
         binding.deleteAccount.setOnClickListener(v -> showDeleteAccountDialog());
-
         binding.settingsToolbar.setNavigationOnClickListener(v -> onBackPressed());
+        displayCurrentLocale();
+    }
+
+    private void initSaveUsernameListener() {
+        if (!binding.editTextUsername.getText().toString().isEmpty())
+            saveUsername(binding.editTextUsername.getText().toString());
+        else
+            binding.editTextUsername.setError(getString(R.string.empty_field));
+    }
+
+    private void initCancelUsernameUpdateListener(User user, InputMethodManager inputManager) {
+        binding.editUsernameContainer.setVisibility(View.GONE);
+        // Hide keyboard
+        if (inputManager != null) {
+            binding.editTextUsername.setText(user.getUsername());
+            inputManager.hideSoftInputFromWindow(binding.editTextUsername.getWindowToken(), 0);
+        }
+    }
+
+    private void initEditUsernameListener(User user, InputMethodManager inputManager) {
+        binding.editUsernameContainer.setVisibility(View.VISIBLE);
+        binding.editTextUsername.requestFocus();
+        binding.editTextUsername.setSelection(user.getUsername().length());
+        // show keyboard
+        if (inputManager != null)
+            inputManager.showSoftInput(binding.editTextUsername, InputMethodManager.SHOW_IMPLICIT);
     }
 
     private void showDeleteAccountDialog() {

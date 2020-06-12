@@ -62,27 +62,25 @@ public class WorkmatesListFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = RecyclerViewWorkmatesBinding.inflate(inflater, container, false);
-
-        initAlgolia();
-
         if (getActivity() != null) {
             activity = (MainActivity) getActivity();
-            viewModel = ((MainActivity) getActivity()).getViewModel();
-
+            viewModel = activity.getViewModel();
             if (activity.getCurrentUser() != null)
                 currentUserId = activity.getCurrentUser().getUid();
         }
-
+        initAlgolia();
         initSearchBar();
-        binding.swipeRefreshView.setOnRefreshListener(() -> {
-            if (networkUnavailable()) {
-                Snackbar.make(binding.getRoot(), R.string.internet_unavailable, BaseTransientBottomBar.LENGTH_INDEFINITE)
-                        .setTextColor(getResources().getColor(R.color.quantum_white_100)).setDuration(5000).show();
-            } else
-                updateWorkmatesList();
-            binding.swipeRefreshView.setRefreshing(false);
-        });
+        binding.swipeRefreshView.setOnRefreshListener(this::initSwipeRefreshListener);
         return binding.getRoot();
+    }
+
+    private void initSwipeRefreshListener() {
+        if (activity.networkUnavailable()) {
+            Snackbar.make(binding.getRoot(), R.string.internet_unavailable, BaseTransientBottomBar.LENGTH_INDEFINITE)
+                    .setTextColor(getResources().getColor(R.color.quantum_white_100)).setDuration(5000).show();
+        } else
+            updateWorkmatesList();
+        binding.swipeRefreshView.setRefreshing(false);
     }
 
     private void initAlgolia() {
@@ -127,12 +125,9 @@ public class WorkmatesListFragment extends Fragment {
                         } catch (JSONException ex) {
                             ex.printStackTrace();
                         }
-
                 });
-
             }
         });
-
     }
 
     private void closeSearchBar() {
@@ -153,7 +148,7 @@ public class WorkmatesListFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        if (networkUnavailable()) {
+        if (activity.networkUnavailable()) {
             Snackbar.make(binding.getRoot(), getString(R.string.internet_unavailable), BaseTransientBottomBar.LENGTH_INDEFINITE)
                     .setTextColor(getResources().getColor(R.color.quantum_white_100)).setDuration(5000).show();
         } else {
@@ -166,16 +161,6 @@ public class WorkmatesListFragment extends Fragment {
     public void onResume() {
         super.onResume();
         ORIENTATION_CHANGED = false;
-    }
-
-    private boolean networkUnavailable() {
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) activity.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = null;
-        if (connectivityManager != null) {
-            activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        }
-        return activeNetworkInfo == null || !activeNetworkInfo.isConnected();
     }
 
     // Not using FirestoreRecyclerAdapter because it isn't possible to retrieve all the users
