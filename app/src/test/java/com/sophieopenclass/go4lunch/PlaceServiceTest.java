@@ -4,10 +4,12 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.sophieopenclass.go4lunch.models.Message;
 import com.sophieopenclass.go4lunch.models.Restaurant;
+import com.sophieopenclass.go4lunch.models.User;
 import com.sophieopenclass.go4lunch.models.json_to_java.PlaceDetails;
 import com.sophieopenclass.go4lunch.models.json_to_java.RestaurantsResult;
-import com.sophieopenclass.go4lunch.repository.MessageDataRepository;
+import com.sophieopenclass.go4lunch.repository.ChatDataRepository;
 import com.sophieopenclass.go4lunch.repository.RestaurantDataRepository;
 import com.sophieopenclass.go4lunch.repository.UserDataRepository;
 
@@ -27,7 +29,7 @@ import static org.mockito.Mockito.*;
 public class PlaceServiceTest {
     private MyViewModel viewModel;
     @Mock
-    MessageDataRepository messageDataSource;
+    ChatDataRepository messageDataSource;
 
     @Mock
     RestaurantDataRepository restaurantDataSource;
@@ -71,18 +73,47 @@ public class PlaceServiceTest {
         when(viewModel.getPlaceDetailsList(anyList(), anyString())).thenReturn(placeDetails);
     }
 
-    // -- FIREBASE
     @Test
     public void test_update_chosen_restaurant(){
         LiveData<Restaurant> placeDetails = new MutableLiveData<>();
         when(viewModel.updateChosenRestaurant(anyString(), any(), anyString())).thenReturn(placeDetails);
     }
 
-   /* @Test
-    public void test_delete_chosen_restaurant(){
-        LiveData<Restaurant> placeDetails = new MutableLiveData<>();
-        when(viewModel.deleteChosenRestaurant(anyString(), anyString())).thenReturn(placeDetails);
+    @Test
+    public void test_get_user(){
+        LiveData<User> user = new MutableLiveData<>();
+        when(viewModel.getUser(anyString())).thenReturn(user);
     }
 
-    */
+    @Test
+    public void test_get_list_users(){
+        LiveData<List<User>> users = new MutableLiveData<>();
+        when(viewModel.getListUsers()).thenReturn(users);
+    }
+
+    @Test
+    public void test_get_users_eating_at_restaurant(){
+        LiveData<List<User>> users = new MutableLiveData<>();
+        when(viewModel.getUsersEatingAtRestaurantToday(anyString(), anyString())).thenReturn(users);
+    }
+
+    @Test
+    public void test_create_chat(){
+        LiveData<Boolean> success = new MutableLiveData<>();
+        when(viewModel.createChat(anyString(), anyString())).thenReturn(success);
+    }
+
+    @Test
+    public void test_create_message_for_chat(){
+        LiveData<Message> message = new MutableLiveData<>();
+        when(viewModel.createMessageForChat(anyString(), anyString(), anyString())).thenReturn(message);
+    }
+
+    @Test
+    public void test_get_chat_id(){
+        LiveData<String> chatId = new MutableLiveData<>();
+        when(viewModel.getChatId(anyString(), anyString())).thenReturn(chatId);
+    }
+
+
 }

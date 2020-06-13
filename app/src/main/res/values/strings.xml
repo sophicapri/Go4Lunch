@@ -128,7 +128,7 @@
     <string name="internet_unavailable">Internet connection unavailable</string>
     <string name="search_button">Search button</string>
     <string name="app_requires_location">This app requires access to your location to work properly.</string>
-    <string name="close_current_window_icon">Close current window icon</string>
+    <string name="close_current_window_icon">Previous page</string>
     <string name="account_doesnt_exist">This account has been deleted</string>
     <string name="search_bar_button">Search bar button</string>
 

@@ -10,7 +10,7 @@ import com.sophieopenclass.go4lunch.models.Restaurant;
 import com.sophieopenclass.go4lunch.models.json_to_java.RestaurantsResult;
 import com.sophieopenclass.go4lunch.models.json_to_java.PlaceDetails;
 import com.sophieopenclass.go4lunch.models.User;
-import com.sophieopenclass.go4lunch.repository.MessageDataRepository;
+import com.sophieopenclass.go4lunch.repository.ChatDataRepository;
 import com.sophieopenclass.go4lunch.repository.RestaurantDataRepository;
 import com.sophieopenclass.go4lunch.repository.UserDataRepository;
 
@@ -19,14 +19,14 @@ import java.util.List;
 public class MyViewModel extends ViewModel {
     private RestaurantDataRepository restaurantDataSource;
     private UserDataRepository userDataSource;
-    private MessageDataRepository messageDataSource;
+    private ChatDataRepository chatDataSource;
     private LiveData<User> createdUserLiveData;
 
     public MyViewModel(RestaurantDataRepository restaurantDataSource, UserDataRepository userDataSource,
-                       MessageDataRepository messageDataSource) {
+                       ChatDataRepository chatDataSource) {
         this.restaurantDataSource = restaurantDataSource;
         this.userDataSource = userDataSource;
-        this.messageDataSource = messageDataSource;
+        this.chatDataSource = chatDataSource;
     }
 
     // RESTAURANTS
@@ -97,32 +97,31 @@ public class MyViewModel extends ViewModel {
         userDataSource.deleteUser(uid);
     }
 
-
     // CHAT
     public LiveData<Message> createMessageForChat(String textMessage, String userSenderId, String chatId) {
-        return messageDataSource.createMessageForChat(textMessage, userSenderId, chatId);
+        return chatDataSource.createMessageForChat(textMessage, userSenderId, chatId);
     }
 
     public MutableLiveData<Message> createMessageWithImageForChat(String urlImage, String textMessage
             , String userSenderId, String chatId) {
-        return messageDataSource.createMessageWithImageForChat(urlImage, textMessage, userSenderId, chatId);
+        return chatDataSource.createMessageWithImageForChat(urlImage, textMessage, userSenderId, chatId);
     }
 
     public LiveData<String> getChatId(String currentUserId, String workmateId) {
-        return messageDataSource.getChatId(currentUserId, workmateId);
+        return chatDataSource.getChatId(currentUserId, workmateId);
     }
 
 
     public Query getMessagesQuery(String chatId) {
-        return messageDataSource.getMessagesQuery(chatId);
+        return chatDataSource.getMessagesQuery(chatId);
     }
 
     public LiveData<Boolean> createChat(String currentUserId, String workmateId) {
-        return messageDataSource.createChat(currentUserId, workmateId);
+        return chatDataSource.createChat(currentUserId, workmateId);
     }
 
     public void deleteUserMessages(String uid) {
-        messageDataSource.deleteUserMessages(uid);
+        chatDataSource.deleteUserMessages(uid);
     }
 
     public LiveData<String> updateUrlPicture(String urlPicture, String uid) {

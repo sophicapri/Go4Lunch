@@ -21,10 +21,10 @@ import static com.sophieopenclass.go4lunch.utils.Constants.DATE_CREATED;
 import static com.sophieopenclass.go4lunch.utils.Constants.PARTICIPANTS_FIELD;
 import static com.sophieopenclass.go4lunch.utils.Constants.USER_SENDER_ID;
 
-public class MessageDataRepository {
+public class ChatDataRepository {
     private CollectionReference messageCollectionRef;
 
-    public MessageDataRepository(CollectionReference messageCollectionRef) {
+    public ChatDataRepository(CollectionReference messageCollectionRef) {
         this.messageCollectionRef = messageCollectionRef;
     }
 

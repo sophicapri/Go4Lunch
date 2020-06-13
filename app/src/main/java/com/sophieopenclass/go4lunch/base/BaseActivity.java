@@ -95,6 +95,7 @@ public abstract class BaseActivity<T extends ViewModel> extends AppCompatActivit
     protected abstract View getLayout();
 
 
+
     // --------------------
     // ERROR HANDLER
     // --------------------

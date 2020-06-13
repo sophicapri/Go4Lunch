@@ -110,7 +110,7 @@
     <string name="search_for_a_workmate">Rechercher un·e collègue…</string>
     <string name="available_workmates">Collègues disponibles</string>
     <string name="search_bar_button">Bouton : bar de rechercher</string>
-    <string name="close_current_window_icon">Icon retour à la page précédente</string>
+    <string name="close_current_window_icon">Retour</string>
     <string name="search_button">Bouton rechercher</string>
     <string name="app_requires_location">Cette application a besoin de l\'accès à votre localisation pour fonctionner.</string>
     <string name="my_lunch_toolbar_title">Mon déjeuner</string>

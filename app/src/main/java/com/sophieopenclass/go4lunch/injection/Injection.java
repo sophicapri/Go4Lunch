@@ -4,7 +4,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.sophieopenclass.go4lunch.api.PlaceApi;
 import com.sophieopenclass.go4lunch.api.PlaceService;
-import com.sophieopenclass.go4lunch.repository.MessageDataRepository;
+import com.sophieopenclass.go4lunch.repository.ChatDataRepository;
 import com.sophieopenclass.go4lunch.repository.RestaurantDataRepository;
 import com.sophieopenclass.go4lunch.repository.UserDataRepository;
 import com.sophieopenclass.go4lunch.utils.ViewModelFactory;
@@ -23,15 +23,15 @@ public class Injection {
         return new UserDataRepository(userCollectionReference);
     }
 
-    private static MessageDataRepository provideMessageDataSource() {
-        CollectionReference messageCollectionRef = FirebaseFirestore.getInstance().collection(CHAT_COLLECTION_NAME);
-        return new MessageDataRepository(messageCollectionRef);
+    private static ChatDataRepository provideMessageDataSource() {
+        CollectionReference chatCollectionRef = FirebaseFirestore.getInstance().collection(CHAT_COLLECTION_NAME);
+        return new ChatDataRepository(chatCollectionRef);
     }
 
     public static ViewModelFactory provideViewModelFactory() {
         RestaurantDataRepository restaurantDataSource = provideRestaurantDataSource();
         UserDataRepository userDataSource = provideUserDataSource();
-        MessageDataRepository messageDataSource = provideMessageDataSource();
+        ChatDataRepository messageDataSource = provideMessageDataSource();
         return new ViewModelFactory(restaurantDataSource, userDataSource, messageDataSource);
     }
 }

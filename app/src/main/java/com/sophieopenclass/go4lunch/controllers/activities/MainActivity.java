@@ -90,7 +90,6 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
                     .load(user.getUrlPicture())
                     .apply(RequestOptions.circleCropTransform())
                     .into(profilePic);
-
             username.setText(user.getUsername());
             email.setText(user.getEmail());
         }
@@ -136,14 +135,13 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
                 activateReminder();
             }
         }
-
         // Update UI
-        updateUIafterChangeInSettings();
+        updateUiAfterChangeInSettings();
         if (RESTART_STATE)
             RESTART_STATE = false;
     }
 
-    private void updateUIafterChangeInSettings() {
+    private void updateUiAfterChangeInSettings() {
         if (SettingsActivity.localeHasChanged || SettingsActivity.profileHasChanged) {
             Intent intent = new Intent(this, MainActivity.class);
             finish();

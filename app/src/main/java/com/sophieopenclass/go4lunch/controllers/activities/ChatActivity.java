@@ -48,7 +48,6 @@ public class ChatActivity extends BaseActivity<MyViewModel> implements ChatViewA
     private Uri uriImageSelected;
     private ActivityChatBinding binding;
 
-
     @Override
     public Class getViewModelClass() {
         return MyViewModel.class;
