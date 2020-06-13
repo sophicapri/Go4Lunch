@@ -14,8 +14,6 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
     private UserDataRepository userDataSource;
     private MessageDataRepository messageDataSource;
 
-    public ViewModelFactory() {}
-
     public ViewModelFactory(RestaurantDataRepository restaurantDataSource,
                             UserDataRepository userDataSource, MessageDataRepository messageDataSource) {
         this.restaurantDataSource = restaurantDataSource;
