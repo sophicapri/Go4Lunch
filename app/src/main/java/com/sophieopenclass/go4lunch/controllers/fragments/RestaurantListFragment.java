@@ -81,10 +81,9 @@ public class RestaurantListFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = RecyclerViewRestaurantsBinding.inflate(inflater, container, false);
-        if (getActivity() != null) {
+        if (getActivity() != null)
             context = (MainActivity) getActivity();
-            viewModel = context.getViewModel();
-        }
+        viewModel = context.getViewModel();
         context.binding.progressBar.setVisibility(View.VISIBLE);
         initSearchBar(context);
         configureRecyclerView();
@@ -146,21 +145,6 @@ public class RestaurantListFragment extends Fragment {
         activity.binding.searchBarRestaurantList.searchBarInput.addTextChangedListener(textWatcher);
     }
 
-    /**
-     * The "heading" params of the SphericalUtil method represent where each corner is in degrees.
-     * See visual representation here : https://i.stack.imgur.com/GkFzJ.png;
-     */
-    private RectangularBounds getRectangularBounds() {
-        double distanceFromCenterToCorner = RADIUS * Math.sqrt(2.0);
-        Location currentLocation = AppController.getInstance().getCurrentLocation();
-        LatLng latLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
-        LatLng northEastCorner =
-                SphericalUtil.computeOffset(latLng, distanceFromCenterToCorner, HEADING_NORTH_WEST);
-        LatLng southWestCorner =
-                SphericalUtil.computeOffset(latLng, distanceFromCenterToCorner, HEADING_SOUTH_WEST);
-        return RectangularBounds.newInstance(southWestCorner, northEastCorner);
-    }
-
     private void displayResultsAutocomplete(String textInput) {
         FindAutocompletePredictionsRequest predictionsRequest = FindAutocompletePredictionsRequest.builder()
                 .setTypeFilter(TypeFilter.ESTABLISHMENT)
@@ -189,11 +173,25 @@ public class RestaurantListFragment extends Fragment {
         });
     }
 
+    /**
+     * The "heading" params of the SphericalUtil method represent where each corner is in degrees.
+     * See visual representation here : https://i.stack.imgur.com/GkFzJ.png;
+     */
+    private RectangularBounds getRectangularBounds() {
+        double distanceFromCenterToCorner = RADIUS * Math.sqrt(2.0);
+        Location currentLocation = AppController.getInstance().getCurrentLocation();
+        LatLng latLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+        LatLng northEastCorner =
+                SphericalUtil.computeOffset(latLng, distanceFromCenterToCorner, HEADING_NORTH_WEST);
+        LatLng southWestCorner =
+                SphericalUtil.computeOffset(latLng, distanceFromCenterToCorner, HEADING_SOUTH_WEST);
+        return RectangularBounds.newInstance(southWestCorner, northEastCorner);
+    }
+
     private void getPlaceDetailAutocompleteList(List<String> suggestionsList) {
         viewModel.getPlaceDetailsList(suggestionsList, currentAppLocale).observe(getViewLifecycleOwner(), placeDetailsList -> {
-            if (!placeDetailsList.isEmpty()) {
+            if (!placeDetailsList.isEmpty())
                 getFullPlaceDetails(placeDetailsList);
-            }
         });
     }
 

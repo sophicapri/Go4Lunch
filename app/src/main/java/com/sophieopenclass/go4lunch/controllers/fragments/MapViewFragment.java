@@ -206,14 +206,10 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
     }
 
     private void getPlaceDetailAutocompleteList(List<String> suggestionsList) {
-        List<PlaceDetails> placeDetailsList = new ArrayList<>();
-        for (String placeId : suggestionsList)
-            viewModel.getPlaceDetails(placeId, currentAppLocale).observe(activity, placeDetails -> {
-                placeDetailsList.add(placeDetails);
-                if (placeDetailsList.size() == suggestionsList.size()) {
-                    initMarkers(placeDetailsList);
-                }
-            });
+        viewModel.getPlaceDetailsList(suggestionsList, currentAppLocale).observe(activity, placeDetailsList -> {
+            if (!placeDetailsList.isEmpty())
+                initMarkers(placeDetailsList);
+        });
     }
 
     @Override
@@ -287,10 +283,10 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
             viewModel.getUsersEatingAtRestaurantToday(placeDetails.getPlaceId(), getTodayDateInString()).observe(getViewLifecycleOwner(), users -> {
                 int markerDrawable = R.drawable.ic_marker_red;
                 if (activity.getCurrentUser() != null)
-                if (users.isEmpty() || (users.size() == 1 && users.get(0).getUid().equals(activity.getCurrentUser().getUid())))
-                    markerDrawable = R.drawable.ic_marker_red;
-                else
-                    markerDrawable = R.drawable.ic_marker_green;
+                    if (users.isEmpty() || (users.size() == 1 && users.get(0).getUid().equals(activity.getCurrentUser().getUid())))
+                        markerDrawable = R.drawable.ic_marker_red;
+                    else
+                        markerDrawable = R.drawable.ic_marker_green;
 
                 Marker marker = mMap.addMarker(new MarkerOptions().title(placeDetails.getName())
                         .position(new LatLng(placeDetails.getGeometry().getLocation().getLat(),

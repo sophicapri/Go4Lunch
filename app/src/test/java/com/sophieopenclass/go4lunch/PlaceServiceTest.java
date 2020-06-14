@@ -47,8 +47,6 @@ public class PlaceServiceTest {
         viewModel = new MyViewModel(restaurantDataSource, userDataSource, messageDataSource);
     }
 
-    // RESTAURANTS
-                // -- PLACES API
     @Test
     public void test_get_nearby_places(){
         LiveData<RestaurantsResult> restaurantsResult = new MutableLiveData<>(mock(RestaurantsResult.class));
@@ -114,6 +112,4 @@ public class PlaceServiceTest {
         LiveData<String> chatId = new MutableLiveData<>();
         when(viewModel.getChatId(anyString(), anyString())).thenReturn(chatId);
     }
-
-
 }
