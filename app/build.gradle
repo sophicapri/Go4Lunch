@@ -1,5 +1,5 @@
 apply plugin: 'com.android.application'
-apply plugin: 'jacoco-android'
+apply plugin: "com.vanniktech.android.junit.jacoco"
 
 
 android {
@@ -23,6 +23,8 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
+
+
     buildTypes {
         release {
             minifyEnabled true
@@ -32,10 +34,6 @@ android {
         debug {
             testCoverageEnabled true
         }
-    }
-
-    tasks.withType(Test) {
-        jacoco.includeNoLocationClasses = true
     }
 
     testOptions {
