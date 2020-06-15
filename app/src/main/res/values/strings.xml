@@ -8,8 +8,8 @@
 
     <!--  Map and menus -->
     <string name="error_unknown_error">An unknown error happened…</string>
-    <string name="navigation_drawer_open">drawer open</string>
-    <string name="navigation_drawer_close">drawer close</string>
+    <string name="open_navigation_drawer">Open menu drawer</string>
+    <string name="close_navigation_drawer">Close menu drawer</string>
     <string name="Cancel">Cancel</string>
     <string name="gps_network_not_enabled">Location is not enabled</string>
     <string name="open_location_settings">Authorize shared location</string>

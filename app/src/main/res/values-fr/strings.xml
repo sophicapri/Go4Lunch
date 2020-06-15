@@ -4,7 +4,7 @@
 
     <!--  Map and menus -->
     <string name="error_unknown_error">"Une erreur inconnue s'est produite…"</string>
-    <string name="navigation_drawer_close">menu latéral fermé</string>
+    <string name="close_navigation_drawer">Fermer le menu latéral</string>
     <string name="connection_succeed">Connexion réussie</string>
     <string name="error_no_internet">Problème de connexion à internet</string>
     <string name="Cancel">Annuler</string>
@@ -63,7 +63,7 @@
     <string name="notification_message_solo_lunch">"Vous mangez ce midi chez %1$s.\nAdresse: %2$s."</string>
     <string name="toast_title_no_image_chosen">"Pas d'image choisie"</string>
     <string name="reminder_deactivated">Rappel journalier désactivé</string>
-    <string name="navigation_drawer_open">menu latéral ouvert</string>
+    <string name="open_navigation_drawer">ouvrir menu latéral</string>
     <string name="and">" et "</string>
     <string name="account_doesnt_exist">Ce compte n\'existe plus</string>
     <string name="logo_edit_username">logo modifier nom d\'utilisateur</string>

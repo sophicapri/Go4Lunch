@@ -106,7 +106,7 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
 
     private void configureDrawerLayout() {
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, binding.drawerLayout, binding.myToolbar,
-                R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+                R.string.open_navigation_drawer, R.string.close_navigation_drawer);
         binding.drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
     }
