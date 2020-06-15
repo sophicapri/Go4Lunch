@@ -15,10 +15,10 @@ android {
         versionCode 1
         versionName "1.0"
         resConfigs "en", "fr"
-        buildConfigField "String", "API_KEY", API_KEY
+        buildConfigField "String", "API_KEY",  "\"API_KEY\""
         resValue "string", "API_KEY", API_KEY
-        buildConfigField "String", "ALGOLIA_API_KEY", ALGOLIA_API_KEY
-        buildConfigField "String", "ALGOLIA_APP_ID", ALGOLIA_APP_ID
+        buildConfigField "String", "ALGOLIA_API_KEY", "\"ALGOLIA_API_KEY\""
+        buildConfigField "String", "ALGOLIA_APP_ID", "\"ALGOLIA_APP_ID\""
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -34,7 +34,13 @@ android {
         }
     }
 
+    tasks.withType(Test) {
+        jacoco.includeNoLocationClasses = true
+    }
+
     testOptions {
+        execution 'ANDROID_TEST_ORCHESTRATOR'
+        animationsDisabled true
         unitTests {
             includeAndroidResources = true
         }
