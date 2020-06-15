@@ -6,6 +6,7 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.location.Location;
 import android.util.DisplayMetrics;
+import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 
