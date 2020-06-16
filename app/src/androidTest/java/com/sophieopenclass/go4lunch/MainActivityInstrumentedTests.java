@@ -32,7 +32,7 @@ import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 
 @RunWith(AndroidJUnit4.class)
-public class MainActivityTests {
+public class MainActivityInstrumentedTests {
     private MainActivity activity;
     private Fragment mapFragment;
     private Fragment restaurantListFragment;
