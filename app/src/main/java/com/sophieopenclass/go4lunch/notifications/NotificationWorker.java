@@ -20,10 +20,10 @@ import com.sophieopenclass.go4lunch.models.User;
 import java.util.ArrayList;
 
 import static android.content.Intent.EXTRA_UID;
-import static com.sophieopenclass.go4lunch.injection.Injection.USER_COLLECTION_NAME;
 import static com.sophieopenclass.go4lunch.utils.Constants.DATES_AND_RESTAURANTS_FIELD;
 import static com.sophieopenclass.go4lunch.utils.Constants.PLACE_ID;
 import static com.sophieopenclass.go4lunch.utils.Constants.PLACE_ID_FIELD;
+import static com.sophieopenclass.go4lunch.utils.Constants.USER_COLLECTION_NAME;
 import static com.sophieopenclass.go4lunch.utils.DateFormatting.getTodayDateInString;
 
 public class NotificationWorker extends Worker {

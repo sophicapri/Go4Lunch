@@ -9,10 +9,10 @@ def getProperty(String filename, String propName) {
         if (props[propName] != null) {
             return props[propName]
         } else {
-           return ("\$" + propName)
+            print("No such property " + propName + " in file " + filename)
         }
     } else {
-        return ("\$" + propName)
+        print(filename + " does not exist!")
     }
 }
 
@@ -29,7 +29,7 @@ android {
         versionCode 1
         versionName "1.0"
         resConfigs "en", "fr"
-        buildConfigField "String", 'API_KEY',  "\"${getProperty("gradle.properties", "API_KEY")}\""
+        buildConfigField "String", 'API_KEY',  "${getProperty("gradle.properties", "API_KEY")}"
         resValue "string", 'API_KEY', API_KEY
         buildConfigField "String", 'ALGOLIA_API_KEY', ALGOLIA_API_KEY
         buildConfigField "String", 'ALGOLIA_APP_ID', ALGOLIA_APP_ID
@@ -51,7 +51,6 @@ android {
     }
 
     testOptions {
-       // animationsDisabled true
         unitTests {
             includeAndroidResources = true
         }

@@ -54,6 +54,7 @@ import com.sophieopenclass.go4lunch.controllers.activities.RestaurantDetailsActi
 import com.sophieopenclass.go4lunch.databinding.FragmentMapBinding;
 import com.sophieopenclass.go4lunch.models.json_to_java.PlaceDetails;
 import com.sophieopenclass.go4lunch.utils.PreferenceHelper;
+import com.sophieopenclass.go4lunch.utils.VectorConverter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -291,7 +292,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
                 Marker marker = mMap.addMarker(new MarkerOptions().title(placeDetails.getName())
                         .position(new LatLng(placeDetails.getGeometry().getLocation().getLat(),
                                 placeDetails.getGeometry().getLocation().getLng()))
-                        .icon(getBitmapFromVector(markerDrawable)));
+                        .icon(VectorConverter.getBitmapFromVector(markerDrawable, getResources())));
                 marker.setTag(placeDetails.getPlaceId());
             });
         }
