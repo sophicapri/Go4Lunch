@@ -1,6 +1,20 @@
 apply plugin: 'com.android.application'
 apply plugin: "com.vanniktech.android.junit.jacoco"
 
+def getProperty(String filename, String propName) {
+    def propsFile = rootProject.file(filename)
+    if (propsFile.exists()) {
+        def props = new Properties()
+        props.load(new FileInputStream(propsFile))
+        if (props[propName] != null) {
+            return props[propName]
+        } else {
+           return ("\$" + propName)
+        }
+    } else {
+        return ("\$" + propName)
+    }
+}
 
 android {
     compileSdkVersion 29
@@ -15,7 +29,7 @@ android {
         versionCode 1
         versionName "1.0"
         resConfigs "en", "fr"
-        buildConfigField "String", 'API_KEY',  API_KEY
+        buildConfigField "String", 'API_KEY',  "\"${getProperty("gradle.properties", API_KEY)}\""
         resValue "string", 'API_KEY', API_KEY
         buildConfigField "String", 'ALGOLIA_API_KEY', ALGOLIA_API_KEY
         buildConfigField "String", 'ALGOLIA_APP_ID', ALGOLIA_APP_ID
