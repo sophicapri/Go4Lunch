@@ -74,9 +74,13 @@ android {
         }
     }
 
-    lintOptions {
+  /*  lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
         disable 'RestrictedApi'
     }
+
+   */
 
     compileOptions {
         sourceCompatibility = 1.8
