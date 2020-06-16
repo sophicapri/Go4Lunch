@@ -12,9 +12,10 @@ def getProperty(String filename, String propName) {
            return ("\$" + propName)
         }
     } else {
-        print(filename + " does not exist!")
+        return ("\$" + propName)
     }
 }
+
 
 android {
     compileSdkVersion 29
