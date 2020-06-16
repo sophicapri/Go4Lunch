@@ -7,8 +7,6 @@ env:
     - EMULATOR_API_LEVEL=22
     - ANDROID_BUILD_TOOLS_VERSION=27.0.3
     - ANDROID_ABI=armeabi-v7a
-    API_KEY:
-      secure: "secure value removed"
 
 android:
   components:
