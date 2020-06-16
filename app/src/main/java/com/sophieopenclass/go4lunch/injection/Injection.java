@@ -9,10 +9,10 @@ import com.sophieopenclass.go4lunch.repository.RestaurantDataRepository;
 import com.sophieopenclass.go4lunch.repository.UserDataRepository;
 import com.sophieopenclass.go4lunch.utils.ViewModelFactory;
 
-public class Injection {
-    public static final String USER_COLLECTION_NAME = "users";
-    private static final String CHAT_COLLECTION_NAME = "conversations";
+import static com.sophieopenclass.go4lunch.utils.Constants.CHAT_COLLECTION_NAME;
+import static com.sophieopenclass.go4lunch.utils.Constants.USER_COLLECTION_NAME;
 
+public class Injection {
     private static RestaurantDataRepository provideRestaurantDataSource() {
         PlaceApi placeApi = PlaceService.createService(PlaceApi.class);
         return new RestaurantDataRepository(placeApi);

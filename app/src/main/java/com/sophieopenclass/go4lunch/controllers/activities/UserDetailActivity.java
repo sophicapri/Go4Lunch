@@ -215,4 +215,6 @@ public class UserDetailActivity extends BaseActivity<MyViewModel> {
         previousRestaurantList.clear();
         favRestaurantList.clear();
     }
+
+
 }

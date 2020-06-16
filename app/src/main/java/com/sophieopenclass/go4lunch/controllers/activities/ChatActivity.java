@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
 import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -102,7 +103,7 @@ public class ChatActivity extends BaseActivity<MyViewModel> implements ChatViewA
     }
 
     private void onSendMessageClick() {
-        if (!TextUtils.isEmpty(binding.messageEditText.getText()) && currentUserId != null) {
+        if (!TextUtils.isEmpty(binding.writeMessageEditText.getText()) && currentUserId != null) {
             if (chatId == null)
                 createChatAndSendMessage();
              else
@@ -123,7 +124,7 @@ public class ChatActivity extends BaseActivity<MyViewModel> implements ChatViewA
         // Check if the ImageView is set
         if (binding.chatImageChosenPreview.getDrawable() == null) {
             // SEND A TEXT MESSAGE
-            viewModel.createMessageForChat(binding.messageEditText.getText().toString(), currentUserId, chatId)
+            viewModel.createMessageForChat(binding.writeMessageEditText.getText().toString(), currentUserId, chatId)
                     .observe(this, message -> {
                         if (this.chatId == null) {
                             this.chatId = chatId;
@@ -134,11 +135,11 @@ public class ChatActivity extends BaseActivity<MyViewModel> implements ChatViewA
                     });
         } else {
             // SEND AN IMAGE + TEXT IMAGE
-            uploadPhotoInFirebaseAndSendMessage(binding.messageEditText.getText().toString(), chatId);
+            uploadPhotoInFirebaseAndSendMessage(binding.writeMessageEditText.getText().toString(), chatId);
             binding.chatImageChosenPreview.setImageDrawable(null);
         }
 
-        binding.messageEditText.getText().clear();
+        binding.writeMessageEditText.getText().clear();
     }
 
     private void uploadPhotoInFirebaseAndSendMessage(String message, String chatId) {
@@ -243,5 +244,10 @@ public class ChatActivity extends BaseActivity<MyViewModel> implements ChatViewA
         super.onPermissionsDenied(requestCode, perms);
         Snackbar.make(binding.getRoot(), R.string.photo_access_declined, BaseTransientBottomBar.LENGTH_INDEFINITE)
                 .setDuration(5000).show();
+    }
+
+    @VisibleForTesting
+    public void setDummyUserId(String userId) {
+        currentUserId = userId;
     }
 }

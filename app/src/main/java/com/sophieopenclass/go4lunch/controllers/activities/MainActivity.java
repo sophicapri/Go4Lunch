@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.core.view.GravityCompat;
 import androidx.fragment.app.Fragment;
@@ -43,7 +44,7 @@ import static com.sophieopenclass.go4lunch.utils.Constants.FRAGMENT_WORKMATES_LI
 import static com.sophieopenclass.go4lunch.utils.Constants.RESTART_STATE;
 
 public class MainActivity extends BaseActivity<MyViewModel> implements NavigationView.OnNavigationItemSelectedListener {
-    private User currentUser;
+    private String currentUserId;
     private Fragment fragmentMapView;
     private Fragment fragmentRestaurantList;
     private Fragment fragmentWorkmatesList;
@@ -65,7 +66,7 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
         initPlacesApi();
         if (getCurrentUser() != null)
             viewModel.getUser(getCurrentUser().getUid()).observe(this, user -> {
-                currentUser = user;
+                currentUserId = user.getUid();
                 handleDrawerUI(user);
             });
         binding.bottomNavView.setOnNavigationItemSelectedListener(this::onNavigationItemSelected);
@@ -176,7 +177,7 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
             case R.id.map_view:
                 showFragmentOrActivity(FRAGMENT_MAP_VIEW);
                 break;
-            case R.id.list_view:
+            case R.id.restaurant_list_view:
                 showFragmentOrActivity(FRAGMENT_RESTAURANT_LIST_VIEW);
                 break;
             case R.id.workmates_view:
@@ -225,7 +226,7 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
     private void startNewActivity(Class activity) {
         Intent intent = new Intent(this, activity);
         if (activity.equals(UserDetailActivity.class))
-            intent.putExtra(EXTRA_UID, currentUser.getUid());
+            intent.putExtra(EXTRA_UID, currentUserId);
         startActivity(intent);
     }
 
@@ -301,5 +302,10 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
         InputMethodManager inputManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         if (inputManager != null)
             inputManager.showSoftInput(focusedEditText, InputMethodManager.SHOW_IMPLICIT);
+    }
+
+    @VisibleForTesting
+    public void setDummyUserId(String userId) {
+        currentUserId = userId;
     }
 }

@@ -97,13 +97,14 @@ public class ChatDataRepository {
 
     public void deleteUserMessages(String uid) {
         messageCollectionRef.whereEqualTo(PARTICIPANTS_FIELD + uid, true).get().addOnSuccessListener(documentSnapshots -> {
-            for (DocumentSnapshot document :documentSnapshots.getDocuments()){
+            for (DocumentSnapshot document : documentSnapshots.getDocuments()) {
                 document.getReference().collection(MESSAGES_SUBCOLLECTION).whereEqualTo(USER_SENDER_ID, uid)
-            .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                int convDeleted = 0;
+                        .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    int convDeleted = 0;
+
                     @Override
                     public void onSuccess(QuerySnapshot documentSnapshots) {
-                        for (DocumentSnapshot document :documentSnapshots.getDocuments()) {
+                        for (DocumentSnapshot document : documentSnapshots.getDocuments()) {
                             document.getReference().delete();
                             convDeleted++;
                         }

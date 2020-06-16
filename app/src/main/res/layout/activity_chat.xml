@@ -127,7 +127,7 @@
 
         <!-- TEXT MESSAGE EDIT TEXT -->
         <EditText
-            android:id="@+id/message_edit_text"
+            android:id="@+id/write_message_edit_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"

@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModel;
@@ -39,6 +40,7 @@ import com.sophieopenclass.go4lunch.controllers.fragments.MapViewFragment;
 import com.sophieopenclass.go4lunch.controllers.fragments.RestaurantListFragment;
 import com.sophieopenclass.go4lunch.injection.Injection;
 import com.sophieopenclass.go4lunch.listeners.Listeners;
+import com.sophieopenclass.go4lunch.models.User;
 import com.sophieopenclass.go4lunch.notifications.NotificationWorker;
 import com.sophieopenclass.go4lunch.utils.PreferenceHelper;
 import com.sophieopenclass.go4lunch.utils.ViewModelFactory;

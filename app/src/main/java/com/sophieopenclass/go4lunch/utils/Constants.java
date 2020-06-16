@@ -14,6 +14,8 @@ public class Constants {
     public static final String OPEN_24H = "0000";
     public static final int ONE_HOUR = 60;
 
+    public static final String USER_COLLECTION_NAME = "users";
+    public static final String CHAT_COLLECTION_NAME = "conversations";
     public static final String MESSAGES_SUBCOLLECTION = "messages";
     public static final String DATE_CREATED = "dateCreated";
     public static final String PARTICIPANTS_FIELD = "participants.";
@@ -25,7 +27,6 @@ public class Constants {
     public static final double HEADING_SOUTH_WEST = 225.0;
 
     public static boolean RESTART_STATE = false;
-
 
     public static final String ACTIVITY_MY_LUNCH = "UserDetailActivity";
     public static final String ACTIVITY_SETTINGS = "SettingsActivity";
