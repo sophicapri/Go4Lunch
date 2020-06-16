@@ -82,6 +82,7 @@ public class MainActivityTests {
         onView(withId(R.id.workmates_view)).perform(click());
         Thread.sleep(1000);
         onView(withRecyclerView(R.id.recycler_view_workmates).atPosition(0)).perform(click());
+        Thread.sleep(1000);
         intended(hasComponent(UserDetailActivity.class.getName()));
     }
 

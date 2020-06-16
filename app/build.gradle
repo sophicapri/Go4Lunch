@@ -1,5 +1,5 @@
 apply plugin: 'com.android.application'
-apply plugin: "jacoco-android"
+apply plugin: "jacoco"
 
 def getProperty(String filename, String propName) {
     def propsFile = rootProject.file(filename)
@@ -14,10 +14,6 @@ def getProperty(String filename, String propName) {
     } else {
         return ("\$" + propName)
     }
-}
-
-jacoco {
-    toolVersion = "0.8.5"
 }
 
 android {
@@ -52,15 +48,9 @@ android {
     }
 
     testOptions {
-        animationsDisabled = true
         unitTests {
             includeAndroidResources = true
             returnDefaultValues = true
-        }
-        unitTests.all {
-            jacoco {
-                includeNoLocationClasses = true
-            }
         }
     }
 
