@@ -29,7 +29,7 @@ android {
         versionCode 1
         versionName "1.0"
         resConfigs "en", "fr"
-        buildConfigField "String", 'API_KEY',  "\"${getProperty("gradle.properties", API_KEY)}\""
+        buildConfigField "String", 'API_KEY',  "\"${getProperty("gradle.properties", "API_KEY")}\""
         resValue "string", 'API_KEY', API_KEY
         buildConfigField "String", 'ALGOLIA_API_KEY', ALGOLIA_API_KEY
         buildConfigField "String", 'ALGOLIA_APP_ID', ALGOLIA_APP_ID
