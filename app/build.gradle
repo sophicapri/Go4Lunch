@@ -1,5 +1,20 @@
 apply plugin: 'com.android.application'
-apply plugin: "jacoco"
+apply plugin: 'jacoco'
+
+task jacocoTestReport(type: JacocoReport, dependsOn: 'testDebugUnitTest') {
+    reports {
+        xml.enabled = true
+        html.enabled = true
+    }
+
+    def fileFilter = ['**/R.class', '**/R$*.class', '**/BuildConfig.*', '**/Manifest*.*', '**/*Test*.*', 'android/**/*.*']
+    def debugTree = fileTree(dir: "${buildDir}/intermediates/classes/debug", excludes: fileFilter)
+    def mainSrc = "${project.projectDir}/src/main/java"
+
+    sourceDirectories.setFrom(files([mainSrc]))
+    classDirectories.setFrom(files([debugTree]))
+    executionData.setFrom(files("${buildDir}/jacoco/testDebugUnitTest.exec"))
+}
 
 def getProperty(String filename, String propName) {
     def propsFile = rootProject.file(filename)
@@ -9,13 +24,12 @@ def getProperty(String filename, String propName) {
         if (props[propName] != null) {
             return props[propName]
         } else {
-           return ("\$" + propName)
+            print("No such property " + propName + " in file " + filename)
         }
     } else {
         return ("\$" + propName)
     }
 }
-
 
 android {
     compileSdkVersion 29
@@ -52,6 +66,11 @@ android {
         unitTests {
             includeAndroidResources = true
             returnDefaultValues = true
+        }
+       unitTests.all {
+            jacoco {
+                includeNoLocationClasses = true
+            }
         }
     }
 
