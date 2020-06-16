@@ -306,23 +306,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
-    private BitmapDescriptor getBitmapFromVector(int drawableId) {
-        Drawable drawable = ResourcesCompat.getDrawable(getResources(), drawableId, null);
-        Bitmap bitmap = null;
-        if (drawable != null) {
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-                drawable = (DrawableCompat.wrap(drawable)).mutate();
-            }
-            bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(),
-                    drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-            Canvas canvas = new Canvas(bitmap);
-            drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-            drawable.draw(canvas);
-        }
-        return BitmapDescriptorFactory.fromBitmap(bitmap);
-    }
-
-
     @Override
     public void onPause() {
         super.onPause();
