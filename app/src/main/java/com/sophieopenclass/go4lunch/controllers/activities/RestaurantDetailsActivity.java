@@ -48,7 +48,6 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
     private Restaurant restaurant;
     private User currentUser;
     private ActivityRestaurantDetailsBinding binding;
-    public static final String TAG = "com.sophie.Details";
 
     @Override
     public Class getViewModelClass() {
