@@ -4,6 +4,7 @@ import androidx.core.view.GravityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.test.espresso.intent.rule.IntentsTestRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.rule.GrantPermissionRule;
 
 import com.sophieopenclass.go4lunch.controllers.activities.LoginActivity;
 import com.sophieopenclass.go4lunch.controllers.activities.MainActivity;
@@ -37,7 +38,7 @@ public class MainActivityInstrumentedTests {
     private Fragment mapFragment;
     private Fragment restaurantListFragment;
     private Fragment workmateListFragment;
-    // id of a Dummy User created beforehand in Firebase
+    // uid of a Dummy User created beforehand in Firebase
     private static final String DUMMY_USER_ID = "123";
 
     @Rule

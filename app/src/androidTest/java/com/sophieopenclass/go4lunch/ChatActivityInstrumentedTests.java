@@ -31,6 +31,7 @@ public class ChatActivityInstrumentedTests {
         intended(hasComponent(UserDetailActivity.class.getName()));
 
         onView(withId(R.id.fab_message_user)).perform(click());
+        Thread.sleep(1000);
         intended(hasComponent(ChatActivity.class.getName()));
         intended(not(hasComponent(UserDetailActivity.class.getName())));
     }
