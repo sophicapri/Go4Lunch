@@ -238,7 +238,6 @@ public class RestaurantListFragment extends Fragment {
                         else
                             this.nextPageToken = restaurantsResult.getNextPageToken();
                     });
-
     }
 
     // Nearby Search doesn't return all the fields required in a PlaceDetails, therefore another
