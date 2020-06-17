@@ -79,6 +79,7 @@ android {
         disable 'InvalidPackage'
         checkReleaseBuilds false
         disable 'RestrictedApi'
+        checkDependencies = false
     }
 
     compileOptions {
