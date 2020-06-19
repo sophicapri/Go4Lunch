@@ -1,6 +1,8 @@
 *.iml
 .gradle
-/gradle.properties
+/api.properties
+/Test Results - ViewModelTest.html
+/Instrumented Test Results .html
 /local.properties
 /.idea/caches
 /.idea/libraries
