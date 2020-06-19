@@ -1,11 +1,7 @@
 package com.sophieopenclass.go4lunch;
 
-import android.util.Log;
-
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 
 import com.sophieopenclass.go4lunch.models.Message;
 import com.sophieopenclass.go4lunch.models.Restaurant;
@@ -32,7 +28,6 @@ import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyList;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)
