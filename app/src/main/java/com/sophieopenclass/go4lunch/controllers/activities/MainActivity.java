@@ -304,6 +304,10 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
             inputManager.showSoftInput(focusedEditText, InputMethodManager.SHOW_IMPLICIT);
     }
 
+    public ActivityMainBinding getMainActivityBinding() {
+        return binding;
+    }
+
     @VisibleForTesting
     public void setDummyUserId(String userId) {
         currentUserId = userId;

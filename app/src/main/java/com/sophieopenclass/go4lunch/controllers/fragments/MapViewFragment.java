@@ -51,6 +51,7 @@ import com.sophieopenclass.go4lunch.MyViewModel;
 import com.sophieopenclass.go4lunch.R;
 import com.sophieopenclass.go4lunch.controllers.activities.MainActivity;
 import com.sophieopenclass.go4lunch.controllers.activities.RestaurantDetailsActivity;
+import com.sophieopenclass.go4lunch.databinding.ActivityMainBinding;
 import com.sophieopenclass.go4lunch.databinding.FragmentMapBinding;
 import com.sophieopenclass.go4lunch.models.json_to_java.PlaceDetails;
 import com.sophieopenclass.go4lunch.utils.PreferenceHelper;
@@ -75,24 +76,28 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
     private List<AutocompletePrediction> predictionList;
     private String searchBarTextInput;
     private MainActivity activity;
+    private ActivityMainBinding mainBinding;
     private FragmentMapBinding binding;
     private TextWatcher textWatcher;
     private String currentAppLocale = PreferenceHelper.getCurrentLocale();
     private final AutocompleteSessionToken token = AutocompleteSessionToken.newInstance();
 
-    public MapViewFragment() {
-    }
-
     public static Fragment newInstance() {
         return new MapViewFragment();
+    }
+
+    public MapViewFragment() {
+        // empty constructor for new instance
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentMapBinding.inflate(inflater, container, false);
-        if (getActivity() != null)
+        if (getActivity() != null) {
             activity = ((MainActivity) getActivity());
+            mainBinding = activity.getMainActivityBinding();
+        }
 
         viewModel = activity.getViewModel();
         textWatcher = getTextWatcher();
