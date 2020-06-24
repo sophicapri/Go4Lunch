@@ -2,11 +2,7 @@ package com.sophieopenclass.go4lunch.controllers.fragments;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.drawable.Drawable;
 import android.location.Location;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -19,8 +15,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.res.ResourcesCompat;
-import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -29,8 +23,6 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptor;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MapStyleOptions;
@@ -60,12 +52,11 @@ import com.sophieopenclass.go4lunch.utils.VectorConverter;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.sophieopenclass.go4lunch.base.BaseActivity.ORIENTATION_CHANGED;
 import static com.sophieopenclass.go4lunch.utils.Constants.PLACE_ID;
 import static com.sophieopenclass.go4lunch.utils.DateFormatting.getTodayDateInString;
 
 public class MapViewFragment extends Fragment implements OnMapReadyCallback {
-    private static final String TAG = "com.sophie.MAP";
+    private static final String TAG = "com.go4lunch.MAP";
     private static final String CAMERA_LOCATION = "cameraLocation";
     private MyViewModel viewModel;
     private GoogleMap mMap;
@@ -101,8 +92,8 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
 
         viewModel = activity.getViewModel();
         textWatcher = getTextWatcher();
-        activity.binding.searchBarMap.searchBarInput.addTextChangedListener(textWatcher);
-        activity.binding.searchBarMap.closeSearchBar.setOnClickListener(v -> {
+        mainBinding.searchBarMap.searchBarInput.addTextChangedListener(textWatcher);
+        mainBinding.searchBarMap.closeSearchBar.setOnClickListener(v -> {
             closeSearchBar();
             getNearbyPlaces(cameraLocation);
         });
@@ -129,7 +120,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
 
             @Override
             public void afterTextChanged(Editable s) {
-                if (!ORIENTATION_CHANGED && isOnTextChanged) {
+                if (!activity.orientationChanged && isOnTextChanged) {
                     mMap.clear();
                     isOnTextChanged = false;
                     searchBarTextInput = s.toString();
@@ -141,11 +132,11 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
     }
 
     private void closeSearchBar() {
-        activity.binding.searchBarMap.searchBarMap.setVisibility(View.GONE);
-        activity.binding.searchBarMap.searchBarInput.getText().clear();
+        mainBinding.searchBarMap.searchBarMap.setVisibility(View.GONE);
+        mainBinding.searchBarMap.searchBarInput.getText().clear();
         InputMethodManager inputManager = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
         if (inputManager != null) {
-            inputManager.hideSoftInputFromWindow(activity.binding.searchBarMap.searchBarInput.getWindowToken(), 0);
+            inputManager.hideSoftInputFromWindow(mainBinding.searchBarMap.searchBarInput.getWindowToken(), 0);
         }
         autocompleteActive = false;
     }
@@ -153,7 +144,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onResume() {
         super.onResume();
-        ORIENTATION_CHANGED = false;
+        activity.orientationChanged = false;
         if (activity.networkUnavailable()) {
             Snackbar.make(activity.binding.getRoot(), getString(R.string.internet_unavailable), BaseTransientBottomBar.LENGTH_INDEFINITE)
                     .setTextColor(getResources().getColor(R.color.quantum_white_100)).setDuration(5000).show();
@@ -171,7 +162,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
     public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
         // To stop the TextWatcher from firing on orientation change
-        ORIENTATION_CHANGED = true;
+        activity.orientationChanged = true;
     }
 
     private void displayResultsAutocomplete(String searchBarTextInput) {
@@ -269,7 +260,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
             if (!autocompleteActive)
                 getNearbyPlaces(cameraLocation);
             else
-                displayResultsAutocomplete(activity.binding.searchBarMap.searchBarInput.getText().toString());
+                displayResultsAutocomplete(mainBinding.searchBarMap.searchBarInput.getText().toString());
         });
     }
 
@@ -288,12 +279,12 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
         for (PlaceDetails placeDetails : placeDetailsList) {
             viewModel.getUsersEatingAtRestaurantToday(placeDetails.getPlaceId(), getTodayDateInString()).observe(getViewLifecycleOwner(), users -> {
                 int markerDrawable = R.drawable.ic_marker_red;
-                if (activity.getCurrentUser() != null)
+                if (activity.getCurrentUser() != null){
                     if (users.isEmpty() || (users.size() == 1 && users.get(0).getUid().equals(activity.getCurrentUser().getUid())))
                         markerDrawable = R.drawable.ic_marker_red;
                     else
                         markerDrawable = R.drawable.ic_marker_green;
-
+                    }
                 Marker marker = mMap.addMarker(new MarkerOptions().title(placeDetails.getName())
                         .position(new LatLng(placeDetails.getGeometry().getLocation().getLat(),
                                 placeDetails.getGeometry().getLocation().getLng()))

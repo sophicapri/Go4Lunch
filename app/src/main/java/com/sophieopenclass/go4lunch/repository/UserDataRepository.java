@@ -109,7 +109,7 @@ public class UserDataRepository {
         });
     }
 
-    public MutableLiveData<String> updateUrlPicture(String urlPicture, String uid) {
+    public MutableLiveData<String> updateUserUrlPicture(String urlPicture, String uid) {
         MutableLiveData<String> newUrlPicture = new MutableLiveData<>();
         userCollectionRef.document(uid).update("urlPicture", urlPicture).addOnCompleteListener(updateUrlPicture -> {
             if (updateUrlPicture.isSuccessful())

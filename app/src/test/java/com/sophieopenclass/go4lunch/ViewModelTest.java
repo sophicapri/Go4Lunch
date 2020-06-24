@@ -3,6 +3,7 @@ package com.sophieopenclass.go4lunch;
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import androidx.lifecycle.MutableLiveData;
 
+import com.google.firebase.firestore.Query;
 import com.sophieopenclass.go4lunch.models.Message;
 import com.sophieopenclass.go4lunch.models.Restaurant;
 import com.sophieopenclass.go4lunch.models.User;
@@ -103,6 +104,29 @@ public class ViewModelTest {
     }
 
     @Test
+    public void test_update_user_url_picture() {
+        MutableLiveData<String> expectedUrl = new MutableLiveData<>();
+        when(userDataSource.updateUserUrlPicture(anyString(),anyString())).thenReturn(expectedUrl);
+        viewModel.updateUserUrlPicture(anyString(), anyString()).observeForever(user -> assertSame(expectedUrl.getValue(), user));
+    }
+
+    @Test
+    public void test_get_created_user_live_data() {
+        User expectedUser = mock(User.class);
+        MutableLiveData<User> expectedUserLiveData = new MutableLiveData<>(expectedUser);
+        when(userDataSource.createUser(expectedUser)).thenReturn(expectedUserLiveData);
+        viewModel.createUser(expectedUser);
+        viewModel.getCreatedUserLiveData().observeForever(user -> assertSame(expectedUserLiveData.getValue(), user));
+    }
+
+    @Test
+    public void test_get_users_at_restaurant_query(){
+        Query expectedQuery = mock(Query.class);
+        when(userDataSource.getUsersEatingAtRestaurantQuery(anyString())).thenReturn(expectedQuery);
+        assertSame(viewModel.getUsersEatingAtRestaurantQuery(anyString()), expectedQuery);
+    }
+
+    @Test
     public void test_get_list_users() {
         List<User> mockList = new ArrayList<>();
         mockList.add(mock(User.class));
@@ -124,6 +148,13 @@ public class ViewModelTest {
     }
 
     @Test
+    public void test_get_messages_query(){
+        Query expectedQuery = mock(Query.class);
+        when(chatDataSource.getMessagesQuery(anyString())).thenReturn(expectedQuery);
+        assertSame(viewModel.getMessagesQuery(anyString()), expectedQuery);
+    }
+
+    @Test
     public void test_create_chat() {
         MutableLiveData<Boolean> expectedBoolean = new MutableLiveData<>();
         when(chatDataSource.createChat(anyString(), anyString())).thenReturn(expectedBoolean);
@@ -140,11 +171,20 @@ public class ViewModelTest {
     }
 
     @Test
+    public void test_create_message_for_chat_with_image() {
+        MutableLiveData<Message> expectedMessage = new MutableLiveData<>(mock(Message.class));
+        when(chatDataSource.createMessageWithImageForChat(anyString(), anyString(), anyString(), anyString())).thenReturn(expectedMessage);
+        viewModel.createMessageWithImageForChat(anyString(),anyString(), anyString(), anyString())
+                .observeForever(message -> assertSame(expectedMessage.getValue(), message));
+    }
+
+    @Test
     public void test_get_chat_id() {
         MutableLiveData<String> expectedChatId = new MutableLiveData<>();
         when(chatDataSource.getChatId(anyString(), anyString())).thenReturn(expectedChatId);
         viewModel.getChatId(anyString(), anyString())
                 .observeForever(chatId -> assertSame(expectedChatId.getValue(), chatId));
-
     }
+
+
 }

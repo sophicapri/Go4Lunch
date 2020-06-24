@@ -4,7 +4,6 @@ import androidx.core.view.GravityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.test.espresso.intent.rule.IntentsTestRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
-import androidx.test.rule.GrantPermissionRule;
 
 import com.sophieopenclass.go4lunch.controllers.activities.LoginActivity;
 import com.sophieopenclass.go4lunch.controllers.activities.MainActivity;

@@ -38,6 +38,8 @@ import pub.devrel.easypermissions.EasyPermissions;
 
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.content.Intent.EXTRA_UID;
+import static com.sophieopenclass.go4lunch.utils.Constants.RC_CHOOSE_PHOTO;
+import static com.sophieopenclass.go4lunch.utils.Constants.READ_STORAGE_RC;
 import static com.sophieopenclass.go4lunch.utils.Constants.STORAGE_PERMS;
 
 public class ChatActivity extends BaseActivity<MyViewModel> implements ChatViewAdapter.Listener  {
@@ -244,10 +246,5 @@ public class ChatActivity extends BaseActivity<MyViewModel> implements ChatViewA
         super.onPermissionsDenied(requestCode, perms);
         Snackbar.make(binding.getRoot(), R.string.photo_access_declined, BaseTransientBottomBar.LENGTH_INDEFINITE)
                 .setDuration(5000).show();
-    }
-
-    @VisibleForTesting
-    public void setDummyUserId(String userId) {
-        currentUserId = userId;
     }
 }

@@ -26,8 +26,6 @@ public class Constants {
     public static final double HEADING_NORTH_WEST = 45.0;
     public static final double HEADING_SOUTH_WEST = 225.0;
 
-    public static boolean RESTART_STATE = false;
-
     public static final String ACTIVITY_MY_LUNCH = "UserDetailActivity";
     public static final String ACTIVITY_SETTINGS = "SettingsActivity";
     public static final String FRAGMENT_MAP_VIEW = "MapViewFragment";
@@ -36,10 +34,10 @@ public class Constants {
 
 
     public static final String PREF_LANGUAGE = "pref_language";
-    public static final String PREF_REMINDER = "pref_reminder";
+    static final String PREF_REMINDER = "pref_reminder";
     public static final String FRENCH_LOCALE = "fr";
     public static final String ENGLISH_LOCALE = "en";
-    public static final String SHARED_PREFS = "sharedPrefs";
+    static final String SHARED_PREFS = "sharedPrefs";
     public static final String WORK_REQUEST_NAME = "Lunch reminder";
 
 
@@ -51,6 +49,9 @@ public class Constants {
     public static final int LOCATION_PERMISSION_REQUEST_CODE = 123;
     public static final int REQUEST_CALL = 567;
     public static final String STORAGE_PERMS = READ_EXTERNAL_STORAGE;
+    public static final int LOCATION_REQUEST_CODE = 777;
+    public static final int RC_CHOOSE_PHOTO = 224;
+    public static final int READ_STORAGE_RC = 333;
 
 
     //

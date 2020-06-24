@@ -124,7 +124,7 @@ public class MyViewModel extends ViewModel {
         chatDataSource.deleteUserMessages(uid);
     }
 
-    public LiveData<String> updateUrlPicture(String urlPicture, String uid) {
-        return userDataSource.updateUrlPicture(urlPicture, uid);
+    public LiveData<String> updateUserUrlPicture(String urlPicture, String uid) {
+        return userDataSource.updateUserUrlPicture(urlPicture, uid);
     }
 }

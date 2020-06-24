@@ -48,7 +48,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import static com.sophieopenclass.go4lunch.base.BaseActivity.ORIENTATION_CHANGED;
 import static com.sophieopenclass.go4lunch.utils.Constants.HEADING_NORTH_WEST;
 import static com.sophieopenclass.go4lunch.utils.Constants.HEADING_SOUTH_WEST;
 import static com.sophieopenclass.go4lunch.utils.DateFormatting.getTodayDateInString;
@@ -131,7 +130,7 @@ public class RestaurantListFragment extends Fragment {
             @Override
             public void afterTextChanged(Editable s) {
                 adapter.clearList();
-                if (!ORIENTATION_CHANGED && isOnTextChanged) {
+                if (!activity.orientationChanged && isOnTextChanged) {
                     isOnTextChanged = false;
                     autocompleteActive = true;
                     if (!s.toString().isEmpty()) {
@@ -198,7 +197,7 @@ public class RestaurantListFragment extends Fragment {
     @Override
     public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
-        ORIENTATION_CHANGED = true;
+        context.orientationChanged = true;
     }
 
     @Override
@@ -209,7 +208,7 @@ public class RestaurantListFragment extends Fragment {
             context.binding.searchBarRestaurantList.searchBarInput.getText().clear();
         }
 
-        ORIENTATION_CHANGED = false;
+        context.orientationChanged = false;
         super.onResume();
     }
 
@@ -222,7 +221,7 @@ public class RestaurantListFragment extends Fragment {
         }
 
         if (context.requestLocationAccess())
-            if (AppController.getInstance().getCurrentLocation() != null)
+            if (AppController.getInstance().getCurrentLocation() != null) {
                 if (nextPageToken == null)
                     viewModel.getNearbyPlaces(AppController.getInstance().getLatLngString())
                             .observe(getViewLifecycleOwner(), restaurantsResult -> {
@@ -238,6 +237,7 @@ public class RestaurantListFragment extends Fragment {
                         else
                             this.nextPageToken = restaurantsResult.getNextPageToken();
                     });
+            }
     }
 
     // Nearby Search doesn't return all the fields required in a PlaceDetails, therefore another

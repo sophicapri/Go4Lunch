@@ -39,11 +39,11 @@ import pub.devrel.easypermissions.EasyPermissions;
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static com.sophieopenclass.go4lunch.utils.Constants.ENGLISH_LOCALE;
 import static com.sophieopenclass.go4lunch.utils.Constants.FRENCH_LOCALE;
+import static com.sophieopenclass.go4lunch.utils.Constants.RC_CHOOSE_PHOTO;
+import static com.sophieopenclass.go4lunch.utils.Constants.READ_STORAGE_RC;
 import static com.sophieopenclass.go4lunch.utils.Constants.STORAGE_PERMS;
 
 public class SettingsActivity extends BaseActivity<MyViewModel> {
-    public static boolean localeHasChanged = false;
-    public static boolean profileHasChanged = false;
     private User currentUser;
     private Uri uriImageSelected;
     private ImageView imageViewDialog;
@@ -263,7 +263,7 @@ public class SettingsActivity extends BaseActivity<MyViewModel> {
                     .addOnSuccessListener(taskSnapshot -> taskSnapshot.getStorage().getDownloadUrl()
                             .addOnSuccessListener(uri -> {
                                 String pathImageSavedInFirebase = uri.toString();
-                                viewModel.updateUrlPicture(pathImageSavedInFirebase, currentUser.getUid())
+                                viewModel.updateUserUrlPicture(pathImageSavedInFirebase, currentUser.getUid())
                                         .observe(this, urlPicture -> {
                                             if (urlPicture != null) {
                                                 refreshActivity();
@@ -280,16 +280,15 @@ public class SettingsActivity extends BaseActivity<MyViewModel> {
         PopupMenu popupMenu = new PopupMenu(this, binding.currentLocale);
         popupMenu.getMenuInflater().inflate(R.menu.pop_up_menu_languages, popupMenu.getMenu());
         popupMenu.setOnMenuItemClickListener(item -> {
-            switch (item.getItemId()) {
-                case R.id.french_locale:
-                    if (!currentAppLocale.equals(FRENCH_LOCALE))
-                        changeAppLanguage(FRENCH_LOCALE);
-                    return true;
-
-                case R.id.english_locale:
-                    if (!currentAppLocale.equals(ENGLISH_LOCALE))
-                        changeAppLanguage(ENGLISH_LOCALE);
-                    return true;
+            int itemId = item.getItemId();
+            if (itemId == R.id.french_locale) {
+                if (!currentAppLocale.equals(FRENCH_LOCALE))
+                    changeAppLanguage(FRENCH_LOCALE);
+                return true;
+            } else if (itemId == R.id.english_locale) {
+                if (!currentAppLocale.equals(ENGLISH_LOCALE))
+                    changeAppLanguage(ENGLISH_LOCALE);
+                return true;
             }
             return true;
         });

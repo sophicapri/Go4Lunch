@@ -2,22 +2,16 @@ package com.sophieopenclass.go4lunch.base;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Configuration;
-import android.content.res.Resources;
-import android.location.Location;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.VisibleForTesting;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModel;
@@ -40,14 +34,12 @@ import com.sophieopenclass.go4lunch.controllers.fragments.MapViewFragment;
 import com.sophieopenclass.go4lunch.controllers.fragments.RestaurantListFragment;
 import com.sophieopenclass.go4lunch.injection.Injection;
 import com.sophieopenclass.go4lunch.listeners.Listeners;
-import com.sophieopenclass.go4lunch.models.User;
 import com.sophieopenclass.go4lunch.notifications.NotificationWorker;
 import com.sophieopenclass.go4lunch.utils.PreferenceHelper;
 import com.sophieopenclass.go4lunch.utils.ViewModelFactory;
 
 import java.util.Calendar;
 import java.util.List;
-import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import pub.devrel.easypermissions.EasyPermissions;
@@ -57,21 +49,19 @@ import static android.content.Intent.EXTRA_UID;
 import static com.sophieopenclass.go4lunch.utils.Constants.FRAGMENT_MAP_VIEW;
 import static com.sophieopenclass.go4lunch.utils.Constants.FRAGMENT_RESTAURANT_LIST_VIEW;
 import static com.sophieopenclass.go4lunch.utils.Constants.LOCATION_PERMISSION_REQUEST_CODE;
+import static com.sophieopenclass.go4lunch.utils.Constants.LOCATION_REQUEST_CODE;
 import static com.sophieopenclass.go4lunch.utils.Constants.PLACE_ID;
-import static com.sophieopenclass.go4lunch.utils.Constants.RESTART_STATE;
 import static com.sophieopenclass.go4lunch.utils.Constants.WORK_REQUEST_NAME;
 
 public abstract class BaseActivity<T extends ViewModel> extends AppCompatActivity implements Listeners.OnWorkmateClickListener,
         Listeners.OnRestaurantClickListener, EasyPermissions.PermissionCallbacks {
-    public static final int LOCATION_REQUEST_CODE = 777;
-    public final int RC_CHOOSE_PHOTO = 224;
-    public final int READ_STORAGE_RC = 333;
-    public final String TAG = "com.sophie.MAIN";
     public T viewModel;
+    public boolean restartState = false;
+    public boolean localeHasChanged = false;
+    public boolean profileHasChanged = false;
+    public boolean orientationChanged = false;
     public final WorkManager workManager = WorkManager.getInstance(this);
-    public LocationManager locationManager;
-    public static boolean ORIENTATION_CHANGED = false;
-    public PeriodicWorkRequest workRequest;
+    private LocationManager locationManager;
     private MapViewFragment mapFragment;
     private RestaurantListFragment restaurantListFragment;
 
@@ -147,14 +137,13 @@ public abstract class BaseActivity<T extends ViewModel> extends AppCompatActivit
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == LOCATION_REQUEST_CODE)
-            if (resultCode == RESULT_OK) {
-                if (locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER))
+            if (resultCode == RESULT_OK && locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER))
                     onLocationAccessGranted();
-            }
+
     }
 
     private void onLocationAccessGranted() {
-        RESTART_STATE = true;
+        restartState = true;
         if (mapFragment != null && mapFragment.isVisible())
             mapFragment.onPermissionsGranted();
         else if (restaurantListFragment != null && restaurantListFragment.isVisible())
@@ -217,7 +206,7 @@ public abstract class BaseActivity<T extends ViewModel> extends AppCompatActivit
                     .putString(EXTRA_UID, getCurrentUser().getUid())
                     .build();
 
-        workRequest = new PeriodicWorkRequest.Builder(NotificationWorker.class, 1,
+        PeriodicWorkRequest workRequest = new PeriodicWorkRequest.Builder(NotificationWorker.class, 1,
                 TimeUnit.DAYS)
                 .setInputData(userId)
                 .setInitialDelay(timeDiff, TimeUnit.MILLISECONDS)
@@ -225,12 +214,6 @@ public abstract class BaseActivity<T extends ViewModel> extends AppCompatActivit
 
         workManager.enqueueUniquePeriodicWork(WORK_REQUEST_NAME, ExistingPeriodicWorkPolicy.REPLACE, workRequest);
         PreferenceHelper.setReminderPreference(true);
-
-        workManager.getWorkInfoByIdLiveData(workRequest.getId()).observe(this, workInfo -> {
-                    if (workInfo != null)
-                        Log.i(TAG, "current workState " + workInfo.getState());
-                }
-        );
     }
 
     @Override

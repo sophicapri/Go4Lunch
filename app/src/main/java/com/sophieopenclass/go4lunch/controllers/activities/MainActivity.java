@@ -41,7 +41,6 @@ import static com.sophieopenclass.go4lunch.utils.Constants.ACTIVITY_SETTINGS;
 import static com.sophieopenclass.go4lunch.utils.Constants.FRAGMENT_MAP_VIEW;
 import static com.sophieopenclass.go4lunch.utils.Constants.FRAGMENT_RESTAURANT_LIST_VIEW;
 import static com.sophieopenclass.go4lunch.utils.Constants.FRAGMENT_WORKMATES_LIST;
-import static com.sophieopenclass.go4lunch.utils.Constants.RESTART_STATE;
 
 public class MainActivity extends BaseActivity<MyViewModel> implements NavigationView.OnNavigationItemSelectedListener {
     private String currentUserId;
@@ -121,14 +120,14 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
         super.onRestart();
         // to not display the map if the user leaves the app and comes back
         // or when permissions get granted
-        RESTART_STATE = true;
+        restartState = true;
     }
     
     @Override
     protected void onResume() {
         super.onResume();
         // In order to not show mapFragment every time the activity gets recreated
-        if (!ORIENTATION_CHANGED && !RESTART_STATE) {
+        if (!orientationChanged && !restartState) {
             showFragmentOrActivity(FRAGMENT_MAP_VIEW);
             // To activate notifications by default when first launching the app OR
             // activate the notifications if the user signed out and logged back in
@@ -138,17 +137,17 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
         }
         // Update UI
         updateUiAfterChangeInSettings();
-        if (RESTART_STATE)
-            RESTART_STATE = false;
+        if (restartState)
+            restartState = false;
     }
 
     private void updateUiAfterChangeInSettings() {
-        if (SettingsActivity.localeHasChanged || SettingsActivity.profileHasChanged) {
+        if (localeHasChanged || profileHasChanged) {
             Intent intent = new Intent(this, MainActivity.class);
             finish();
             startActivity(intent);
-            SettingsActivity.localeHasChanged = false;
-            SettingsActivity.profileHasChanged = false;
+            localeHasChanged = false;
+            profileHasChanged = false;
         }
     }
 
@@ -204,22 +203,16 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
     }
 
     private void showFragmentOrActivity(String controllerIdentifier) {
-        switch (controllerIdentifier) {
-            case ACTIVITY_MY_LUNCH:
-                startNewActivity(UserDetailActivity.class);
-                break;
-            case ACTIVITY_SETTINGS:
-                startNewActivity(SettingsActivity.class);
-                break;
-            case FRAGMENT_MAP_VIEW:
-                showMapViewFragment();
-                break;
-            case FRAGMENT_RESTAURANT_LIST_VIEW:
-                showRestaurantListFragment();
-                break;
-            case FRAGMENT_WORKMATES_LIST:
-                showWorkmatesListFragment();
-                break;
+        if (ACTIVITY_MY_LUNCH.equals(controllerIdentifier)) {
+            startNewActivity(UserDetailActivity.class);
+        } else if (ACTIVITY_SETTINGS.equals(controllerIdentifier)) {
+            startNewActivity(SettingsActivity.class);
+        } else if (FRAGMENT_MAP_VIEW.equals(controllerIdentifier)) {
+            showMapViewFragment();
+        } else if (FRAGMENT_RESTAURANT_LIST_VIEW.equals(controllerIdentifier)) {
+            showRestaurantListFragment();
+        } else if (FRAGMENT_WORKMATES_LIST.equals(controllerIdentifier)) {
+            showWorkmatesListFragment();
         }
     }
 
@@ -279,7 +272,7 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
     public boolean onOptionsItemSelected(MenuItem item) {
         EditText focusedEditText = null;
 
-        if (item.getItemId() == R.id.search_bar_menu)
+        if (item.getItemId() == R.id.search_bar_menu) {
             if (fragmentMapView != null && fragmentMapView.isVisible()) {
                 binding.searchBarMap.searchBarMap.setVisibility(View.VISIBLE);
                 focusedEditText = binding.searchBarMap.searchBarInput;
@@ -290,7 +283,7 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
                 binding.searchBarWorkmates.searchBarWorkmates.setVisibility(View.VISIBLE);
                 focusedEditText = binding.searchBarWorkmates.searchBarInput;
             }
-
+        }
         showKeyboard(focusedEditText);
         return true;
     }

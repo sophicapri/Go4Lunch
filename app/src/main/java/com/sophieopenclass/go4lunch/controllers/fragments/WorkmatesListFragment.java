@@ -37,7 +37,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.sophieopenclass.go4lunch.base.BaseActivity.ORIENTATION_CHANGED;
 import static com.sophieopenclass.go4lunch.utils.Constants.HITS_ALGOLIA;
 import static com.sophieopenclass.go4lunch.utils.Constants.INDEX_WORKMATES;
 import static com.sophieopenclass.go4lunch.utils.Constants.UID_FIELD;
@@ -87,12 +86,16 @@ public class WorkmatesListFragment extends Fragment {
     }
 
     private void initSearchBar() {
+        TextWatcher textWatcher = getTextWatcher();
+        activity.binding.searchBarWorkmates.searchBarInput.addTextChangedListener(textWatcher);
         activity.binding.searchBarWorkmates.closeSearchBar.setOnClickListener(v -> {
             closeSearchBar();
             adapter.updateList(workmateFinalList);
         });
+    }
 
-        activity.binding.searchBarWorkmates.searchBarInput.addTextChangedListener(new TextWatcher() {
+    private TextWatcher getTextWatcher() {
+        return new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -125,7 +128,7 @@ public class WorkmatesListFragment extends Fragment {
                         }
                 });
             }
-        });
+        };
     }
 
     private void closeSearchBar() {
@@ -140,7 +143,7 @@ public class WorkmatesListFragment extends Fragment {
     @Override
     public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
-        ORIENTATION_CHANGED = true;
+        activity.orientationChanged = true;
     }
 
     @Override
@@ -158,7 +161,7 @@ public class WorkmatesListFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        ORIENTATION_CHANGED = false;
+        activity.orientationChanged = false;
     }
 
     // Not using FirestoreRecyclerAdapter because it isn't possible to retrieve all the users
