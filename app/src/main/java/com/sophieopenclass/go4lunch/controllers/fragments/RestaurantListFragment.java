@@ -225,8 +225,10 @@ public class RestaurantListFragment extends Fragment {
                 if (nextPageToken == null)
                     viewModel.getNearbyPlaces(AppController.getInstance().getLatLngString())
                             .observe(getViewLifecycleOwner(), restaurantsResult -> {
-                                getFullPlaceDetails(restaurantsResult.getPlaceDetails());
-                                this.nextPageToken = restaurantsResult.getNextPageToken();
+                                if (restaurantsResult != null) {
+                                    getFullPlaceDetails(restaurantsResult.getPlaceDetails());
+                                    this.nextPageToken = restaurantsResult.getNextPageToken();
+                                }
                             });
                 else
                     viewModel.getMoreNearbyPlaces(nextPageToken).observe(getViewLifecycleOwner(), restaurantsResult -> {

@@ -1,5 +1,7 @@
 package com.sophieopenclass.go4lunch.repository;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
@@ -17,6 +19,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class RestaurantDataRepository {
+    private static final String TAG = "RestaurantDataRepo";
     private PlaceApi placeApi;
 
     public RestaurantDataRepository(PlaceApi placeApi) {
@@ -57,7 +60,7 @@ public class RestaurantDataRepository {
 
             @Override
             public void onFailure(@NonNull Call<PlaceDetailsResult> call, @NonNull Throwable t) {
-                System.out.println("repo :" + t.getMessage());
+                Log.i(TAG, "onFailure: " + t.getMessage());
             }
         });
         return placeDetails;
@@ -84,7 +87,7 @@ public class RestaurantDataRepository {
 
                 @Override
                 public void onFailure(@NonNull Call<PlaceDetailsResult> call, @NonNull Throwable t) {
-                    System.out.println("repo :" + t.getMessage());
+                    Log.i(TAG, "onFailure: " + t.getMessage());
                 }
             });
         }
