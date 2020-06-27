@@ -141,6 +141,4 @@ public class MyViewModel extends ViewModel {
     public LiveData<String> updateUserUrlPicture(String urlPicture, String uid) {
         return userDataSource.updateUserUrlPicture(urlPicture, uid);
     }
-
-
 }
