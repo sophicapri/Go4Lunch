@@ -3,6 +3,7 @@ package com.sophieopenclass.go4lunch.repository;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
+import com.sophieopenclass.go4lunch.BuildConfig;
 import com.sophieopenclass.go4lunch.api.PlaceApi;
 import com.sophieopenclass.go4lunch.models.json_to_java.PlaceDetails;
 import com.sophieopenclass.go4lunch.models.json_to_java.PlaceDetailsResult;
@@ -17,6 +18,7 @@ import retrofit2.Response;
 
 public class RestaurantDataRepository {
     private PlaceApi placeApi;
+    String apiKey = BuildConfig.API_KEY;
 
     public RestaurantDataRepository(PlaceApi placeApi) {
         this.placeApi = placeApi;
@@ -24,7 +26,7 @@ public class RestaurantDataRepository {
 
     public MutableLiveData<RestaurantsResult> getNearbyPlaces(String location) {
         MutableLiveData<RestaurantsResult> restaurantsData = new MutableLiveData<>();
-        placeApi.getNearbyPlaces(location).enqueue(new Callback<RestaurantsResult>() {
+        placeApi.getNearbyPlaces(location, apiKey).enqueue(new Callback<RestaurantsResult>() {
             @Override
             public void onResponse(@NonNull Call<RestaurantsResult> call,
                                    @NonNull Response<RestaurantsResult> response) {
@@ -43,7 +45,7 @@ public class RestaurantDataRepository {
 
     public MutableLiveData<PlaceDetails> getPlaceDetails(String placeId, String language) {
         MutableLiveData<PlaceDetails> placeDetails = new MutableLiveData<>();
-        placeApi.getPlaceDetails(placeId, language).enqueue(new Callback<PlaceDetailsResult>() {
+        placeApi.getPlaceDetails(placeId, language, apiKey).enqueue(new Callback<PlaceDetailsResult>() {
             @Override
             public void onResponse(@NonNull Call<PlaceDetailsResult> call,
                                    @NonNull Response<PlaceDetailsResult> response) {
@@ -68,7 +70,7 @@ public class RestaurantDataRepository {
         List<PlaceDetails> result = new ArrayList<>();
 
         for (String placeId : placeIds) {
-            placeApi.getPlaceDetails(placeId, language).enqueue(new Callback<PlaceDetailsResult>() {
+            placeApi.getPlaceDetails(placeId, language, apiKey).enqueue(new Callback<PlaceDetailsResult>() {
                 @Override
                 public void onResponse(@NonNull Call<PlaceDetailsResult> call,
                                        @NonNull Response<PlaceDetailsResult> response) {
@@ -93,7 +95,7 @@ public class RestaurantDataRepository {
 
     public MutableLiveData<RestaurantsResult> getMoreNearbyPlaces(String nextPageToken) {
         MutableLiveData<RestaurantsResult> restaurantsData = new MutableLiveData<>();
-        placeApi.getMoreNearbyPlaces(nextPageToken).enqueue(new Callback<RestaurantsResult>() {
+        placeApi.getMoreNearbyPlaces(nextPageToken, apiKey).enqueue(new Callback<RestaurantsResult>() {
             @Override
             public void onResponse(@NonNull Call<RestaurantsResult> call,
                                    @NonNull Response<RestaurantsResult> response) {
