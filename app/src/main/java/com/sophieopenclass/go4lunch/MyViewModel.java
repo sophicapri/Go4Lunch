@@ -1,5 +1,7 @@
 package com.sophieopenclass.go4lunch;
 
+import android.text.Editable;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -10,10 +12,12 @@ import com.sophieopenclass.go4lunch.models.Restaurant;
 import com.sophieopenclass.go4lunch.models.json_to_java.RestaurantsResult;
 import com.sophieopenclass.go4lunch.models.json_to_java.PlaceDetails;
 import com.sophieopenclass.go4lunch.models.User;
+import com.sophieopenclass.go4lunch.repository.AlgoliaDataRepository;
 import com.sophieopenclass.go4lunch.repository.ChatDataRepository;
 import com.sophieopenclass.go4lunch.repository.RestaurantDataRepository;
 import com.sophieopenclass.go4lunch.repository.UserDataRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MyViewModel extends ViewModel {
@@ -21,12 +25,14 @@ public class MyViewModel extends ViewModel {
     private UserDataRepository userDataSource;
     private ChatDataRepository chatDataSource;
     private LiveData<User> createdUserLiveData;
+    private AlgoliaDataRepository algoliaDataSource;
 
     public MyViewModel(RestaurantDataRepository restaurantDataSource, UserDataRepository userDataSource,
-                       ChatDataRepository chatDataSource) {
+                       ChatDataRepository chatDataSource, AlgoliaDataRepository algoliaDataSource) {
         this.restaurantDataSource = restaurantDataSource;
         this.userDataSource = userDataSource;
         this.chatDataSource = chatDataSource;
+        this.algoliaDataSource = algoliaDataSource;
     }
 
     // RESTAURANTS
@@ -97,6 +103,14 @@ public class MyViewModel extends ViewModel {
         userDataSource.deleteUser(uid);
     }
 
+    public void populateAlgolia(List<User> workmates) {
+        algoliaDataSource.populateDatabase(workmates);
+    }
+
+    public LiveData<ArrayList<User>> searchWorkmate(String input) {
+        return algoliaDataSource.searchWorkmate(input);
+    }
+
     // CHAT
     public LiveData<Message> createMessageForChat(String textMessage, String userSenderId, String chatId) {
         return chatDataSource.createMessageForChat(textMessage, userSenderId, chatId);
@@ -127,4 +141,6 @@ public class MyViewModel extends ViewModel {
     public LiveData<String> updateUserUrlPicture(String urlPicture, String uid) {
         return userDataSource.updateUserUrlPicture(urlPicture, uid);
     }
+
+
 }

@@ -14,14 +14,9 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import com.algolia.search.saas.Client;
-import com.algolia.search.saas.Index;
-import com.algolia.search.saas.Query;
 import com.bumptech.glide.Glide;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.gson.Gson;
-import com.sophieopenclass.go4lunch.BuildConfig;
 import com.sophieopenclass.go4lunch.MyViewModel;
 import com.sophieopenclass.go4lunch.R;
 import com.sophieopenclass.go4lunch.base.BaseActivity;
@@ -30,16 +25,9 @@ import com.sophieopenclass.go4lunch.controllers.adapters.WorkmatesViewAdapter;
 import com.sophieopenclass.go4lunch.databinding.RecyclerViewWorkmatesBinding;
 import com.sophieopenclass.go4lunch.models.User;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.sophieopenclass.go4lunch.utils.Constants.HITS_ALGOLIA;
-import static com.sophieopenclass.go4lunch.utils.Constants.INDEX_WORKMATES;
-import static com.sophieopenclass.go4lunch.utils.Constants.UID_FIELD;
 import static com.sophieopenclass.go4lunch.utils.DateFormatting.getTodayDateInString;
 
 public class WorkmatesListFragment extends Fragment {
@@ -49,7 +37,6 @@ public class WorkmatesListFragment extends Fragment {
     private WorkmatesViewAdapter adapter;
     private String currentUserId;
     private MainActivity activity;
-    private Index index;
     private List<User> workmateFinalList = new ArrayList<>();
 
     public static Fragment newInstance() {
@@ -65,7 +52,6 @@ public class WorkmatesListFragment extends Fragment {
             if (activity.getCurrentUser() != null)
                 currentUserId = activity.getCurrentUser().getUid();
         }
-        initAlgolia();
         initSearchBar();
         binding.swipeRefreshView.setOnRefreshListener(this::initSwipeRefreshListener);
         return binding.getRoot();
@@ -78,11 +64,6 @@ public class WorkmatesListFragment extends Fragment {
         } else
             updateWorkmatesList();
         binding.swipeRefreshView.setRefreshing(false);
-    }
-
-    private void initAlgolia() {
-        Client client = new Client(BuildConfig.ALGOLIA_APP_ID, BuildConfig.ALGOLIA_API_KEY);
-        index = client.getIndex(INDEX_WORKMATES);
     }
 
     private void initSearchBar() {
@@ -107,26 +88,9 @@ public class WorkmatesListFragment extends Fragment {
             }
 
             @Override
-            public void afterTextChanged(Editable s) {
-                Query query = new Query(s.toString()).setAttributesToRetrieve(UID_FIELD)
-                        .setHitsPerPage(20);
-
-                index.searchAsync(query, (jsonObject, e) -> {
-                    if (jsonObject != null)
-                        try {
-                            JSONArray hits = jsonObject.getJSONArray(HITS_ALGOLIA);
-                            List<User> users = new ArrayList<>();
-                            for (int i = 0; i < hits.length(); i++) {
-                                for (User user : workmateFinalList) {
-                                    if (hits.getJSONObject(i).getString(UID_FIELD).equals(user.getUid()))
-                                        users.add(user);
-                                }
-                            }
-                            adapter.updateList(users);
-                        } catch (JSONException ex) {
-                            ex.printStackTrace();
-                        }
-                });
+            public void afterTextChanged(Editable input) {
+                viewModel.searchWorkmate(input.toString())
+                        .observe(activity, users -> adapter.updateList(users));
             }
         };
     }
@@ -180,11 +144,11 @@ public class WorkmatesListFragment extends Fragment {
             for (User user : users) {
                 if (!user.getUid().equals(currentUserId)) {
                     usersWithoutCurrentLogged.add(user);
-                    populateAlgolia(user);
                 }
             }
+            viewModel.populateAlgolia(usersWithoutCurrentLogged);
 
-            //To display the workmates who have selected a restaurant at the top of the list
+            //To display at the top of the list the workmates who have selected a restaurant
             List<User> workmatesWithoutRestaurant = new ArrayList<>();
             for (User user : usersWithoutCurrentLogged) {
                 if (user.getDatesAndRestaurants().get(getTodayDateInString()) != null)
@@ -194,26 +158,6 @@ public class WorkmatesListFragment extends Fragment {
             }
             workmateFinalList.addAll(workmatesWithoutRestaurant);
             adapter.updateList(workmateFinalList);
-        });
-    }
-
-    private void populateAlgolia(User user) {
-        Gson gson = new Gson();
-        String jsonUser = gson.toJson(user);
-        index.getObjectAsync(user.getUid(), (content, error) -> {
-            if (content != null) {
-                try {
-                    index.saveObjectAsync(new JSONObject(jsonUser), user.getUid(), null);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            } else {
-                try {
-                    index.addObjectAsync(new JSONObject(jsonUser), user.getUid(), null);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
         });
     }
 
