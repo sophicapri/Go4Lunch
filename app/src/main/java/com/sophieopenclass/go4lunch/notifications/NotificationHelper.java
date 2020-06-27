@@ -45,6 +45,6 @@ public class NotificationHelper extends ContextWrapper {
                 .setCategory(NotificationCompat.CATEGORY_EVENT)
                 .setContentIntent(intent)
                 .setAutoCancel(true)
-                .setSmallIcon(R.drawable.ic_logo_auth);
+                .setSmallIcon(R.drawable.ic_logo);
     }
 }
