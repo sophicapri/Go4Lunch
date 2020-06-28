@@ -7,7 +7,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -84,16 +83,6 @@ public abstract class BaseActivity<T extends ViewModel> extends AppCompatActivit
     protected abstract Class getViewModelClass();
 
     protected abstract View getLayout();
-
-
-
-    // --------------------
-    // ERROR HANDLER
-    // --------------------
-
-    protected OnFailureListener onFailureListener() {
-        return e -> Toast.makeText(getApplicationContext(), getString(R.string.error_unknown_error), Toast.LENGTH_LONG).show();
-    }
 
     // ---------
     // ACCESS TO INTERNET && LOCATION CHECKS
@@ -219,6 +208,14 @@ public abstract class BaseActivity<T extends ViewModel> extends AppCompatActivit
         workManager.cancelAllWork();
         PreferenceHelper.setReminderPreference(false);
         Toast.makeText(this, R.string.reminder_disabled, Toast.LENGTH_LONG).show();
+    }
+
+    // --------------------
+    // ERROR HANDLER // LISTENERS
+    // --------------------
+
+    protected OnFailureListener onFailureListener() {
+        return e -> Toast.makeText(getApplicationContext(), getString(R.string.error_unknown_error), Toast.LENGTH_LONG).show();
     }
 
     @Override
