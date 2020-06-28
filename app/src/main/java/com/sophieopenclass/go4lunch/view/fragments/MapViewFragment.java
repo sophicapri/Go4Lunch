@@ -271,7 +271,10 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
                         .setDuration(5000).show();
         } else if (activity.requestLocationAccess()) {
             viewModel.getNearbyPlaces(AppController.getInstance().getLatLngString(currentLocation))
-                    .observe(getViewLifecycleOwner(), restaurantsResult -> initMarkers(restaurantsResult.getPlaceDetails()));
+                    .observe(getViewLifecycleOwner(), restaurantsResult -> {
+                        if (restaurantsResult != null)
+                            initMarkers(restaurantsResult.getPlaceDetails());
+                    });
         }
     }
 
@@ -279,12 +282,12 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
         for (PlaceDetails placeDetails : placeDetailsList) {
             viewModel.getUsersEatingAtRestaurantToday(placeDetails.getPlaceId(), getTodayDateInString()).observe(getViewLifecycleOwner(), users -> {
                 int markerDrawable = R.drawable.ic_marker_red;
-                if (activity.getCurrentUser() != null){
+                if (activity.getCurrentUser() != null) {
                     if (users.isEmpty() || (users.size() == 1 && users.get(0).getUid().equals(activity.getCurrentUser().getUid())))
                         markerDrawable = R.drawable.ic_marker_red;
                     else
                         markerDrawable = R.drawable.ic_marker_green;
-                    }
+                }
                 Marker marker = mMap.addMarker(new MarkerOptions().title(placeDetails.getName())
                         .position(new LatLng(placeDetails.getGeometry().getLocation().getLat(),
                                 placeDetails.getGeometry().getLocation().getLng()))
