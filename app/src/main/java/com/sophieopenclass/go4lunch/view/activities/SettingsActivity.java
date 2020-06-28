@@ -208,12 +208,11 @@ public class SettingsActivity extends BaseActivity<MyViewModel> {
             return;
         }
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        startActivityForResult(intent, RC_CHOOSE_PHOTO);
+        this.startActivityForResult(intent, RC_CHOOSE_PHOTO);
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @androidx.annotation.NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
     }
 
@@ -225,14 +224,12 @@ public class SettingsActivity extends BaseActivity<MyViewModel> {
 
     @Override
     public void onPermissionsGranted(int requestCode, @NonNull List<String> perms) {
-        super.onPermissionsGranted(requestCode, perms);
         if (requestCode == READ_STORAGE_RC)
             chooseImageFromPhone();
     }
 
     @Override
     public void onPermissionsDenied(int requestCode, @NonNull List<String> perms) {
-        super.onPermissionsDenied(requestCode, perms);
         Snackbar.make(binding.getRoot(), R.string.photo_access_declined, BaseTransientBottomBar.LENGTH_INDEFINITE)
                 .setDuration(5000).show();
     }

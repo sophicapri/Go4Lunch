@@ -51,6 +51,7 @@ import static com.sophieopenclass.go4lunch.utils.Constants.FRAGMENT_RESTAURANT_L
 import static com.sophieopenclass.go4lunch.utils.Constants.LOCATION_PERMISSION_REQUEST_CODE;
 import static com.sophieopenclass.go4lunch.utils.Constants.LOCATION_REQUEST_CODE;
 import static com.sophieopenclass.go4lunch.utils.Constants.PLACE_ID;
+import static com.sophieopenclass.go4lunch.utils.Constants.READ_STORAGE_RC;
 import static com.sophieopenclass.go4lunch.utils.Constants.WORK_REQUEST_NAME;
 
 public abstract class BaseActivity<T extends ViewModel> extends AppCompatActivity implements Listeners.OnWorkmateClickListener,
