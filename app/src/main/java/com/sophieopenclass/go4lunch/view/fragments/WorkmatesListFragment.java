@@ -1,4 +1,4 @@
-package com.sophieopenclass.go4lunch.controllers.fragments;
+package com.sophieopenclass.go4lunch.view.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -20,8 +20,8 @@ import com.google.android.material.snackbar.Snackbar;
 import com.sophieopenclass.go4lunch.MyViewModel;
 import com.sophieopenclass.go4lunch.R;
 import com.sophieopenclass.go4lunch.base.BaseActivity;
-import com.sophieopenclass.go4lunch.controllers.activities.MainActivity;
-import com.sophieopenclass.go4lunch.controllers.adapters.WorkmatesViewAdapter;
+import com.sophieopenclass.go4lunch.view.activities.MainActivity;
+import com.sophieopenclass.go4lunch.view.adapters.WorkmatesViewAdapter;
 import com.sophieopenclass.go4lunch.databinding.RecyclerViewWorkmatesBinding;
 import com.sophieopenclass.go4lunch.models.User;
 

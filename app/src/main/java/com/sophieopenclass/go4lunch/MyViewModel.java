@@ -95,8 +95,8 @@ public class MyViewModel extends ViewModel {
         return userDataSource.getUsersEatingAtRestaurantToday(placeId, date);
     }
 
-    public void updateUsername(String username, String uid) {
-        userDataSource.updateUsername(username, uid);
+    public LiveData<String> updateUsername(String username, String uid) {
+        return userDataSource.updateUsername(username, uid);
     }
 
     public void deleteUser(String uid) {

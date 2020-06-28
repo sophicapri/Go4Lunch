@@ -1,4 +1,4 @@
-package com.sophieopenclass.go4lunch.controllers.activities;
+package com.sophieopenclass.go4lunch.view.activities;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -10,7 +10,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.VisibleForTesting;
 import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -26,7 +25,7 @@ import com.google.firebase.storage.StorageReference;
 import com.sophieopenclass.go4lunch.MyViewModel;
 import com.sophieopenclass.go4lunch.R;
 import com.sophieopenclass.go4lunch.base.BaseActivity;
-import com.sophieopenclass.go4lunch.controllers.adapters.ChatViewAdapter;
+import com.sophieopenclass.go4lunch.view.adapters.ChatViewAdapter;
 import com.sophieopenclass.go4lunch.databinding.ActivityChatBinding;
 import com.sophieopenclass.go4lunch.models.Message;
 import com.sophieopenclass.go4lunch.models.User;

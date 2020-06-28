@@ -15,7 +15,7 @@ import com.sophieopenclass.go4lunch.models.Message;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.sophieopenclass.go4lunch.controllers.fragments.RestaurantListFragment.TAG;
+import static com.sophieopenclass.go4lunch.view.fragments.RestaurantListFragment.TAG;
 import static com.sophieopenclass.go4lunch.utils.Constants.MESSAGES_SUBCOLLECTION;
 import static com.sophieopenclass.go4lunch.utils.Constants.DATE_CREATED;
 import static com.sophieopenclass.go4lunch.utils.Constants.PARTICIPANTS_FIELD;

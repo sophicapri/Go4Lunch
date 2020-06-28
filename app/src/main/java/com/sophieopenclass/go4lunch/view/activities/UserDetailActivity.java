@@ -1,4 +1,4 @@
-package com.sophieopenclass.go4lunch.controllers.activities;
+package com.sophieopenclass.go4lunch.view.activities;
 
 import android.content.Intent;
 import android.view.View;
@@ -13,7 +13,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.sophieopenclass.go4lunch.MyViewModel;
 import com.sophieopenclass.go4lunch.R;
 import com.sophieopenclass.go4lunch.base.BaseActivity;
-import com.sophieopenclass.go4lunch.controllers.adapters.PreviousRestaurantsAdapter;
+import com.sophieopenclass.go4lunch.view.adapters.PreviousRestaurantsAdapter;
 import com.sophieopenclass.go4lunch.databinding.ActivityUserDetailBinding;
 import com.sophieopenclass.go4lunch.models.Restaurant;
 import com.sophieopenclass.go4lunch.models.User;
@@ -195,11 +195,10 @@ public class UserDetailActivity extends BaseActivity<MyViewModel> {
     }
 
     private void updateRecyclerView(ArrayList<Restaurant> placeDetailsList) {
-        if (!placeDetailsList.isEmpty()) {
+        if (!placeDetailsList.isEmpty())
             binding.noRestaurantSelected.setVisibility(View.INVISIBLE);
-        } else {
+        else
             binding.noRestaurantSelected.setVisibility(View.VISIBLE);
-        }
         adapter.updateList(placeDetailsList, isFavorite);
     }
 

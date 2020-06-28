@@ -18,6 +18,8 @@ import static com.sophieopenclass.go4lunch.utils.Constants.INDEX_WORKMATES;
 import static com.sophieopenclass.go4lunch.utils.Constants.USER_COLLECTION_NAME;
 
 public class Injection {
+    private Injection() {}
+
     private static RestaurantDataRepository provideRestaurantDataSource() {
         PlaceApi placeApi = PlaceService.createService(PlaceApi.class);
         return new RestaurantDataRepository(placeApi);

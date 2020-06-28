@@ -1,4 +1,4 @@
-package com.sophieopenclass.go4lunch.controllers.adapters;
+package com.sophieopenclass.go4lunch.view.adapters;
 
 import android.view.LayoutInflater;
 import android.view.View;

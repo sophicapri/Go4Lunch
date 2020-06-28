@@ -23,20 +23,20 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/API_KEY" />
 
-        <activity android:name=".controllers.activities.SplashScreenActivity" android:theme="@style/SplashScreenTheme">
+        <activity android:name=".view.activities.SplashScreenActivity" android:theme="@style/SplashScreenTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".controllers.fragments.MapViewFragment">
+        <activity android:name=".view.fragments.MapViewFragment">
         </activity>
-        <activity android:name=".controllers.activities.SettingsActivity" />
-        <activity android:name=".controllers.activities.MainActivity" />
-        <activity android:name=".controllers.activities.RestaurantDetailsActivity" />
-        <activity android:name=".controllers.activities.UserDetailActivity" />
-        <activity android:name=".controllers.activities.ChatActivity" />
-        <activity android:name=".controllers.activities.LoginActivity" />
+        <activity android:name=".view.activities.SettingsActivity" />
+        <activity android:name=".view.activities.MainActivity" />
+        <activity android:name=".view.activities.RestaurantDetailsActivity" />
+        <activity android:name=".view.activities.UserDetailActivity" />
+        <activity android:name=".view.activities.ChatActivity" />
+        <activity android:name=".view.activities.LoginActivity" />
     </application>
 </manifest>

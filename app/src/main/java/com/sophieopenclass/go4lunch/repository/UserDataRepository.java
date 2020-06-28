@@ -2,6 +2,7 @@ package com.sophieopenclass.go4lunch.repository;
 
 import android.util.Log;
 
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.google.firebase.firestore.CollectionReference;
@@ -99,7 +100,7 @@ public class UserDataRepository {
                 });
     }
 
-    public void updateUsername(String username, String uid) {
+    public MutableLiveData<String> updateUsername(String username, String uid) {
         MutableLiveData<String> newUsername = new MutableLiveData<>();
         userCollectionRef.document(uid).update(USERNAME_FIELD, username).addOnCompleteListener(updateUsername -> {
             if (updateUsername.isSuccessful())
@@ -107,6 +108,7 @@ public class UserDataRepository {
             else if (updateUsername.getException() != null)
                 Log.e(TAG, "updatePlaceId: " + (updateUsername.getException().getMessage()));
         });
+        return newUsername;
     }
 
     public MutableLiveData<String> updateUserUrlPicture(String urlPicture, String uid) {

@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/ic_sign_in"
     android:fitsSystemWindows="true"
-    tools:context=".controllers.activities.LoginActivity">
+    tools:context=".view.activities.LoginActivity">
 
     <ImageView
         android:id="@+id/logo_app"

@@ -13,7 +13,7 @@ import androidx.work.WorkerParameters;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.sophieopenclass.go4lunch.R;
-import com.sophieopenclass.go4lunch.controllers.activities.RestaurantDetailsActivity;
+import com.sophieopenclass.go4lunch.view.activities.RestaurantDetailsActivity;
 import com.sophieopenclass.go4lunch.models.Restaurant;
 import com.sophieopenclass.go4lunch.models.User;
 

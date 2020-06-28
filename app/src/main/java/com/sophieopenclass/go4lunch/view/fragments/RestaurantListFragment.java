@@ -1,4 +1,4 @@
-package com.sophieopenclass.go4lunch.controllers.fragments;
+package com.sophieopenclass.go4lunch.view.fragments;
 
 import android.content.Context;
 import android.location.Location;
@@ -37,8 +37,8 @@ import com.google.maps.android.SphericalUtil;
 import com.sophieopenclass.go4lunch.AppController;
 import com.sophieopenclass.go4lunch.MyViewModel;
 import com.sophieopenclass.go4lunch.R;
-import com.sophieopenclass.go4lunch.controllers.activities.MainActivity;
-import com.sophieopenclass.go4lunch.controllers.adapters.RestaurantListAdapter;
+import com.sophieopenclass.go4lunch.view.activities.MainActivity;
+import com.sophieopenclass.go4lunch.view.adapters.RestaurantListAdapter;
 import com.sophieopenclass.go4lunch.databinding.RecyclerViewRestaurantsBinding;
 import com.sophieopenclass.go4lunch.models.json_to_java.PlaceDetails;
 import com.sophieopenclass.go4lunch.utils.PreferenceHelper;

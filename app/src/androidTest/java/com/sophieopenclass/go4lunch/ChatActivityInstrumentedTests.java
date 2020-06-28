@@ -2,9 +2,9 @@ package com.sophieopenclass.go4lunch;
 
 import androidx.test.espresso.intent.rule.IntentsTestRule;
 
-import com.sophieopenclass.go4lunch.controllers.activities.ChatActivity;
-import com.sophieopenclass.go4lunch.controllers.activities.MainActivity;
-import com.sophieopenclass.go4lunch.controllers.activities.UserDetailActivity;
+import com.sophieopenclass.go4lunch.view.activities.ChatActivity;
+import com.sophieopenclass.go4lunch.view.activities.MainActivity;
+import com.sophieopenclass.go4lunch.view.activities.UserDetailActivity;
 
 import org.junit.Rule;
 import org.junit.Test;

@@ -1,4 +1,4 @@
-package com.sophieopenclass.go4lunch.controllers.activities;
+package com.sophieopenclass.go4lunch.view.activities;
 
 import android.content.Intent;
 import android.os.Bundle;

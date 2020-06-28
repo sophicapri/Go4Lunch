@@ -1,4 +1,4 @@
-package com.sophieopenclass.go4lunch.controllers.fragments;
+package com.sophieopenclass.go4lunch.view.fragments;
 
 import android.content.Context;
 import android.content.Intent;
@@ -41,8 +41,8 @@ import com.google.android.material.snackbar.Snackbar;
 import com.sophieopenclass.go4lunch.AppController;
 import com.sophieopenclass.go4lunch.MyViewModel;
 import com.sophieopenclass.go4lunch.R;
-import com.sophieopenclass.go4lunch.controllers.activities.MainActivity;
-import com.sophieopenclass.go4lunch.controllers.activities.RestaurantDetailsActivity;
+import com.sophieopenclass.go4lunch.view.activities.MainActivity;
+import com.sophieopenclass.go4lunch.view.activities.RestaurantDetailsActivity;
 import com.sophieopenclass.go4lunch.databinding.ActivityMainBinding;
 import com.sophieopenclass.go4lunch.databinding.FragmentMapBinding;
 import com.sophieopenclass.go4lunch.models.json_to_java.PlaceDetails;

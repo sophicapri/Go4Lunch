@@ -5,10 +5,10 @@ import androidx.fragment.app.Fragment;
 import androidx.test.espresso.intent.rule.IntentsTestRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
-import com.sophieopenclass.go4lunch.controllers.activities.LoginActivity;
-import com.sophieopenclass.go4lunch.controllers.activities.MainActivity;
-import com.sophieopenclass.go4lunch.controllers.activities.SettingsActivity;
-import com.sophieopenclass.go4lunch.controllers.activities.UserDetailActivity;
+import com.sophieopenclass.go4lunch.view.activities.LoginActivity;
+import com.sophieopenclass.go4lunch.view.activities.MainActivity;
+import com.sophieopenclass.go4lunch.view.activities.SettingsActivity;
+import com.sophieopenclass.go4lunch.view.activities.UserDetailActivity;
 
 import org.junit.Before;
 import org.junit.Rule;

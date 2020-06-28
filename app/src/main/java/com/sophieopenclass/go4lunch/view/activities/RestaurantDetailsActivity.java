@@ -1,4 +1,4 @@
-package com.sophieopenclass.go4lunch.controllers.activities;
+package com.sophieopenclass.go4lunch.view.activities;
 
 import android.Manifest;
 import android.content.Intent;
@@ -26,7 +26,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.sophieopenclass.go4lunch.MyViewModel;
 import com.sophieopenclass.go4lunch.R;
 import com.sophieopenclass.go4lunch.base.BaseActivity;
-import com.sophieopenclass.go4lunch.controllers.adapters.RestaurantWorkmatesListAdapter;
+import com.sophieopenclass.go4lunch.view.adapters.RestaurantWorkmatesListAdapter;
 import com.sophieopenclass.go4lunch.databinding.ActivityRestaurantDetailsBinding;
 import com.sophieopenclass.go4lunch.models.Restaurant;
 import com.sophieopenclass.go4lunch.models.User;

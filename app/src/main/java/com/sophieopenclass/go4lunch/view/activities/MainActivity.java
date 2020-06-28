@@ -1,4 +1,4 @@
-package com.sophieopenclass.go4lunch.controllers.activities;
+package com.sophieopenclass.go4lunch.view.activities;
 
 import android.content.Context;
 import android.content.Intent;
@@ -29,9 +29,9 @@ import com.sophieopenclass.go4lunch.BuildConfig;
 import com.sophieopenclass.go4lunch.MyViewModel;
 import com.sophieopenclass.go4lunch.R;
 import com.sophieopenclass.go4lunch.base.BaseActivity;
-import com.sophieopenclass.go4lunch.controllers.fragments.MapViewFragment;
-import com.sophieopenclass.go4lunch.controllers.fragments.RestaurantListFragment;
-import com.sophieopenclass.go4lunch.controllers.fragments.WorkmatesListFragment;
+import com.sophieopenclass.go4lunch.view.fragments.MapViewFragment;
+import com.sophieopenclass.go4lunch.view.fragments.RestaurantListFragment;
+import com.sophieopenclass.go4lunch.view.fragments.WorkmatesListFragment;
 import com.sophieopenclass.go4lunch.databinding.ActivityMainBinding;
 import com.sophieopenclass.go4lunch.models.User;
 import com.sophieopenclass.go4lunch.utils.PreferenceHelper;

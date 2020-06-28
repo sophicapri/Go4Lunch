@@ -1,4 +1,4 @@
-package com.sophieopenclass.go4lunch.controllers.activities;
+package com.sophieopenclass.go4lunch.view.activities;
 
 import android.content.Context;
 import android.content.Intent;
@@ -48,6 +48,7 @@ public class SettingsActivity extends BaseActivity<MyViewModel> {
     private Uri uriImageSelected;
     private ImageView imageViewDialog;
     private ActivitySettingsBinding binding;
+    private InputMethodManager inputManager;
     private String currentAppLocale = PreferenceHelper.getCurrentLocale();
 
     @Override
@@ -96,11 +97,11 @@ public class SettingsActivity extends BaseActivity<MyViewModel> {
                 .load(user.getUrlPicture())
                 .apply(RequestOptions.circleCropTransform())
                 .into(binding.updateProfilePic);
-        InputMethodManager inputManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         binding.usernameDisplayed.setText(user.getUsername());
         binding.editTextUsername.setText(user.getUsername());
-        binding.editUsername.setOnClickListener(v -> initEditUsernameListener(user, inputManager));
-        binding.cancelUsernameUpdate.setOnClickListener(v -> initCancelUsernameUpdateListener(user, inputManager));
+        binding.editUsername.setOnClickListener(v -> initEditUsernameListener());
+        binding.cancelUsernameUpdate.setOnClickListener(v -> initCancelUsernameUpdateListener());
         binding.saveUsername.setOnClickListener(v -> initSaveUsernameListener());
         binding.updateProfilePic.setOnClickListener(v -> updateImageDialog());
         binding.deleteAccount.setOnClickListener(v -> showDeleteAccountDialog());
@@ -115,22 +116,22 @@ public class SettingsActivity extends BaseActivity<MyViewModel> {
             binding.editTextUsername.setError(getString(R.string.empty_field));
     }
 
-    private void initCancelUsernameUpdateListener(User user, InputMethodManager inputManager) {
-        binding.editUsernameContainer.setVisibility(View.GONE);
-        // Hide keyboard
-        if (inputManager != null) {
-            binding.editTextUsername.setText(user.getUsername());
-            inputManager.hideSoftInputFromWindow(binding.editTextUsername.getWindowToken(), 0);
-        }
-    }
-
-    private void initEditUsernameListener(User user, InputMethodManager inputManager) {
+    private void initEditUsernameListener() {
         binding.editUsernameContainer.setVisibility(View.VISIBLE);
         binding.editTextUsername.requestFocus();
-        binding.editTextUsername.setSelection(user.getUsername().length());
+        binding.editTextUsername.setSelection(currentUser.getUsername().length());
         // show keyboard
         if (inputManager != null)
             inputManager.showSoftInput(binding.editTextUsername, InputMethodManager.SHOW_IMPLICIT);
+    }
+
+    private void initCancelUsernameUpdateListener() {
+        binding.editUsernameContainer.setVisibility(View.GONE);
+        // Hide keyboard
+        if (inputManager != null) {
+            binding.editTextUsername.setText(currentUser.getUsername());
+            inputManager.hideSoftInputFromWindow(binding.editTextUsername.getWindowToken(), 0);
+        }
     }
 
     private void showDeleteAccountDialog() {
@@ -178,7 +179,11 @@ public class SettingsActivity extends BaseActivity<MyViewModel> {
 
     private void saveUsername(String username) {
         binding.usernameDisplayed.setText(username);
-        viewModel.updateUsername(username, currentUser.getUid());
+        viewModel.updateUsername(username, currentUser.getUid()).observe(this, newUsername -> {
+            if(newUsername != null && !newUsername.isEmpty()){
+                currentUser.setUsername(newUsername);
+            }
+        });
         AppController.getInstance().setSettingsHaveChanged(true);
         binding.editUsernameContainer.setVisibility(View.GONE);
     }
