@@ -15,9 +15,10 @@ public class PreferenceHelper {
 
     public static void initPreferenceHelper(Context context) {
         sharedPrefs = context.getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        initReminderPreference();
     }
 
-    public static void initReminderPreference() {
+    private static void initReminderPreference() {
         if (!sharedPrefs.contains(PREF_REMINDER))
             sharedPrefs.edit().putBoolean(PREF_REMINDER, true).apply();
     }

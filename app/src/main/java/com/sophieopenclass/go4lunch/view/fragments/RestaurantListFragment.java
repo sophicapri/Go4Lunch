@@ -72,7 +72,6 @@ public class RestaurantListFragment extends Fragment {
     private TextWatcher textWatcher;
     private String currentAppLocale = PreferenceHelper.getCurrentLocale();
 
-
     public static Fragment newInstance() {
         return new RestaurantListFragment();
     }
@@ -84,13 +83,28 @@ public class RestaurantListFragment extends Fragment {
             context = (MainActivity) getActivity();
         viewModel = context.getViewModel();
         context.binding.progressBar.setVisibility(View.VISIBLE);
-        initSearchBar(context);
+        initSearchBar();
         configureRecyclerView();
         binding.swipeRefreshView.setOnRefreshListener(() -> {
             observePlaces(nextPageToken);
             binding.swipeRefreshView.setRefreshing(false);
         });
         return binding.getRoot();
+    }
+
+    private void initSearchBar() {
+        context.binding.searchBarRestaurantList.closeSearchBar.setOnClickListener(v -> {
+            closeSearchBar();
+            //To refresh the page only if the user typed something into the search bar
+            if (autocompleteActive) {
+                adapter.clearList();
+                autocompleteActive = false;
+                context.binding.progressBar.setVisibility(View.VISIBLE);
+                observePlaces(null);
+            }
+        });
+        textWatcher = getTextWatcher();
+        context.binding.searchBarRestaurantList.searchBarInput.addTextChangedListener(textWatcher);
     }
 
     private void configureRecyclerView() {
@@ -102,96 +116,38 @@ public class RestaurantListFragment extends Fragment {
         initScrollListener();
     }
 
-    private void initSearchBar(MainActivity activity) {
-        activity.binding.searchBarRestaurantList.closeSearchBar.setOnClickListener(v -> {
-            closeSearchBar();
-            //To refresh the page only if the user typed something into the search bar
-            if (autocompleteActive) {
-                adapter.clearList();
-                autocompleteActive = false;
-                activity.binding.progressBar.setVisibility(View.VISIBLE);
-                observePlaces(null);
-            }
-        });
-
-        textWatcher = new TextWatcher() {
-            //to stop the TextWatcher from firing multiple times
-            boolean isOnTextChanged = false;
-
+    private void initScrollListener() {
+        RecyclerView.OnScrollListener scrollListener = new RecyclerView.OnScrollListener() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                isOnTextChanged = true;
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                adapter.clearList();
-                if (!activity.orientationChanged && isOnTextChanged) {
-                    isOnTextChanged = false;
-                    autocompleteActive = true;
-                    if (!s.toString().isEmpty()) {
-                        displayResultsAutocomplete(s.toString());
-                        searchBarInputEmpty = false;
-                    } else
-                        searchBarInputEmpty = true;
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                int lastVisibleItem = linearLayoutManager.findLastCompletelyVisibleItemPosition();
+                if (!isLoading) {
+                    if (lastVisibleItem == restaurantList.size() - visibleThreshold) {
+                        loadNextDataFromApi();
+                        isLoading = true;
+                    }
                 }
             }
         };
-        activity.binding.searchBarRestaurantList.searchBarInput.addTextChangedListener(textWatcher);
+        binding.recyclerViewRestaurants.addOnScrollListener(scrollListener);
     }
 
-    private void displayResultsAutocomplete(String textInput) {
-        FindAutocompletePredictionsRequest predictionsRequest = FindAutocompletePredictionsRequest.builder()
-                .setTypeFilter(TypeFilter.ESTABLISHMENT)
-                .setSessionToken(token)
-                .setLocationRestriction(getRectangularBounds())
-                .setQuery(textInput)
-                .build();
+    private void loadNextDataFromApi() {
+        if (!autocompleteActive) {
+            if (nextPageToken != null) {
+                binding.recyclerViewRestaurants.post(() -> {
+                    restaurantList.add(null);
+                    adapter.notifyItemInserted(restaurantList.size() - 1);
+                });
 
-        context.placesClient.findAutocompletePredictions(predictionsRequest).addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                FindAutocompletePredictionsResponse predictionsResponse = task.getResult();
-                if (predictionsResponse != null) {
-                    predictionList = predictionsResponse.getAutocompletePredictions();
-                    List<String> suggestionsList = new ArrayList<>();
-                    for (int i = 0; i < predictionList.size(); i++) {
-                        AutocompletePrediction prediction = predictionList.get(i);
-                        if (prediction.getPlaceTypes().contains(Place.Type.RESTAURANT)) {
-                            suggestionsList.add(prediction.getPlaceId());
-                        }
-                    }
-                    getPlaceDetailAutocompleteList(suggestionsList);
-                }
-            } else {
-                Log.i(TAG, "Prediction fetching task unsuccessful");
+                Handler handler = new Handler();
+                handler.postDelayed(() -> {
+                    bottomProgressBarPosition = restaurantList.size() - 1;
+                    observePlaces(nextPageToken);
+                }, 2000);
             }
-        });
-    }
-
-    /**
-     * The "heading" params of the SphericalUtil method represent where each corner is in degrees.
-     * See visual representation here : https://i.stack.imgur.com/GkFzJ.png;
-     */
-    private RectangularBounds getRectangularBounds() {
-        double distanceFromCenterToCorner = RADIUS * Math.sqrt(2.0);
-        Location currentLocation = AppController.getInstance().getCurrentLocation();
-        LatLng latLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
-        LatLng northEastCorner =
-                SphericalUtil.computeOffset(latLng, distanceFromCenterToCorner, HEADING_NORTH_WEST);
-        LatLng southWestCorner =
-                SphericalUtil.computeOffset(latLng, distanceFromCenterToCorner, HEADING_SOUTH_WEST);
-        return RectangularBounds.newInstance(southWestCorner, northEastCorner);
-    }
-
-    private void getPlaceDetailAutocompleteList(List<String> suggestionsList) {
-        viewModel.getPlaceDetailsList(suggestionsList, currentAppLocale).observe(getViewLifecycleOwner(), placeDetailsList -> {
-            if (!placeDetailsList.isEmpty())
-                getFullPlaceDetails(placeDetailsList);
-        });
+        }
     }
 
     @Override
@@ -258,19 +214,19 @@ public class RestaurantListFragment extends Fragment {
                                             restaurant.setNbrOfWorkmates(users.size());
                                             completePlaceDetailsList.add(restaurant);
                                         }
-                                        ////
+                                        ///
                                         if (completePlaceDetailsList.size() == placeDetailsList.size()) {
                                             Collections.sort(completePlaceDetailsList, new NearestRestaurantComparator());
-                                            if (!restaurantList.isEmpty() && !autocompleteActive) {
+                                            if (!restaurantList.isEmpty() && !autocompleteActive) { // display next pages of results
                                                 restaurantList.remove(bottomProgressBarPosition);
                                                 adapter.notifyItemRemoved(bottomProgressBarPosition);
                                                 restaurantList.addAll(completePlaceDetailsList);
                                                 adapter.notifyDataSetChanged();
                                                 isLoading = false;
-                                            } else if (!autocompleteActive) {
+                                            } else if (!autocompleteActive) { // display first page of results
                                                 this.restaurantList.addAll(completePlaceDetailsList);
                                                 adapter.updateList(restaurantList);
-                                            } else if (!searchBarInputEmpty) {
+                                            } else if (!searchBarInputEmpty) { // display Autocomplete results
                                                 adapter.updateList(completePlaceDetailsList);
                                             }
                                             context.binding.progressBar.setVisibility(View.GONE);
@@ -299,39 +255,85 @@ public class RestaurantListFragment extends Fragment {
 
     }
 
-    private void initScrollListener() {
-        RecyclerView.OnScrollListener scrollListener = new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
+    private TextWatcher getTextWatcher(){
+        return new TextWatcher() {
+            //to stop the TextWatcher from firing multiple times
+            boolean isOnTextChanged = false;
 
-                int lastVisibleItem = linearLayoutManager.findLastCompletelyVisibleItemPosition();
-                if (!isLoading) {
-                    if (lastVisibleItem == restaurantList.size() - visibleThreshold) {
-                        loadNextDataFromApi();
-                        isLoading = true;
-                    }
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                isOnTextChanged = true;
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                adapter.clearList();
+                if (!context.orientationChanged && isOnTextChanged) {
+                    isOnTextChanged = false;
+                    autocompleteActive = true;
+                    if (!s.toString().isEmpty()) {
+                        displayResultsAutocomplete(s.toString());
+                        searchBarInputEmpty = false;
+                    } else
+                        searchBarInputEmpty = true;
                 }
             }
         };
-        binding.recyclerViewRestaurants.addOnScrollListener(scrollListener);
     }
 
-    private void loadNextDataFromApi() {
-        if (!autocompleteActive) {
-            if (nextPageToken != null) {
-                binding.recyclerViewRestaurants.post(() -> {
-                    restaurantList.add(null);
-                    adapter.notifyItemInserted(restaurantList.size() - 1);
-                });
+    private void displayResultsAutocomplete(String textInput) {
+        FindAutocompletePredictionsRequest predictionsRequest = FindAutocompletePredictionsRequest.builder()
+                .setTypeFilter(TypeFilter.ESTABLISHMENT)
+                .setSessionToken(token)
+                .setLocationRestriction(getRectangularBounds())
+                .setQuery(textInput)
+                .build();
 
-                Handler handler = new Handler();
-                handler.postDelayed(() -> {
-                    bottomProgressBarPosition = restaurantList.size() - 1;
-                    observePlaces(nextPageToken);
-                }, 2000);
+        context.placesClient.findAutocompletePredictions(predictionsRequest).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                FindAutocompletePredictionsResponse predictionsResponse = task.getResult();
+                if (predictionsResponse != null) {
+                    predictionList = predictionsResponse.getAutocompletePredictions();
+                    List<String> suggestionsList = new ArrayList<>();
+                    for (int i = 0; i < predictionList.size(); i++) {
+                        AutocompletePrediction prediction = predictionList.get(i);
+                        if (prediction.getPlaceTypes().contains(Place.Type.RESTAURANT)) {
+                            suggestionsList.add(prediction.getPlaceId());
+                        }
+                    }
+                    getPlaceDetailAutocompleteList(suggestionsList);
+                }
+            } else {
+                Log.i(TAG, "Prediction fetching task unsuccessful");
             }
-        }
+        });
+    }
+
+
+    private void getPlaceDetailAutocompleteList(List<String> suggestionsList) {
+        viewModel.getPlaceDetailsList(suggestionsList, currentAppLocale).observe(getViewLifecycleOwner(), placeDetailsList -> {
+            if (!placeDetailsList.isEmpty())
+                getFullPlaceDetails(placeDetailsList);
+        });
+    }
+
+    /**
+     * The "heading" params of the SphericalUtil method represent where each corner is in degrees.
+     * See visual representation here : https://i.stack.imgur.com/GkFzJ.png;
+     */
+    private RectangularBounds getRectangularBounds() {
+        double distanceFromCenterToCorner = RADIUS * Math.sqrt(2.0);
+        Location currentLocation = AppController.getInstance().getCurrentLocation();
+        LatLng latLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+        LatLng northEastCorner =
+                SphericalUtil.computeOffset(latLng, distanceFromCenterToCorner, HEADING_NORTH_WEST);
+        LatLng southWestCorner =
+                SphericalUtil.computeOffset(latLng, distanceFromCenterToCorner, HEADING_SOUTH_WEST);
+        return RectangularBounds.newInstance(southWestCorner, northEastCorner);
     }
 
     @Override

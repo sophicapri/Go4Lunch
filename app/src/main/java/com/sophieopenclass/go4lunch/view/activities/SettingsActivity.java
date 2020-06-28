@@ -68,17 +68,16 @@ public class SettingsActivity extends BaseActivity<MyViewModel> {
         if (!PreferenceHelper.getReminderPreference())
             binding.notificationToggle.setChecked(false);
 
-        binding.notificationToggle.setOnClickListener(v -> initNotificationToggleListener());
+        binding.notificationToggle.setOnClickListener(v -> onNotificationToggleClick());
         binding.containerLanguageSettings.setOnClickListener(v -> openPopupMenuLocales());
     }
 
-    private void initNotificationToggleListener() {
+    private void onNotificationToggleClick() {
         if (binding.notificationToggle.isChecked()) {
             activateReminder();
             Toast.makeText(this, R.string.reminder_activated, Toast.LENGTH_LONG).show();
-        } else {
+        } else
             cancelReminder();
-        }
     }
 
     @Override
@@ -100,23 +99,23 @@ public class SettingsActivity extends BaseActivity<MyViewModel> {
         inputManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         binding.usernameDisplayed.setText(user.getUsername());
         binding.editTextUsername.setText(user.getUsername());
-        binding.editUsername.setOnClickListener(v -> initEditUsernameListener());
-        binding.cancelUsernameUpdate.setOnClickListener(v -> initCancelUsernameUpdateListener());
-        binding.saveUsername.setOnClickListener(v -> initSaveUsernameListener());
+        binding.editUsername.setOnClickListener(v -> onEditUsernameClick());
+        binding.cancelUsernameUpdate.setOnClickListener(v -> onCancelUsernameUpdateClick());
+        binding.saveUsername.setOnClickListener(v -> onSaveUsernameClick());
         binding.updateProfilePic.setOnClickListener(v -> updateImageDialog());
         binding.deleteAccount.setOnClickListener(v -> showDeleteAccountDialog());
         binding.settingsToolbar.setNavigationOnClickListener(v -> onBackPressed());
         displayCurrentLocale();
     }
 
-    private void initSaveUsernameListener() {
-        if (!binding.editTextUsername.getText().toString().isEmpty())
-            saveUsername(binding.editTextUsername.getText().toString());
+    private void displayCurrentLocale() {
+        if (currentAppLocale.equals(FRENCH_LOCALE))
+            binding.currentLocale.setText(R.string.french_locale);
         else
-            binding.editTextUsername.setError(getString(R.string.empty_field));
+            binding.currentLocale.setText(R.string.english_locale);
     }
 
-    private void initEditUsernameListener() {
+    private void onEditUsernameClick() {
         binding.editUsernameContainer.setVisibility(View.VISIBLE);
         binding.editTextUsername.requestFocus();
         binding.editTextUsername.setSelection(currentUser.getUsername().length());
@@ -125,13 +124,20 @@ public class SettingsActivity extends BaseActivity<MyViewModel> {
             inputManager.showSoftInput(binding.editTextUsername, InputMethodManager.SHOW_IMPLICIT);
     }
 
-    private void initCancelUsernameUpdateListener() {
+    private void onCancelUsernameUpdateClick() {
         binding.editUsernameContainer.setVisibility(View.GONE);
         // Hide keyboard
         if (inputManager != null) {
             binding.editTextUsername.setText(currentUser.getUsername());
             inputManager.hideSoftInputFromWindow(binding.editTextUsername.getWindowToken(), 0);
         }
+    }
+
+    private void onSaveUsernameClick() {
+        if (!binding.editTextUsername.getText().toString().isEmpty())
+            saveUsername(binding.editTextUsername.getText().toString());
+        else
+            binding.editTextUsername.setError(getString(R.string.empty_field));
     }
 
     private void showDeleteAccountDialog() {
@@ -149,13 +155,6 @@ public class SettingsActivity extends BaseActivity<MyViewModel> {
 
     public void deleteAccount() {
         AuthUI.getInstance().delete(this).addOnSuccessListener(v -> backToLoginPage());
-    }
-
-    private void displayCurrentLocale() {
-        if (currentAppLocale.equals(FRENCH_LOCALE))
-            binding.currentLocale.setText(R.string.french_locale);
-        else
-            binding.currentLocale.setText(R.string.english_locale);
     }
 
     private void updateImageDialog() {

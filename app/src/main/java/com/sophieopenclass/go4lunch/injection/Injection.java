@@ -35,7 +35,6 @@ public class Injection {
         return new ChatDataRepository(chatCollectionRef);
     }
 
-
     private static AlgoliaDataRepository provideAlgoliaDataSource() {
         Client client = new Client(BuildConfig.ALGOLIA_APP_ID, BuildConfig.ALGOLIA_API_KEY);
         Index index = client.getIndex(INDEX_WORKMATES);

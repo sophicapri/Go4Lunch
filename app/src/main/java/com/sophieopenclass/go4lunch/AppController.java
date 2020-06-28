@@ -23,7 +23,6 @@ public class AppController extends Application {
         super.onCreate();
         instance = this;
         PreferenceHelper.initPreferenceHelper(this);
-        PreferenceHelper.initReminderPreference();
     }
 
     public static AppController getInstance() {
