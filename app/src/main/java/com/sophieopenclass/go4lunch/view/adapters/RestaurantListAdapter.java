@@ -2,6 +2,7 @@ package com.sophieopenclass.go4lunch.view.adapters;
 
 import android.content.res.Resources;
 import android.os.Build;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -79,7 +80,7 @@ public class RestaurantListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         notifyDataSetChanged();
     }
 
-    public void updateList(ArrayList<PlaceDetails> placeDetailsList) {
+    public void updateList(List<PlaceDetails> placeDetailsList) {
         this.placeDetailsList = placeDetailsList;
         notifyDataSetChanged();
     }
@@ -112,14 +113,16 @@ public class RestaurantListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             binding.oneStar.setVisibility(View.GONE);
             binding.twoStars.setVisibility(View.GONE);
             binding.threeStars.setVisibility(View.GONE);
-
             binding.restaurantName.setText(placeDetails.getName());
             binding.restaurantAddress.setText(placeDetails.getVicinity());
 
             if (placeDetails.getOpeningHours() != null) {
-                if (placeDetails.getOpeningHours().getOpenNow())
+                if (Boolean.TRUE.equals(placeDetails.getOpeningHours().getOpenNow())) {
+                    binding.openingHours.setTextColor(res.getColor(R.color.quantum_googgreen));
                     displayOpeningHours(placeDetails);
+                }
                 else {
+                    binding.openingHours.setTextColor(res.getColor(R.color.quantum_googred));
                     displayClosed(placeDetails);
                 }
             } else {
@@ -160,7 +163,6 @@ public class RestaurantListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             } else {
                 binding.openingHours.setText(R.string.open);
             }
-            binding.openingHours.setTextColor(res.getColor(R.color.quantum_googgreen));
         }
 
         // To check if restaurant is currently closed but will open later or not
@@ -175,7 +177,6 @@ public class RestaurantListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                     binding.openingHours.setText(R.string.close);
             } else
                 binding.openingHours.setText(R.string.close);
-            binding.openingHours.setTextColor(res.getColor(R.color.quantum_googred));
         }
 
         private Period getTodayOpeningHours(PlaceDetails placeDetails) {
@@ -194,9 +195,8 @@ public class RestaurantListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             if (timeLeftBeforeClosing > 0 && timeLeftBeforeClosing < ONE_HOUR) {
                 binding.openingHours.setText(R.string.closing_soon);
                 binding.openingHours.setTextColor(res.getColor(R.color.quantum_googred));
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
                     binding.openingHours.setTextAppearance(R.style.TextStyleRedBold);
-                }
                 return true;
             } else
                 return false;

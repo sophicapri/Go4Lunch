@@ -12,7 +12,7 @@ public class Constants {
 
 
     public static final String OPEN_24H = "0000";
-    public static final int ONE_HOUR = 60;
+    public static final int ONE_HOUR = 100;
 
     public static final String USER_COLLECTION_NAME = "users";
     public static final String CHAT_COLLECTION_NAME = "conversations";
