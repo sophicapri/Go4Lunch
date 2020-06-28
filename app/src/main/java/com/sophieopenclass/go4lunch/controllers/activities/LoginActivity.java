@@ -75,12 +75,13 @@ public class LoginActivity extends BaseActivity<MyViewModel> {
             if (resultCode == RESULT_OK) { // SUCCESS
                     checkIfUserExistInFirestore();
             } else { // ERRORS
-                if (response != null && response.getError() != null)
+                if (response != null && response.getError() != null) {
                     if (response.getError().getErrorCode() == ErrorCodes.NO_NETWORK) {
                         Toast.makeText(this, getString(R.string.error_no_internet), Toast.LENGTH_SHORT).show();
                     } else if (response.getError().getErrorCode() == ErrorCodes.UNKNOWN_ERROR) {
                         Toast.makeText(this, getString(R.string.error_unknown_error), Toast.LENGTH_SHORT).show();
                     }
+                }
             }
         }
     }

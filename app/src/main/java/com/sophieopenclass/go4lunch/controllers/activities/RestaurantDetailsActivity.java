@@ -198,12 +198,12 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
             if (placeDetails.getOpeningHours() != null) {
                 List<String> weekdaysArray = placeDetails.getOpeningHours().getWeekdayText();
                 for (int i = 0; i < weekdaysArray.size(); i++) {
-                    if (i != weekdaysArray.size() - 1)
+                    if (i != weekdaysArray.size() - 1) {
                         if (PreferenceHelper.getCurrentLocale().equals(FRENCH_LOCALE))
                             weekdays.append(getDayWithUpperCase(weekdaysArray.get(i), i)).append("\n");
                         else
                             weekdays.append(weekdaysArray.get(i)).append("\n");
-                    else if (PreferenceHelper.getCurrentLocale().equals(FRENCH_LOCALE))
+                    }else if (PreferenceHelper.getCurrentLocale().equals(FRENCH_LOCALE))
                         weekdays.append(getDayWithUpperCase(weekdaysArray.get(i), i));
                     else
                         weekdays.append(weekdaysArray.get(i));

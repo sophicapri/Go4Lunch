@@ -86,13 +86,13 @@ public class UserDetailActivity extends BaseActivity<MyViewModel> {
         configureRecyclerView();
         displayFavoriteRestaurants(user);
 
-        if (getCurrentUser() != null)
-            if (user.getUid().equals(getCurrentUser().getUid())) {
+        if (getCurrentUser() != null) {
+            if (user.getUid().equals(getCurrentUser().getUid()))
                 initCurrentUserProfileView();
-            } else {
+            else
                 initWorkmateProfileView();
-            }
-        binding.userLunchToolbar.setNavigationOnClickListener( v -> onBackPressed());
+        }
+        binding.userLunchToolbar.setNavigationOnClickListener(v -> onBackPressed());
     }
 
     private void configureRecyclerView() {
@@ -141,7 +141,7 @@ public class UserDetailActivity extends BaseActivity<MyViewModel> {
 
     private void displayTodayRestaurant(User user) {
         Restaurant selectedRestaurant = user.getDatesAndRestaurants().get(getTodayDateInString());
-        if (selectedRestaurant!= null) {
+        if (selectedRestaurant != null) {
             binding.lunchOfTheDay.lunchOfTheDay.setVisibility(View.VISIBLE);
             binding.lunchOfTheDay.detailsRestaurantName.setText(selectedRestaurant.getName());
             binding.lunchOfTheDay.detailsRestaurantAddress.setText(selectedRestaurant.getAddress());
@@ -197,7 +197,7 @@ public class UserDetailActivity extends BaseActivity<MyViewModel> {
     private void updateRecyclerView(ArrayList<Restaurant> placeDetailsList) {
         if (!placeDetailsList.isEmpty()) {
             binding.noRestaurantSelected.setVisibility(View.INVISIBLE);
-        }else{
+        } else {
             binding.noRestaurantSelected.setVisibility(View.VISIBLE);
         }
         adapter.updateList(placeDetailsList, isFavorite);
