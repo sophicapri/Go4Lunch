@@ -211,6 +211,13 @@ public abstract class BaseActivity<T extends ViewModel> extends AppCompatActivit
         Toast.makeText(this, R.string.reminder_disabled, Toast.LENGTH_LONG).show();
     }
 
+    protected void backToLoginPage() {
+        finishAffinity();
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
+        workManager.cancelAllWork();
+    }
+
     // --------------------
     // ERROR HANDLER // LISTENERS
     // --------------------
@@ -231,13 +238,6 @@ public abstract class BaseActivity<T extends ViewModel> extends AppCompatActivit
         Intent intent = new Intent(this, RestaurantDetailsActivity.class);
         intent.putExtra(PLACE_ID, placeId);
         startActivity(intent);
-    }
-
-    protected void backToLoginPage() {
-        finishAffinity();
-        Intent intent = new Intent(this, LoginActivity.class);
-        startActivity(intent);
-        workManager.cancelAllWork();
     }
 }
 
