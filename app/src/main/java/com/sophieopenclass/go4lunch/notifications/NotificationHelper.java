@@ -13,7 +13,7 @@ import androidx.core.app.NotificationCompat;
 import com.sophieopenclass.go4lunch.R;
 
 public class NotificationHelper extends ContextWrapper {
-    public static final String channelID = "channelID";
+    public static final String CHANNEL_ID = "channelID";
     public static final String LUNCH_REMINDER = "Lunch reminder";
     private NotificationManager manager;
 
@@ -26,7 +26,7 @@ public class NotificationHelper extends ContextWrapper {
 
     @TargetApi(Build.VERSION_CODES.O)
     private void createChannel() {
-        NotificationChannel channel = new NotificationChannel(channelID, LUNCH_REMINDER, NotificationManager.IMPORTANCE_HIGH);
+        NotificationChannel channel = new NotificationChannel(CHANNEL_ID, LUNCH_REMINDER, NotificationManager.IMPORTANCE_HIGH);
         getManager().createNotificationChannel(channel);
     }
 
@@ -38,7 +38,7 @@ public class NotificationHelper extends ContextWrapper {
     }
 
     public NotificationCompat.Builder getChannelNotification(String message, PendingIntent intent) {
-        return new NotificationCompat.Builder(getApplicationContext(), channelID)
+        return new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID)
                 .setContentTitle(getString(R.string.time_to_eat))
                 .setStyle(new NotificationCompat.BigTextStyle().bigText(message))
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
