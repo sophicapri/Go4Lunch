@@ -2,7 +2,6 @@ package com.sophieopenclass.go4lunch.view.adapters;
 
 import android.content.res.Resources;
 import android.os.Build;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +21,6 @@ import com.sophieopenclass.go4lunch.models.json_to_java.PlaceDetails;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -36,7 +34,7 @@ public class RestaurantListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     private List<PlaceDetails> placeDetailsList;
     private OnRestaurantClickListener onRestaurantClickListener;
     private RequestManager glide;
-    private final int VIEW_TYPE_ITEM = 0;
+    private static final int VIEW_TYPE_ITEM = 0;
 
     public RestaurantListAdapter(List<PlaceDetails> placeDetailsList,
                                  OnRestaurantClickListener onRestaurantClickListener, RequestManager glide) {
@@ -129,7 +127,6 @@ public class RestaurantListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 binding.openingHours.setTextColor(res.getColor(R.color.quantum_grey));
                 binding.openingHours.setText(R.string.opening_hours_unavailable);
             }
-
 
             String urlPhoto = PlaceDetails.urlPhotoFormatter(placeDetails, 0);
             glide.load(urlPhoto).apply(RequestOptions.centerCropTransform())
