@@ -9,6 +9,7 @@ import com.sophieopenclass.go4lunch.models.Restaurant;
 import com.sophieopenclass.go4lunch.models.User;
 import com.sophieopenclass.go4lunch.models.json_to_java.PlaceDetails;
 import com.sophieopenclass.go4lunch.models.json_to_java.RestaurantsResult;
+import com.sophieopenclass.go4lunch.repository.AlgoliaDataRepository;
 import com.sophieopenclass.go4lunch.repository.ChatDataRepository;
 import com.sophieopenclass.go4lunch.repository.RestaurantDataRepository;
 import com.sophieopenclass.go4lunch.repository.UserDataRepository;
@@ -43,13 +44,16 @@ public class ViewModelTest {
     @Mock
     UserDataRepository userDataSource;
 
+    @Mock
+    AlgoliaDataRepository algoliaDataSource;
+
     @Rule
     public InstantTaskExecutorRule instantExecutorRule = new InstantTaskExecutorRule();
 
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        viewModel = new MyViewModel(restaurantDataSource, userDataSource, chatDataSource);
+        viewModel = new MyViewModel(restaurantDataSource, userDataSource, chatDataSource, algoliaDataSource);
     }
 
     @Test
