@@ -63,7 +63,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
     private Location currentLocation;
     private static final float DEFAULT_ZOOM = 17.5f;
     private boolean autocompleteActive;
-    private Location cameraLocation;
+    private Location cameraLocation = null;
     private List<AutocompletePrediction> predictionList;
     private String searchBarTextInput;
     private MainActivity activity;

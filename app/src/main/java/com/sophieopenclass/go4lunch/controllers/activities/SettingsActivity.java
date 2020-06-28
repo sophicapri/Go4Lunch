@@ -80,12 +80,6 @@ public class SettingsActivity extends BaseActivity<MyViewModel> {
         }
     }
 
-    private void cancelReminder() {
-        workManager.cancelAllWork();
-        PreferenceHelper.setReminderPreference(false);
-        Toast.makeText(this, R.string.reminder_disabled, Toast.LENGTH_LONG).show();
-    }
-
     @Override
     protected void onStart() {
         super.onStart();
@@ -185,16 +179,16 @@ public class SettingsActivity extends BaseActivity<MyViewModel> {
     private void saveUsername(String username) {
         binding.usernameDisplayed.setText(username);
         viewModel.updateUsername(username, currentUser.getUid());
-        profileHasChanged = true;
+        AppController.getInstance().setSettingsHaveChanged(true);
         binding.editUsernameContainer.setVisibility(View.GONE);
     }
 
     private void changeAppLanguage(String locale) {
-            PreferenceHelper.setCurrentLocale(locale);
-            localeHasChanged = true;
-            AppController.getInstance().updateLocale(this);
-            refreshActivity();
-            Toast.makeText(this, R.string.locale_saved, Toast.LENGTH_SHORT).show();
+        PreferenceHelper.setCurrentLocale(locale);
+        AppController.getInstance().updateLocale(this);
+        AppController.getInstance().setSettingsHaveChanged(true);
+        refreshActivity();
+        Toast.makeText(this, R.string.locale_saved, Toast.LENGTH_SHORT).show();
     }
 
     private void refreshActivity() {
@@ -267,7 +261,7 @@ public class SettingsActivity extends BaseActivity<MyViewModel> {
                                         .observe(this, urlPicture -> {
                                             if (urlPicture != null) {
                                                 refreshActivity();
-                                                profileHasChanged = true;
+                                                AppController.getInstance().setSettingsHaveChanged(true);
                                                 binding.progressBar.setVisibility(View.GONE);
                                                 uriImageSelected = null;
                                             }

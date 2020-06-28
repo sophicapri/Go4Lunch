@@ -24,6 +24,7 @@ import com.firebase.ui.auth.AuthUI;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.material.navigation.NavigationView;
+import com.sophieopenclass.go4lunch.AppController;
 import com.sophieopenclass.go4lunch.BuildConfig;
 import com.sophieopenclass.go4lunch.MyViewModel;
 import com.sophieopenclass.go4lunch.R;
@@ -63,6 +64,7 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
         configureDrawerLayout();
         configureNavigationView();
         initPlacesApi();
+        setReminder();
         if (getCurrentUser() != null)
             viewModel.getUser(getCurrentUser().getUid()).observe(this, user -> {
                 currentUserId = user.getUid();
@@ -115,6 +117,14 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
         binding.navigationView.setNavigationItemSelectedListener(this);
     }
 
+    // To activate notifications by default when first launching the app OR
+    // activate the notifications if the user signed out and logged back in
+    private void setReminder() {
+        if (PreferenceHelper.getReminderPreference()) {
+            activateReminder();
+        }
+    }
+
     @Override
     protected void onRestart() {
         super.onRestart();
@@ -122,33 +132,27 @@ public class MainActivity extends BaseActivity<MyViewModel> implements Navigatio
         // or when permissions get granted
         restartState = true;
     }
-    
+
     @Override
     protected void onResume() {
         super.onResume();
         // In order to not show mapFragment every time the activity gets recreated
-        if (!orientationChanged && !restartState) {
+        if (!orientationChanged && !restartState)
             showFragmentOrActivity(FRAGMENT_MAP_VIEW);
-            // To activate notifications by default when first launching the app OR
-            // activate the notifications if the user signed out and logged back in
-            if (PreferenceHelper.getReminderPreference()) {
-                activateReminder();
-            }
-        }
+
         // Update UI
-        updateUiAfterChangeInSettings();
+        if (AppController.getInstance().getSettingsState())
+            updateUiAfterChangeInSettings();
+
         if (restartState)
             restartState = false;
     }
 
     private void updateUiAfterChangeInSettings() {
-        if (localeHasChanged || profileHasChanged) {
-            Intent intent = new Intent(this, MainActivity.class);
-            finish();
-            startActivity(intent);
-            localeHasChanged = false;
-            profileHasChanged = false;
-        }
+        Intent intent = new Intent(this, MainActivity.class);
+        finish();
+        startActivity(intent);
+        AppController.getInstance().setSettingsHaveChanged(false);
     }
 
     @Override

@@ -16,6 +16,7 @@ import static com.sophieopenclass.go4lunch.utils.Constants.PREF_LANGUAGE;
 public class AppController extends Application {
     private static AppController instance;
     private Location currentLocation;
+    private boolean settingsHaveChanged = false;
 
     @Override
     public void onCreate() {
@@ -60,5 +61,13 @@ public class AppController extends Application {
 
     public String getLatLngString() {
         return currentLocation.getLatitude() + "," + currentLocation.getLongitude();
+    }
+
+    public boolean getSettingsState() {
+        return settingsHaveChanged;
+    }
+
+    public void setSettingsHaveChanged(Boolean settingsHaveChanged){
+       this.settingsHaveChanged = settingsHaveChanged;
     }
 }

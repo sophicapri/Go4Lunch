@@ -7,6 +7,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -57,8 +58,6 @@ public abstract class BaseActivity<T extends ViewModel> extends AppCompatActivit
         Listeners.OnRestaurantClickListener, EasyPermissions.PermissionCallbacks {
     public T viewModel;
     public boolean restartState = false;
-    public boolean localeHasChanged = false;
-    public boolean profileHasChanged = false;
     public boolean orientationChanged = false;
     public final WorkManager workManager = WorkManager.getInstance(this);
     private LocationManager locationManager;
@@ -214,6 +213,12 @@ public abstract class BaseActivity<T extends ViewModel> extends AppCompatActivit
 
         workManager.enqueueUniquePeriodicWork(WORK_REQUEST_NAME, ExistingPeriodicWorkPolicy.REPLACE, workRequest);
         PreferenceHelper.setReminderPreference(true);
+    }
+
+    public void cancelReminder() {
+        workManager.cancelAllWork();
+        PreferenceHelper.setReminderPreference(false);
+        Toast.makeText(this, R.string.reminder_disabled, Toast.LENGTH_LONG).show();
     }
 
     @Override
