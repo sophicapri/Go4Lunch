@@ -100,7 +100,7 @@ public class SettingsActivity extends BaseActivity<MyViewModel> {
         binding.usernameDisplayed.setText(user.getUsername());
         binding.editTextUsername.setText(user.getUsername());
         binding.editUsername.setOnClickListener(v -> onEditUsernameClick());
-        binding.cancelUsernameUpdate.setOnClickListener(v -> onCancelUsernameUpdateClick());
+        binding.cancelUsernameUpdate.setOnClickListener(v -> hideKeyboard());
         binding.saveUsername.setOnClickListener(v -> onSaveUsernameClick());
         binding.updateProfilePic.setOnClickListener(v -> updateImageDialog());
         binding.deleteAccount.setOnClickListener(v -> showDeleteAccountDialog());
@@ -124,9 +124,8 @@ public class SettingsActivity extends BaseActivity<MyViewModel> {
             inputManager.showSoftInput(binding.editTextUsername, InputMethodManager.SHOW_IMPLICIT);
     }
 
-    private void onCancelUsernameUpdateClick() {
+    private void hideKeyboard() {
         binding.editUsernameContainer.setVisibility(View.GONE);
-        // Hide keyboard
         if (inputManager != null) {
             binding.editTextUsername.setText(currentUser.getUsername());
             inputManager.hideSoftInputFromWindow(binding.editTextUsername.getWindowToken(), 0);
@@ -179,12 +178,12 @@ public class SettingsActivity extends BaseActivity<MyViewModel> {
     private void saveUsername(String username) {
         binding.usernameDisplayed.setText(username);
         viewModel.updateUsername(username, currentUser.getUid()).observe(this, newUsername -> {
-            if(newUsername != null && !newUsername.isEmpty()){
-                currentUser.setUsername(newUsername);
-            }
+            if(!newUsername.equals(username))
+                Toast.makeText(this, R.string.error_unknown_error, Toast.LENGTH_SHORT).show();
         });
+        currentUser.setUsername(username);
         AppController.getInstance().setSettingsHaveChanged(true);
-        binding.editUsernameContainer.setVisibility(View.GONE);
+        hideKeyboard();
     }
 
     private void changeAppLanguage(String locale) {

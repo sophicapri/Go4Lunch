@@ -14,18 +14,18 @@ import com.sophieopenclass.go4lunch.databinding.WorkmatesRestaurantPreviewBindin
 import com.sophieopenclass.go4lunch.listeners.Listeners;
 import com.sophieopenclass.go4lunch.models.Restaurant;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import static com.sophieopenclass.go4lunch.utils.DateFormatting.formatLocaleDate;
 
 public class PreviousRestaurantsAdapter extends RecyclerView.Adapter<PreviousRestaurantsAdapter.WorkmatesDetailHolder> {
-    private ArrayList<Restaurant> restaurantList;
+    private List<Restaurant> restaurantList;
     private Listeners.OnRestaurantClickListener onRestaurantClickListener;
     private RequestManager glide;
     private boolean isFavorite;
 
 
-    public PreviousRestaurantsAdapter(ArrayList<Restaurant> restaurantList, Listeners.OnRestaurantClickListener onRestaurantClickListener, RequestManager glide) {
+    public PreviousRestaurantsAdapter(List<Restaurant> restaurantList, Listeners.OnRestaurantClickListener onRestaurantClickListener, RequestManager glide) {
         this.restaurantList = restaurantList;
         this.onRestaurantClickListener = onRestaurantClickListener;
         this.glide = glide;
@@ -49,7 +49,7 @@ public class PreviousRestaurantsAdapter extends RecyclerView.Adapter<PreviousRes
         return restaurantList.size();
     }
 
-    public void updateList(ArrayList<Restaurant> restaurantList, boolean isFavorite) {
+    public void updateList(List<Restaurant> restaurantList, boolean isFavorite) {
         this.isFavorite = isFavorite;
         this.restaurantList = restaurantList;
         notifyDataSetChanged();
