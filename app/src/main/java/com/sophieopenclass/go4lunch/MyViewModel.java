@@ -1,7 +1,5 @@
 package com.sophieopenclass.go4lunch;
 
-import android.text.Editable;
-
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -9,9 +7,9 @@ import androidx.lifecycle.ViewModel;
 import com.google.firebase.firestore.Query;
 import com.sophieopenclass.go4lunch.models.Message;
 import com.sophieopenclass.go4lunch.models.Restaurant;
-import com.sophieopenclass.go4lunch.models.json_to_java.RestaurantsResult;
-import com.sophieopenclass.go4lunch.models.json_to_java.PlaceDetails;
 import com.sophieopenclass.go4lunch.models.User;
+import com.sophieopenclass.go4lunch.models.json_to_java.PlaceDetails;
+import com.sophieopenclass.go4lunch.models.json_to_java.RestaurantsResult;
 import com.sophieopenclass.go4lunch.repository.AlgoliaDataRepository;
 import com.sophieopenclass.go4lunch.repository.ChatDataRepository;
 import com.sophieopenclass.go4lunch.repository.RestaurantDataRepository;
