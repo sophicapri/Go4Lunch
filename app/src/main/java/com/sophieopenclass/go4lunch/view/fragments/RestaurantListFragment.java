@@ -69,6 +69,7 @@ public class RestaurantListFragment extends Fragment {
     private boolean searchBarInputEmpty = false;
     private int bottomProgressBarPosition;
     private boolean isLoading;
+    private boolean locationTaskSuccessful = false;
     private TextWatcher textWatcher;
     private String currentAppLocale = PreferenceHelper.getCurrentLocale();
 
@@ -86,7 +87,9 @@ public class RestaurantListFragment extends Fragment {
         initSearchBar();
         configureRecyclerView();
         binding.swipeRefreshView.setOnRefreshListener(() -> {
-            observePlaces(nextPageToken);
+            adapter.clearList();
+            context.binding.progressBar.setVisibility(View.VISIBLE);
+            observePlaces(null);
             binding.swipeRefreshView.setRefreshing(false);
         });
         return binding.getRoot();
@@ -195,12 +198,13 @@ public class RestaurantListFragment extends Fragment {
                         else
                             this.nextPageToken = restaurantsResult.getNextPageToken();
                     });
-            }
+            } else if (getCurrentLocationFailed())
+                Toast.makeText(getActivity(), R.string.cant_get_location, Toast.LENGTH_SHORT).show();
     }
 
     // Nearby Search doesn't return all the fields required in a PlaceDetails, therefore another
     // query is necessary to retrieve the missing field (-> openingHours)
-    // -
+    //
     // The viewModel calls are inside each other and not called one after the other because the variables do not get initialised
     // fast enough before being used for another viewModel.
     private void getFullPlaceDetails(List<PlaceDetails> placeDetailsList) {
@@ -255,7 +259,7 @@ public class RestaurantListFragment extends Fragment {
 
     }
 
-    private TextWatcher getTextWatcher(){
+    private TextWatcher getTextWatcher() {
         return new TextWatcher() {
             //to stop the TextWatcher from firing multiple times
             boolean isOnTextChanged = false;
@@ -350,16 +354,23 @@ public class RestaurantListFragment extends Fragment {
             inputManager.hideSoftInputFromWindow(context.binding.searchBarMap.searchBarInput.getWindowToken(), 0);
     }
 
-    public void onPermissionsGranted() {
+    private boolean getCurrentLocationFailed() {
         FusedLocationProviderClient fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context);
         Task<Location> task = fusedLocationProviderClient.getLastLocation();
         task.addOnCompleteListener(getLocationTask -> {
             if (getLocationTask.isSuccessful()) {
                 AppController.getInstance().setCurrentLocation(getLocationTask.getResult());
                 observePlaces(null);
+                locationTaskSuccessful = true;
             } else
-                Toast.makeText(getActivity(), R.string.cant_get_location, Toast.LENGTH_SHORT).show();
+                locationTaskSuccessful = false;
         });
+        return !locationTaskSuccessful;
+    }
+
+    public void onPermissionsGranted() {
+        if (getCurrentLocationFailed())
+            Toast.makeText(getActivity(), R.string.cant_get_location, Toast.LENGTH_SHORT).show();
     }
 
     public void onPermissionsDenied() {

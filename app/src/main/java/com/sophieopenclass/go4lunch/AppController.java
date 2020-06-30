@@ -15,7 +15,7 @@ import static com.sophieopenclass.go4lunch.utils.Constants.PREF_LANGUAGE;
 
 public class AppController extends Application {
     private static AppController instance;
-    private Location currentLocation;
+    private Location currentLocation = null;
     private boolean settingsHaveChanged = false;
 
     @Override
