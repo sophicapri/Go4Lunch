@@ -3,7 +3,7 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">#EF6C00</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
@@ -17,9 +17,9 @@
 
     <style name="DrawerArrowStyle" parent="@style/Widget.AppCompat.DrawerArrowToggle">
         <item name="spinBars">true</item>
-        <item name="color">#ffffffff</item>
-        <item name="itemIconTint">#ffffffff</item>
-        <item name="itemTextColor">#ffffffff</item>
+        <item name="color">@color/colorWhite</item>
+        <item name="itemIconTint">@color/colorWhite</item>
+        <item name="itemTextColor">@color/colorWhite</item>
         <item name="android:background">@drawable/ic_drawer_logo</item>
        <item name="itemTextAppearance">@style/TextDrawerStyle</item>
     </style>
@@ -33,7 +33,7 @@
         <!-- color of the background -->
         <item name="colorSecondary">@color/colorAccent</item>
         <!-- color of the icon -->
-        <item name="colorOnSecondary">#FFFFFF</item>
+        <item name="colorOnSecondary">@color/colorWhite</item>
     </style>
 
     <style name="ChatButton" parent="Widget.AppCompat.Button">
@@ -48,7 +48,7 @@
 
     <style name="TextDrawerStyle" parent="TextAppearance.AppCompat">
         <item name="android:textStyle">bold</item>
-        <item name="android:shadowColor">#B55200</item>
+        <item name="android:shadowColor">@color/colorDrawerShadowColor</item>
         <item name="android:shadowRadius">1</item>
         <item name="android:shadowDx">2</item>
         <item name="android:shadowDy">2</item>
@@ -67,23 +67,23 @@
     <style name="SwitchButton" parent="Widget.AppCompat.CompoundButton.Switch">
         <item name="colorControlActivated">@color/colorPrimaryDark</item>
         <!-- inactive thumb color -->
-        <item name="colorSwitchThumbNormal">#f1f1f1</item>
+        <item name="colorSwitchThumbNormal">@color/colorSwitchThumbNormal</item>
         <!-- inactive track color (30% transparency) -->
-        <item name="android:colorForeground">#42221f1f</item>
+        <item name="android:colorForeground">@color/colorSwitchForeground</item>
     </style>
 
     <!-- Set title to white when DetailActivity is collapsed -->
     <style name="collapsingToolbarLayoutTitleColor" parent="@android:style/TextAppearance.Medium">
-        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:textColor">@color/colorWhite</item>
     </style>
 
     <style name="expandedToolbarTitleColor" parent="TextAppearance.Design.CollapsingToolbar.Expanded">
-        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:textColor">@color/colorWhite</item>
     </style>
 
     <style name="chipTextAppearance" parent="TextAppearance.MaterialComponents.Chip">
         <item name="android:textSize">16sp</item>
-        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:textColor">@color/colorWhite</item>
     </style>
     
     <style name="chipBackground" parent="Widget.MaterialComponents.Chip.Filter">

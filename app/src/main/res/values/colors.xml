@@ -4,7 +4,13 @@
     <color name="colorPrimaryDark">@color/quantum_orange900</color>
     <color name="colorAccent">@color/quantum_vanillared900</color>
 
+    <color name="colorWhite">@color/quantum_white_text</color>
+    <color name="colorSwitchThumbNormal">#f1f1f1</color>
+    <color name="colorSwitchForeground">#42221f1f</color>
+    <color name="colorDrawerShadowColor">#B55200</color>
+
     <!-- Colors for the shadow background on DetailActivity -->
     <color name="translucent_scrim_top">#26000000</color>
     <color name="translucent_scrim_top_center">#0C000000</color>
+
 </resources>
