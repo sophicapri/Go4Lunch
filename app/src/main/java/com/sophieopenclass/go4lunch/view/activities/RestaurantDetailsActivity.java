@@ -16,6 +16,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -32,7 +33,10 @@ import com.sophieopenclass.go4lunch.models.Restaurant;
 import com.sophieopenclass.go4lunch.models.User;
 import com.sophieopenclass.go4lunch.models.json_to_java.PlaceDetails;
 import com.sophieopenclass.go4lunch.utils.PreferenceHelper;
+import com.sophieopenclass.go4lunch.view.adapters.SliderAdapter;
+import com.tbuonomo.viewpagerdotsindicator.SpringDotsIndicator;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.sophieopenclass.go4lunch.utils.Constants.FRENCH_LOCALE;
@@ -47,6 +51,8 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
     private PlaceDetails placeDetails;
     private Restaurant restaurant;
     private User currentUser;
+    private ViewPager2 viewPager;
+    private SpringDotsIndicator springDotsIndicator;
     private ActivityRestaurantDetailsBinding binding;
 
     @Override
@@ -63,6 +69,8 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        viewPager = binding.viewPager;
+        springDotsIndicator = binding.springDotsIndicator;
         binding.addRestaurant.setOnClickListener(this);
         binding.callBtn.setOnClickListener(this);
         binding.likeRestaurantBtn.setOnClickListener(this);
@@ -101,29 +109,21 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
             binding.detailsRestaurantName.setText(placeDetails.getName());
             binding.detailsRestaurantAddress.setText(placeDetails.getVicinity());
             displayButtons();
-            int layoutParam = 0;
             int nbrOfPhotos = 1;
-
-            // To center the image
-            if (placeDetails.getPhotos() == null || placeDetails.getPhotos().size() == 1) {
-                layoutParam = ViewGroup.LayoutParams.MATCH_PARENT;
-            }
 
             if (placeDetails.getPhotos() != null && placeDetails.getPhotos().size() != 1) {
                 nbrOfPhotos = placeDetails.getPhotos().size();
-                layoutParam = ViewGroup.LayoutParams.WRAP_CONTENT;
-            }
+            } else
+                binding.springDotsIndicator.setVisibility(View.GONE);
 
+            List<String> photoUrls = new ArrayList<>();
             // Display list of photos
             for (int i = 0; i < nbrOfPhotos; i++) {
                 String urlPhoto = PlaceDetails.urlPhotoFormatter(placeDetails, i);
-                ImageView newPhoto = new ImageView(this);
-                binding.restaurantPhotosGroup.addView(newPhoto, layoutParam, ViewGroup.LayoutParams.MATCH_PARENT);
-                Glide.with(newPhoto.getContext())
-                        .load(urlPhoto)
-                        .apply(RequestOptions.fitCenterTransform())
-                        .into(newPhoto);
+                photoUrls.add(urlPhoto);
             }
+            viewPager.setAdapter(new SliderAdapter(photoUrls));
+            springDotsIndicator.setViewPager2(viewPager);
 
             displayStars();
         } else {

@@ -127,4 +127,5 @@
     <string name="sign_in_with_facebook">Se connecter avec Facebook</string>
     <string name="sign_in_with_google">Se connecter avec Google</string>
     <string name="photo_permission_rationale">Permettre à Go4Lunch d\'accéder aux photos, contenus multimédias et fichiers sur votre appareil ?</string>
+    <string name="image_restaurant">image restaurant</string>
 </resources>

@@ -17,19 +17,10 @@
             android:layout_height="match_parent"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
-            <HorizontalScrollView
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/viewPager"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scrollbarStyle="outsideInset"
-                android:fadeScrollbars="false"
-                android:fillViewport="true">
-
-                <LinearLayout
-                    android:id="@+id/restaurant_photos_group"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal" />
-            </HorizontalScrollView>
+                android:layout_height="match_parent"/>
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/detail_restaurant_toolbar"
@@ -45,6 +36,18 @@
                 android:background="@drawable/shadow_collapsing_toolbar"
                 app:layout_collapseMode="pin"/>
 
+            <com.tbuonomo.viewpagerdotsindicator.SpringDotsIndicator
+                android:id="@+id/spring_dots_indicator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|center"
+                app:dampingRatio="0.5"
+                app:dotsColor="@color/colorAccent"
+                app:dotsStrokeColor="@color/colorWhite"
+                app:dotsSize="10dp"
+                app:dotsSpacing="3dp"
+                app:dotsStrokeWidth="1dp"
+                app:stiffness="300" />
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>

@@ -144,6 +144,11 @@ dependencies {
     // WorkManager
     implementation "androidx.work:work-runtime:2.3.4"
 
+    // ViewPager
+    implementation "androidx.viewpager2:viewpager2:1.0.0"
+
+    // PageIndicatorView
+    implementation 'com.tbuonomo.andrui:viewpagerdotsindicator:4.1.2'
 
     // To fix build error :
     // "Duplicate class com.google.common.util.concurrent.ListenableFuture found in modules
