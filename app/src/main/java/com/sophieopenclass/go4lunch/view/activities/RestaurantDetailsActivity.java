@@ -127,7 +127,7 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
 
             displayStars();
         } else {
-            Toast.makeText(this, "Une erreur est survenue", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.error_unknown_error, Toast.LENGTH_SHORT).show();
             finish();
         }
     }
