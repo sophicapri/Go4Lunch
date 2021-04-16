@@ -20,8 +20,8 @@ Bonus:
 ![](screenshots/logingscreen.jpg).![](screenshots/drawernav.jpg)
 ![](screenshots/map.png)![](screenshots/detailresto.jpg)
 ![](screenshots/list_resto.png).![](screenshots/collegues.jpg)
-![](screenshots/myprofile.jpg).![](screenshots/profilcollegue.jpg)
-![](screenshots/messagerie.jpg)
+![](screenshots/profilcollegue.jpg).![](screenshots/messagerie.jpg)
+![](screenshots/myprofile.jpg).
 
 
 ## Prerequis
