@@ -21,7 +21,7 @@ Bonus:
 ![](screenshots/map.png)![](screenshots/detailresto.jpg)
 ![](screenshots/list_resto.png).![](screenshots/collegues.jpg)
 ![](screenshots/profilcollegue.jpg).![](screenshots/messagerie.jpg)
-![](screenshots/myprofile.jpg).
+![](screenshots/myprofile.jpg).![](screenshots/notification.png)
 
 
 ## Prerequis
