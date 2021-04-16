@@ -7,6 +7,10 @@ son choix en en faisant part à ses collègues.
 De la même manière, il est possible de consulter les restaurants sélectionnés par les collègues afin de se joindre à eux.  
 Un peu avant l’heure du déjeuner, l’application notifie les différents employés pour les inviter à rejoindre leurs collègues.
 
+Bonus: 
+- Possibilité d'envoyer des messages à ses collègues. (Firebase)
+
+
 ## Prerequis
 **Obtenir le projet:**
 Clicker sur "Clone or Download" en haut à droite du projet sur Github, télécharger et extraire
