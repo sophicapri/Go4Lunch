@@ -35,12 +35,13 @@ lancer l'application.
 
 ## Lancer le projet
 
-Pour pouvoir build le projet il vous faudra d'abord obtenir une clé API Google, une clé API Algolia ainsi 
-qu'un ID Algolia que vous inscrirez dans votre fichier "gradle.properties" avec les variables 
+Pour pouvoir build le projet il vous faudra d'abord obtenir une clé API Google, une clé API Algolia
+ainsi qu'un ID Algolia que vous inscrirez dans votre fichier "gradle.properties" avec les variables 
 correspondantes :
-API_KEY=<votre clé>
-ALGOLIA_API_KEY=<votre clé>
-ALGOLIA_APP_ID=<votre ID>
+
+- API_KEY=<votre clé>
+- ALGOLIA_API_KEY=<votre clé>
+- ALGOLIA_APP_ID=<votre ID>
 
 Vous aurez également besoin d'obtenir un fichier "google-services.json" à partir de
 Firebase, à mettre dans le dossier "app".
