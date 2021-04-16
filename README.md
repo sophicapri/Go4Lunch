@@ -20,11 +20,19 @@ lancer l'application.
 
 ## Lancer le projet
 
-Dans Android Studio, ouvrez le projet que vous v-enez de télécharger
-et, si ce n'est pas fait automatiquement, cliquez sur "Sync project with Gradle Files" (menu "File")
-puis clickez sur "Build Project" (menu "Build").
+Pour pouvoir build le projet il vous faudra d'abord obtenir une clé API Google, une clé API Algolia ainsi 
+qu'un ID Algolia que vous inscrirez dans votre fichier "gradle.properties" avec les variables 
+correspondantes :
+API_KEY=<votre clé>
+ALGOLIA_API_KEY=<votre clé>
+ALGOLIA_APP_ID=<votre ID>
 
-**Lancer l'application:** Cliquez sur le bouton "play" ou sélectionnez "Run 'app' " dans le menu "Run".
+Vous aurez également besoin d'obtenir un fichier "google-services.json" à partir de
+Firebase, à mettre dans le dossier "app".
+
+Pour plus d'informations :
+- https://firebase.google.com/docs/android/setup
+- https://www.algolia.com
 
 ## Lancement des tests unitaires et UI
 

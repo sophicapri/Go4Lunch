@@ -1,5 +1,5 @@
 apply plugin: 'com.android.application'
-apply plugin: "com.vanniktech.android.junit.jacoco"
+//apply plugin: "com.vanniktech.android.junit.jacoco"
 
 def getProperty(String filename, String propName) {
     def propsFile = rootProject.file(filename)
@@ -17,13 +17,12 @@ def getProperty(String filename, String propName) {
 }
 
 android {
-    compileSdkVersion 29
-    buildToolsVersion "29.0.3"
+    compileSdkVersion 30
 
     defaultConfig {
         applicationId "com.sophieoc.go4lunch"
         minSdkVersion 19
-        targetSdkVersion 29
+        targetSdkVersion 30
         vectorDrawables.useSupportLibrary = true
         multiDexEnabled true
         versionCode 1
@@ -44,6 +43,7 @@ android {
         }
         debug {
             testCoverageEnabled true
+            //applicationIdSuffix ".dev"
         }
     }
 
@@ -64,39 +64,41 @@ android {
         targetCompatibility = 1.8
     }
 
-    viewBinding {
-        enabled = true
+    buildFeatures {
+        viewBinding = true
     }
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation 'androidx.appcompat:appcompat:1.1.0'
-    implementation 'com.google.android.material:material:1.3.0-alpha01'
-    implementation 'androidx.recyclerview:recyclerview:1.2.0-alpha04'
-    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
-    testImplementation 'junit:junit:4.13'
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'com.google.android.material:material:1.4.0-alpha02'
+    implementation 'androidx.recyclerview:recyclerview:1.2.0-rc01'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+    testImplementation 'junit:junit:4.13.2'
     testImplementation 'androidx.arch.core:core-testing:2.1.0'
-    androidTestImplementation 'androidx.test:core:1.2.0'
+    androidTestImplementation 'androidx.test:core:1.3.0'
     androidTestImplementation "androidx.arch.core:core-testing:2.1.0"
 
+    implementation "androidx.fragment:fragment:1.3.2"
+
     // AndroidJUnitRunner and JUnit Rules
-    androidTestImplementation 'androidx.test:runner:1.2.0'
-    androidTestImplementation 'androidx.test:rules:1.2.0'
+    androidTestImplementation 'androidx.test:runner:1.3.0'
+    androidTestImplementation 'androidx.test:rules:1.3.0'
 
     // Assertions
-    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
-    androidTestImplementation 'androidx.test.ext:truth:1.2.0'
-    androidTestImplementation 'com.google.truth:truth:0.44'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+    androidTestImplementation 'androidx.test.ext:truth:1.3.0'
+    androidTestImplementation 'com.google.truth:truth:1.1.2'
 
     // Espresso dependencies
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.2.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-intents:3.2.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-accessibility:3.2.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-web:3.2.0'
-    androidTestImplementation 'androidx.test.espresso.idling:idling-concurrent:3.2.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.3.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-intents:3.3.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-accessibility:3.3.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-web:3.3.0'
+    androidTestImplementation 'androidx.test.espresso.idling:idling-concurrent:3.3.0'
 
     // FirebaseUI
     implementation 'com.firebaseui:firebase-ui-storage:6.2.1'
@@ -104,20 +106,20 @@ dependencies {
     implementation 'com.firebaseui:firebase-ui-firestore:6.2.1'
 
     // Firebase
-    implementation 'com.google.firebase:firebase-auth:19.3.1'
-    implementation 'com.google.firebase:firebase-firestore:21.4.3'
-    implementation 'com.google.firebase:firebase-analytics:17.4.3'
+    implementation 'com.google.firebase:firebase-auth:20.0.3'
+    implementation 'com.google.firebase:firebase-firestore:22.1.2'
+    implementation 'com.google.firebase:firebase-analytics:18.0.2'
 
-    implementation 'com.google.android.gms:play-services-auth:18.0.0'
+    implementation 'com.google.android.gms:play-services-auth:19.0.0'
 
     // Google Play Service : Map
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
 
     // Google Play Service : Location
-    implementation 'com.google.android.gms:play-services-location:17.0.0'
+    implementation 'com.google.android.gms:play-services-location:18.0.0'
 
     // Google Places
-    implementation 'com.google.android.libraries.places:places:2.3.0'
+    implementation 'com.google.android.libraries.places:places:2.4.0'
 
     // FACEBOOK LOGIN SUPPORT
     implementation 'com.facebook.android:facebook-android-sdk:5.15.3'
@@ -126,23 +128,23 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.6'
 
     // GLIDE
-    implementation 'com.github.bumptech.glide:glide:4.11.0'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
+    implementation 'com.github.bumptech.glide:glide:4.12.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.12.0'
 
     // Retrofit
-    implementation 'com.squareup.retrofit2:retrofit:2.8.1'
-    implementation 'com.squareup.retrofit2:converter-gson:2.7.0'
-    implementation 'com.squareup.okhttp3:logging-interceptor:4.2.1'
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.2'
 
     // ViewModel
-    implementation 'androidx.lifecycle:lifecycle-viewmodel:2.2.0'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel:2.3.1'
 
     // LiveData
-    implementation 'androidx.lifecycle:lifecycle-livedata:2.2.0'
+    implementation 'androidx.lifecycle:lifecycle-livedata:2.3.1'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
 
     // WorkManager
-    implementation "androidx.work:work-runtime:2.3.4"
+    implementation "androidx.work:work-runtime:2.7.0-alpha02"
 
     // ViewPager
     implementation "androidx.viewpager2:viewpager2:1.0.0"

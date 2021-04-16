@@ -297,6 +297,8 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
+
+
     private void startRestaurantActivity(Marker marker) {
         if (marker.getTag() != null) {
             Intent intent = new Intent(getActivity(), RestaurantDetailsActivity.class);

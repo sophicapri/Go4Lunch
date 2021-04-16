@@ -1,0 +1,28 @@
+
+Q
+java:S1874"3Remove this use of "getDrawable"; it is deprecated.(Ñ¶æÎ8¶É×âÊ.
+P
+java:S1128	"3Remove this unused import 'android.view.ViewGroup'.(‹îá8öÿúÚ±.
+Q
+java:S1874Œ"3Remove this use of "getDrawable"; it is deprecated.(¿µ”Ï8¶É×âÊ.
+Q
+java:S1874“"3Remove this use of "getDrawable"; it is deprecated.(®ÙÛ‡8¶É×âÊ.
+h
+java:S1128"FRemove this unused import 'com.bumptech.glide.request.RequestOptions'.(÷íöºúÿÿÿÿ8öÿúÚ±.
+Q
+java:S1874â"3Remove this use of "getDrawable"; it is deprecated.(¿µ”Ï8¶É×âÊ.
+Q
+java:S1874æ"3Remove this use of "getDrawable"; it is deprecated.(Ñ¶æÎ8¶É×âÊ.
+M
+java:S1874["0Remove this use of "getColor"; it is deprecated.(Öù¬­8¶É×âÊ.
+W
+java:S1128
+"5Remove this unused import 'android.widget.ImageView'.(ú¯ëàüÿÿÿÿ8öÿúÚ±.
+Q
+java:S1874ê"3Remove this use of "getDrawable"; it is deprecated.(Ñ¶æÎ8¶É×âÊ.
+Q
+java:S1874œ"3Remove this use of "getDrawable"; it is deprecated.(®ÙÛ‡8¶É×âÊ.
+Q
+java:S1874‘"3Remove this use of "getDrawable"; it is deprecated.(“˜¦—8¶É×âÊ.
+Q
+java:S1874 "3Remove this use of "getDrawable"; it is deprecated.(“˜¦—8¶É×âÊ.

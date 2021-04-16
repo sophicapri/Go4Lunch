@@ -68,9 +68,10 @@ public class ViewModelTest {
     public void test_get_more_nearby_places() {
         MutableLiveData<RestaurantsResult> expectedRestaurantsResult = new MutableLiveData<>(mock(RestaurantsResult.class));
         when(restaurantDataSource.getMoreNearbyPlaces(anyString())).thenReturn(expectedRestaurantsResult);
-
         viewModel.getMoreNearbyPlaces(anyString())
-                .observeForever(restaurantsResult -> assertSame(expectedRestaurantsResult.getValue(), restaurantsResult));
+                .observeForever(restaurantsResult -> {
+                    assertSame(expectedRestaurantsResult.getValue(), restaurantsResult);
+                });
     }
 
     @Test

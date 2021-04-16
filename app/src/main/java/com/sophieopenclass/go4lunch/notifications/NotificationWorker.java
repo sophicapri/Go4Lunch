@@ -1,5 +1,6 @@
 package com.sophieopenclass.go4lunch.notifications;
 
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -7,6 +8,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
@@ -120,6 +122,7 @@ public class NotificationWorker extends Worker {
         Intent intent = new Intent(context, RestaurantDetailsActivity.class);
         intent.putExtra(PLACE_ID, chosenRestaurant.getPlaceId());
         PendingIntent pendingIntent = PendingIntent.getActivity(context, RC_PENDING_INTENT, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
 
         NotificationHelper notificationHelper = new NotificationHelper(context);
         NotificationCompat.Builder nb = notificationHelper

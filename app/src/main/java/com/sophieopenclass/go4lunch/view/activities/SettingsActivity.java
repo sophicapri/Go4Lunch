@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -254,8 +255,8 @@ public class SettingsActivity extends BaseActivity<MyViewModel> {
             String uuid = UUID.randomUUID().toString(); // GENERATE UNIQUE STRING
             StorageReference mImageRef = FirebaseStorage.getInstance().getReference(uuid);
             mImageRef.putFile(uriImageSelected)
-                    .addOnSuccessListener(taskSnapshot -> taskSnapshot.getStorage().getDownloadUrl()
-                            .addOnSuccessListener(uri -> {
+                    .addOnSuccessListener(taskSnapshot ->
+                            taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(uri -> {
                                 String pathImageSavedInFirebase = uri.toString();
                                 viewModel.updateUserUrlPicture(pathImageSavedInFirebase, currentUser.getUid())
                                         .observe(this, urlPicture -> {

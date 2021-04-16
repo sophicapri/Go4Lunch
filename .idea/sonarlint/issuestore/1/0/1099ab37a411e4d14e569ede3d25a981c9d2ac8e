@@ -1,0 +1,9 @@
+
+{
+java:S11286"YRemove this unused import 'com.sophieopenclass.go4lunch.utils.Constants.READ_STORAGE_RC'.(„„»çşÿÿÿÿ8ÑÄÏÚ¯.
+U
+java:S1874_"3Remove this use of "NetworkInfo"; it is deprecated.(¶ûĞüÿÿÿÿ8õşØåÇ.
+U
+java:S1874c"3Remove this use of "isConnected"; it is deprecated.(óªğÈÿÿÿÿÿ8õşØåÇ.
+^
+java:S1874a"<Remove this use of "getActiveNetworkInfo"; it is deprecated.(ŸÑ»Èøÿÿÿÿ8õşØåÇ.

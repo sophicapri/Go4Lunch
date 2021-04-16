@@ -49,7 +49,7 @@ public class SliderAdapter extends RecyclerView.Adapter<SliderAdapter.SliderView
         void bind(String urlPhoto) {
             Glide.with(imageView.getContext())
                     .load(urlPhoto)
-                    .apply(RequestOptions.fitCenterTransform())
+                    .apply(RequestOptions.centerCropTransform())
                     .into(imageView);
         }
     }
