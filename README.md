@@ -1,5 +1,5 @@
 # **Projet Go4Lunch**
-P7 du parcours "Developpeur.euse d'Application Android" d'Openclassrooms
+**P7 du parcours "Developpeur.euse d'Application Android" d'Openclassrooms**
 
 L’application Go4Lunch est une application collaborative utilisée par les employés d'une entreprise.  
 Elle permet de :
@@ -43,7 +43,7 @@ correspondantes :
 
 - API_KEY=<votre clé>
 - ALGOLIA_API_KEY=<votre clé>
-- ALGOLIA_APP_ID=<votre ID>
+- ALGOLIA_APP_ID=<votre ID> 
 
 Vous aurez également besoin d'obtenir un fichier "google-services.json" à partir de
 Firebase, à mettre dans le dossier "app".
