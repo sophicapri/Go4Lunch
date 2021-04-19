@@ -1,4 +1,4 @@
-**(Has not been maintained in 10 months, currently in the process of updating.)**
+**(Has not been maintained for 10 months, currently in the process of updating.)**
 # **Projet Go4Lunch** 
 **P7 du parcours "Developpeur.euse d'Application Android" d'Openclassrooms**
 
