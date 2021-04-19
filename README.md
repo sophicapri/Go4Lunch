@@ -1,5 +1,6 @@
-# **Projet Go4Lunch**
-P7 du parcours "Developpeur.euse d'Application Android" d'Openclassrooms
+**(This project has not been maintained for 10 months, currently in the process of updating.)**
+# **Projet Go4Lunch** 
+**P7 de la formation "Developpeur.euse d'Application Android" d'Openclassrooms**
 
 L’application Go4Lunch est une application collaborative utilisée par les employés d'une entreprise.  
 Elle permet de :
@@ -38,12 +39,12 @@ lancer l'application.
 ## Lancer le projet
 
 Pour pouvoir build le projet il vous faudra d'abord obtenir une clé API Google, une clé API Algolia
-ainsi qu'un ID Algolia que vous inscrirez dans votre fichier "gradle.properties" avec les variables 
-correspondantes :
+ainsi qu'un ID Algolia que vous inscrirez dans votre fichier "gradle.properties" avec les noms
+correspondants:
 
 - API_KEY=<votre clé>
 - ALGOLIA_API_KEY=<votre clé>
-- ALGOLIA_APP_ID=<votre ID>
+- ALGOLIA_APP_ID=<votre ID> 
 
 Vous aurez également besoin d'obtenir un fichier "google-services.json" à partir de
 Firebase, à mettre dans le dossier "app".
@@ -51,17 +52,6 @@ Firebase, à mettre dans le dossier "app".
 Pour plus d'informations :
 - https://firebase.google.com/docs/android/setup
 - https://www.algolia.com
-
-## Lancement des tests unitaires et UI
-
-Vous trouverez les test unitaires dans le dossier "test" et les tests instrumentalisés
-dans le dossier "androidTest".
-
-**Lancer tous les tests d'une même classe:** Click droit sur le nom de la classe
-et appuyez sur "Run 'NomDeLaClasse'".
-
-**Lancer les tests un par un:** Click droit sur le nom de la méthode @Test que vous désirez lancer,
-et appuyez sur ""Run 'NomDeLaMethode'".
 
 ## Librairies utilisees
 
