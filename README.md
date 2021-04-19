@@ -1,4 +1,4 @@
-# **Projet Go4Lunch**
+# **Projet Go4Lunch** // Has not been maintained in 5 months, currently in the process of updating.
 **P7 du parcours "Developpeur.euse d'Application Android" d'Openclassrooms**
 
 L’application Go4Lunch est une application collaborative utilisée par les employés d'une entreprise.  
