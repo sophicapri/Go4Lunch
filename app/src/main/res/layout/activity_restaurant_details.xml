@@ -36,19 +36,16 @@
                 android:background="@drawable/shadow_collapsing_toolbar"
                 app:layout_collapseMode="pin"/>
 
-            <com.tbuonomo.viewpagerdotsindicator.SpringDotsIndicator
-                android:id="@+id/spring_dots_indicator"
-                android:layout_width="wrap_content"
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/tabLayout"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="bottom|center"
-                app:dampingRatio="0.5"
-                app:dotsColor="@color/colorAccent"
-                app:dotsStrokeColor="@color/colorWhite"
-                app:dotsSize="10dp"
-                app:dotsSpacing="3dp"
-                app:dotsStrokeWidth="1dp"
-                app:stiffness="300" />
-
+                android:layout_gravity="bottom"
+                android:background="@null"
+                app:tabBackground="@drawable/tab_selector"
+                app:layout_collapseMode="parallax"
+                android:scrollbars="none">
+            </com.google.android.material.tabs.TabLayout>
         </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -60,7 +57,8 @@
         android:theme="@style/MyFAB"
         app:layout_anchor="@id/appBar"
         app:layout_anchorGravity="bottom|end"
-        app:srcCompat="@drawable/ic_add_black_24dp" />
+        app:srcCompat="@drawable/ic_add_black_24dp"
+        android:contentDescription="@string/choose_restaurant_to_go" />
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"

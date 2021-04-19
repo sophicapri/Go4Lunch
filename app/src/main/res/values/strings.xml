@@ -140,5 +140,6 @@
     <string name="sign_in_with_google">Sign in with Google</string>
     <string name="photo_permission_rationale">Allow Go4Lunch to access the pictures, medias and files on your device ?</string>
     <string name="image_restaurant">image restaurant</string>
+    <string name="choose_restaurant_to_go">Choose restaurant</string>
 
 </resources>

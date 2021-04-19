@@ -24,6 +24,8 @@ import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 import com.sophieopenclass.go4lunch.MyViewModel;
 import com.sophieopenclass.go4lunch.R;
 import com.sophieopenclass.go4lunch.base.BaseActivity;
@@ -34,7 +36,6 @@ import com.sophieopenclass.go4lunch.models.User;
 import com.sophieopenclass.go4lunch.models.json_to_java.PlaceDetails;
 import com.sophieopenclass.go4lunch.utils.PreferenceHelper;
 import com.sophieopenclass.go4lunch.view.adapters.SliderAdapter;
-import com.tbuonomo.viewpagerdotsindicator.SpringDotsIndicator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +53,6 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
     private Restaurant restaurant;
     private User currentUser;
     private ViewPager2 viewPager;
-    private SpringDotsIndicator springDotsIndicator;
     private ActivityRestaurantDetailsBinding binding;
 
     @Override
@@ -70,7 +70,6 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         viewPager = binding.viewPager;
-        springDotsIndicator = binding.springDotsIndicator;
         binding.addRestaurant.setOnClickListener(this);
         binding.callBtn.setOnClickListener(this);
         binding.likeRestaurantBtn.setOnClickListener(this);
@@ -114,7 +113,7 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
             if (placeDetails.getPhotos() != null && placeDetails.getPhotos().size() != 1) {
                 nbrOfPhotos = placeDetails.getPhotos().size();
             } else
-                binding.springDotsIndicator.setVisibility(View.GONE);
+                binding.tabLayout.setVisibility(View.GONE);
 
             List<String> photoUrls = new ArrayList<>();
             // Display list of photos
@@ -123,8 +122,7 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
                 photoUrls.add(urlPhoto);
             }
             viewPager.setAdapter(new SliderAdapter(photoUrls));
-            springDotsIndicator.setViewPager2(viewPager);
-
+            new TabLayoutMediator(binding.tabLayout, viewPager, (tab, position) -> { }).attach();
             displayStars();
         } else {
             Toast.makeText(this, R.string.error_unknown_error, Toast.LENGTH_SHORT).show();
@@ -257,6 +255,7 @@ public class RestaurantDetailsActivity extends BaseActivity<MyViewModel> impleme
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == REQUEST_CALL) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 callRestaurant();

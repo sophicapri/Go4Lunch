@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/Users/sophi/Documents/Openclassrooms/Projet 7/P7_capricorne_sophie/P7_01_projetAndroid/Go4Lunch/app/src/main/res/drawable/default_dot.xml" value="0.24270833333333333" />
+        <entry key="..\:/Users/sophi/Documents/Openclassrooms/Projet 7/P7_capricorne_sophie/P7_01_projetAndroid/Go4Lunch/app/src/main/res/drawable/tab_selector.xml" value="0.24270833333333333" />
+        <entry key="..\:/Users/sophi/Documents/Openclassrooms/Projet 7/P7_capricorne_sophie/P7_01_projetAndroid/Go4Lunch/app/src/main/res/layout/activity_restaurant_details.xml" value="0.22239583333333332" />
+      </map>
+    </option>
+  </component>
   <component name="NullableNotNullManager">
     <option name="myDefaultNullable" value="org.jetbrains.annotations.Nullable" />
     <option name="myDefaultNotNull" value="androidx.annotation.NonNull" />
