@@ -1,4 +1,3 @@
-**(This project has not been maintained for 10 months, currently in the process of updating.)**
 # **Projet Go4Lunch** 
 **P7 de la formation "Developpeur.euse d'Application Android" d'Openclassrooms**
 
