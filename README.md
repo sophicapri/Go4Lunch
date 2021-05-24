@@ -1,20 +1,19 @@
-# **Projet Go4Lunch** 
-**P7 de la formation "Developpeur.euse d'Application Android" d'Openclassrooms**
+# **Go4Lunch** 
+**School project**
 
-L’application Go4Lunch est une application collaborative utilisée par les employés d'une entreprise.  
-Elle permet de :
-- Rechercher un restaurant dans les environs puis de sélectionner celui de  
-son choix en en faisant part à ses collègues.
-- Consulter les restaurants sélectionnés par les collègues afin de se joindre à eux.  
-- Recevoir une notification un peu avant l’heure du déjeuner, pour rappeler à l'utilisateur le
-  restaurant choisi ainsi que les collègues qui y déjeunent aussi.
-- Rajouter des restaurants à ses favoris.
-- Rechercher un restaurant à partir d'un nom
+Go4Lunch is an app for co-workers.
+
+Functionalities :
+- Look for a restaurant around you and select it to let your collegues know where you'll be eating for lunch.
+- See where each of your colleagues will be eating, in a list, and on the map.  
+- Receive a notification a few moments before lunch to let you know where you will be having lunch and with wich colleagues.
+- Add restaurants to favorites.
+- Look for a restaurant by name.
 
 Bonus:
-- Envoyer des messages à ses collègues.
-- Voir l'historique des restaurants dans lesquels l'utilisateur a déjeuné.
-- Rechercher un collègue à partir de son nom
+- Send messages to your colleagues directly in the app.
+- See an history of all the restaurants you've had lunch at before.
+- Look for a colleague by name.
 
 ## Screenshots
 ![](screenshots/logingscreen.jpg).![](screenshots/drawernav.jpg)
@@ -24,35 +23,21 @@ Bonus:
 ![](screenshots/myprofile.jpg).![](screenshots/notification.png)
 
 
-## Prerequis
-**Obtenir le projet:**
-Clicker sur "Clone or Download" en haut à droite du projet sur Github, télécharger et extraire
-le fichier zip sur votre ordinateur.
+## Build project
 
-**Logiciel nécessaire:**
-Android Studio ([Comment installer Android Studio](https://developer.android.com/studio/install) )
+To build the project you will need a Google API key, an Algolia API key and id, that you will write in your"gradle.properties" file like so:
 
-Assurez vous d'installer un émulateur ou de configurer votre smartphone Android en mode développeur afin de pouvoir
-lancer l'application.
+- API_KEY=<XXXX>
+- ALGOLIA_API_KEY=<XXXX>
+- ALGOLIA_APP_ID=<XXXX> 
 
-## Lancer le projet
+ You will also need to get the "google-services.json" file through Firebase, and place it in the "app" file of the project.
 
-Pour pouvoir build le projet il vous faudra d'abord obtenir une clé API Google, une clé API Algolia
-ainsi qu'un ID Algolia que vous inscrirez dans votre fichier "gradle.properties" avec les noms
-correspondants:
-
-- API_KEY=<votre clé>
-- ALGOLIA_API_KEY=<votre clé>
-- ALGOLIA_APP_ID=<votre ID> 
-
-Vous aurez également besoin d'obtenir un fichier "google-services.json" à partir de
-Firebase, à mettre dans le dossier "app".
-
-Pour plus d'informations :
+For more informations :
 - https://firebase.google.com/docs/android/setup
 - https://www.algolia.com
 
-## Librairies utilisees
+## Library
 
 - Firebase
 - FirebaseUI
