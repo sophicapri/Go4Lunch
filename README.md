@@ -28,9 +28,9 @@ Bonus:
 
 To build the project you will need a Google API key, an Algolia API key and id, that you will write in your"gradle.properties" file like so:
 
-- API_KEY=<XXXX>
-- ALGOLIA_API_KEY=<XXXX>
-- ALGOLIA_APP_ID=<XXXX> 
+- API_KEY=XXXX
+- ALGOLIA_API_KEY=XXXX
+- ALGOLIA_APP_ID=XXXX
 
  You will also need to get the "google-services.json" file through Firebase, and place it in the "app" file of the project.
 
