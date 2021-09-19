@@ -47,6 +47,7 @@ For more informations :
 - Retrofit
 - WorkManager
 - Algolia
+- Mockito
 - EasyPermissions
 - Gson
 - Espresso
